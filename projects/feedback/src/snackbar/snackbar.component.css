@@ -1,0 +1,51 @@
+.app-snackbar {
+  @apply fixed bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full;
+  @apply bg-[var(--bg-elevated)] text-[var(--text-primary)];
+  @apply shadow-lg border border-[var(--border-subtle)];
+  @apply text-sm;
+  animation: fadeInUp 0.2s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translate(-50%, 100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+.app-snackbar-icon {
+  @apply text-base;
+}
+
+.app-snackbar-message {
+  @apply text-sm;
+}
+
+.app-snackbar-action {
+  @apply p-0.5 rounded-full hover:bg-[var(--bg-hover)] transition-colors;
+  @apply text-[var(--text-muted)] hover:text-[var(--text-primary)];
+}
+
+.app-snackbar-action i {
+  @apply text-base;
+}
+
+.app-snackbar-success .app-snackbar-icon {
+  @apply text-[var(--success)];
+}
+
+.app-snackbar-error .app-snackbar-icon {
+  @apply text-[var(--error)];
+}
+
+.app-snackbar-warning .app-snackbar-icon {
+  @apply text-[var(--warning)];
+}
+
+.app-snackbar-info .app-snackbar-icon {
+  @apply text-[var(--info)];
+}

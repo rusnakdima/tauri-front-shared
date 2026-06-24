@@ -1,0 +1,31 @@
+<div class="app-pagination">
+  <button
+    class="app-pagination-btn"
+    [disabled]="currentPage === 1"
+    (click)="previous()"
+  >
+    <i class="material-icons">chevron_left</i>
+  </button>
+
+  @for (page of visiblePages; track $index) {
+    @if (isEllipsis(page)) {
+      <span class="app-pagination-ellipsis">...</span>
+    } @else {
+      <button
+        class="app-pagination-page"
+        [class.app-pagination-page-active]="page === currentPage"
+        (click)="goToPage(page)"
+      >
+        {{ page }}
+      </button>
+    }
+  }
+
+  <button
+    class="app-pagination-btn"
+    [disabled]="currentPage === totalPages"
+    (click)="next()"
+  >
+    <i class="material-icons">chevron_right</i>
+  </button>
+</div>

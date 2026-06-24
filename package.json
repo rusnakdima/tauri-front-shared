@@ -1,0 +1,32 @@
+{
+  "name": "@tauri-front/shared",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "projects/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "build:core": "cd projects/core && npm run build",
+    "build:storage": "cd projects/storage && npm run build",
+    "build:grid": "cd projects/grid && npm run build",
+    "build:ui": "cd projects/ui && npm run build",
+    "build:data": "cd projects/data && npm run build",
+    "build:feedback": "cd projects/feedback && npm run build",
+    "build:layout": "cd projects/layout && npm run build"
+  },
+  "devDependencies": {
+    "@angular/cdk": "^20.0.0",
+    "@angular/common": "^20.0.0",
+    "@angular/core": "^20.0.0",
+    "@angular/forms": "^20.0.0",
+    "@angular/router": "^20.0.0",
+    "lit": "^3.0.0",
+    "ng-packagr": "^20.3.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@angular/compiler": "^20.3.25",
+    "@angular/compiler-cli": "^20.3.25"
+  }
+}

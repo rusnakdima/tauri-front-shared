@@ -1,0 +1,14 @@
+@if (isVisible()) {
+  <div class="app-toast" [class]="'app-toast-' + type" role="alert">
+    <i class="material-icons app-toast-icon">{{ icon }}</i>
+    <span class="app-toast-message">{{ message }}</span>
+    <button
+      type="button"
+      class="app-toast-close"
+      (click)="dismiss()"
+      aria-label="Dismiss"
+    >
+      <i class="material-icons">close</i>
+    </button>
+  </div>
+}

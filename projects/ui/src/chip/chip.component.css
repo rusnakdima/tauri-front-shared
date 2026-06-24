@@ -1,0 +1,30 @@
+.app-chip {
+  @apply inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium;
+  @apply bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-transparent;
+  @apply transition-all cursor-pointer;
+}
+
+.app-chip:hover {
+  @apply bg-[var(--bg-hover)];
+}
+
+.app-chip-selected {
+  @apply bg-[var(--accent-100)] text-[var(--accent-700)] border-[var(--accent)];
+}
+
+.app-chip-icon {
+  @apply text-base;
+}
+
+.app-chip-label {
+  @apply text-inherit;
+}
+
+.app-chip-remove {
+  @apply ml-1 p-0.5 rounded-full hover:bg-black/10 transition-colors;
+  @apply flex items-center justify-center;
+}
+
+.app-chip-remove i {
+  @apply text-xs;
+}

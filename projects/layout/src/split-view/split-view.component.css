@@ -1,0 +1,27 @@
+.app-split-view {
+  @apply flex w-full h-full overflow-hidden;
+}
+
+.app-split-view-horizontal {
+  @apply flex-row;
+}
+
+.app-split-view-vertical {
+  @apply flex-col;
+}
+
+.app-split-view-pane {
+  @apply overflow-hidden;
+}
+
+.app-split-view-divider {
+  @apply bg-[var(--border-color)] flex-shrink-0 cursor-col-resize;
+}
+
+.app-split-view-horizontal .app-split-view-divider {
+  @apply w-2 h-full cursor-col-resize;
+}
+
+.app-split-view-vertical .app-split-view-divider {
+  @apply w-full h-2 cursor-row-resize;
+}

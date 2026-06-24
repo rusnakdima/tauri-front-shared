@@ -1,0 +1,26 @@
+{
+  "name": "@tauri-front/feedback",
+  "version": "0.1.0",
+  "description": "Shared feedback Lit Web Components (Dialog, Toast, Modal, etc.) for Tauri apps",
+  "type": "module",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tauri-front/ui": "^0.1.0",
+    "lit": "^3.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}

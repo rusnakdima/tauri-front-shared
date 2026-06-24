@@ -1,0 +1,24 @@
+{
+  "name": "@tauri-front/storage",
+  "version": "0.1.0",
+  "description": "Storage abstraction service for Tauri apps (LocalStorage, IndexedDB)",
+  "type": "module",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=17.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}

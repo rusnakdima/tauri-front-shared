@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./lit",
+    "rootDir": "./src",
+    "lib": ["ES2022", "dom"],
+    "experimentalDecorators": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.component.ts"]
+}

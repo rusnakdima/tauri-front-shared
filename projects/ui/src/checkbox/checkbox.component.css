@@ -1,0 +1,32 @@
+.app-checkbox {
+  @apply inline-flex items-center gap-2 cursor-pointer;
+}
+
+.app-checkbox-disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.app-checkbox-box {
+  @apply w-5 h-5 rounded border flex items-center justify-center transition-all;
+  border: 2px solid var(--border-color);
+}
+
+.app-checkbox-unchecked {
+  @apply bg-transparent border-[var(--border-color)];
+}
+
+.app-checkbox-checked {
+  @apply bg-[var(--accent)] border-[var(--accent)] text-white;
+}
+
+.app-checkbox-indeterminate {
+  @apply bg-[var(--accent)] border-[var(--accent)] text-white;
+}
+
+.app-checkbox-box i {
+  @apply text-sm;
+}
+
+.app-checkbox-label {
+  @apply text-[var(--text-primary)] text-sm;
+}

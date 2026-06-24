@@ -1,0 +1,55 @@
+<div class="app-select-wrapper">
+  <div
+    [class]="selectClass"
+    [class.app-select-disabled]="disabled"
+    (click)="toggle()"
+    (blur)="onBlur()"
+  >
+    <span class="app-select-value">
+      @if (selectedOption) {
+        {{ selectedOption.label }}
+      } @else {
+        <span class="app-select-placeholder">{{ placeholder }}</span>
+      }
+    </span>
+    <i class="material-icons app-select-icon">{{
+      isOpen ? "expand_less" : "expand_more"
+    }}</i>
+  </div>
+
+  @if (isOpen) {
+    <div class="app-select-dropdown">
+      @if (searchable) {
+        <div class="app-select-search">
+          <i class="material-icons">search</i>
+          <input
+            type="text"
+            class="app-select-search-input"
+            [placeholder]="'Search...'"
+            [value]="searchQuery"
+            (input)="onSearchInput($event)"
+          />
+        </div>
+      }
+      <div class="app-select-options">
+        @for (option of filteredOptions; track option.value) {
+          <div
+            class="app-select-option"
+            [class.app-select-option-selected]="option.value === value"
+            [class.app-select-option-disabled]="option.disabled"
+            (click)="selectOption(option)"
+          >
+            {{ option.label }}
+          </div>
+        }
+        @if (filteredOptions.length === 0) {
+          <div class="app-select-empty">No options found</div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (error) {
+    <span class="app-select-error">{{ error }}</span>
+  }
+</div>

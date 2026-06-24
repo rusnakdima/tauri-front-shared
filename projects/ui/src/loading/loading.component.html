@@ -1,0 +1,33 @@
+@if (variant === "spinner") {
+  <span
+    class="app-loading-spinner"
+    [class.app-loading-sm]="size === 'sm'"
+    [class.app-loading-md]="size === 'md'"
+    [class.app-loading-lg]="size === 'lg'"
+  ></span>
+} @else if (variant === "dots") {
+  <div
+    class="app-loading-dots"
+    [class.app-loading-sm]="size === 'sm'"
+    [class.app-loading-md]="size === 'md'"
+    [class.app-loading-lg]="size === 'lg'"
+  >
+    <span class="app-loading-dot"></span>
+    <span class="app-loading-dot"></span>
+    <span class="app-loading-dot"></span>
+  </div>
+} @else if (variant === "pulse") {
+  <div
+    class="app-loading-pulse"
+    [class.app-loading-sm]="size === 'sm'"
+    [class.app-loading-md]="size === 'md'"
+    [class.app-loading-lg]="size === 'lg'"
+  ></div>
+} @else if (variant === "skeleton") {
+  <div
+    class="app-loading-skeleton"
+    [class.app-loading-sm]="size === 'sm'"
+    [class.app-loading-md]="size === 'md'"
+    [class.app-loading-lg]="size === 'lg'"
+  ></div>
+}

@@ -1,0 +1,52 @@
+.app-page-toolbar {
+  @apply flex items-center gap-4 py-3 border-b border-[var(--border-subtle)];
+}
+
+.app-page-toolbar-title {
+  @apply text-lg font-medium text-[var(--text-primary)];
+}
+
+.app-page-toolbar-spacer {
+  @apply flex-1;
+}
+
+.app-page-toolbar-filters {
+  @apply flex items-center gap-1;
+}
+
+.app-page-toolbar-filter {
+  @apply px-3 py-1.5 text-sm text-[var(--text-secondary)] rounded-md transition-colors;
+  @apply hover:bg-[var(--bg-hover)];
+}
+
+.app-page-toolbar-filter-active {
+  @apply bg-[var(--accent-100)] text-[var(--accent)];
+}
+
+.app-page-toolbar-actions {
+  @apply flex items-center gap-2;
+}
+
+.app-page-toolbar-action {
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md transition-colors;
+}
+
+.app-page-toolbar-action-primary {
+  @apply bg-[var(--accent)] text-white hover:opacity-90;
+}
+
+.app-page-toolbar-action-secondary {
+  @apply bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)];
+}
+
+.app-page-toolbar-action-danger {
+  @apply bg-[var(--error)] text-white hover:opacity-90;
+}
+
+.app-page-toolbar-action:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.app-page-toolbar-action-icon {
+  @apply text-base;
+}

@@ -1,0 +1,19 @@
+<div
+  class="app-split-view"
+  [class.app-split-view-horizontal]="mode === 'horizontal'"
+  [class.app-split-view-vertical]="mode === 'vertical'"
+>
+  <div
+    class="app-split-view-pane app-split-view-first"
+    [style.flex-basis.%]="dividerPosition"
+  >
+    <ng-content select="[first]"></ng-content>
+  </div>
+  <div class="app-split-view-divider" [style.flex-basis.px]="8"></div>
+  <div
+    class="app-split-view-pane app-split-view-second"
+    [style.flex-basis.%]="100 - dividerPosition"
+  >
+    <ng-content select="[second]"></ng-content>
+  </div>
+</div>

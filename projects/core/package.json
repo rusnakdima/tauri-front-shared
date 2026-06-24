@@ -1,0 +1,25 @@
+{
+  "name": "@tauri-front/core",
+  "version": "0.1.0",
+  "description": "Core Angular services for Tauri apps (SignalStore, Crud, Theme, SchemaRenderer, etc.)",
+  "type": "module",
+  "main": "fesm2022/tauri-front-core.mjs",
+  "module": "fesm2022/tauri-front-core.mjs",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./fesm2022/tauri-front-core.mjs",
+      "types": "./index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "ng-packagr -p ng-package.json"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=17.0.0",
+    "@angular/common": ">=17.0.0"
+  },
+  "devDependencies": {
+    "ng-packagr": "^19.0.0"
+  }
+}

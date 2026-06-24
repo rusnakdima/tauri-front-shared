@@ -1,0 +1,40 @@
+<div class="app-page-toolbar">
+  @if (title) {
+    <h2 class="app-page-toolbar-title">{{ title }}</h2>
+  }
+  <div class="app-page-toolbar-spacer"></div>
+  @if (filters.length > 0) {
+    <div class="app-page-toolbar-filters">
+      @for (filter of filters; track filter.label) {
+        <button
+          class="app-page-toolbar-filter"
+          [class.app-page-toolbar-filter-active]="filter.active"
+        >
+          {{ filter.label }}
+        </button>
+      }
+    </div>
+  }
+  @if (actions.length > 0) {
+    <div class="app-page-toolbar-actions">
+      @for (action of actions; track action.label) {
+        <button
+          class="app-page-toolbar-action"
+          [class.app-page-toolbar-action-primary]="action.variant === 'primary'"
+          [class.app-page-toolbar-action-secondary]="
+            action.variant === 'secondary' || !action.variant
+          "
+          [class.app-page-toolbar-action-danger]="action.variant === 'danger'"
+          [disabled]="action.disabled"
+        >
+          @if (action.icon) {
+            <span class="material-icons app-page-toolbar-action-icon">{{
+              action.icon
+            }}</span>
+          }
+          {{ action.label }}
+        </button>
+      }
+    </div>
+  }
+</div>

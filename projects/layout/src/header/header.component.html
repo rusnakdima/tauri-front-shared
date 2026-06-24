@@ -1,0 +1,27 @@
+<header class="app-header">
+  <div class="app-header-left">
+    @if (breadcrumbs.length > 0) {
+      <nav class="app-header-breadcrumbs">
+        <a routerLink="/" class="app-header-breadcrumb-home material-icons"
+          >home</a
+        >
+        @for (crumb of breadcrumbs; track crumb.label; let last = $last) {
+          <span class="app-header-breadcrumb-separator">/</span>
+          @if (crumb.link && !last) {
+            <a [routerLink]="crumb.link" class="app-header-breadcrumb-link">{{
+              crumb.label
+            }}</a>
+          } @else {
+            <span class="app-header-breadcrumb-current">{{ crumb.label }}</span>
+          }
+        }
+      </nav>
+    }
+    @if (title) {
+      <h1 class="app-header-title">{{ title }}</h1>
+    }
+  </div>
+  <div class="app-header-actions">
+    <ng-content select="[actions]"></ng-content>
+  </div>
+</header>

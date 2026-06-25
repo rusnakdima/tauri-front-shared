@@ -1,7 +1,12 @@
 node_modules/
 package-lock.json
-dist/
 .ng-cache/
 *.tgz
 .DS_Store
 *.log
+
+# Allow built artifacts in projects/
+dist/
+lib/
+!projects/*/dist/
+!projects/*/lib/

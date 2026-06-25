@@ -2,191 +2,189 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let SchemaCanvas = class SchemaCanvas extends LitElement {
-  constructor() {
-    super(...arguments);
-    this.elements = [];
-    this.gridColumns = 12;
-    this.showGrid = true;
-    this.selectedId = "";
-    this._dragOverCounter = 0;
-  }
-  static {
-    this.styles = css`
-      :host {
-        display: block;
-        height: 100%;
-        width: 100%;
-        background-image:
-          linear-gradient(var(--border-color) 1px, transparent 1px),
-          linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
-        background-size: 20px 20px;
-      }
+    constructor() {
+        super(...arguments);
+        this.elements = [];
+        this.gridColumns = 12;
+        this.showGrid = true;
+        this.selectedId = "";
+        this._dragOverCounter = 0;
+    }
+    static { this.styles = css `
+    :host {
+      display: block;
+      height: 100%;
+      width: 100%;
+      background-image:
+        linear-gradient(var(--border-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
 
-      :host(.drag-over) {
-        background-color: rgba(88, 166, 255, 0.1);
-        outline: 2px dashed var(--accent);
-        outline-offset: -2px;
-      }
+    :host(.drag-over) {
+      background-color: rgba(88, 166, 255, 0.1);
+      outline: 2px dashed var(--accent);
+      outline-offset: -2px;
+    }
 
-      .canvas-wrapper {
-        position: relative;
-        height: 100%;
-        width: 100%;
-        overflow: auto;
-        background: var(--bg-primary);
-      }
+    .canvas-wrapper {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      overflow: auto;
+      background: var(--bg-primary);
+    }
 
-      .canvas-grid {
-        display: grid;
-        grid-template-columns: repeat(var(--grid-cols), 1fr);
-        gap: 0;
-        min-height: 100%;
-        padding: 1rem;
-        position: relative;
-      }
+    .canvas-grid {
+      display: grid;
+      grid-template-columns: repeat(var(--grid-cols), 1fr);
+      gap: 0;
+      min-height: 100%;
+      padding: 1rem;
+      position: relative;
+    }
 
-      .canvas-grid.show-grid {
-        background-image:
-          linear-gradient(to right, var(--border-color) 1px, transparent 1px),
-          linear-gradient(to bottom, var(--border-color) 1px, transparent 1px);
-        background-size: calc(100% / var(--grid-cols)) 60px;
-      }
+    .canvas-grid.show-grid {
+      background-image:
+        linear-gradient(to right, var(--border-color) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--border-color) 1px, transparent 1px);
+      background-size: calc(100% / var(--grid-cols)) 60px;
+    }
 
-      .canvas-drop-zone {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        pointer-events: none;
-        z-index: 0;
-      }
+    .canvas-drop-zone {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-      .canvas-placeholder {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-        border: 2px dashed var(--border-color);
-        border-radius: 8px;
-        color: var(--text-muted);
-        text-align: center;
-        pointer-events: auto;
-        transition: all 0.2s;
-      }
+    .canvas-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      color: var(--text-muted);
+      text-align: center;
+      pointer-events: auto;
+      transition: all 0.2s;
+    }
 
-      .canvas-placeholder.drag-over {
-        border-color: var(--accent);
-        background: rgba(233, 69, 96, 0.05);
-      }
+    .canvas-placeholder.drag-over {
+      border-color: var(--accent);
+      background: rgba(233, 69, 96, 0.05);
+    }
 
-      .placeholder-icon {
-        font-size: 3rem;
-        opacity: 0.4;
-        margin-bottom: 0.5rem;
-      }
+    .placeholder-icon {
+      font-size: 3rem;
+      opacity: 0.4;
+      margin-bottom: 0.5rem;
+    }
 
-      .placeholder-text {
-        font-size: 0.875rem;
-        max-width: 200px;
-      }
+    .placeholder-text {
+      font-size: 0.875rem;
+      max-width: 200px;
+    }
 
-      .canvas-element {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--bg-secondary);
-        border: 2px solid var(--border-color);
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.15s;
-        min-height: 60px;
-        padding: 0.75rem;
-      }
+    .canvas-element {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      min-height: 60px;
+      padding: 0.75rem;
+    }
 
-      .canvas-element:hover {
-        border-color: var(--accent-secondary);
-        box-shadow: 0 0 0 2px rgba(83, 52, 131, 0.3);
-      }
+    .canvas-element:hover {
+      border-color: var(--accent-secondary);
+      box-shadow: 0 0 0 2px rgba(83, 52, 131, 0.3);
+    }
 
-      .canvas-element.selected {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.3);
-      }
+    .canvas-element.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.3);
+    }
 
-      .canvas-element.dragging {
-        opacity: 0.5;
-      }
+    .canvas-element.dragging {
+      opacity: 0.5;
+    }
 
-      .element-label {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.25rem;
-        text-align: center;
-      }
+    .element-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      text-align: center;
+    }
 
-      .element-icon {
-        font-size: 1.5rem;
-        color: var(--accent);
-      }
+    .element-icon {
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
 
-      .element-name {
-        font-size: 0.75rem;
-        color: var(--text-primary);
-      }
+    .element-name {
+      font-size: 0.75rem;
+      color: var(--text-primary);
+    }
 
-      .element-selector {
-        font-size: 0.625rem;
-        color: var(--text-muted);
-        font-family: monospace;
-      }
+    .element-selector {
+      font-size: 0.625rem;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
 
-      .resize-handle {
-        position: absolute;
-        width: 10px;
-        height: 10px;
-        background: var(--accent);
-        border-radius: 2px;
-        opacity: 0;
-        transition: opacity 0.15s;
-      }
+    .resize-handle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 2px;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
 
-      .canvas-element:hover .resize-handle,
-      .canvas-element.selected .resize-handle {
-        opacity: 1;
-      }
+    .canvas-element:hover .resize-handle,
+    .canvas-element.selected .resize-handle {
+      opacity: 1;
+    }
 
-      .resize-handle.se {
-        bottom: -5px;
-        right: -5px;
-        cursor: se-resize;
-      }
+    .resize-handle.se {
+      bottom: -5px;
+      right: -5px;
+      cursor: se-resize;
+    }
 
-      .resize-handle.sw {
-        bottom: -5px;
-        left: -5px;
-        cursor: sw-resize;
-      }
+    .resize-handle.sw {
+      bottom: -5px;
+      left: -5px;
+      cursor: sw-resize;
+    }
 
-      .resize-handle.ne {
-        top: -5px;
-        right: -5px;
-        cursor: ne-resize;
-      }
+    .resize-handle.ne {
+      top: -5px;
+      right: -5px;
+      cursor: ne-resize;
+    }
 
-      .resize-handle.nw {
-        top: -5px;
-        left: -5px;
-        cursor: nw-resize;
-      }
-    `;
-  }
-  render() {
-    const gridStyle = `--grid-cols: ${this.gridColumns}`;
-    return html`
+    .resize-handle.nw {
+      top: -5px;
+      left: -5px;
+      cursor: nw-resize;
+    }
+  `; }
+    render() {
+        const gridStyle = `--grid-cols: ${this.gridColumns}`;
+        return html `
       <div
         class="canvas-wrapper"
         @dragover=${this._onDragOver}
@@ -198,12 +196,12 @@ let SchemaCanvas = class SchemaCanvas extends LitElement {
           style=${gridStyle}
         >
           ${this.elements.length === 0
-            ? html`
+            ? html `
                 <div class="canvas-drop-zone">
                   <div
                     class="canvas-placeholder ${this._dragOverCounter > 0
-                      ? "drag-over"
-                      : ""}"
+                ? "drag-over"
+                : ""}"
                   >
                     <div class="placeholder-icon">⊞</div>
                     <div class="placeholder-text">
@@ -216,13 +214,13 @@ let SchemaCanvas = class SchemaCanvas extends LitElement {
         </div>
       </div>
     `;
-  }
-  _renderElement(el) {
-    const col = el.gridPosition?.column || 1;
-    const row = el.gridPosition?.row || 1;
-    const colSpan = el.gridPosition?.colSpan || 1;
-    const rowSpan = el.gridPosition?.rowSpan || 1;
-    return html`
+    }
+    _renderElement(el) {
+        const col = el.gridPosition?.column || 1;
+        const row = el.gridPosition?.row || 1;
+        const colSpan = el.gridPosition?.colSpan || 1;
+        const rowSpan = el.gridPosition?.rowSpan || 1;
+        return html `
       <div
         class="canvas-element ${this.selectedId === el.id ? "selected" : ""}"
         style="
@@ -246,103 +244,88 @@ let SchemaCanvas = class SchemaCanvas extends LitElement {
         <div class="resize-handle nw"></div>
       </div>
     `;
-  }
-  _onElementClick(el) {
-    this.selectedId = el.id;
-    this.dispatchEvent(
-      new CustomEvent("elementSelect", {
-        detail: { element: el },
-        bubbles: true,
-        composed: true,
-      }),
-    );
-  }
-  _onDragOver(e) {
-    e.preventDefault();
-    this._dragOverCounter++;
-  }
-  _onDragLeave(_e) {
-    this._dragOverCounter--;
-  }
-  _onDrop(e) {
-    e.preventDefault();
-    this._dragOverCounter = 0;
-    const data = e.dataTransfer?.getData("application/json");
-    if (data) {
-      try {
-        const comp = JSON.parse(data);
-        const newElement = {
-          id: `el-${Date.now()}`,
-          componentId: comp.selector || comp.componentId,
-          name: comp.name,
-          icon: comp.icon,
-          gridPosition: {
-            column: 1,
-            row: this.elements.length + 1,
-            colSpan: 2,
-            rowSpan: 1,
-          },
-          props: {},
-        };
-        this.elements = [...this.elements, newElement];
-        this.dispatchEvent(
-          new CustomEvent("elementAdd", {
-            detail: { element: newElement },
+    }
+    _onElementClick(el) {
+        this.selectedId = el.id;
+        this.dispatchEvent(new CustomEvent("elementSelect", {
+            detail: { element: el },
             bubbles: true,
             composed: true,
-          }),
-        );
-      } catch {
-        // Invalid JSON
-      }
+        }));
     }
-  }
-  _onElementDragStart(e, el) {
-    e.dataTransfer?.setData("application/json", JSON.stringify(el));
-    e.target.classList.add("dragging");
-  }
-  _onElementDragEnd(e) {
-    e.target.classList.remove("dragging");
-  }
-  addElement(element) {
-    this.elements = [...this.elements, element];
-  }
-  removeElement(id) {
-    this.elements = this.elements.filter((el) => el.id !== id);
-  }
-  updateElement(id, updates) {
-    this.elements = this.elements.map((el) =>
-      el.id === id ? { ...el, ...updates } : el,
-    );
-  }
-  getElements() {
-    return this.elements;
-  }
+    _onDragOver(e) {
+        e.preventDefault();
+        this._dragOverCounter++;
+    }
+    _onDragLeave(_e) {
+        this._dragOverCounter--;
+    }
+    _onDrop(e) {
+        e.preventDefault();
+        this._dragOverCounter = 0;
+        const data = e.dataTransfer?.getData("application/json");
+        if (data) {
+            try {
+                const comp = JSON.parse(data);
+                const newElement = {
+                    id: `el-${Date.now()}`,
+                    componentId: comp.selector || comp.componentId,
+                    name: comp.name,
+                    icon: comp.icon,
+                    gridPosition: {
+                        column: 1,
+                        row: this.elements.length + 1,
+                        colSpan: 2,
+                        rowSpan: 1,
+                    },
+                    props: {},
+                };
+                this.elements = [...this.elements, newElement];
+                this.dispatchEvent(new CustomEvent("elementAdd", {
+                    detail: { element: newElement },
+                    bubbles: true,
+                    composed: true,
+                }));
+            }
+            catch {
+                // Invalid JSON
+            }
+        }
+    }
+    _onElementDragStart(e, el) {
+        e.dataTransfer?.setData("application/json", JSON.stringify(el));
+        e.target.classList.add("dragging");
+    }
+    _onElementDragEnd(e) {
+        e.target.classList.remove("dragging");
+    }
+    addElement(element) {
+        this.elements = [...this.elements, element];
+    }
+    removeElement(id) {
+        this.elements = this.elements.filter((el) => el.id !== id);
+    }
+    updateElement(id, updates) {
+        this.elements = this.elements.map((el) => el.id === id ? { ...el, ...updates } : el);
+    }
+    getElements() {
+        return this.elements;
+    }
 };
-__decorate(
-  [property({ type: Array })],
-  SchemaCanvas.prototype,
-  "elements",
-  void 0,
-);
-__decorate(
-  [property({ type: Number })],
-  SchemaCanvas.prototype,
-  "gridColumns",
-  void 0,
-);
-__decorate(
-  [property({ type: Boolean })],
-  SchemaCanvas.prototype,
-  "showGrid",
-  void 0,
-);
-__decorate(
-  [property({ type: String })],
-  SchemaCanvas.prototype,
-  "selectedId",
-  void 0,
-);
-SchemaCanvas = __decorate([customElement("app-canvas")], SchemaCanvas);
+__decorate([
+    property({ type: Array })
+], SchemaCanvas.prototype, "elements", void 0);
+__decorate([
+    property({ type: Number })
+], SchemaCanvas.prototype, "gridColumns", void 0);
+__decorate([
+    property({ type: Boolean })
+], SchemaCanvas.prototype, "showGrid", void 0);
+__decorate([
+    property({ type: String })
+], SchemaCanvas.prototype, "selectedId", void 0);
+SchemaCanvas = __decorate([
+    customElement("app-canvas")
+], SchemaCanvas);
 export { SchemaCanvas };
 //# sourceMappingURL=canvas.component.js.map

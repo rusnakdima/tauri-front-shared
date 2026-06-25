@@ -2,112 +2,108 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let Modal = class Modal extends LitElement {
-  constructor() {
-    super(...arguments);
-    this.open = false;
-    this.modalTitle = "";
-    this.closable = true;
-    this.size = "md";
-  }
-  static {
-    this.styles = css`
-      :host {
-        display: contents;
-      }
-      .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(4px);
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s ease;
-      }
-      :host([open]) .modal-overlay {
-        opacity: 1;
-        pointer-events: auto;
-      }
-      .modal-content {
-        background: var(--bg-elevated, #21262d);
-        border-radius: 12px;
-        box-shadow: var(--shadow-lg, 0 10px 15px rgba(0, 0, 0, 0.5));
-        width: 90%;
-        max-width: var(--modal-width, 600px);
-        max-height: 80vh;
-        overflow: auto;
-        display: flex;
-        flex-direction: column;
-      }
-      .modal-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px 20px;
-        border-bottom: 1px solid var(--border-color, #30363d);
-      }
-      .modal-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: var(--text-primary, #e6edf3);
-        margin: 0;
-      }
-      .modal-close {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 4px;
-        color: var(--text-secondary, #8b949e);
-      }
-      .modal-close:hover {
-        color: var(--text-primary, #e6edf3);
-      }
-      .modal-body {
-        padding: 20px;
-        flex: 1;
-        overflow: auto;
-      }
-      /* Size variants */
-      :host([size="sm"]) .modal-content {
-        max-width: 400px;
-      }
-      :host([size="lg"]) .modal-content {
-        max-width: 800px;
-      }
-      :host([size="xl"]) .modal-content {
-        max-width: 1000px;
-      }
-    `;
-  }
-  _close() {
-    this.open = false;
-    this.dispatchEvent(
-      new CustomEvent("close", { bubbles: true, composed: true }),
-    );
-  }
-  _handleOverlayClick(e) {
-    if (e.target === e.currentTarget && this.closable) {
-      this._close();
+    constructor() {
+        super(...arguments);
+        this.open = false;
+        this.modalTitle = "";
+        this.closable = true;
+        this.size = "md";
     }
-  }
-  render() {
-    return html`
+    static { this.styles = css `
+    :host {
+      display: contents;
+    }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    :host([open]) .modal-overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-content {
+      background: var(--bg-elevated, #21262d);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg, 0 10px 15px rgba(0, 0, 0, 0.5));
+      width: 90%;
+      max-width: var(--modal-width, 600px);
+      max-height: 80vh;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color, #30363d);
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary, #e6edf3);
+      margin: 0;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: var(--text-secondary, #8b949e);
+    }
+    .modal-close:hover {
+      color: var(--text-primary, #e6edf3);
+    }
+    .modal-body {
+      padding: 20px;
+      flex: 1;
+      overflow: auto;
+    }
+    /* Size variants */
+    :host([size="sm"]) .modal-content {
+      max-width: 400px;
+    }
+    :host([size="lg"]) .modal-content {
+      max-width: 800px;
+    }
+    :host([size="xl"]) .modal-content {
+      max-width: 1000px;
+    }
+  `; }
+    _close() {
+        this.open = false;
+        this.dispatchEvent(new CustomEvent("close", { bubbles: true, composed: true }));
+    }
+    _handleOverlayClick(e) {
+        if (e.target === e.currentTarget && this.closable) {
+            this._close();
+        }
+    }
+    render() {
+        return html `
       <div class="modal-overlay" @click="${this._handleOverlayClick}">
         <div class="modal-content">
           ${this.modalTitle
-            ? html`
+            ? html `
                 <div class="modal-header">
                   <h3 class="modal-title">${this.modalTitle}</h3>
                   ${this.closable
-                    ? html`
+                ? html `
                         <button class="modal-close" @click="${this._close}">
                           <mat-icon>close</mat-icon>
                         </button>
                       `
-                    : ""}
+                : ""}
                 </div>
               `
             : ""}
@@ -117,17 +113,22 @@ let Modal = class Modal extends LitElement {
         </div>
       </div>
     `;
-  }
+    }
 };
-__decorate(
-  [property({ type: Boolean, reflect: true })],
-  Modal.prototype,
-  "open",
-  void 0,
-);
-__decorate([property({ type: String })], Modal.prototype, "modalTitle", void 0);
-__decorate([property({ type: Boolean })], Modal.prototype, "closable", void 0);
-__decorate([property({ type: String })], Modal.prototype, "size", void 0);
-Modal = __decorate([customElement("app-modal")], Modal);
+__decorate([
+    property({ type: Boolean, reflect: true })
+], Modal.prototype, "open", void 0);
+__decorate([
+    property({ type: String })
+], Modal.prototype, "modalTitle", void 0);
+__decorate([
+    property({ type: Boolean })
+], Modal.prototype, "closable", void 0);
+__decorate([
+    property({ type: String })
+], Modal.prototype, "size", void 0);
+Modal = __decorate([
+    customElement("app-modal")
+], Modal);
 export { Modal };
 //# sourceMappingURL=modal.component.js.map

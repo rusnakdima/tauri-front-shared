@@ -5,16 +5,21 @@
   "workspaces": [
     "projects/*"
   ],
-  "scripts": {
-    "build": "npm run build --workspaces",
+"scripts": {
+    "build": "npm run build:core && npm run build:core-api && npm run build:core-crud && npm run build:core-i18n && npm run build:core-logger && npm run build:core-storage && npm run build:data && npm run build:feedback && npm run build:grid && npm run build:layout && npm run build:storage && npm run build:ui",
     "build:core": "cd projects/core && npm run build",
+    "build:core-api": "cd projects/core-api && npm run build",
+    "build:core-crud": "cd projects/core-crud && npm run build",
+    "build:core-i18n": "cd projects/core-i18n && npm run build",
+    "build:core-logger": "cd projects/core-logger && npm run build",
+    "build:core-storage": "cd projects/core-storage && npm run build",
     "build:storage": "cd projects/storage && npm run build",
     "build:grid": "cd projects/grid && npm run build",
     "build:ui": "cd projects/ui && npm run build",
     "build:data": "cd projects/data && npm run build",
     "build:feedback": "cd projects/feedback && npm run build",
     "build:layout": "cd projects/layout && npm run build",
-    "dev": "npm run build --workspaces && npm run build:watch --workspaces",
+    "dev": "npm run build && npm run build:watch",
     "build:watch": "npm run build:watch --workspaces"
   },
   "devDependencies": {

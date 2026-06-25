@@ -48,6 +48,9 @@
     "projects/core-crud": {
       "name": "@tauri-front/core-crud",
       "version": "0.1.0",
+      "dependencies": {
+        "@tauri-front/core-storage": "^0.1.0",
+      },
       "devDependencies": {
         "typescript": "~5.6.0",
       },

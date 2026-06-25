@@ -1,1 +1,1 @@
-export * from './canvas-toolbar.component.js';
+export * from "./canvas-toolbar.component.js";

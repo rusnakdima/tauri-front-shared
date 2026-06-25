@@ -4,16 +4,16 @@ All reusable UI components for Tauri + Angular applications.
 
 ## Packages
 
-| Package | Description | Components |
-|---------|-------------|------------|
-| `@tauri-front/ui` | Form & display primitives | 16 |
-| `@tauri-front/layout` | Layout & Designer components | 14 |
-| `@tauri-front/data` | Data display components | 6 |
-| `@tauri-front/feedback` | Dialog, Toast, Modal | 6 |
-| `@tauri-front/grid` | CSS Grid components | 3 |
-| `@tauri-front/core` | Services (SchemaRenderer, Theme, Logger) | 4 |
-| `@tauri-front/storage` | IndexedDB, LocalStorage services | 2 |
-| `@tauri-front/generator` | App generation CLI | 1 |
+| Package                  | Description                              | Components |
+| ------------------------ | ---------------------------------------- | ---------- |
+| `@tauri-front/ui`        | Form & display primitives                | 16         |
+| `@tauri-front/layout`    | Layout & Designer components             | 14         |
+| `@tauri-front/data`      | Data display components                  | 6          |
+| `@tauri-front/feedback`  | Dialog, Toast, Modal                     | 6          |
+| `@tauri-front/grid`      | CSS Grid components                      | 3          |
+| `@tauri-front/core`      | Services (SchemaRenderer, Theme, Logger) | 4          |
+| `@tauri-front/storage`   | IndexedDB, LocalStorage services         | 2          |
+| `@tauri-front/generator` | App generation CLI                       | 1          |
 
 ---
 
@@ -76,48 +76,48 @@ All reusable UI components for Tauri + Angular applications.
 
 ## @tauri-front/data (6 components)
 
-| Component | Selector | Props |
-|-----------|----------|-------|
-| Card | `app-card` | title, content, elevated |
-| Stats Card | `app-stats-card` | label, value, icon |
-| Table View | `app-table-view` | columns, data |
-| Data Table | `app-data-table` | columns, data, selectable |
-| JSON View | `app-json-view` | data |
-| Segment Selector | `app-segment-selector` | options, selected |
+| Component        | Selector               | Props                     |
+| ---------------- | ---------------------- | ------------------------- |
+| Card             | `app-card`             | title, content, elevated  |
+| Stats Card       | `app-stats-card`       | label, value, icon        |
+| Table View       | `app-table-view`       | columns, data             |
+| Data Table       | `app-data-table`       | columns, data, selectable |
+| JSON View        | `app-json-view`        | data                      |
+| Segment Selector | `app-segment-selector` | options, selected         |
 
 ---
 
 ## @tauri-front/feedback (6 components)
 
-| Component | Selector | Props |
-|-----------|----------|-------|
-| Dialog | `app-dialog` | open, title, size |
-| Confirm Dialog | `app-confirm-dialog` | open, title, message |
-| Toast | `app-toast` | message, type, duration |
-| Snackbar | `app-snackbar` | message, action |
-| Modal | `app-modal` | open, title |
-| Command Palette | `app-command-palette` | open, commands |
+| Component       | Selector              | Props                   |
+| --------------- | --------------------- | ----------------------- |
+| Dialog          | `app-dialog`          | open, title, size       |
+| Confirm Dialog  | `app-confirm-dialog`  | open, title, message    |
+| Toast           | `app-toast`           | message, type, duration |
+| Snackbar        | `app-snackbar`        | message, action         |
+| Modal           | `app-modal`           | open, title             |
+| Command Palette | `app-command-palette` | open, commands          |
 
 ---
 
 ## @tauri-front/grid (3 components)
 
-| Component | Selector | Props |
-|-----------|----------|-------|
-| Grid Container | `app-grid-container` | columns, gap |
-| Grid Item | `app-grid-item` | colStart, colEnd, rowStart, rowEnd |
-| Grid Area | `app-grid-area` | name |
+| Component      | Selector             | Props                              |
+| -------------- | -------------------- | ---------------------------------- |
+| Grid Container | `app-grid-container` | columns, gap                       |
+| Grid Item      | `app-grid-item`      | colStart, colEnd, rowStart, rowEnd |
+| Grid Area      | `app-grid-area`      | name                               |
 
 ---
 
 ## @tauri-front/core (Services)
 
-| Service | Description |
-|---------|-------------|
-| SchemaRendererService | Signal-based page/layout rendering from UISchema |
-| ThemeService | Light/dark theme management with CSS variable generation |
-| LoggerService | Signal-based logging via Tauri backend |
-| StorageService | Unified storage interface (IndexedDB + LocalStorage) |
+| Service               | Description                                              |
+| --------------------- | -------------------------------------------------------- |
+| SchemaRendererService | Signal-based page/layout rendering from UISchema         |
+| ThemeService          | Light/dark theme management with CSS variable generation |
+| LoggerService         | Signal-based logging via Tauri backend                   |
+| StorageService        | Unified storage interface (IndexedDB + LocalStorage)     |
 
 ---
 
@@ -137,7 +137,7 @@ Import components from packages:
 
 ```typescript
 // In Angular component
-import { AppButton } from '@tauri-front/ui';
+import { AppButton } from "@tauri-front/ui";
 // Or use CUSTOM_ELEMENTS_SCHEMA to use in templates
 ```
 

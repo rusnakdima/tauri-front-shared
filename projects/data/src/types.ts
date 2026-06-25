@@ -1,1 +1,1 @@
-export { SharedComponentDef, SharedPropDef } from '@tauri-front/core';
+export { SharedComponentDef, SharedPropDef } from "@tauri-front/core";

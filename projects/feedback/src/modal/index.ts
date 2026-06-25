@@ -1,1 +1,1 @@
-export * from './modal.component.js';
+export * from "./modal.component.js";

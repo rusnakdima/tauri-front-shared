@@ -3,7 +3,16 @@ import { StorageService } from "@tauri-front/storage";
 
 export interface CrudFilter {
   field: string;
-  operator: "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "contains" | "startsWith" | "endsWith";
+  operator:
+    | "eq"
+    | "ne"
+    | "gt"
+    | "gte"
+    | "lt"
+    | "lte"
+    | "contains"
+    | "startsWith"
+    | "endsWith";
   value: unknown;
 }
 
@@ -45,10 +54,7 @@ export class CrudService {
     this.getStorage().set(collection, data);
   }
 
-  create<T extends { id: string }>(
-    collection: string,
-    item: T,
-  ): void {
+  create<T extends { id: string }>(collection: string, item: T): void {
     const data = this.getCollection<{ id: string }>(collection);
     const timestamp = Date.now();
     const entity = {
@@ -67,7 +73,9 @@ export class CrudService {
 
   read<T>(collection: string, id: string): T | null {
     const data = this.getCollection<T>(collection);
-    return data.find((item: unknown) => (item as { id: string }).id === id) || null;
+    return (
+      data.find((item: unknown) => (item as { id: string }).id === id) || null
+    );
   }
 
   update<T extends { id: string }>(
@@ -76,7 +84,9 @@ export class CrudService {
     changes: Partial<T>,
   ): void {
     const data = this.getCollection<T>(collection);
-    const index = data.findIndex((item: unknown) => (item as { id: string }).id === id);
+    const index = data.findIndex(
+      (item: unknown) => (item as { id: string }).id === id,
+    );
     if (index === -1) return;
 
     const timestamp = Date.now();
@@ -97,7 +107,9 @@ export class CrudService {
 
   delete(collection: string, id: string): void {
     const data = this.getCollection<{ id: string }>(collection);
-    const filtered = data.filter((item: unknown) => (item as { id: string }).id !== id);
+    const filtered = data.filter(
+      (item: unknown) => (item as { id: string }).id !== id,
+    );
     this.saveCollection(collection, filtered);
     this.addPending({
       _op: "delete",
@@ -147,11 +159,17 @@ export class CrudService {
         case "lte":
           return (value as number) <= (filter.value as number);
         case "contains":
-          return String(value).toLowerCase().includes(String(filter.value).toLowerCase());
+          return String(value)
+            .toLowerCase()
+            .includes(String(filter.value).toLowerCase());
         case "startsWith":
-          return String(value).toLowerCase().startsWith(String(filter.value).toLowerCase());
+          return String(value)
+            .toLowerCase()
+            .startsWith(String(filter.value).toLowerCase());
         case "endsWith":
-          return String(value).toLowerCase().endsWith(String(filter.value).toLowerCase());
+          return String(value)
+            .toLowerCase()
+            .endsWith(String(filter.value).toLowerCase());
         default:
           return true;
       }
@@ -175,10 +193,7 @@ export class CrudService {
     this.getStorage().set("_pending_ops", pending);
   }
 
-  batchCreate<T extends { id: string }>(
-    collection: string,
-    items: T[],
-  ): void {
+  batchCreate<T extends { id: string }>(collection: string, items: T[]): void {
     const data = this.getCollection<T>(collection);
     const timestamp = Date.now();
     for (const item of items) {
@@ -194,7 +209,9 @@ export class CrudService {
 
   batchDelete(collection: string, ids: string[]): void {
     const data = this.getCollection<{ id: string }>(collection);
-    const filtered = data.filter((item: unknown) => !ids.includes((item as { id: string }).id));
+    const filtered = data.filter(
+      (item: unknown) => !ids.includes((item as { id: string }).id),
+    );
     this.saveCollection(collection, filtered);
   }
 }

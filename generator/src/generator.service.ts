@@ -1,18 +1,32 @@
-import { renderAngularPages, renderAngularRoutes, renderAngularApp } from './angular-generator.js';
-import { renderRustLib, renderRustCommands, renderTauriConfig } from './rust-generator.js';
-import type { GeneratorOptions, UiSchema, PageContext, EntityContext, FeatureInfo } from './types.js';
-import { AVAILABLE_FEATURES } from './types.js';
+import {
+  renderAngularPages,
+  renderAngularRoutes,
+  renderAngularApp,
+} from "./angular-generator.js";
+import {
+  renderRustLib,
+  renderRustCommands,
+  renderTauriConfig,
+} from "./rust-generator.js";
+import type {
+  GeneratorOptions,
+  UiSchema,
+  PageContext,
+  EntityContext,
+  FeatureInfo,
+} from "./types.js";
+import { AVAILABLE_FEATURES } from "./types.js";
 
 const FEATURE_PACKAGE_MAP: Record<string, string> = {
-  'core-api': '@tauri-front/core',
-  'ui': '@tauri-front/ui',
-  'layout': '@tauri-front/layout',
-  'theme': '@tauri-front/core',
-  'events': '@tauri-front/core',
-  'data': '@tauri-front/data',
-  'feedback': '@tauri-front/feedback',
-  'storage': '@tauri-front/storage',
-  'grid': '@tauri-front/grid',
+  "core-api": "@tauri-front/core",
+  ui: "@tauri-front/ui",
+  layout: "@tauri-front/layout",
+  theme: "@tauri-front/core",
+  events: "@tauri-front/core",
+  data: "@tauri-front/data",
+  feedback: "@tauri-front/feedback",
+  storage: "@tauri-front/storage",
+  grid: "@tauri-front/grid",
 };
 
 export class GeneratorService {
@@ -46,13 +60,13 @@ export class GeneratorService {
     ]);
 
     if (!options.dryRun) {
-      console.log('Generation complete!');
+      console.log("Generation complete!");
     } else {
-      console.log('Dry run complete - no files written.');
+      console.log("Dry run complete - no files written.");
     }
   }
 
-  private buildPageContexts(pages: UiSchema['pages']): PageContext[] {
+  private buildPageContexts(pages: UiSchema["pages"]): PageContext[] {
     return pages.map((page) => ({
       id: page.id,
       name: page.name,
@@ -60,9 +74,9 @@ export class GeneratorService {
       kebabName: this.toKebab(page.name),
       pascalName: this.toPascal(page.name),
       elements: page.elements || [],
-      gridColumns: 'repeat(12, 1fr)',
-      gridRows: 'auto',
-      gridGap: '1rem',
+      gridColumns: "repeat(12, 1fr)",
+      gridRows: "auto",
+      gridGap: "1rem",
     }));
   }
 
@@ -72,7 +86,10 @@ export class GeneratorService {
 
     for (const page of schema.pages || []) {
       for (const element of page.elements || []) {
-        if (element.dataBinding?.entity && !seenEntities.has(element.dataBinding.entity)) {
+        if (
+          element.dataBinding?.entity &&
+          !seenEntities.has(element.dataBinding.entity)
+        ) {
           seenEntities.add(element.dataBinding.entity);
           entities.push({
             name: element.dataBinding.entity,
@@ -89,22 +106,26 @@ export class GeneratorService {
   }
 
   private toKebab(name: string): string {
-    return name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    return name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
   }
 
   private toPascal(name: string): string {
-    return name.replace(/-([a-z])/g, (_, c) => c.toUpperCase()).replace(/^./, s => s.toUpperCase());
+    return name
+      .replace(/-([a-z])/g, (_, c) => c.toUpperCase())
+      .replace(/^./, (s) => s.toUpperCase());
   }
 
   private toSnake(name: string): string {
-    return name.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
+    return name.replace(/([a-z])([A-Z])/g, "$1_$2").toLowerCase();
   }
 
   private resolveFeatures(requestedFeatures?: string[]): string[] {
     if (!requestedFeatures || requestedFeatures.length === 0) {
       return [...AVAILABLE_FEATURES];
     }
-    return requestedFeatures.filter(f => AVAILABLE_FEATURES.includes(f as any));
+    return requestedFeatures.filter((f) =>
+      AVAILABLE_FEATURES.includes(f as any),
+    );
   }
 
   private buildFeaturesInfo(features: string[]): FeatureInfo {
@@ -114,15 +135,15 @@ export class GeneratorService {
       if (pkg) packageSet.add(pkg);
     }
     return {
-      hasCoreApi: features.includes('core-api'),
-      hasUi: features.includes('ui'),
-      hasLayout: features.includes('layout'),
-      hasTheme: features.includes('theme'),
-      hasEvents: features.includes('events'),
-      hasData: features.includes('data'),
-      hasFeedback: features.includes('feedback'),
-      hasStorage: features.includes('storage'),
-      hasGrid: features.includes('grid'),
+      hasCoreApi: features.includes("core-api"),
+      hasUi: features.includes("ui"),
+      hasLayout: features.includes("layout"),
+      hasTheme: features.includes("theme"),
+      hasEvents: features.includes("events"),
+      hasData: features.includes("data"),
+      hasFeedback: features.includes("feedback"),
+      hasStorage: features.includes("storage"),
+      hasGrid: features.includes("grid"),
       packageNames: Array.from(packageSet),
     };
   }

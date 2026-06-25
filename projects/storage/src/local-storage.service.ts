@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { StorageService } from './storage.service';
+import { Injectable } from "@angular/core";
+import { StorageService } from "./storage.service";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class LocalStorageService implements StorageService {
   get<T>(key: string): T | null {
     const item = localStorage.getItem(key);

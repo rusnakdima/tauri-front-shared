@@ -1,10 +1,10 @@
 import { Injectable, signal, inject } from "@angular/core";
-import { GridPosition, ComponentDef, Layout, Page } from '../types';
-import { SignalStoreService } from '../signal-store/signal-store.service';
-import { EventBusService } from '../events/event-bus.service';
+import { GridPosition, ComponentDef, Layout, Page } from "../types";
+import { SignalStoreService } from "../signal-store/signal-store.service";
+import { EventBusService } from "../events/event-bus.service";
 
 type Module = Record<string, unknown>;
-import { CrudService, CrudQuery } from '../crud/crud.service';
+import { CrudService, CrudQuery } from "../crud/crud.service";
 
 export interface CanvasElement {
   id: string;
@@ -64,7 +64,9 @@ export class SchemaRendererService {
   private eventBus = inject(EventBusService);
 
   signalStore = this.dataStore;
-  private componentResolver: ((selector: string) => ComponentDef | undefined) | null = null;
+  private componentResolver:
+    | ((selector: string) => ComponentDef | undefined)
+    | null = null;
   private routeResolver: ((route: string) => string | null) | null = null;
 
   pages = this._pages.asReadonly();
@@ -115,7 +117,9 @@ export class SchemaRendererService {
   }
 
   navigateToPage(route: string): void {
-    const resolvedPageId = this.routeResolver ? this.routeResolver(route) : null;
+    const resolvedPageId = this.routeResolver
+      ? this.routeResolver(route)
+      : null;
     if (resolvedPageId) {
       this.setCurrentPage(resolvedPageId);
     }
@@ -150,10 +154,14 @@ export class SchemaRendererService {
 
     if (layout.children) {
       for (const childId of layout.children) {
-        const component = this.getCurrentPage()?.components.find((c) => c.id === childId);
+        const component = this.getCurrentPage()?.components.find(
+          (c) => c.id === childId,
+        );
         if (component) {
           const el = document.createElement(component.selector);
-          const position = layout.positions?.find((p) => p[childId as keyof GridPosition] !== undefined);
+          const position = layout.positions?.find(
+            (p) => p[childId as keyof GridPosition] !== undefined,
+          );
           if (position) {
             const pos = position as unknown as GridPosition;
             const colStart = pos.colStart ?? pos.column ?? 1;
@@ -188,7 +196,9 @@ export class SchemaRendererService {
 
     if (layout.children) {
       for (const childId of layout.children) {
-        const component = this.getCurrentPage()?.components.find((c) => c.id === childId);
+        const component = this.getCurrentPage()?.components.find(
+          (c) => c.id === childId,
+        );
         if (component) {
           const el = document.createElement(component.selector);
           container.appendChild(el);
@@ -197,10 +207,13 @@ export class SchemaRendererService {
     }
   }
 
-  async loadComponentModule(selector: string): Promise<CustomElementConstructor> {
+  async loadComponentModule(
+    selector: string,
+  ): Promise<CustomElementConstructor> {
     const cached = this._componentModules().get(selector);
     if (cached) {
-      const constructor = (cached as Record<string, CustomElementConstructor>).default;
+      const constructor = (cached as Record<string, CustomElementConstructor>)
+        .default;
       if (constructor) return constructor;
     }
 
@@ -209,12 +222,15 @@ export class SchemaRendererService {
       throw new Error(`Component not found: ${selector}`);
     }
 
-    const module = await import(/* @vite-ignore */ def.selector) as Module;
+    const module = (await import(/* @vite-ignore */ def.selector)) as Module;
     this.registerComponentModule(selector, module);
 
-    const constructor = (module as Record<string, CustomElementConstructor>).default;
+    const constructor = (module as Record<string, CustomElementConstructor>)
+      .default;
     if (!constructor) {
-      throw new Error(`Module ${selector} does not export a default CustomElementConstructor`);
+      throw new Error(
+        `Module ${selector} does not export a default CustomElementConstructor`,
+      );
     }
 
     return constructor;
@@ -226,14 +242,19 @@ export class SchemaRendererService {
     this._componentModules.set(modules);
   }
 
-  resolveGridPosition(layoutId: string, componentId: string): GridPosition | null {
+  resolveGridPosition(
+    layoutId: string,
+    componentId: string,
+  ): GridPosition | null {
     const page = this.getCurrentPage();
     if (!page) return null;
 
     const layout = page.layouts.find((l) => l.id === layoutId);
     if (!layout || !layout.positions) return null;
 
-    const pos = layout.positions.find((p) => p[componentId as keyof GridPosition] !== undefined);
+    const pos = layout.positions.find(
+      (p) => p[componentId as keyof GridPosition] !== undefined,
+    );
     if (!pos) return null;
 
     const position = pos as unknown as GridPosition;
@@ -275,7 +296,10 @@ export class SchemaRendererService {
     return component?.props || {};
   }
 
-  generatePage(pageId: string): { layouts: Layout[]; components: ComponentDef[] } {
+  generatePage(pageId: string): {
+    layouts: Layout[];
+    components: ComponentDef[];
+  } {
     const page = this._pages().find((p) => p.id === pageId);
     if (!page) return { layouts: [], components: [] };
 
@@ -285,7 +309,9 @@ export class SchemaRendererService {
     };
   }
 
-  setComponentResolver(resolver: (selector: string) => ComponentDef | undefined): void {
+  setComponentResolver(
+    resolver: (selector: string) => ComponentDef | undefined,
+  ): void {
     this.componentResolver = resolver;
   }
 
@@ -319,10 +345,13 @@ export class SchemaRendererService {
 
     el.className = this.resolveClasses(data.classes, def.defaultClasses || "");
 
-    const resolvedProps = this.resolveProps({
-      ...def.props,
-      ...data.props,
-    }, data.id);
+    const resolvedProps = this.resolveProps(
+      {
+        ...def.props,
+        ...data.props,
+      },
+      data.id,
+    );
 
     for (const [key, value] of Object.entries(resolvedProps)) {
       if (key === "class" || key === "style" || key === "id") continue;
@@ -361,7 +390,8 @@ export class SchemaRendererService {
 
     if (pageSchema.gridTemplate) {
       container.style.display = "grid";
-      container.style.gridTemplateColumns = pageSchema.gridTemplate.columns.join(" ");
+      container.style.gridTemplateColumns =
+        pageSchema.gridTemplate.columns.join(" ");
       container.style.gridTemplateRows = pageSchema.gridTemplate.rows.join(" ");
       container.style.gap = pageSchema.gridTemplate.gap;
     }
@@ -374,14 +404,23 @@ export class SchemaRendererService {
     }
   }
 
-  bindEvents(el: HTMLElement, events: Record<string, string | Function>, elementId: string): void {
+  bindEvents(
+    el: HTMLElement,
+    events: Record<string, string | Function>,
+    elementId: string,
+  ): void {
     for (const [eventName, handler] of Object.entries(events)) {
       if (typeof handler === "function") {
         el.addEventListener(eventName, handler as EventListener);
       } else if (typeof handler === "string") {
         const resolvedHandler = this.resolveDataBinding(handler);
-        if (typeof resolvedHandler === "string" && resolvedHandler.startsWith("{{data.")) {
-          const dataPath = resolvedHandler.replace(/\{\{|\}\}/g, "").replace("data.", "");
+        if (
+          typeof resolvedHandler === "string" &&
+          resolvedHandler.startsWith("{{data.")
+        ) {
+          const dataPath = resolvedHandler
+            .replace(/\{\{|\}\}/g, "")
+            .replace("data.", "");
           const dataValue = this.getDataBindingValue(dataPath);
           if (typeof dataValue === "function") {
             el.addEventListener(eventName, dataValue as EventListener);
@@ -399,13 +438,19 @@ export class SchemaRendererService {
     }
 
     if (elementClasses) {
-      elementClasses.split(" ").filter((c) => c.trim()).forEach((c) => classes.add(c));
+      elementClasses
+        .split(" ")
+        .filter((c) => c.trim())
+        .forEach((c) => classes.add(c));
     }
 
     return Array.from(classes).join(" ");
   }
 
-  resolveProps(props: Record<string, unknown>, componentId: string): Record<string, unknown> {
+  resolveProps(
+    props: Record<string, unknown>,
+    componentId: string,
+  ): Record<string, unknown> {
     const resolved: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(props)) {
       resolved[key] = this.resolveDataBinding(value);
@@ -467,7 +512,9 @@ export class SchemaRendererService {
     }
   }
 
-  private resolveParams(params: Record<string, unknown>): Record<string, unknown> {
+  private resolveParams(
+    params: Record<string, unknown>,
+  ): Record<string, unknown> {
     const resolved: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(params)) {
       resolved[key] = this.resolveDataBinding(value);
@@ -478,7 +525,9 @@ export class SchemaRendererService {
   private buildCrudQuery(params: Record<string, unknown>): CrudQuery {
     const query: CrudQuery = {};
     if (params["filter"]) {
-      query.filters = this.buildFilters(params["filter"] as Record<string, unknown>);
+      query.filters = this.buildFilters(
+        params["filter"] as Record<string, unknown>,
+      );
     }
     if (params["sortBy"]) {
       query.sortBy = params["sortBy"] as string;
@@ -493,7 +542,9 @@ export class SchemaRendererService {
     return query;
   }
 
-  private buildFilters(filterObj: Record<string, unknown>): { field: string; operator: "eq"; value: unknown }[] {
+  private buildFilters(
+    filterObj: Record<string, unknown>,
+  ): { field: string; operator: "eq"; value: unknown }[] {
     const filters: { field: string; operator: "eq"; value: unknown }[] = [];
     for (const [field, value] of Object.entries(filterObj)) {
       filters.push({ field, operator: "eq", value });

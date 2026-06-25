@@ -73,7 +73,9 @@ export class DesignerSidebar extends LitElement {
       height: 100%;
       background: var(--bg-secondary);
       border-right: 1px solid var(--border-color);
-      transition: width var(--transition-normal, 200ms) ease, opacity var(--transition-normal, 200ms) ease;
+      transition:
+        width var(--transition-normal, 200ms) ease,
+        opacity var(--transition-normal, 200ms) ease;
       overflow: hidden;
       flex-shrink: 0;
     }
@@ -141,7 +143,13 @@ export class DesignerSidebar extends LitElement {
         </aside>
         <div class="sidebar-toggle-container">
           <button class="sidebar-toggle" @click=${this._toggleCollapse}>
-            ${this.collapsed ? (this.position === 'left' ? '▶' : '◀') : (this.position === 'left' ? '◀' : '▶')}
+            ${this.collapsed
+              ? this.position === "left"
+                ? "▶"
+                : "◀"
+              : this.position === "left"
+                ? "◀"
+                : "▶"}
           </button>
         </div>
       </div>
@@ -155,7 +163,7 @@ export class DesignerSidebar extends LitElement {
         detail: this.collapsed,
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 }

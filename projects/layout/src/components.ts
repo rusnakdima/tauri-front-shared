@@ -115,11 +115,16 @@ export const layoutComponents: SharedComponentDef[] = [
     packageType: "layout",
     category: "layout",
     props: [
-      { name: "position", type: "select", default: "left", options: ["left", "right"] },
+      {
+        name: "position",
+        type: "select",
+        default: "left",
+        options: ["left", "right"],
+      },
       { name: "collapsed", type: "boolean", default: false },
       { name: "header", type: "string", default: "" },
     ],
-    template: "<aside><slot name=\"content\"></slot></aside>",
+    template: '<aside><slot name="content"></slot></aside>',
     css: ":host { display: block; }",
   },
   {
@@ -156,7 +161,7 @@ export const layoutComponents: SharedComponentDef[] = [
     packageType: "layout",
     category: "designer",
     props: [],
-    template: '<div></div>',
-    css: ':host { display: inline-flex; }'
+    template: "<div></div>",
+    css: ":host { display: inline-flex; }",
   },
 ];

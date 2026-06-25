@@ -23,7 +23,9 @@ export class BottomPanel extends LitElement {
       box-shadow: var(--shadow-lg);
       display: flex;
       flex-direction: column;
-      transition: height var(--transition-normal, 200ms) ease, opacity var(--transition-normal, 200ms) ease;
+      transition:
+        height var(--transition-normal, 200ms) ease,
+        opacity var(--transition-normal, 200ms) ease;
       overflow: hidden;
     }
 
@@ -89,24 +91,33 @@ export class BottomPanel extends LitElement {
     }
   `;
 
-  @property({ type: Array }) tabs: string[] = ["pages", "layouts", "components", "services", "i18n", "json"];
+  @property({ type: Array }) tabs: string[] = [
+    "pages",
+    "layouts",
+    "components",
+    "services",
+    "i18n",
+    "json",
+  ];
   @property({ type: String }) activeTab: string = "pages";
   @property({ type: Boolean, reflect: true }) collapsed = false;
   @property({ type: Number }) collapsedHeight = 48;
 
   private _toggleCollapse(): void {
     this.collapsed = !this.collapsed;
-    this.dispatchEvent(new CustomEvent('collapsed-change', {
-      detail: this.collapsed,
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent("collapsed-change", {
+        detail: this.collapsed,
+        bubbles: true,
+        composed: true,
+      }),
+    );
   }
 
   override render() {
     return html`
       <div class="bottom-panel-wrapper">
-        <aside class="bottom-panel ${this.collapsed ? 'collapsed' : ''}">
+        <aside class="bottom-panel ${this.collapsed ? "collapsed" : ""}">
           <div class="panel-tabs">
             ${this.tabs.map(
               (tab) => html`
@@ -115,13 +126,17 @@ export class BottomPanel extends LitElement {
                   @click=${() => {
                     this.activeTab = tab;
                     this.dispatchEvent(
-                      new CustomEvent("tab-change", { detail: { tab }, bubbles: true, composed: true })
+                      new CustomEvent("tab-change", {
+                        detail: { tab },
+                        bubbles: true,
+                        composed: true,
+                      }),
                     );
                   }}
                 >
                   ${tab}
                 </button>
-              `
+              `,
             )}
           </div>
           <div class="panel-content">
@@ -129,7 +144,9 @@ export class BottomPanel extends LitElement {
           </div>
         </aside>
         <button class="collapse-toggle" @click=${this._toggleCollapse}>
-          <material-icon>${this.collapsed ? 'expand_more' : 'expand_less'}</material-icon>
+          <material-icon
+            >${this.collapsed ? "expand_more" : "expand_less"}</material-icon
+          >
         </button>
       </div>
     `;

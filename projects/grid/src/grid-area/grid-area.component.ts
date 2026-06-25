@@ -1,15 +1,21 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-grid-area',
+  selector: "app-grid-area",
   standalone: true,
   imports: [CommonModule],
   template: `<ng-content></ng-content>`,
-  styles: [`:host { display: block; }`]
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
 })
 export class GridAreaComponent {
-  @Input() name: string = '';
+  @Input() name: string = "";
   @Input() colStart?: number;
   @Input() colEnd?: number;
   @Input() rowStart?: number;

@@ -133,16 +133,52 @@ export class ThemeService {
     }
 
     const shades: AccentShades = {
-      50: this.rgbToHex(Math.round(rgb.r * 0.95 + 255 * 0.05), Math.round(rgb.g * 0.95 + 255 * 0.05), Math.round(rgb.b * 0.95 + 255 * 0.05)),
-      100: this.rgbToHex(Math.round(rgb.r * 0.9 + 255 * 0.1), Math.round(rgb.g * 0.9 + 255 * 0.1), Math.round(rgb.b * 0.9 + 255 * 0.1)),
-      200: this.rgbToHex(Math.round(rgb.r * 0.8 + 255 * 0.2), Math.round(rgb.g * 0.8 + 255 * 0.2), Math.round(rgb.b * 0.8 + 255 * 0.2)),
-      300: this.rgbToHex(Math.round(rgb.r * 0.7 + 255 * 0.3), Math.round(rgb.g * 0.7 + 255 * 0.3), Math.round(rgb.b * 0.7 + 255 * 0.3)),
-      400: this.rgbToHex(Math.round(rgb.r * 0.6 + 255 * 0.4), Math.round(rgb.g * 0.6 + 255 * 0.4), Math.round(rgb.b * 0.6 + 255 * 0.4)),
+      50: this.rgbToHex(
+        Math.round(rgb.r * 0.95 + 255 * 0.05),
+        Math.round(rgb.g * 0.95 + 255 * 0.05),
+        Math.round(rgb.b * 0.95 + 255 * 0.05),
+      ),
+      100: this.rgbToHex(
+        Math.round(rgb.r * 0.9 + 255 * 0.1),
+        Math.round(rgb.g * 0.9 + 255 * 0.1),
+        Math.round(rgb.b * 0.9 + 255 * 0.1),
+      ),
+      200: this.rgbToHex(
+        Math.round(rgb.r * 0.8 + 255 * 0.2),
+        Math.round(rgb.g * 0.8 + 255 * 0.2),
+        Math.round(rgb.b * 0.8 + 255 * 0.2),
+      ),
+      300: this.rgbToHex(
+        Math.round(rgb.r * 0.7 + 255 * 0.3),
+        Math.round(rgb.g * 0.7 + 255 * 0.3),
+        Math.round(rgb.b * 0.7 + 255 * 0.3),
+      ),
+      400: this.rgbToHex(
+        Math.round(rgb.r * 0.6 + 255 * 0.4),
+        Math.round(rgb.g * 0.6 + 255 * 0.4),
+        Math.round(rgb.b * 0.6 + 255 * 0.4),
+      ),
       500: hex,
-      600: this.rgbToHex(Math.round(rgb.r * 0.8), Math.round(rgb.g * 0.8), Math.round(rgb.b * 0.8)),
-      700: this.rgbToHex(Math.round(rgb.r * 0.6), Math.round(rgb.g * 0.6), Math.round(rgb.b * 0.6)),
-      800: this.rgbToHex(Math.round(rgb.r * 0.4), Math.round(rgb.g * 0.4), Math.round(rgb.b * 0.4)),
-      900: this.rgbToHex(Math.round(rgb.r * 0.2), Math.round(rgb.g * 0.2), Math.round(rgb.b * 0.2)),
+      600: this.rgbToHex(
+        Math.round(rgb.r * 0.8),
+        Math.round(rgb.g * 0.8),
+        Math.round(rgb.b * 0.8),
+      ),
+      700: this.rgbToHex(
+        Math.round(rgb.r * 0.6),
+        Math.round(rgb.g * 0.6),
+        Math.round(rgb.b * 0.6),
+      ),
+      800: this.rgbToHex(
+        Math.round(rgb.r * 0.4),
+        Math.round(rgb.g * 0.4),
+        Math.round(rgb.b * 0.4),
+      ),
+      900: this.rgbToHex(
+        Math.round(rgb.r * 0.2),
+        Math.round(rgb.g * 0.2),
+        Math.round(rgb.b * 0.2),
+      ),
     };
 
     return shades;

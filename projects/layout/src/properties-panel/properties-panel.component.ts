@@ -52,7 +52,7 @@ export class PropertiesPanel extends LitElement {
       background: var(--bg-tertiary);
       border-radius: 6px;
       font-size: 1.25rem;
-color: var(--accent);
+      color: var(--accent);
     }
 
     .panel-title {
@@ -179,15 +179,22 @@ color: var(--accent);
     }
 
     const props = this.componentDef?.props || [];
-    const elementProps = ((this.element as any)['props'] || {}) as Record<string, unknown>;
+    const elementProps = ((this.element as any)["props"] || {}) as Record<
+      string,
+      unknown
+    >;
 
     return html`
       <div class="properties-panel">
         <div class="panel-header">
           <div class="panel-icon">${(this.element as any).icon || "⊡"}</div>
           <div class="panel-title">
-            <div class="panel-title-name">${(this.element as any).name || "Element"}</div>
-            <div class="panel-title-selector">${(this.element as any).componentId}</div>
+            <div class="panel-title-name">
+              ${(this.element as any).name || "Element"}
+            </div>
+            <div class="panel-title-selector">
+              ${(this.element as any).componentId}
+            </div>
           </div>
         </div>
 
@@ -200,7 +207,7 @@ color: var(--accent);
                   <label class="property-label">${prop.name}</label>
                   ${this._renderInput(prop, elementProps[prop.name])}
                 </div>
-              `
+              `,
             )}
             ${props.length === 0
               ? html`
@@ -218,7 +225,9 @@ color: var(--accent);
               <input
                 type="number"
                 class="property-input"
-                .value=${String((this.element as any).gridPosition?.column || 1)}
+                .value=${String(
+                  (this.element as any).gridPosition?.column || 1,
+                )}
                 @input=${(e: Event) => this._updateGridPosition("column", e)}
               />
             </div>
@@ -236,7 +245,9 @@ color: var(--accent);
               <input
                 type="number"
                 class="property-input"
-                .value=${String((this.element as any).gridPosition?.colSpan || 1)}
+                .value=${String(
+                  (this.element as any).gridPosition?.colSpan || 1,
+                )}
                 @input=${(e: Event) => this._updateGridPosition("colSpan", e)}
               />
             </div>
@@ -245,7 +256,9 @@ color: var(--accent);
               <input
                 type="number"
                 class="property-input"
-                .value=${String((this.element as any).gridPosition?.rowSpan || 1)}
+                .value=${String(
+                  (this.element as any).gridPosition?.rowSpan || 1,
+                )}
                 @input=${(e: Event) => this._updateGridPosition("rowSpan", e)}
               />
             </div>
@@ -264,7 +277,11 @@ color: var(--accent);
               type="checkbox"
               class="property-input"
               ?checked=${Boolean(value)}
-              @change=${(e: Event) => this._onPropChange(prop.name, (e.target as HTMLInputElement).checked)}
+              @change=${(e: Event) =>
+                this._onPropChange(
+                  prop.name,
+                  (e.target as HTMLInputElement).checked,
+                )}
             />
             <span>${value ? "true" : "false"}</span>
           </label>
@@ -274,10 +291,17 @@ color: var(--accent);
           <select
             class="property-select"
             .value=${String(value || prop.default || "")}
-            @change=${(e: Event) => this._onPropChange(prop.name, (e.target as HTMLSelectElement).value)}
+            @change=${(e: Event) =>
+              this._onPropChange(
+                prop.name,
+                (e.target as HTMLSelectElement).value,
+              )}
           >
             ${(prop.options || []).map(
-              (opt) => html`<option value=${opt} ?selected=${opt === value}>${opt}</option>`
+              (opt) =>
+                html`<option value=${opt} ?selected=${opt === value}>
+                  ${opt}
+                </option>`,
             )}
           </select>
         `;
@@ -287,7 +311,11 @@ color: var(--accent);
             type="number"
             class="property-input"
             .value=${String(value ?? prop.default ?? 0)}
-            @input=${(e: Event) => this._onPropChange(prop.name, Number((e.target as HTMLInputElement).value))}
+            @input=${(e: Event) =>
+              this._onPropChange(
+                prop.name,
+                Number((e.target as HTMLInputElement).value),
+              )}
           />
         `;
       default:
@@ -296,7 +324,11 @@ color: var(--accent);
             type="text"
             class="property-input"
             .value=${String(value ?? prop.default ?? "")}
-            @input=${(e: Event) => this._onPropChange(prop.name, (e.target as HTMLInputElement).value)}
+            @input=${(e: Event) =>
+              this._onPropChange(
+                prop.name,
+                (e.target as HTMLInputElement).value,
+              )}
           />
         `;
     }
@@ -322,7 +354,7 @@ color: var(--accent);
         detail: { id: (this.element as any).id, updates },
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 }

@@ -2,6 +2,10 @@
   "name": "@tauri-front/grid",
   "version": "0.1.0",
   "description": "Grid layout components for Tauri apps using TailwindCSS v4",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
   "type": "module",
   "main": "lib/index.js",
   "module": "lib/index.js",

@@ -100,7 +100,9 @@ export class LayoutHeader extends LitElement {
       border-radius: 6px;
       cursor: pointer;
       color: var(--text-secondary);
-      transition: background-color 0.15s ease, color 0.15s ease;
+      transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
     }
 
     .app-header-btn:hover {
@@ -132,7 +134,9 @@ export class LayoutHeader extends LitElement {
   }
 
   private _emit(name: string): void {
-    this.dispatchEvent(new CustomEvent(name, { bubbles: true, composed: true }));
+    this.dispatchEvent(
+      new CustomEvent(name, { bubbles: true, composed: true }),
+    );
   }
 
   override render() {

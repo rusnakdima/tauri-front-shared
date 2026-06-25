@@ -89,7 +89,9 @@ export class LayoutSidebar extends LitElement {
       height: 100%;
       background: var(--bg-secondary);
       border-right: 1px solid var(--border-color);
-      transition: width 0.3s ease, background-color 0.2s ease;
+      transition:
+        width 0.3s ease,
+        background-color 0.2s ease;
       width: 240px;
       backdrop-filter: blur(10px);
     }

@@ -1,7 +1,7 @@
-import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { LitElement, html, css } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
-@customElement('app-canvas-toolbar')
+@customElement("app-canvas-toolbar")
 export class CanvasToolbar extends LitElement {
   static override styles = css`
     :host {
@@ -29,7 +29,9 @@ export class CanvasToolbar extends LitElement {
       border-radius: 6px;
       cursor: pointer;
       color: var(--text-secondary);
-      transition: background-color 0.15s ease, color 0.15s ease;
+      transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
     }
     .toolbar-btn:hover {
       background: var(--bg-hover);
@@ -65,35 +67,59 @@ export class CanvasToolbar extends LitElement {
   @property({ type: Boolean }) canRedo = true;
 
   private _emit(name: string): void {
-    this.dispatchEvent(new CustomEvent(name, { bubbles: true, composed: true }));
+    this.dispatchEvent(
+      new CustomEvent(name, { bubbles: true, composed: true }),
+    );
   }
 
   override render() {
     return html`
       <div class="toolbar-group">
-        <button class="toolbar-btn" @click="${() => this._emit('undo')}" ?disabled="${!this.canUndo}" title="Undo">
+        <button
+          class="toolbar-btn"
+          @click="${() => this._emit("undo")}"
+          ?disabled="${!this.canUndo}"
+          title="Undo"
+        >
           <mat-icon>undo</mat-icon>
         </button>
-        <button class="toolbar-btn" @click="${() => this._emit('redo')}" ?disabled="${!this.canRedo}" title="Redo">
+        <button
+          class="toolbar-btn"
+          @click="${() => this._emit("redo")}"
+          ?disabled="${!this.canRedo}"
+          title="Redo"
+        >
           <mat-icon>redo</mat-icon>
         </button>
       </div>
       <div class="toolbar-group">
-        <button class="toolbar-btn" @click="${() => this._emit('zoom-out')}" title="Zoom Out">
+        <button
+          class="toolbar-btn"
+          @click="${() => this._emit("zoom-out")}"
+          title="Zoom Out"
+        >
           <mat-icon>remove</mat-icon>
         </button>
         <span class="zoom-label">${this.zoomLevel}%</span>
-        <button class="toolbar-btn" @click="${() => this._emit('zoom-in')}" title="Zoom In">
+        <button
+          class="toolbar-btn"
+          @click="${() => this._emit("zoom-in")}"
+          title="Zoom In"
+        >
           <mat-icon>add</mat-icon>
         </button>
-        <button class="toolbar-btn" @click="${() => this._emit('zoom-reset')}" title="Reset Zoom">
+        <button
+          class="toolbar-btn"
+          @click="${() => this._emit("zoom-reset")}"
+          title="Reset Zoom"
+        >
           <mat-icon>fit_screen</mat-icon>
         </button>
       </div>
       <div class="toolbar-group">
-        <button 
-          class="toolbar-btn ${this.showGrid ? 'active' : ''}" 
-          @click="${() => this._emit('toggle-grid')}"
+        <button
+          class="toolbar-btn ${this.showGrid ? "active" : ""}"
+          @click="${() => this._emit("toggle-grid")}"
           title="Toggle Grid"
         >
           <mat-icon>grid_on</mat-icon>

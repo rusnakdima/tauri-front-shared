@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-grid-container',
+  selector: "app-grid-container",
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -10,12 +10,18 @@ import { CommonModule } from '@angular/common';
       <ng-content></ng-content>
     </div>
   `,
-  styles: [`:host { display: block; }`]
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
 })
 export class GridContainerComponent {
-  @Input() cols: string = '1fr';
-  @Input() rows: string = 'auto';
-  @Input() gap: string = '16px';
+  @Input() cols: string = "1fr";
+  @Input() rows: string = "auto";
+  @Input() gap: string = "16px";
   @Input() smCols?: number;
   @Input() mdCols?: number;
   @Input() lgCols?: number;
@@ -26,10 +32,10 @@ export class GridContainerComponent {
   @Input() xlGap?: string;
 
   get containerClasses(): string {
-    const classes = ['grid'];
+    const classes = ["grid"];
 
-    if (this.cols.includes('fr') || this.cols === 'auto') {
-      classes.push(`grid-cols-${this.cols.replace('fr', '')}`);
+    if (this.cols.includes("fr") || this.cols === "auto") {
+      classes.push(`grid-cols-${this.cols.replace("fr", "")}`);
     } else if (!isNaN(Number(this.cols))) {
       classes.push(`grid-cols-${this.cols}`);
     }
@@ -39,39 +45,39 @@ export class GridContainerComponent {
     if (this.lgCols) classes.push(`lg:grid-cols-${this.lgCols}`);
     if (this.xlCols) classes.push(`xl:grid-cols-${this.xlCols}`);
 
-    return classes.join(' ');
+    return classes.join(" ");
   }
 
   get containerStyles(): Record<string, string> {
     const styles: Record<string, string> = {};
 
-    if (this.cols.includes('fr')) {
-      styles['grid-template-columns'] = this.cols;
+    if (this.cols.includes("fr")) {
+      styles["grid-template-columns"] = this.cols;
     }
-    if (this.rows.includes('fr') || this.rows === 'auto') {
-      styles['grid-template-rows'] = this.rows;
+    if (this.rows.includes("fr") || this.rows === "auto") {
+      styles["grid-template-rows"] = this.rows;
     }
 
     const gapClass = this.gapToTailwindClass(this.gap);
     if (gapClass) {
-      styles['gap'] = gapClass;
+      styles["gap"] = gapClass;
     }
 
     return styles;
   }
 
   private gapToTailwindClass(gap: string): string {
-    const numericGap = parseInt(gap.replace(/[^\d]/g, ''), 10);
-    const unit = gap.replace(/[\d]/g, '').trim();
+    const numericGap = parseInt(gap.replace(/[^\d]/g, ""), 10);
+    const unit = gap.replace(/[\d]/g, "").trim();
 
-    if (unit === 'px' || unit === '') {
-      if (numericGap <= 4) return 'gap-1';
-      if (numericGap <= 8) return 'gap-2';
-      if (numericGap <= 12) return 'gap-3';
-      if (numericGap <= 16) return 'gap-4';
-      if (numericGap <= 20) return 'gap-5';
-      if (numericGap <= 24) return 'gap-6';
-      if (numericGap <= 32) return 'gap-8';
+    if (unit === "px" || unit === "") {
+      if (numericGap <= 4) return "gap-1";
+      if (numericGap <= 8) return "gap-2";
+      if (numericGap <= 12) return "gap-3";
+      if (numericGap <= 16) return "gap-4";
+      if (numericGap <= 20) return "gap-5";
+      if (numericGap <= 24) return "gap-6";
+      if (numericGap <= 32) return "gap-8";
     }
 
     return gap;

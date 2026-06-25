@@ -24,10 +24,7 @@ export class DataPatchService {
     this.getStorage().set(collection, data);
   }
 
-  create<T extends { id: string }>(
-    collection: string,
-    item: T,
-  ): void {
+  create<T extends { id: string }>(collection: string, item: T): void {
     const data = this.getCollection<T>(collection);
     const timestamp = Date.now();
     const entity = {
@@ -41,17 +38,16 @@ export class DataPatchService {
 
   find<T>(collection: string, id: string): T | null {
     const data = this.getCollection<T>(collection);
-    return data.find((item: unknown) => (item as { id: string }).id === id) || null;
+    return (
+      data.find((item: unknown) => (item as { id: string }).id === id) || null
+    );
   }
 
   findAll<T>(collection: string): T[] {
     return this.getCollection<T>(collection);
   }
 
-  findWhere<T>(
-    collection: string,
-    predicate: (item: T) => boolean,
-  ): T[] {
+  findWhere<T>(collection: string, predicate: (item: T) => boolean): T[] {
     return this.getCollection<T>(collection).filter(predicate);
   }
 
@@ -61,7 +57,9 @@ export class DataPatchService {
     changes: Partial<T>,
   ): void {
     const data = this.getCollection<T>(collection);
-    const index = data.findIndex((item: unknown) => (item as { id: string }).id === id);
+    const index = data.findIndex(
+      (item: unknown) => (item as { id: string }).id === id,
+    );
     if (index === -1) return;
 
     const updated = {
@@ -75,7 +73,9 @@ export class DataPatchService {
 
   delete(collection: string, id: string): void {
     const data = this.getCollection<{ id: string }>(collection);
-    const filtered = data.filter((item: unknown) => (item as { id: string }).id !== id);
+    const filtered = data.filter(
+      (item: unknown) => (item as { id: string }).id !== id,
+    );
     this.saveCollection(collection, filtered);
   }
 
@@ -86,7 +86,9 @@ export class DataPatchService {
     const data = this.getCollection<T>(collection);
     const now = Date.now();
     for (const { id, changes } of updates) {
-      const index = data.findIndex((item: unknown) => (item as { id: string }).id === id);
+      const index = data.findIndex(
+        (item: unknown) => (item as { id: string }).id === id,
+      );
       if (index !== -1) {
         data[index] = {
           ...data[index],
@@ -103,7 +105,9 @@ export class DataPatchService {
     ids: string[],
   ): void {
     const data = this.getCollection<T>(collection);
-    const filtered = data.filter((item: unknown) => !ids.includes((item as { id: string }).id));
+    const filtered = data.filter(
+      (item: unknown) => !ids.includes((item as { id: string }).id),
+    );
     this.saveCollection(collection, filtered);
   }
 
@@ -112,7 +116,9 @@ export class DataPatchService {
   }
 
   exists(collection: string, id: string): boolean {
-    return this.getCollection<{ id: string }>(collection).some((item: unknown) => (item as { id: string }).id === id);
+    return this.getCollection<{ id: string }>(collection).some(
+      (item: unknown) => (item as { id: string }).id === id,
+    );
   }
 
   clearCollection(collection: string): void {

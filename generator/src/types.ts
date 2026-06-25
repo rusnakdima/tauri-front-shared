@@ -11,18 +11,18 @@ export interface GeneratorOptions {
 }
 
 export const AVAILABLE_FEATURES = [
-  'core-api',
-  'ui',
-  'layout',
-  'theme',
-  'events',
-  'data',
-  'feedback',
-  'storage',
-  'grid',
+  "core-api",
+  "ui",
+  "layout",
+  "theme",
+  "events",
+  "data",
+  "feedback",
+  "storage",
+  "grid",
 ] as const;
 
-export type FeatureName = typeof AVAILABLE_FEATURES[number];
+export type FeatureName = (typeof AVAILABLE_FEATURES)[number];
 
 export interface UiSchema {
   id: string;

@@ -1,3 +1,2 @@
-export class StorageService {
-}
+export class StorageService {}
 //# sourceMappingURL=storage.service.js.map

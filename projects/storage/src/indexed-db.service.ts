@@ -1,31 +1,34 @@
-import { Injectable } from '@angular/core';
-import { StorageService } from './storage.service';
+import { Injectable } from "@angular/core";
+import { StorageService } from "./storage.service";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class IndexedDbService implements StorageService {
   private dbName: string;
   private storeName: string;
   private db: IDBDatabase | null = null;
 
-  constructor(dbName: string = 'tauri-app-db', storeName: string = 'key-value-store') {
+  constructor(
+    dbName: string = "tauri-app-db",
+    storeName: string = "key-value-store",
+  ) {
     this.dbName = dbName;
     this.storeName = storeName;
     this.initDb();
   }
 
   private initDb(): void {
-    if (typeof indexedDB === 'undefined') return;
+    if (typeof indexedDB === "undefined") return;
 
     const request = indexedDB.open(this.dbName, 1);
 
     request.onerror = () => {
-      console.error('IndexedDB error:', request.error);
+      console.error("IndexedDB error:", request.error);
     };
 
     request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains(this.storeName)) {
-        db.createObjectStore(this.storeName, { keyPath: 'key' });
+        db.createObjectStore(this.storeName, { keyPath: "key" });
       }
     };
 
@@ -34,12 +37,12 @@ export class IndexedDbService implements StorageService {
 
   private getStore(): IDBObjectStore | null {
     if (!this.db) return null;
-    const transaction = this.db.transaction(this.storeName, 'readwrite');
+    const transaction = this.db.transaction(this.storeName, "readwrite");
     return transaction.objectStore(this.storeName);
   }
 
   get<T>(key: string): T | null {
-    if (typeof indexedDB === 'undefined') return null;
+    if (typeof indexedDB === "undefined") return null;
 
     const store = this.getStore();
     if (!store) return null;
@@ -56,7 +59,7 @@ export class IndexedDbService implements StorageService {
   }
 
   set<T>(key: string, value: T): void {
-    if (typeof indexedDB === 'undefined') return;
+    if (typeof indexedDB === "undefined") return;
 
     const store = this.getStore();
     if (!store) return;
@@ -65,7 +68,7 @@ export class IndexedDbService implements StorageService {
   }
 
   remove(key: string): void {
-    if (typeof indexedDB === 'undefined') return;
+    if (typeof indexedDB === "undefined") return;
 
     const store = this.getStore();
     if (!store) return;
@@ -74,7 +77,7 @@ export class IndexedDbService implements StorageService {
   }
 
   clear(): void {
-    if (typeof indexedDB === 'undefined') return;
+    if (typeof indexedDB === "undefined") return;
 
     const store = this.getStore();
     if (!store) return;
@@ -87,7 +90,7 @@ export class IndexedDbService implements StorageService {
   }
 
   async keysAsync(): Promise<string[]> {
-    if (typeof indexedDB === 'undefined') return [];
+    if (typeof indexedDB === "undefined") return [];
 
     const store = this.getStore();
     if (!store) return [];

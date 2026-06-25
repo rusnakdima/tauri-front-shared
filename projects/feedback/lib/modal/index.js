@@ -1,2 +1,2 @@
-export * from './modal.component.js';
+export * from "./modal.component.js";
 //# sourceMappingURL=index.js.map

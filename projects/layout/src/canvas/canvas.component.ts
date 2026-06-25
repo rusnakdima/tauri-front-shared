@@ -60,11 +60,8 @@ export class SchemaCanvas extends LitElement {
     }
 
     .canvas-grid.show-grid {
-      background-image: linear-gradient(
-          to right,
-var(--border-color) 1px,
-          transparent 1px
-        ),
+      background-image:
+        linear-gradient(to right, var(--border-color) 1px, transparent 1px),
         linear-gradient(to bottom, var(--border-color) 1px, transparent 1px);
       background-size: calc(100% / var(--grid-cols)) 60px;
     }
@@ -147,7 +144,7 @@ var(--border-color) 1px,
 
     .element-icon {
       font-size: 1.5rem;
-color: var(--accent);
+      color: var(--accent);
     }
 
     .element-name {
@@ -221,7 +218,9 @@ color: var(--accent);
             ? html`
                 <div class="canvas-drop-zone">
                   <div
-                    class="canvas-placeholder ${this._dragOverCounter > 0 ? "drag-over" : ""}"
+                    class="canvas-placeholder ${this._dragOverCounter > 0
+                      ? "drag-over"
+                      : ""}"
                   >
                     <div class="placeholder-icon">⊞</div>
                     <div class="placeholder-text">
@@ -275,7 +274,7 @@ color: var(--accent);
         detail: { element: el },
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 
@@ -316,7 +315,7 @@ color: var(--accent);
             detail: { element: newElement },
             bubbles: true,
             composed: true,
-          })
+          }),
         );
       } catch {
         // Invalid JSON
@@ -343,7 +342,7 @@ color: var(--accent);
 
   public updateElement(id: string, updates: Partial<CanvasElement>): void {
     this.elements = this.elements.map((el) =>
-      el.id === id ? { ...el, ...updates } : el
+      el.id === id ? { ...el, ...updates } : el,
     );
   }
 

@@ -188,7 +188,7 @@ export class ComponentPalette extends LitElement {
       filtered = filtered.filter(
         (c) =>
           c.name.toLowerCase().includes(query) ||
-          c.selector.toLowerCase().includes(query)
+          c.selector.toLowerCase().includes(query),
       );
     }
 
@@ -218,12 +218,14 @@ export class ComponentPalette extends LitElement {
           ${categories.map(
             (cat) => html`
               <button
-                class="category-btn ${this.selectedCategory === cat ? "active" : ""}"
+                class="category-btn ${this.selectedCategory === cat
+                  ? "active"
+                  : ""}"
                 @click=${() => this._selectCategory(cat)}
               >
                 ${cat}
               </button>
-            `
+            `,
           )}
         </div>
 
@@ -244,13 +246,11 @@ export class ComponentPalette extends LitElement {
                       @dragstart=${(e: DragEvent) => this._onDragStart(e, comp)}
                       @click=${() => this._onComponentClick(comp)}
                     >
-                      <div class="palette-item-icon">
-                        ${comp.icon || "⊡"}
-                      </div>
+                      <div class="palette-item-icon">${comp.icon || "⊡"}</div>
                       <div class="palette-item-name">${comp.name}</div>
                       <div class="palette-item-selector">${comp.selector}</div>
                     </div>
-                  `
+                  `,
                 )}
               </div>
             `}
@@ -269,7 +269,7 @@ export class ComponentPalette extends LitElement {
         detail: { category },
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 
@@ -280,7 +280,7 @@ export class ComponentPalette extends LitElement {
         detail: { component: comp },
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 
@@ -290,7 +290,7 @@ export class ComponentPalette extends LitElement {
         detail: { component: comp },
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 }

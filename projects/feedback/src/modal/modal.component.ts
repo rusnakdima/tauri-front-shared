@@ -1,7 +1,7 @@
-import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { LitElement, html, css } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
-@customElement('app-modal')
+@customElement("app-modal")
 export class Modal extends LitElement {
   static override styles = css`
     :host {
@@ -27,7 +27,7 @@ export class Modal extends LitElement {
     .modal-content {
       background: var(--bg-elevated, #21262d);
       border-radius: 12px;
-      box-shadow: var(--shadow-lg, 0 10px 15px rgba(0,0,0,0.5));
+      box-shadow: var(--shadow-lg, 0 10px 15px rgba(0, 0, 0, 0.5));
       width: 90%;
       max-width: var(--modal-width, 600px);
       max-height: 80vh;
@@ -64,19 +64,27 @@ export class Modal extends LitElement {
       overflow: auto;
     }
     /* Size variants */
-    :host([size="sm"]) .modal-content { max-width: 400px; }
-    :host([size="lg"]) .modal-content { max-width: 800px; }
-    :host([size="xl"]) .modal-content { max-width: 1000px; }
+    :host([size="sm"]) .modal-content {
+      max-width: 400px;
+    }
+    :host([size="lg"]) .modal-content {
+      max-width: 800px;
+    }
+    :host([size="xl"]) .modal-content {
+      max-width: 1000px;
+    }
   `;
 
   @property({ type: Boolean, reflect: true }) open = false;
-  @property({ type: String }) modalTitle = '';
+  @property({ type: String }) modalTitle = "";
   @property({ type: Boolean }) closable = true;
-  @property({ type: String }) size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
+  @property({ type: String }) size: "sm" | "md" | "lg" | "xl" = "md";
 
   private _close(): void {
     this.open = false;
-    this.dispatchEvent(new CustomEvent('close', { bubbles: true, composed: true }));
+    this.dispatchEvent(
+      new CustomEvent("close", { bubbles: true, composed: true }),
+    );
   }
 
   private _handleOverlayClick(e: MouseEvent): void {
@@ -89,16 +97,20 @@ export class Modal extends LitElement {
     return html`
       <div class="modal-overlay" @click="${this._handleOverlayClick}">
         <div class="modal-content">
-          ${this.modalTitle ? html`
-            <div class="modal-header">
-              <h3 class="modal-title">${this.modalTitle}</h3>
-              ${this.closable ? html`
-                <button class="modal-close" @click="${this._close}">
-                  <mat-icon>close</mat-icon>
-                </button>
-              ` : ''}
-            </div>
-          ` : ''}
+          ${this.modalTitle
+            ? html`
+                <div class="modal-header">
+                  <h3 class="modal-title">${this.modalTitle}</h3>
+                  ${this.closable
+                    ? html`
+                        <button class="modal-close" @click="${this._close}">
+                          <mat-icon>close</mat-icon>
+                        </button>
+                      `
+                    : ""}
+                </div>
+              `
+            : ""}
           <div class="modal-body">
             <slot></slot>
           </div>

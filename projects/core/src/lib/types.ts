@@ -36,6 +36,7 @@ export interface ComponentDef {
   props: Record<string, unknown>;
   template?: string;
   css?: string;
+  defaultClasses?: string;
 }
 
 export interface Layout {

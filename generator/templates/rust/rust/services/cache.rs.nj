@@ -1,0 +1,79 @@
+use moka::sync::Cache;
+use serde::{Deserialize, Serialize};
+use std::time::Duration;
+use std::sync::Arc;
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CacheEntry<T> {
+    pub value: T,
+    pub expires_at: u64,
+}
+
+pub struct CacheService<K, V> {
+    cache: Cache<K, CacheEntry<V>>,
+}
+
+impl<K, V> CacheService<K, V>
+where
+    K: std::hash::Hash + Eq + Clone + std::fmt::Debug,
+    V: Clone + Serialize + for<'de> Deserialize<'de>,
+{
+    pub fn new(max_capacity: u64, ttl_seconds: u64) -> Self {
+        let cache = Cache::builder()
+            .max_capacity(max_capacity)
+            .time_to_live(Duration::from_secs(ttl_seconds))
+            .build();
+        Self { cache }
+    }
+
+    pub fn get(&self, key: &K) -> Option<V> {
+        self.cache.get(key).and_then(|entry| {
+            let now = std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_secs();
+            if entry.expires_at > now {
+                Some(entry.value)
+            } else {
+                None
+            }
+        })
+    }
+
+    pub fn set(&self, key: K, value: V, ttl_seconds: u64) {
+        let expires_at = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_secs()
+            + ttl_seconds;
+        let entry = CacheEntry { value, expires_at };
+        self.cache.insert(key, entry);
+    }
+
+    pub fn remove(&self, key: &K) {
+        self.cache.invalidate(key);
+    }
+
+    pub fn clear(&self) {
+        self.cache.invalidate_all();
+    }
+
+    pub fn len(&self) -> usize {
+        self.cache.entry_count() as usize
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.cache.entry_count() == 0
+    }
+}
+
+impl<K, V> Default for CacheService<K, V>
+where
+    K: std::hash::Hash + Eq + Clone + std::fmt::Debug,
+    V: Clone + Serialize + for<'de> Deserialize<'de>,
+{
+    fn default() -> Self {
+        Self::new(1000, 3600)
+    }
+}

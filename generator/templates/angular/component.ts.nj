@@ -1,0 +1,12 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-{{ kebabName }}',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './{{ kebabName }}.component.html',
+})
+export class {{ pascalName }}Component {
+  // Generated component
+}

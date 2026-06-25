@@ -1,0 +1,40 @@
+use tauri::{State, Arc};
+use tauri_shared::Response;
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct {{ serviceName }} {
+    pub id: String,
+    pub name: String,
+}
+
+#[tauri::command]
+pub async fn get_{{ snake_name }}(
+    state: State<'_, Arc<crate::AppState>>,
+) -> Result<Response<Vec<{{ serviceName }}>>, String> {
+    Ok(Response::success("{{ serviceName }} list", Vec::new()))
+}
+
+#[tauri::command]
+pub async fn create_{{ snake_name }}(
+    state: State<'_, Arc<crate::AppState>>,
+    item: {{ serviceName }},
+) -> Result<Response<{{ serviceName }}>, String> {
+    Ok(Response::success("{{ serviceName }} created", item))
+}
+
+#[tauri::command]
+pub async fn update_{{ snake_name }}(
+    state: State<'_, Arc<crate::AppState>>,
+    item: {{ serviceName }},
+) -> Result<Response<{{ serviceName }}>, String> {
+    Ok(Response::success("{{ serviceName }} updated", item))
+}
+
+#[tauri::command]
+pub async fn delete_{{ snake_name }}(
+    state: State<'_, Arc<crate::AppState>>,
+    id: String,
+) -> Result<Response<()>, String> {
+    Ok(Response::success("{{ serviceName }} deleted", ()))
+}

@@ -1,0 +1,45 @@
+{
+  "name": "{{ project_name_snake }}",
+  "version": "{{ version }}",
+  "description": "{{ description }}",
+  "type": "module",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "dependencies": {
+    "@angular/animations": "^{{ angular_version | default('20.0.0') }}",
+    "@angular/common": "^{{ angular_version | default('20.0.0') }}",
+    "@angular/compiler": "^{{ angular_version | default('20.0.0') }}",
+    "@angular/core": "^{{ angular_version | default('20.0.0') }}",
+    "@angular/forms": "^{{ angular_version | default('20.0.0') }}",
+    "@angular/platform-browser": "^{{ angular_version | default('20.0.0') }}",
+    "@angular/platform-browser-dynamic": "^{{ angular_version | default('20.0.0') }}",
+    "@angular/router": "^{{ angular_version | default('20.0.0') }}",
+    "@tauri-apps/api": "^{{ tauri_api_version | default('2.0.0') }}",
+    "@tauri-apps/plugin-shell": "^{{ tauri_api_version | default('2.0.0') }}",
+    "@tauri-share/angular": "^{{ tauri_share_version | default('1.0.0') }}",
+    "@tauri-share/ui": "^{{ tauri_share_version | default('1.0.0') }}",
+    "@tauri-share/data": "^{{ tauri_share_version | default('1.0.0') }}",
+    "@tauri-share/feedback": "^{{ tauri_share_version | default('1.0.0') }}",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.6.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^{{ angular_version | default('20.0.0') }}",
+    "@angular/cli": "^{{ angular_version | default('20.0.0') }}",
+    "@angular/compiler-cli": "^{{ angular_version | default('20.0.0') }}",
+    "@tauri-apps/cli": "^{{ tauri_cli_version | default('2.0.0') }}",
+    "@types/node": "^20.0.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "~5.6.0"
+  }
+}

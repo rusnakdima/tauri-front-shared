@@ -1,0 +1,23 @@
+{
+  "name": "@tauri-front/generator",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/generator.service.js",
+  "types": "src/generator.service.d.ts",
+  "bin": {
+    "generate": "./bin/generate.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "chokidar": "^3.6.0",
+    "nunjucks": "^3.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/nunjucks": "^3.2.6",
+    "typescript": "^5.3.0"
+  }
+}

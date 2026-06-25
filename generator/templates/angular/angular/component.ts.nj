@@ -1,0 +1,77 @@
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import '@tauri-share/ui';
+import '@tauri-share/data';
+import '@tauri-share/feedback';
+import '@tauri-share/layout';
+
+@Component({
+  selector: 'app-{{ kebab_name }}',
+  standalone: true,
+  imports: [CommonModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  templateUrl: './{{ kebab_name }}.component.html',
+  styleUrl: './{{ kebab_name }}.component.css'
+})
+export class {{ pascal_name }}Component implements AfterViewInit, OnDestroy {
+  @ViewChild('canvas', { static: true }) canvas!: ElementRef<HTMLElement>;
+
+  readonly canvas_elements = input<any[]>([]);
+
+  ngAfterViewInit(): void {
+    this.renderElements();
+  }
+
+  private async renderElements(): Promise<void> {
+    const elements = this.canvas_elements();
+    if (!elements?.length) return;
+
+    for (const element of elements) {
+      await this.createElement(element);
+    }
+  }
+
+  private async createElement(data: any): Promise<HTMLElement | null> {
+    const selector = data.selector || `app-${data.componentId}`;
+    try {
+      await customElements.whenDefined(selector);
+      const el = document.createElement(selector);
+
+      if (data.gridPosition) {
+        el.style.gridColumn = `${data.gridPosition.column} / span ${data.gridPosition.colSpan || 1}`;
+        el.style.gridRow = `${data.gridPosition.row} / span ${data.gridPosition.rowSpan || 1}`;
+      } else if (data.position) {
+        el.style.position = 'absolute';
+        el.style.left = `${data.position.x}px`;
+        el.style.top = `${data.position.y}px`;
+        el.style.width = `${data.position.width}px`;
+        el.style.height = `${data.position.height}px`;
+      }
+
+      if (data.zIndex) {
+        el.style.zIndex = String(data.zIndex);
+      }
+
+      if (data.props) {
+        for (const [key, value] of Object.entries(data.props)) {
+          if (key !== 'class' && key !== 'style') {
+            (el as any)[key] = value;
+          }
+        }
+      }
+
+      if (data.classes) {
+        el.className = data.classes;
+      }
+
+      el.dataset['elementId'] = data.id;
+      this.canvas.nativeElement.appendChild(el);
+      return el;
+    } catch (e) {
+      console.error(`Failed to create element ${selector}:`, e);
+      return null;
+    }
+  }
+
+  ngOnDestroy(): void {}
+}

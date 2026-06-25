@@ -1,0 +1,55 @@
+pub mod commands;
+pub mod services;
+
+{% for module in modules %}
+pub mod {{ module.snake_name }};
+{% endfor %}
+
+use std::sync::Arc;
+use tauri::Manager;
+
+pub struct AppState {
+    pub db: Arc<nosql_orm::Database>,
+}
+
+impl AppState {
+    pub async fn new(data_dir: &std::path::Path) -> Result<Self, String> {
+        let db_path = data_dir.join("data.db");
+        let db = nosql_orm::Database::new(&db_path)
+            .await
+            .map_err(|e| e.to_string())?;
+
+        Ok(Self {
+            db: Arc::new(db),
+        })
+    }
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
+        .setup(|app| {
+            let data_dir = app.path().app_data_dir()
+                .expect("Failed to get app data dir");
+            std::fs::create_dir_all(&data_dir).expect("Failed to create data dir");
+
+            let state = tauri::async_runtime::block_on(async {
+                AppState::new(&data_dir).await
+            })?;
+
+            app.manage(Arc::new(state));
+            Ok(())
+        })
+        .invoke_handler(tauri::generate_handler![
+            {% for module in modules %}
+            crate::commands::{{ module.snake_name }}::get_{{ module.snake_name }},
+            crate::commands::{{ module.snake_name }}::get_{{ module.snake_name }}s,
+            crate::commands::{{ module.snake_name }}::create_{{ module.snake_name }},
+            crate::commands::{{ module.snake_name }}::update_{{ module.snake_name }},
+            crate::commands::{{ module.snake_name }}::delete_{{ module.snake_name }},
+            {% endfor %}
+        ])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}

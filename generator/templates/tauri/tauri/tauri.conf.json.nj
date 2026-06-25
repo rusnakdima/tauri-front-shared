@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "{{ project_name }}",
+  "version": "{{ version }}",
+  "identifier": "{{ identifier }}",
+  "build": {
+    "beforeDevCommand": "{{ dev_command | default('bun run start') }}",
+    "devUrl": "{{ dev_url | default('http://localhost:1420') }}",
+    "beforeBuildCommand": "{{ build_command | default('bun run build') }}",
+    "frontendDist": "../dist/app/browser",
+    "devtools": {{ devtools | default('true') }}
+  },
+  "app": {
+    "windows": [{
+      "label": "main",
+      "title": "{{ app_title | default(project_name) }}",
+      "width": {{ width | default('1200') }},
+      "height": {{ height | default('800') }},
+      "minWidth": {{ min_width | default('800') }},
+      "minHeight": {{ min_height | default('600') }},
+      "resizable": {{ resizable | default('true') }},
+      "fullscreen": {{ fullscreen | default('false') }},
+      "center": {{ center | default('true') }}
+    }],
+    "security": {
+      "csp": {{ csp | default('null') }}
+    },
+    "withGlobalTauri": true
+  },
+  "bundle": {
+    "active": true,
+    "targets": {{ targets | default('"all"') }},
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  },
+  "plugins": {
+    "shell": {
+      "open": true
+    }
+  }
+}

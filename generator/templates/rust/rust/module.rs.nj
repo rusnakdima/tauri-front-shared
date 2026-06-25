@@ -1,0 +1,6 @@
+{% for module in modules %}
+pub mod {{ module.name | snake_case }};
+{% endfor %}
+
+pub use entity::*;
+pub use auth::*;

@@ -1,0 +1,133 @@
+use nosql_orm::Database;
+use serde::{Deserialize, Serialize};
+use tauri_shared::Response;
+use std::sync::Arc;
+use argon2::{
+    password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
+    Argon2,
+};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct User {
+    #[serde(rename = "_id")]
+    pub id: String,
+    pub username: String,
+    pub email: String,
+    pub password_hash: String,
+    pub role: String,
+    pub created_at: String,
+    pub updated_at: String,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LoginRequest {
+    pub username: String,
+    pub password: String,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AuthResponse {
+    pub token: String,
+    pub user: UserInfo,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UserInfo {
+    pub id: String,
+    pub username: String,
+    pub email: String,
+    pub role: String,
+}
+
+pub async fn login(
+    db: &Arc<Database>,
+    request: LoginRequest,
+) -> Result<Response<AuthResponse>, String> {
+    let users = db.find_by_field::<User>("username", &request.username)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let user = users.first()
+        .ok_or("Invalid credentials")?;
+
+    let parsed_hash = PasswordHash::new(&user.password_hash)
+        .map_err(|e| e.to_string())?;
+
+    Argon2::default()
+        .verify_password(request.password.as_bytes(), &parsed_hash)
+        .map_err(|_| "Invalid credentials")?;
+
+    let token = generate_token(&user.id);
+
+    let user_info = UserInfo {
+        id: user.id.clone(),
+        username: user.username.clone(),
+        email: user.email.clone(),
+        role: user.role.clone(),
+    };
+
+    Ok(Response::success("Login successful", AuthResponse { token, user: user_info }))
+}
+
+pub async fn register(
+    db: &Arc<Database>,
+    username: String,
+    email: String,
+    password: String,
+) -> Result<Response<UserInfo>, String> {
+    let existing = db.find_by_field::<User>("username", &username)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    if !existing.is_empty() {
+        return Err("Username already exists".to_string());
+    }
+
+    let password_hash = hash_password(&password)?;
+    let now = chrono::Utc::now().to_rfc3339();
+
+    let user = User {
+        id: uuid::Uuid::new_v4().to_string(),
+        username,
+        email,
+        password_hash,
+        role: "user".to_string(),
+        created_at: now.clone(),
+        updated_at: now,
+    };
+
+    db.insert(&user).await.map_err(|e| e.to_string())?;
+
+    Ok(Response::success("Registration successful", UserInfo {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+    }))
+}
+
+fn hash_password(password: &str) -> Result<String, String> {
+    let salt = SaltString::generate(&mut OsRng);
+    let argon2 = Argon2::default();
+    let hash = argon2.hash_password(password.as_bytes(), &salt)
+        .map_err(|e| e.to_string())?
+        .to_string();
+    Ok(hash)
+}
+
+fn generate_token(user_id: &str) -> String {
+    use std::time::{SystemTime, UNIX_EPOCH};
+    let timestamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs();
+    let data = format!("{}:{}", user_id, timestamp);
+    use sha2::{Sha256, Digest};
+    let mut hasher = Sha256::new();
+    hasher.update(data.as_bytes());
+    format!("{:x}", hasher.finalize())
+}

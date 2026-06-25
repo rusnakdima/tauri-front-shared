@@ -1,0 +1,93 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
+mod commands;
+mod models;
+mod services;
+
+use tauri::Manager;
+use tauri_shared::Response;
+use std::sync::Arc;
+
+pub use commands::*;
+
+#[derive(Clone)]
+pub struct AppState {
+    pub db: Arc<nosql_orm::Database>,
+}
+
+impl AppState {
+    pub async fn new(data_dir: &std::path::Path) -> Result<Self, String> {
+        let db_path = data_dir.join("data.db");
+        let db = nosql_orm::Database::new(&db_path)
+            .await
+            .map_err(|e| e.to_string())?;
+        Ok(Self { db: Arc::new(db) })
+    }
+}
+
+fn main() {
+    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info"))
+        .format_timestamp_millis()
+        .init();
+
+    tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
+        .setup(|app| {
+            let data_dir = app.path().app_data_dir()
+                .expect("Failed to get app data dir");
+            std::fs::create_dir_all(&data_dir).expect("Failed to create data dir");
+
+            let state = tauri::async_runtime::block_on(async {
+                AppState::new(&data_dir).await
+            })?;
+
+            app.manage(Arc::new(state));
+            log::info!("{{ app_name }} started successfully");
+            Ok(())
+        })
+        .invoke_handler(tauri::generate_handler![
+            ipc_dispatch
+        ])
+        .run(tauri::generate_context!())
+        .expect("Error while running tauri application");
+}
+
+#[tauri::command]
+pub async fn ipc_dispatch(
+    state: tauri::State<'_, Arc<AppState>>,
+    command: String,
+    payload: Option<serde_json::Value>,
+) -> Result<Response<serde_json::Value>, String> {
+    log::debug!("IPC dispatch: command={}", command);
+
+    match command.as_str() {
+        {% for entity in entities %}
+        "{{ entity.command_prefix }}_get_all" => commands::entity::get_all::<{{ entity.model_type }}>(&state.db).await,
+        "{{ entity.command_prefix }}_get_by_id" => {
+            let id = payload.and_then(|p| p.get("id").cloned())
+                .and_then(|v| serde_json::from_value(v).ok())
+                .ok_or("Missing id parameter")?;
+            commands::entity::get_by_id::<{{ entity.model_type }}>(&state.db, id).await
+        }
+        "{{ entity.command_prefix }}_create" => {
+            let item = payload.and_then(|p| p.get("item").cloned())
+                .and_then(|v| serde_json::from_value(v).ok())
+                .ok_or("Missing item parameter")?;
+            commands::entity::create::<{{ entity.model_type }}>(&state.db, item).await
+        }
+        "{{ entity.command_prefix }}_update" => {
+            let item = payload.and_then(|p| p.get("item").cloned())
+                .and_then(|v| serde_json::from_value(v).ok())
+                .ok_or("Missing item parameter")?;
+            commands::entity::update::<{{ entity.model_type }}>(&state.db, item).await
+        }
+        "{{ entity.command_prefix }}_delete" => {
+            let id = payload.and_then(|p| p.get("id").cloned())
+                .and_then(|v| serde_json::from_value(v).ok())
+                .ok_or("Missing id parameter")?;
+            commands::entity::delete::<{{ entity.model_type }}>(&state.db, id).await
+        }
+        {% endfor %}
+        _ => Err(format!("Unknown command: {}", command)),
+    }
+}

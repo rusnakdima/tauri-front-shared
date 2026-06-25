@@ -1,0 +1,44 @@
+import { Injectable, inject } from '@angular/core';
+import { invoke } from '@tauri-apps/api/core';
+
+export interface IpcRequest<T = unknown> {
+  command: string;
+  payload?: T;
+}
+
+export interface IpcResponse<T = unknown> {
+  status: 'success' | 'error';
+  message: string;
+  data?: T;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class {{ service_name }}Service {
+  private readonly baseCommand = '{{ command_prefix }}';
+
+  async getAll(): Promise<IpcResponse<{{ entity_type }}[]>> {
+    return invoke<IpcResponse<{{ entity_type }}[]>>(`${this.baseCommand}_get_all`);
+  }
+
+  async getById(id: string): Promise<IpcResponse<{{ entity_type }}>> {
+    return invoke<IpcResponse<{{ entity_type }}>>(`${this.baseCommand}_get_by_id`, { id });
+  }
+
+  async create(item: Omit<{{ entity_type }}, 'id'>): Promise<IpcResponse<{{ entity_type }}>> {
+    return invoke<IpcResponse<{{ entity_type }}>>(`${this.baseCommand}_create`, { item });
+  }
+
+  async update(item: {{ entity_type }}): Promise<IpcResponse<{{ entity_type }}>> {
+    return invoke<IpcResponse<{{ entity_type }}>>(`${this.baseCommand}_update`, { item });
+  }
+
+  async delete(id: string): Promise<IpcResponse<void>> {
+    return invoke<IpcResponse<void>>(`${this.baseCommand}_delete`, { id });
+  }
+
+  async execute<TRequest, TResponse>(request: IpcRequest<TRequest>): Promise<IpcResponse<TResponse>> {
+    return invoke<IpcResponse<TResponse>>(this.baseCommand, { request });
+  }
+}

@@ -1,0 +1,18 @@
+// app.config.ts.nj - Angular providers for generated app
+import { ApplicationConfig, provideZoneChangeDetection, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { routes } from './app.routes';
+import { SignalStoreService, SignalSyncService, SignalLoggerService, DataPatchService } from '@tauri-front/core';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideHttpClient(),
+    SignalStoreService,
+    SignalSyncService,
+    SignalLoggerService,
+    DataPatchService,
+  ]
+};

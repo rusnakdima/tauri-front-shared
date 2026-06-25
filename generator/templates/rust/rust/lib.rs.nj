@@ -1,0 +1,71 @@
+pub mod commands;
+pub mod services;
+
+use std::sync::Arc;
+use tauri::Manager;
+use tauri_shared::services::logger::LoggerService;
+use tauri_shared::services::sync::SyncEngine;
+use nosql_orm::prelude::JsonProvider;
+use nosql_orm::provider::DatabaseProvider;
+
+#[derive(Clone)]
+pub struct AppState {
+    pub db: Arc<JsonProvider>,
+    pub sync: Arc<SyncEngine>,
+    pub cache: Arc<services::CacheService<String, serde_json::Value>>,
+}
+
+impl AppState {
+    pub async fn new(data_dir: &std::path::Path) -> Result<Self, String> {
+        let log_dir = data_dir.join("logs");
+        std::fs::create_dir_all(&log_dir)
+            .map_err(|e| format!("Failed to create log dir: {}", e))?;
+        let _logger = LoggerService::new("{{ app_name }}", &log_dir)
+            .map_err(|e| format!("Failed to init logger: {}", e))?;
+
+        let cache_dir = data_dir.join("cache");
+        std::fs::create_dir_all(&cache_dir)
+            .map_err(|e| format!("Failed to create cache dir: {}", e))?;
+        let db = Arc::new(
+            JsonProvider::new(cache_dir)
+                .await
+                .map_err(|e| format!("Failed to create JSON provider: {}", e))?,
+        );
+
+        let mongo_endpoint = std::env::var("MONGODB_ENDPOINT")
+            .unwrap_or_else(|_| "http://localhost:8080".to_string());
+        let sync = Arc::new(
+            SyncEngine::new(mongo_endpoint, db.clone())
+                .await
+                .map_err(|e| format!("Failed to create sync engine: {}", e))?,
+        );
+
+        let cache = Arc::new(services::CacheService::new(1000, 3600));
+
+        Ok(Self {
+            db,
+            sync,
+            cache,
+        })
+    }
+}
+
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
+        .setup(|app| {
+            let data_dir = app.path().app_data_dir()
+                .expect("Failed to get app data dir");
+            std::fs::create_dir_all(&data_dir).expect("Failed to create data dir");
+
+            let state = tauri::async_runtime::block_on(async {
+                AppState::new(&data_dir).await
+            })?;
+
+            app.manage(Arc::new(state));
+            Ok(())
+        })
+        .invoke_handler(tauri::generate_handler![crate::ipc_dispatch])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}

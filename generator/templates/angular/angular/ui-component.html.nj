@@ -1,0 +1,13 @@
+<div
+  class="{{ kebab_name }}-container"
+  [style.grid-column]="gridColumn"
+  [style.grid-row]="gridRow"
+  [style.grid-column-span]="colSpan"
+  [style.grid-row-span]="rowSpan"
+>
+  {% if has_slots %}
+  <ng-content></ng-content>
+  {% else %}
+  <span class="{{ kebab_name }}-content">{{ component_name }}</span>
+  {% endif %}
+</div>

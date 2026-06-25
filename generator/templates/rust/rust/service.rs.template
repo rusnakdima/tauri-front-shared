@@ -1,0 +1,37 @@
+use nosql_orm::Database;
+use serde::{Deserialize, Serialize};
+
+pub struct {{ entityName }}Service {
+    db: Database,
+}
+
+impl {{ entityName }}Service {
+    pub fn new(db: Database) -> Self {
+        Self { db }
+    }
+
+    pub async fn find_by_id(&self, id: &str) -> Result<Option<serde_json::Value>, String> {
+        let collection = self.db.collection("{{ tableName }}");
+        collection.find_by_id(id).await.map_err(|e| e.to_string())
+    }
+
+    pub async fn find_many(&self) -> Result<Vec<serde_json::Value>, String> {
+        let collection = self.db.collection("{{ tableName }}");
+        collection.find_many(None, None, None).await.map_err(|e| e.to_string())
+    }
+
+    pub async fn insert(&self, data: serde_json::Value) -> Result<serde_json::Value, String> {
+        let collection = self.db.collection("{{ tableName }}");
+        collection.insert(data).await.map_err(|e| e.to_string())
+    }
+
+    pub async fn update(&self, id: &str, data: serde_json::Value) -> Result<serde_json::Value, String> {
+        let collection = self.db.collection("{{ tableName }}");
+        collection.update(id, data).await.map_err(|e| e.to_string())
+    }
+
+    pub async fn delete(&self, id: &str) -> Result<(), String> {
+        let collection = self.db.collection("{{ tableName }}");
+        collection.delete(id).await.map_err(|e| e.to_string())
+    }
+}

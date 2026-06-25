@@ -1,0 +1,22 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: '{{ selector }}',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div class="{{ componentType }}-wrapper">
+      <ng-content></ng-content>
+    </div>
+  `,
+  styles: [`
+    .{{ componentType }}-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+  `]
+})
+export class {{ componentName }}Component {
+  constructor() {}
+}

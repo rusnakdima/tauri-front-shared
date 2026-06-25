@@ -1,0 +1,39 @@
+[package]
+name = "{{ package_name }}"
+version = "{{ version }}"
+description = "{{ description }}"
+authors = ["{{ author | default('Developer') }}"]
+edition = "{{ edition | default('2021') }}"
+rust-version = "{{ rust_version | default('1.70') }}"
+
+[lib]
+name = "{{ lib_name }}"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "{{ tauri_version | default('2') }}", features = [] }
+
+[dependencies]
+tauri = { version = "{{ tauri_version | default('2') }}", features = [] }
+tauri-plugin-shell = "{{ tauri_version | default('2') }}"
+tauri-shared = { path = "../../../Rust/tauri-shared" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+nosql_orm = "{{ nosql_orm_version | default('0.3') }}"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+argon2 = "0.5"
+sha2 = "0.10"
+moka = "0.12"
+tokio = { version = "1", features = ["full"] }
+log = "0.4"
+env_logger = "0.11"
+thiserror = "1"
+anyhow = "1"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

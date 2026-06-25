@@ -1,0 +1,3 @@
+<div class="{{ kebabName }}-container">
+  <h1>{{ pascalName }}</h1>
+</div>

@@ -1,0 +1,28 @@
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-{{ kebab_name }}',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './{{ kebab_name }}.component.html',
+  styleUrl: './{{ kebab_name }}.component.css'
+})
+export class {{ pascal_name }}Component {
+  @Input() colSpan = 1;
+  @Input() rowSpan = 1;
+  @Input() gridColumn: string | null = null;
+  @Input() gridRow: string | null = null;
+
+  {% if props %}
+  {% for prop in props %}
+  @Input() {{ prop.name }}: {{ prop.type }} = {{ prop.default | default('null') }};
+  {% endfor %}
+  {% endif %}
+
+  {% if events %}
+  {% for event in events %}
+  @Input() {{ event }}: Function | null = null;
+  {% endfor %}
+  {% endif %}
+}

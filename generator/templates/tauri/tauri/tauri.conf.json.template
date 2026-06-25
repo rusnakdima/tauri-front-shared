@@ -1,0 +1,29 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "{{ projectName }}",
+  "version": "{{ version }}",
+  "identifier": "com.tcs.{{ projectName_lowercase }}",
+  "build": {
+    "beforeDevCommand": "bun run start",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "bun run build",
+    "frontendDist": "../dist/app/browser"
+  },
+  "app": {
+    "windows": [{
+      "label": "main",
+      "title": "{{ projectName }}",
+      "width": 1200,
+      "height": 800,
+      "resizable": true,
+      "fullscreen": false,
+      "devtools": true
+    }],
+    "security": { "csp": null },
+    "withGlobalTauri": true
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all"
+  }
+}

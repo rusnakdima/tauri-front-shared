@@ -1,0 +1,70 @@
+use crate::AppState;
+use std::sync::Arc;
+use tauri::State;
+use tauri_shared::Response;
+
+#[tauri::command(rename_all = "camelCase")]
+pub async fn get_{{ entityName_lowercase }}(
+    state: State<'_, Arc<AppState>>,
+    id: String,
+) -> Result<Response<serde_json::Value>, String> {
+    let doc = state
+        .db
+        .find_by_id("{{ tableName }}", &id)
+        .await
+        .map_err(|e| e.to_string())?
+        .ok_or("Entity not found")?;
+    Ok(Response::success("Entity retrieved", doc))
+}
+
+#[tauri::command(rename_all = "camelCase")]
+pub async fn get_{{ entityName_lowercase }}s(
+    state: State<'_, Arc<AppState>>,
+) -> Result<Response<Vec<serde_json::Value>>, String> {
+    let docs = state
+        .db
+        .find_many("{{ tableName }}", None, None, None)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(Response::success("Entities retrieved", docs))
+}
+
+#[tauri::command(rename_all = "camelCase")]
+pub async fn create_{{ entityName_lowercase }}(
+    state: State<'_, Arc<AppState>>,
+    data: serde_json::Value,
+) -> Result<Response<serde_json::Value>, String> {
+    let doc = state
+        .db
+        .insert("{{ tableName }}", data)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(Response::success("Entity created", doc))
+}
+
+#[tauri::command(rename_all = "camelCase")]
+pub async fn update_{{ entityName_lowercase }}(
+    state: State<'_, Arc<AppState>>,
+    id: String,
+    data: serde_json::Value,
+) -> Result<Response<serde_json::Value>, String> {
+    let doc = state
+        .db
+        .update("{{ tableName }}", &id, data)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(Response::success("Entity updated", doc))
+}
+
+#[tauri::command(rename_all = "camelCase")]
+pub async fn delete_{{ entityName_lowercase }}(
+    state: State<'_, Arc<AppState>>,
+    id: String,
+) -> Result<Response<()>, String> {
+    state
+        .db
+        .delete("{{ tableName }}", &id)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(Response::success("Entity deleted", ()))
+}

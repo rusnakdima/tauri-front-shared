@@ -1,0 +1,175 @@
+import { Injectable, signal, computed } from '@angular/core';
+
+{% if provider == 'signal' %}
+@Injectable({
+  providedIn: 'root'
+})
+export class {{ pascal_name }} {
+  {% if entity == 'state' %}
+  private _state = signal<Record<string, unknown>>({});
+  state = computed(() => this._state());
+
+  set(key: string, value: unknown) {
+    this._state.update((state) => ({
+      ...state,
+      [key]: value,
+    }));
+  }
+
+  get(key: string): unknown {
+    return this._state()[key];
+  }
+
+  update(key: string, fn: (value: unknown) => unknown) {
+    const current = this.get(key);
+    this.set(key, fn(current));
+  }
+
+  delete(key: string) {
+    this._state.update((state) => {
+      const { [key]: _, ...rest } = state as Record<string, unknown>;
+      return rest;
+    });
+  }
+
+  keys(): string[] {
+    return Object.keys(this._state());
+  }
+
+  toJSON(): Record<string, unknown> {
+    return this._state();
+  }
+
+  fromJSON(json: Record<string, unknown>) {
+    this._state.set(json);
+  }
+  {% elif entity == 'sync' %}
+  private _syncStatus = signal<'idle' | 'syncing' | 'error' | 'offline'>('idle');
+  private _lastSyncTime = signal<Date | null>(null);
+  private _pendingChanges = signal<number>(0);
+
+  syncStatus = computed(() => this._syncStatus());
+  lastSyncTime = computed(() => this._lastSyncTime());
+  pendingChanges = computed(() => this._pendingChanges());
+
+  setStatus(status: 'idle' | 'syncing' | 'error' | 'offline') {
+    this._syncStatus.set(status);
+  }
+
+  incrementPending() {
+    this._pendingChanges.update((n) => n + 1);
+  }
+
+  decrementPending() {
+    this._pendingChanges.update((n) => Math.max(0, n - 1));
+  }
+
+  markSynced() {
+    this._lastSyncTime.set(new Date());
+    this._pendingChanges.set(0);
+    this._syncStatus.set('idle');
+  }
+
+  markError() {
+    this._syncStatus.set('error');
+  }
+
+  markOffline() {
+    this._syncStatus.set('offline');
+  }
+  {% elif entity == 'logs' %}
+  private _entries = signal<Array<{
+    level: 'debug' | 'info' | 'warn' | 'error';
+    message: string;
+    timestamp: string;
+    source?: string;
+  }>>([]);
+  private _minLevel = signal<'debug' | 'info' | 'warn' | 'error'>('info');
+
+  entries = computed(() => this._entries());
+
+  filteredEntries = computed(() => {
+    const level = this._minLevel();
+    const levels = ['debug', 'info', 'warn', 'error'];
+    const minIndex = levels.indexOf(level);
+    return this._entries().filter((e) => levels.indexOf(e.level) >= minIndex);
+  });
+
+  setMinLevel(level: 'debug' | 'info' | 'warn' | 'error') {
+    this._minLevel.set(level);
+  }
+
+  addEntry(entry: { level: 'debug' | 'info' | 'warn' | 'error'; message: string; timestamp: string; source?: string }) {
+    this._entries.update((entries) => [...entries, entry]);
+  }
+
+  clear() {
+    this._entries.set([]);
+  }
+
+  debug(message: string, source?: string) {
+    this.addEntry({ level: 'debug', message, timestamp: new Date().toISOString(), source });
+  }
+
+  info(message: string, source?: string) {
+    this.addEntry({ level: 'info', message, timestamp: new Date().toISOString(), source });
+  }
+
+  warn(message: string, source?: string) {
+    this.addEntry({ level: 'warn', message, timestamp: new Date().toISOString(), source });
+  }
+
+  error(message: string, source?: string) {
+    this.addEntry({ level: 'error', message, timestamp: new Date().toISOString(), source });
+  }
+  {% elif entity == 'schema' %}
+  private _currentSchema = signal<unknown>(null);
+
+  currentSchema = computed(() => this._currentSchema());
+
+  setSchema(schema: unknown): void {
+    this._currentSchema.set(schema);
+  }
+
+  getSchema(): unknown {
+    return this._currentSchema();
+  }
+  {% elif entity == 'components' %}
+  private _components = signal<Record<string, unknown>>({});
+
+  components = computed(() => this._components());
+
+  register(id: string, component: unknown) {
+    this._components.update((components) => ({
+      ...components,
+      [id]: component,
+    }));
+  }
+
+  resolve(id: string): unknown {
+    return this._components()[id];
+  }
+
+  unregister(id: string) {
+    this._components.update((components) => {
+      const { [id]: _, ...rest } = components as Record<string, unknown>;
+      return rest;
+    });
+  }
+
+  list(): string[] {
+    return Object.keys(this._components());
+  }
+  {% else %}
+  {% for field in fields %}
+  private __{{ field.name }} = signal<unknown>(null);
+  {{ field.name }} = computed(() => this.__{{ field.name }}());
+  {% endfor %}
+
+  {% for field in fields %}
+  set{{ field.name | capitalize }}(value: unknown) {
+    this.__{{ field.name }}.set(value);
+  }
+  {% endfor %}
+  {% endif %}
+}

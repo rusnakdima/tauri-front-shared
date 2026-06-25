@@ -1,0 +1,21 @@
+/* Page: {{ page.name }} ({{ page.kebabName }}) */
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.page-{{ page.kebabName }} {
+  display: grid;
+  grid-template-columns: {{ layout_columns }};
+  grid-template-rows: {{ layout_rows }};
+  gap: {{ layout_gap }};
+  min-height: 100vh;
+  padding: {{ layout_padding }};
+}
+
+.canvas-element {
+  min-width: 0;
+  min-height: 0;
+}

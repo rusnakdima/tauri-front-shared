@@ -1,0 +1,5 @@
+<div class="page-container min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
+  <div class="canvas-area relative grid grid-cols-12 gap-4 p-4" style="min-height: calc(100vh - 64px);">
+    <!-- Elements rendered by page.component.ts -->
+  </div>
+</div>

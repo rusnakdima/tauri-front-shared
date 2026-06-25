@@ -1,0 +1,1 @@
+<div #canvas class="canvas-{{ kebab_name }} h-full w-full grid grid-cols-12 gap-4 p-4"></div>

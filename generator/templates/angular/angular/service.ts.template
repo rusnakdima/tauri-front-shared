@@ -1,0 +1,27 @@
+import { Injectable } from '@angular/core';
+import { TauriApiService } from '@api/tauri-api.service';
+
+@Injectable({ providedIn: 'root' })
+export class {{ serviceName }}Service {
+  constructor(private api: TauriApiService) {}
+
+  async getAll(): Promise<any[]> {
+    return this.api.invoke('get_{{ entityName_lowercase }}s');
+  }
+
+  async get(id: string): Promise<any> {
+    return this.api.invoke('get_{{ entityName_lowercase }}', { id });
+  }
+
+  async create(data: any): Promise<any> {
+    return this.api.invoke('create_{{ entityName_lowercase }}', { data });
+  }
+
+  async update(id: string, data: any): Promise<any> {
+    return this.api.invoke('update_{{ entityName_lowercase }}', { id, data });
+  }
+
+  async delete(id: string): Promise<void> {
+    return this.api.invoke('delete_{{ entityName_lowercase }}', { id });
+  }
+}

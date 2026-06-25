@@ -1,0 +1,21 @@
+import { Routes } from '@angular/router';
+
+export const routes: Routes = [
+{% for page in pages %}
+  {
+    path: '{{ page.route }}',
+    loadComponent: () => import('./pages/{{ page.kebabName }}/{{ page.kebabName }}.component').then(m => m.{{ page.pascalName }}Component),
+    title: '{{ page.name }}'
+  }{% if not loop.last %},{% endif %}
+{% endfor %}
+  {
+    path: '',
+    redirectTo: '{{ default_route }}',
+    pathMatch: 'full'
+  },
+  {
+    path: '**',
+    redirectTo: 'not-found',
+    pathMatch: 'full'
+  }
+];

@@ -5,4 +5,5 @@ export * from './crud/crud.service';
 export * from './data-patch/data-patch.service';
 export * from './schema-renderer/schema-renderer.service';
 export * from './theme/theme.service';
+export * from './events/event-bus.service';
 export * from './types';

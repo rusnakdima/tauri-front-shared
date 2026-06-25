@@ -345,6 +345,14 @@ export class SchemaRendererService {
       }
     }
 
+    if (data.events) {
+      for (const [eventName, emitEvent] of Object.entries(data.events)) {
+        el.addEventListener(eventName, (e: Event) => {
+          this.eventBus.emit(emitEvent, { elementId: data.id, event: e });
+        });
+      }
+    }
+
     return el;
   }
 

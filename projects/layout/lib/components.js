@@ -147,5 +147,15 @@ export const layoutComponents = [
         template: "<div><span>Canvas</span></div>",
         css: ":host { display: block; }",
     },
+    {
+        id: "canvas-toolbar",
+        name: "Canvas Toolbar",
+        selector: "app-canvas-toolbar",
+        packageType: "layout",
+        category: "designer",
+        props: [],
+        template: '<div></div>',
+        css: ':host { display: inline-flex; }'
+    },
 ];
 //# sourceMappingURL=components.js.map

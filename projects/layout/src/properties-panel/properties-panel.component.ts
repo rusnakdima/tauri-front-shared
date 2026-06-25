@@ -40,7 +40,7 @@ export class PropertiesPanel extends LitElement {
       gap: 0.5rem;
       padding-bottom: 0.75rem;
       margin-bottom: 0.75rem;
-      border-bottom: 1px solid var(--border-color, #0f3460);
+      border-bottom: 1px solid var(--border-color);
     }
 
     .panel-icon {
@@ -49,10 +49,10 @@ export class PropertiesPanel extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--bg-tertiary, #16213e);
+      background: var(--bg-tertiary);
       border-radius: 6px;
       font-size: 1.25rem;
-      color: var(--accent, #e94560);
+color: var(--accent);
     }
 
     .panel-title {
@@ -63,7 +63,7 @@ export class PropertiesPanel extends LitElement {
     .panel-title-name {
       font-size: 0.875rem;
       font-weight: 600;
-      color: var(--text-primary, #e0e0e0);
+      color: var(--text-primary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -71,7 +71,7 @@ export class PropertiesPanel extends LitElement {
 
     .panel-title-selector {
       font-size: 0.6875rem;
-      color: var(--text-muted, #4a4a6a);
+      color: var(--text-muted);
       font-family: monospace;
     }
 
@@ -88,7 +88,7 @@ export class PropertiesPanel extends LitElement {
     .section-title {
       font-size: 0.6875rem;
       font-weight: 600;
-      color: var(--text-muted, #4a4a6a);
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-bottom: 0.5rem;
@@ -101,24 +101,24 @@ export class PropertiesPanel extends LitElement {
     .property-label {
       display: block;
       font-size: 0.75rem;
-      color: var(--text-secondary, #a0a0a0);
+      color: var(--text-secondary);
       margin-bottom: 0.25rem;
     }
 
     .property-input {
       width: 100%;
       padding: 0.375rem 0.5rem;
-      background: var(--bg-tertiary, #16213e);
-      border: 1px solid var(--border-color, #0f3460);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
       border-radius: 4px;
-      color: var(--text-primary, #e0e0e0);
+      color: var(--text-primary);
       font-size: 0.8125rem;
       outline: none;
       transition: border-color 0.15s;
     }
 
     .property-input:focus {
-      border-color: var(--accent, #e94560);
+      border-color: var(--accent);
     }
 
     .property-input[type="checkbox"] {
@@ -129,10 +129,10 @@ export class PropertiesPanel extends LitElement {
     .property-select {
       width: 100%;
       padding: 0.375rem 0.5rem;
-      background: var(--bg-tertiary, #16213e);
-      border: 1px solid var(--border-color, #0f3460);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
       border-radius: 4px;
-      color: var(--text-primary, #e0e0e0);
+      color: var(--text-primary);
       font-size: 0.8125rem;
       outline: none;
       cursor: pointer;
@@ -157,13 +157,13 @@ export class PropertiesPanel extends LitElement {
     .empty-title {
       font-size: 0.875rem;
       font-weight: 600;
-      color: var(--text-secondary, #a0a0a0);
+      color: var(--text-secondary);
       margin-bottom: 0.25rem;
     }
 
     .empty-text {
       font-size: 0.75rem;
-      color: var(--text-muted, #4a4a6a);
+      color: var(--text-muted);
     }
   `;
 

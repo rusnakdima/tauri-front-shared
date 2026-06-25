@@ -2,13 +2,10 @@ import { __decorate } from "tslib";
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 let GridItemComponent = class GridItemComponent {
-    col = 'auto';
-    row = 'auto';
-    colSpan;
-    rowSpan;
-    colStart;
-    rowStart;
-    area;
+    constructor() {
+        this.col = 'auto';
+        this.row = 'auto';
+    }
     get gridStyles() {
         const styles = {};
         if (this.area) {

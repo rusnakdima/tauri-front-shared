@@ -9,6 +9,7 @@ const options = {
   dryRun: false,
   watch: false,
   templateDir: undefined,
+  features: undefined,
 };
 
 for (let i = 0; i < args.length; i++) {
@@ -28,6 +29,8 @@ for (let i = 0; i < args.length; i++) {
     options.watch = true;
   } else if (args[i] === '--dry-run' || args[i] === '-d') {
     options.dryRun = true;
+  } else if (args[i] === '--features' || args[i] === '-f') {
+    options.features = args[++i].split(',').map(f => f.trim());
   } else if (args[i] === '--help' || args[i] === '-h') {
     printHelp();
     process.exit(0);
@@ -60,6 +63,7 @@ async function generate(schemaContent, generator) {
       templateDir: options.templateDir,
       dryRun: options.dryRun,
       watch: options.watch,
+      features: options.features,
     }, schemaContent);
   } catch (error) {
     console.error(`Error generating: ${error}`);
@@ -115,12 +119,27 @@ Options:
   -i, --identifier <id>      App identifier (default: com.example.<app-name>)
   -v, --version <ver>        App version (default: 0.1.0)
   -t, --template <dir>       Custom template directory (optional)
+  -f, --features <list>      Comma-separated features: core-api,ui,layout,theme,events,data,feedback,storage,grid (default: all)
   -w, --watch                Watch schema file and regenerate on changes
   -d, --dry-run              Preview output without writing files
   -h, --help                 Show this help message
 
+Available features:
+  core-api  - @tauri-front/core (SignalStore, SignalSync, SignalLogger, CrudService)
+  ui        - @tauri-front/ui (Button, Input, Checkbox, Tabs, etc.)
+  layout    - @tauri-front/layout (Header, Sidebar, Footer, SplitView)
+  theme     - @tauri-front/core (ThemeService)
+  events    - @tauri-front/core (EventBusService)
+  data      - @tauri-front/data (cards, tables)
+  feedback  - @tauri-front/feedback (Dialog, Toast, Modal)
+  storage   - @tauri-front/storage (LocalStorage, IndexedDB)
+  grid      - @tauri-front/grid (Grid layout)
+
 Example:
   npx @tauri-front/generator --schema ./schema.json --output ./my-app --app-name MyApp
+
+With specific features:
+  npx @tauri-front/generator --schema ./schema.json --output ./my-app --app-name MyApp --features core-api,ui,layout
 
 Watch mode:
   npx @tauri-front/generator --schema ./schema.json --output ./my-app --app-name MyApp --watch

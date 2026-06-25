@@ -2,9 +2,12 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppLoading = class AppLoading extends LitElement {
-    variant = "spinner";
-    size = "md";
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.variant = "spinner";
+        this.size = "md";
+    }
+    static { this.styles = css `
     :host {
       display: inline-flex;
     }
@@ -72,7 +75,7 @@ let AppLoading = class AppLoading extends LitElement {
     .app-loading-lg.app-loading-skeleton {
       @apply w-32 h-6;
     }
-  `;
+  `; }
     render() {
         const sizeClass = `app-loading-${this.size}`;
         if (this.variant === "spinner") {

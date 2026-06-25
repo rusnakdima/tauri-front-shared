@@ -2,11 +2,9 @@ import { __decorate } from "tslib";
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 let GridAreaComponent = class GridAreaComponent {
-    name = '';
-    colStart;
-    colEnd;
-    rowStart;
-    rowEnd;
+    constructor() {
+        this.name = '';
+    }
 };
 __decorate([
     Input()

@@ -15,28 +15,48 @@ export class AppTooltip extends LitElement {
     }
 
     .app-tooltip-wrapper {
-      @apply relative inline-block;
+      position: relative;
+      display: inline-block;
     }
 
     .app-tooltip {
-      @apply absolute z-50 px-2 py-1 text-xs text-white bg-[var(--bg-elevated)] rounded shadow-lg;
-      @apply whitespace-nowrap;
+      position: absolute;
+      z-index: 50;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      background-color: var(--bg-elevated);
+      color: var(--text-primary);
+      border-radius: 0.25rem;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      white-space: nowrap;
     }
 
     .app-tooltip-top {
-      @apply bottom-full left-1/2 -translate-x-1/2 mb-2;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 0.5rem;
     }
 
     .app-tooltip-bottom {
-      @apply top-full left-1/2 -translate-x-1/2 mt-2;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 0.5rem;
     }
 
     .app-tooltip-left {
-      @apply right-full top-1/2 -translate-y-1/2 mr-2;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      margin-right: 0.5rem;
     }
 
     .app-tooltip-right {
-      @apply left-full top-1/2 -translate-y-1/2 ml-2;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      margin-left: 0.5rem;
     }
   `;
 

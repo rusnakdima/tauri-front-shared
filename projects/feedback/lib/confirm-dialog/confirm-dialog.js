@@ -3,7 +3,16 @@ import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import "../dialog/dialog.js";
 let AppConfirmDialog = class AppConfirmDialog extends LitElement {
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.isOpen = false;
+        this.title = "";
+        this.message = "";
+        this.confirmText = "Confirm";
+        this.cancelText = "Cancel";
+        this.confirmVariant = "danger";
+    }
+    static { this.styles = css `
     :host {
       display: contents;
     }
@@ -57,13 +66,7 @@ let AppConfirmDialog = class AppConfirmDialog extends LitElement {
       background-color: var(--error, #ef4444);
       color: white;
     }
-  `;
-    isOpen = false;
-    title = "";
-    message = "";
-    confirmText = "Confirm";
-    cancelText = "Cancel";
-    confirmVariant = "danger";
+  `; }
     _onConfirm() {
         this.dispatchEvent(new CustomEvent("confirm", { bubbles: true, composed: true }));
         this.isOpen = false;

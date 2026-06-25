@@ -2,11 +2,14 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppSlider = class AppSlider extends LitElement {
-    min = 0;
-    max = 100;
-    step = 1;
-    value = 0;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.min = 0;
+        this.max = 100;
+        this.step = 1;
+        this.value = 0;
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -31,7 +34,7 @@ let AppSlider = class AppSlider extends LitElement {
     .app-slider-input:focus + .app-slider-track {
       @apply outline-none ring-2 ring-[var(--accent)] ring-offset-2;
     }
-  `;
+  `; }
     get percentage() {
         return ((this.value - this.min) / (this.max - this.min)) * 100;
     }

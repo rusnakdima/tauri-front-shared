@@ -3,13 +3,15 @@ import { Component, Input, Output, EventEmitter, forwardRef, ChangeDetectionStra
 import { CommonModule } from "@angular/common";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 let SliderComponent = class SliderComponent {
-    min = 0;
-    max = 100;
-    step = 1;
-    value = 0;
-    valueChange = new EventEmitter();
-    onChange = () => { };
-    onTouched = () => { };
+    constructor() {
+        this.min = 0;
+        this.max = 100;
+        this.step = 1;
+        this.value = 0;
+        this.valueChange = new EventEmitter();
+        this.onChange = () => { };
+        this.onTouched = () => { };
+    }
     writeValue(value) {
         this.value = value;
     }

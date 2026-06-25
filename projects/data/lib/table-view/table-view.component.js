@@ -2,14 +2,17 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let DataTableView = class DataTableView extends LitElement {
-    columns = [];
-    data = [];
-    sortable = false;
-    pageSize = 10;
-    total = 0;
-    sortKey = "";
-    sortDir = "asc";
-    currentPage = 1;
+    constructor() {
+        super(...arguments);
+        this.columns = [];
+        this.data = [];
+        this.sortable = false;
+        this.pageSize = 10;
+        this.total = 0;
+        this.sortKey = "";
+        this.sortDir = "asc";
+        this.currentPage = 1;
+    }
     get totalPages() {
         return Math.ceil(this.total / this.pageSize) || 1;
     }
@@ -57,7 +60,7 @@ let DataTableView = class DataTableView extends LitElement {
         }
         return "unfold_more";
     }
-    static styles = css `
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -170,7 +173,7 @@ let DataTableView = class DataTableView extends LitElement {
       font-size: 0.875rem;
       color: var(--text-secondary);
     }
-  `;
+  `; }
     render() {
         return html `
       <div class="app-table-view">

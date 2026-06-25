@@ -1,146 +1,124 @@
 import { __decorate } from "tslib";
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewChild, HostListener, } from "@angular/core";
-import { CommonModule } from "@angular/common";
-let ModalComponent = class ModalComponent {
-    open = false;
-    title = "";
-    size = "md";
-    closeOnBackdrop = true;
-    closeOnEscape = true;
-    showHeader = true;
-    showFooter = true;
-    zIndex = 1050;
-    closed = new EventEmitter();
-    modalContent;
-    previousActiveElement = null;
-    ngAfterViewInit() { }
-    ngOnDestroy() {
-        this.restoreBodyOverflow();
+import { LitElement, html, css } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+let Modal = class Modal extends LitElement {
+    constructor() {
+        super(...arguments);
+        this.open = false;
+        this.modalTitle = '';
+        this.closable = true;
+        this.size = 'md';
     }
-    onEscape(event) {
-        if (this.open && this.closeOnEscape) {
-            event.preventDefault();
-            this.close();
+    static { this.styles = css `
+    :host {
+      display: contents;
+    }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    :host([open]) .modal-overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-content {
+      background: var(--bg-elevated, #21262d);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg, 0 10px 15px rgba(0,0,0,0.5));
+      width: 90%;
+      max-width: var(--modal-width, 600px);
+      max-height: 80vh;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color, #30363d);
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary, #e6edf3);
+      margin: 0;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: var(--text-secondary, #8b949e);
+    }
+    .modal-close:hover {
+      color: var(--text-primary, #e6edf3);
+    }
+    .modal-body {
+      padding: 20px;
+      flex: 1;
+      overflow: auto;
+    }
+    /* Size variants */
+    :host([size="sm"]) .modal-content { max-width: 400px; }
+    :host([size="lg"]) .modal-content { max-width: 800px; }
+    :host([size="xl"]) .modal-content { max-width: 1000px; }
+  `; }
+    _close() {
+        this.open = false;
+        this.dispatchEvent(new CustomEvent('close', { bubbles: true, composed: true }));
+    }
+    _handleOverlayClick(e) {
+        if (e.target === e.currentTarget && this.closable) {
+            this._close();
         }
     }
-    get maxWidth() {
-        switch (this.size) {
-            case "sm":
-                return "320px";
-            case "md":
-                return "480px";
-            case "lg":
-                return "640px";
-            case "xl":
-                return "800px";
-            case "full":
-                return "100vw";
-            default:
-                return "480px";
-        }
-    }
-    get isFullScreen() {
-        return this.size === "full";
-    }
-    onBackdropClick() {
-        if (this.closeOnBackdrop) {
-            this.close();
-        }
-    }
-    onClose() {
-        this.close();
-    }
-    close() {
-        this.restoreBodyOverflow();
-        this.closed.emit();
-    }
-    trapFocus(event) {
-        if (!this.modalContent || !this.open)
-            return;
-        const focusableElements = this.modalContent.nativeElement.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-        if (focusableElements.length === 0)
-            return;
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-        if (event.shiftKey && document.activeElement === firstElement) {
-            event.preventDefault();
-            lastElement.focus();
-        }
-        else if (!event.shiftKey && document.activeElement === lastElement) {
-            event.preventDefault();
-            firstElement.focus();
-        }
-    }
-    handleBodyOverflow() {
-        if (this.open) {
-            this.previousActiveElement = document.activeElement;
-            document.body.style.overflow = "hidden";
-            document.addEventListener("keydown", this.trapFocus.bind(this));
-        }
-    }
-    restoreBodyOverflow() {
-        document.body.style.overflow = "";
-        document.removeEventListener("keydown", this.trapFocus.bind(this));
-        if (this.previousActiveElement) {
-            this.previousActiveElement.focus();
-            this.previousActiveElement = null;
-        }
-    }
-    ngOnChanges() {
-        if (this.open) {
-            this.handleBodyOverflow();
-            setTimeout(() => {
-                const firstFocusable = this.modalContent?.nativeElement?.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-                firstFocusable?.focus();
-            }, 0);
-        }
-        else {
-            this.restoreBodyOverflow();
-        }
+    render() {
+        return html `
+      <div class="modal-overlay" @click="${this._handleOverlayClick}">
+        <div class="modal-content">
+          ${this.modalTitle ? html `
+            <div class="modal-header">
+              <h3 class="modal-title">${this.modalTitle}</h3>
+              ${this.closable ? html `
+                <button class="modal-close" @click="${this._close}">
+                  <mat-icon>close</mat-icon>
+                </button>
+              ` : ''}
+            </div>
+          ` : ''}
+          <div class="modal-body">
+            <slot></slot>
+          </div>
+        </div>
+      </div>
+    `;
     }
 };
 __decorate([
-    Input()
-], ModalComponent.prototype, "open", void 0);
+    property({ type: Boolean, reflect: true })
+], Modal.prototype, "open", void 0);
 __decorate([
-    Input()
-], ModalComponent.prototype, "title", void 0);
+    property({ type: String })
+], Modal.prototype, "modalTitle", void 0);
 __decorate([
-    Input()
-], ModalComponent.prototype, "size", void 0);
+    property({ type: Boolean })
+], Modal.prototype, "closable", void 0);
 __decorate([
-    Input()
-], ModalComponent.prototype, "closeOnBackdrop", void 0);
-__decorate([
-    Input()
-], ModalComponent.prototype, "closeOnEscape", void 0);
-__decorate([
-    Input()
-], ModalComponent.prototype, "showHeader", void 0);
-__decorate([
-    Input()
-], ModalComponent.prototype, "showFooter", void 0);
-__decorate([
-    Input()
-], ModalComponent.prototype, "zIndex", void 0);
-__decorate([
-    Output()
-], ModalComponent.prototype, "closed", void 0);
-__decorate([
-    ViewChild("modalContent")
-], ModalComponent.prototype, "modalContent", void 0);
-__decorate([
-    HostListener("document:keydown.escape")
-], ModalComponent.prototype, "onEscape", null);
-ModalComponent = __decorate([
-    Component({
-        selector: "app-modal",
-        standalone: true,
-        imports: [CommonModule],
-        changeDetection: ChangeDetectionStrategy.OnPush,
-        templateUrl: "./modal.component.html",
-        styleUrl: "./modal.component.css",
-    })
-], ModalComponent);
-export { ModalComponent };
+    property({ type: String })
+], Modal.prototype, "size", void 0);
+Modal = __decorate([
+    customElement('app-modal')
+], Modal);
+export { Modal };
 //# sourceMappingURL=modal.component.js.map

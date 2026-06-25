@@ -7,7 +7,22 @@ export interface GeneratorOptions {
   templateDir?: string;
   dryRun?: boolean;
   watch?: boolean;
+  features?: string[];
 }
+
+export const AVAILABLE_FEATURES = [
+  'core-api',
+  'ui',
+  'layout',
+  'theme',
+  'events',
+  'data',
+  'feedback',
+  'storage',
+  'grid',
+] as const;
+
+export type FeatureName = typeof AVAILABLE_FEATURES[number];
 
 export interface UiSchema {
   id: string;
@@ -93,6 +108,21 @@ export interface TemplateContext {
   schema: UiSchema;
   pages: PageContext[];
   entities: EntityContext[];
+  features: string[];
+  featuresInfo: FeatureInfo;
+}
+
+export interface FeatureInfo {
+  hasCoreApi: boolean;
+  hasUi: boolean;
+  hasLayout: boolean;
+  hasTheme: boolean;
+  hasEvents: boolean;
+  hasData: boolean;
+  hasFeedback: boolean;
+  hasStorage: boolean;
+  hasGrid: boolean;
+  packageNames: string[];
 }
 
 export interface PageContext {

@@ -8,14 +8,16 @@ const checkboxVariants = {
     indeterminate: "app-checkbox-indeterminate",
 };
 let CheckboxComponent = class CheckboxComponent {
-    label = "";
-    disabled = false;
+    constructor() {
+        this.label = "";
+        this.disabled = false;
+        this._checked = signal(false);
+        this.onChange = () => { };
+        this.onTouched = () => { };
+    }
     set checked(value) {
         this._checked.set(value);
     }
-    _checked = signal(false);
-    onChange = () => { };
-    onTouched = () => { };
     get state() {
         const val = this._checked();
         if (val === true)

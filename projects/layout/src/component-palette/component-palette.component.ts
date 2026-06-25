@@ -38,21 +38,21 @@ export class ComponentPalette extends LitElement {
     .palette-search input {
       width: 100%;
       padding: 0.5rem 0.75rem;
-      background: var(--bg-tertiary, #16213e);
-      border: 1px solid var(--border-color, #0f3460);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
       border-radius: 4px;
-      color: var(--text-primary, #e0e0e0);
+      color: var(--text-primary);
       font-size: 0.8125rem;
       outline: none;
       transition: border-color 0.15s;
     }
 
     .palette-search input:focus {
-      border-color: var(--accent, #e94560);
+      border-color: var(--accent);
     }
 
     .palette-search input::placeholder {
-      color: var(--text-muted, #4a4a6a);
+      color: var(--text-muted);
     }
 
     .palette-categories {
@@ -61,7 +61,7 @@ export class ComponentPalette extends LitElement {
       gap: 0.25rem;
       margin-bottom: 0.75rem;
       padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border-color, #0f3460);
+      border-bottom: 1px solid var(--border-color);
     }
 
     .category-btn {
@@ -69,7 +69,7 @@ export class ComponentPalette extends LitElement {
       background: transparent;
       border: none;
       border-radius: 4px;
-      color: var(--text-secondary, #a0a0a0);
+      color: var(--text-secondary);
       font-size: 0.6875rem;
       cursor: pointer;
       transition: all 0.15s;
@@ -78,12 +78,12 @@ export class ComponentPalette extends LitElement {
     }
 
     .category-btn:hover {
-      background: var(--bg-hover, #1e3a5f);
-      color: var(--text-primary, #e0e0e0);
+      background: var(--bg-hover);
+      color: var(--text-primary);
     }
 
     .category-btn.active {
-      background: var(--accent, #e94560);
+      background: var(--accent);
       color: white;
     }
 
@@ -101,8 +101,8 @@ export class ComponentPalette extends LitElement {
       flex-direction: column;
       align-items: center;
       padding: 0.75rem 0.5rem;
-      background: var(--bg-tertiary, #16213e);
-      border: 1px solid var(--border-color, #0f3460);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
       border-radius: 6px;
       cursor: grab;
       transition: all 0.15s;
@@ -110,7 +110,7 @@ export class ComponentPalette extends LitElement {
     }
 
     .palette-item:hover {
-      border-color: var(--accent, #e94560);
+      border-color: var(--accent);
       transform: translateY(-1px);
       box-shadow: 0 2px 8px rgba(233, 69, 96, 0.15);
     }
@@ -133,7 +133,7 @@ export class ComponentPalette extends LitElement {
 
     .palette-item-name {
       font-size: 0.6875rem;
-      color: var(--text-primary, #e0e0e0);
+      color: var(--text-primary);
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
@@ -143,7 +143,7 @@ export class ComponentPalette extends LitElement {
 
     .palette-item-selector {
       font-size: 0.5625rem;
-      color: var(--text-muted, #4a4a6a);
+      color: var(--text-muted);
       font-family: monospace;
       margin-top: 0.125rem;
     }
@@ -166,7 +166,7 @@ export class ComponentPalette extends LitElement {
 
     .empty-text {
       font-size: 0.8125rem;
-      color: var(--text-muted, #4a4a6a);
+      color: var(--text-muted);
     }
   `;
 

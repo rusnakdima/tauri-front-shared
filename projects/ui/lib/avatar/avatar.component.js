@@ -2,10 +2,12 @@ import { __decorate } from "tslib";
 import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 let AvatarComponent = class AvatarComponent {
-    src = null;
-    name = "";
-    size = "md";
-    shape = "circle";
+    constructor() {
+        this.src = null;
+        this.name = "";
+        this.size = "md";
+        this.shape = "circle";
+    }
     get initials() {
         if (!this.name)
             return "?";

@@ -17,6 +17,23 @@ export class LayoutSidebar extends LitElement {
 
   @state() private _collapsed: boolean = false;
 
+  private _handleResize = () => {
+    this._checkViewport();
+  };
+
+  private _checkViewport() {
+    if (window.innerWidth < 768 && !this._collapsed) {
+      this._collapsed = true;
+      this.dispatchEvent(
+        new CustomEvent("collapsed-change", {
+          detail: true,
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    }
+  }
+
   override updated(changedProperties: Map<string, unknown>) {
     if (changedProperties.has("collapsed")) {
       this._collapsed = this.collapsed;
@@ -26,6 +43,12 @@ export class LayoutSidebar extends LitElement {
   override connectedCallback() {
     super.connectedCallback();
     this._collapsed = this.collapsed;
+    window.addEventListener("resize", this._handleResize);
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener("resize", this._handleResize);
   }
 
   private _toggleCollapse() {
@@ -66,8 +89,13 @@ export class LayoutSidebar extends LitElement {
       height: 100%;
       background: var(--bg-secondary);
       border-right: 1px solid var(--border-color);
-      transition: width 0.2s;
+      transition: width 0.3s ease, background-color 0.2s ease;
       width: 240px;
+      backdrop-filter: blur(10px);
+    }
+
+    .sidebar-item:hover {
+      background: var(--bg-hover);
     }
 
     .app-sidebar-collapsed {

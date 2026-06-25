@@ -2,15 +2,18 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let AppSelect = class AppSelect extends LitElement {
-    options = [];
-    value = null;
-    placeholder = "Select...";
-    searchable = false;
-    disabled = false;
-    error = null;
-    _isOpen = false;
-    _searchQuery = "";
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.options = [];
+        this.value = null;
+        this.placeholder = "Select...";
+        this.searchable = false;
+        this.disabled = false;
+        this.error = null;
+        this._isOpen = false;
+        this._searchQuery = "";
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -96,7 +99,7 @@ let AppSelect = class AppSelect extends LitElement {
     .app-select-error {
       @apply text-xs text-[var(--error)];
     }
-  `;
+  `; }
     get filteredOptions() {
         if (!this.searchable || !this._searchQuery)
             return this.options;

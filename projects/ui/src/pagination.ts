@@ -13,39 +13,67 @@ export class AppPagination extends LitElement {
     }
 
     .app-pagination {
-      @apply flex items-center gap-1;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
     }
 
     .app-pagination-btn {
-      @apply w-8 h-8 flex items-center justify-center rounded-lg;
-      @apply text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] transition-colors;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.5rem;
+      color: var(--text-secondary);
       background: transparent;
       border: none;
       cursor: pointer;
+      transition: background-color 0.15s;
+    }
+    .app-pagination-btn:hover {
+      background-color: var(--bg-hover);
     }
 
     .app-pagination-btn:disabled {
-      @apply opacity-50 cursor-not-allowed;
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .app-pagination-btn i {
-      @apply text-xl;
+      font-size: 1.25rem;
     }
 
     .app-pagination-page {
-      @apply min-w-8 h-8 px-2 flex items-center justify-center rounded-lg;
-      @apply text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] transition-colors;
+      min-width: 2rem;
+      height: 2rem;
+      padding: 0 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
       background: transparent;
       border: none;
       cursor: pointer;
+      transition: background-color 0.15s;
+    }
+    .app-pagination-page:hover {
+      background-color: var(--bg-hover);
     }
 
     .app-pagination-page-active {
-      @apply bg-[var(--accent)] text-white hover:bg-[var(--accent)];
+      background-color: var(--accent);
+      color: var(--text-on-accent);
+    }
+    .app-pagination-page-active:hover {
+      background-color: var(--accent);
     }
 
     .app-pagination-ellipsis {
-      @apply px-1 text-[var(--text-muted)];
+      padding: 0 0.25rem;
+      color: var(--text-muted);
     }
   `;
 

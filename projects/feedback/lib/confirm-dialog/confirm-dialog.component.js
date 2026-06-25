@@ -3,14 +3,16 @@ import { Component, Output, EventEmitter, ChangeDetectionStrategy, model, } from
 import { CommonModule } from "@angular/common";
 import { DialogComponent } from "../dialog/dialog.component";
 let ConfirmDialogComponent = class ConfirmDialogComponent {
-    isOpen = model(false);
-    title = "";
-    message = "";
-    confirmText = "Confirm";
-    cancelText = "Cancel";
-    confirmVariant = "danger";
-    confirm = new EventEmitter();
-    cancel = new EventEmitter();
+    constructor() {
+        this.isOpen = model(false);
+        this.title = "";
+        this.message = "";
+        this.confirmText = "Confirm";
+        this.cancelText = "Cancel";
+        this.confirmVariant = "danger";
+        this.confirm = new EventEmitter();
+        this.cancel = new EventEmitter();
+    }
     onConfirm() {
         this.confirm.emit();
         this.isOpen.set(false);

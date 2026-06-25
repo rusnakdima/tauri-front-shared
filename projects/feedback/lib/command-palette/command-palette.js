@@ -2,7 +2,17 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let AppCommandPalette = class AppCommandPalette extends LitElement {
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.commands = [];
+        this.placeholder = "Search commands...";
+        this.triggerShortcut = "Ctrl+K";
+        this._isOpen = false;
+        this._searchQuery = "";
+        this._selectedIndex = 0;
+        this._handleGlobalKeyDown = this._onGlobalKeyDown.bind(this);
+    }
+    static { this.styles = css `
     :host {
       display: contents;
     }
@@ -199,14 +209,7 @@ let AppCommandPalette = class AppCommandPalette extends LitElement {
       color: var(--text-secondary, #6b7280);
       border: 1px solid var(--border-subtle, #e5e7eb);
     }
-  `;
-    commands = [];
-    placeholder = "Search commands...";
-    triggerShortcut = "Ctrl+K";
-    _isOpen = false;
-    _searchQuery = "";
-    _selectedIndex = 0;
-    _handleGlobalKeyDown = this._onGlobalKeyDown.bind(this);
+  `; }
     connectedCallback() {
         super.connectedCallback();
         document.addEventListener("keydown", this._handleGlobalKeyDown);

@@ -16,37 +16,53 @@ export class AppCheckbox extends LitElement {
     }
 
     .app-checkbox {
-      @apply inline-flex items-center gap-2 cursor-pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
     }
 
     .app-checkbox-disabled {
-      @apply opacity-50 cursor-not-allowed;
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .app-checkbox-box {
-      @apply w-5 h-5 rounded border flex items-center justify-center transition-all;
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 0.25rem;
       border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
       box-sizing: border-box;
     }
 
     .app-checkbox-unchecked {
-      @apply bg-transparent border-[var(--border-color)];
+      background-color: transparent;
+      border-color: var(--border-color);
     }
 
     .app-checkbox-checked {
-      @apply bg-[var(--accent)] border-[var(--accent)] text-white;
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: var(--text-on-accent);
     }
 
     .app-checkbox-indeterminate {
-      @apply bg-[var(--accent)] border-[var(--accent)] text-white;
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: var(--text-on-accent);
     }
 
     .app-checkbox-box i {
-      @apply text-sm;
+      font-size: 0.875rem;
     }
 
     .app-checkbox-label {
-      @apply text-[var(--text-primary)] text-sm;
+      color: var(--text-primary);
+      font-size: 0.875rem;
     }
   `;
 

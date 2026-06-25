@@ -2,8 +2,10 @@ import { __decorate } from "tslib";
 import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 let ProgressBarComponent = class ProgressBarComponent {
-    percentage = 0;
-    showLabel = false;
+    constructor() {
+        this.percentage = 0;
+        this.showLabel = false;
+    }
     get clampedPercentage() {
         return Math.min(100, Math.max(0, this.percentage));
     }

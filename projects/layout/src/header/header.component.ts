@@ -10,6 +10,9 @@ export interface Breadcrumb {
 export class LayoutHeader extends LitElement {
   @property({ type: String }) override title: string = "";
   @property({ type: Array }) breadcrumbs: Breadcrumb[] = [];
+  @property({ type: Boolean }) showThemeToggle = false;
+  @property({ type: Boolean }) showCanvasControls = false;
+  @property({ type: Boolean }) showForkButton = false;
 
   static override styles = css`
     :host {
@@ -24,6 +27,11 @@ export class LayoutHeader extends LitElement {
       padding: 0 1rem;
       background: var(--bg-elevated);
       border-bottom: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    button:hover {
+      background: var(--bg-hover);
     }
 
     .app-header-left {
@@ -80,6 +88,31 @@ export class LayoutHeader extends LitElement {
       align-items: center;
       gap: 0.5rem;
     }
+
+    .app-header-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .app-header-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
   `;
 
   private _handleHomeClick(e: Event) {
@@ -96,6 +129,10 @@ export class LayoutHeader extends LitElement {
     if (!link) {
       e.preventDefault();
     }
+  }
+
+  private _emit(name: string): void {
+    this.dispatchEvent(new CustomEvent(name, { bubbles: true, composed: true }));
   }
 
   override render() {
@@ -136,7 +173,30 @@ export class LayoutHeader extends LitElement {
             ? html`<h1 class="app-header-title">${this.title}</h1>`
             : ""}
         </div>
+        <slot name="toolbar"></slot>
         <div class="app-header-actions">
+          ${this.showThemeToggle
+            ? html`
+                <button
+                  class="app-header-btn"
+                  @click="${() => this._emit("theme-toggle")}"
+                  title="Toggle theme"
+                >
+                  <mat-icon>dark_mode</mat-icon>
+                </button>
+              `
+            : ""}
+          ${this.showForkButton
+            ? html`
+                <button
+                  class="app-header-btn"
+                  @click="${() => this._emit("fork-click")}"
+                  title="Fork"
+                >
+                  <mat-icon>fork_right</mat-icon>
+                </button>
+              `
+            : ""}
           <slot name="actions"></slot>
         </div>
       </header>

@@ -2,9 +2,12 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppProgressBar = class AppProgressBar extends LitElement {
-    percentage = 0;
-    showLabel = false;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.percentage = 0;
+        this.showLabel = false;
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -24,7 +27,7 @@ let AppProgressBar = class AppProgressBar extends LitElement {
     .app-progress-bar-label {
       @apply text-xs text-[var(--text-secondary)] font-medium min-w-10 text-right;
     }
-  `;
+  `; }
     get clampedPercentage() {
         return Math.min(100, Math.max(0, this.percentage));
     }

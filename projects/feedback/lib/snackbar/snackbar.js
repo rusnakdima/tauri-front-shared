@@ -2,7 +2,15 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let AppSnackbar = class AppSnackbar extends LitElement {
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.type = "default";
+        this.message = "";
+        this.duration = 2500;
+        this.autoDismiss = true;
+        this._isVisible = false;
+    }
+    static { this.styles = css `
     :host {
       display: contents;
     }
@@ -82,13 +90,7 @@ let AppSnackbar = class AppSnackbar extends LitElement {
     .app-snackbar-action i {
       font-size: 1rem;
     }
-  `;
-    type = "default";
-    message = "";
-    duration = 2500;
-    autoDismiss = true;
-    _isVisible = false;
-    _timeoutId;
+  `; }
     connectedCallback() {
         super.connectedCallback();
         this._isVisible = true;

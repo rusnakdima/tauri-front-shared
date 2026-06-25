@@ -2,32 +2,91 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let DesignerSidebar = class DesignerSidebar extends LitElement {
-    position = "left";
-    collapsed = false;
-    header = "";
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.position = "left";
+        this.collapsed = false;
+        this.header = "";
+    }
+    static { this.styles = css `
     :host {
       display: block;
       height: 100%;
+    }
+
+    .sidebar-wrapper {
+      position: relative;
+      height: 100%;
+      display: flex;
+    }
+
+    .sidebar-toggle-container {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 48px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      transition: all var(--transition-fast, 150ms);
+    }
+
+    .sidebar-toggle-container:hover {
+      background: var(--bg-hover);
+    }
+
+    :host([position="left"]) .sidebar-toggle-container {
+      right: -12px;
+    }
+
+    :host([position="right"]) .sidebar-toggle-container {
+      left: -12px;
+      right: auto;
+    }
+
+    .sidebar-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 28px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast, 150ms);
+    }
+
+    .sidebar-toggle:hover {
+      color: var(--text-primary);
     }
 
     .designer-sidebar {
       display: flex;
       flex-direction: column;
       height: 100%;
-      background: var(--bg-secondary, #1a1a2e);
-      border-right: 1px solid var(--border-color, #0f3460);
-      transition: width 0.2s ease;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      transition: width var(--transition-normal, 200ms) ease, opacity var(--transition-normal, 200ms) ease;
       overflow: hidden;
+      flex-shrink: 0;
     }
 
     :host([position="right"]) .designer-sidebar {
       border-right: none;
-      border-left: 1px solid var(--border-color, #0f3460);
+      border-left: 1px solid var(--border-color);
     }
 
     .designer-sidebar.collapsed {
-      width: 64px;
+      width: 0;
+      visibility: hidden;
     }
 
     .sidebar-header {
@@ -35,38 +94,23 @@ let DesignerSidebar = class DesignerSidebar extends LitElement {
       align-items: center;
       justify-content: space-between;
       padding: 0.75rem 1rem;
-      border-bottom: 1px solid var(--border-color, #0f3460);
+      border-bottom: 1px solid var(--border-color);
       min-height: 48px;
+      background: var(--bg-secondary);
+      flex-shrink: 0;
+    }
+
+    :host([position="right"]) .sidebar-header {
+      flex-direction: row-reverse;
     }
 
     .sidebar-header-title {
       font-size: 0.875rem;
       font-weight: 600;
-      color: var(--text-primary, #e0e0e0);
+      color: var(--text-primary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-
-    .sidebar-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      padding: 0;
-      background: transparent;
-      border: none;
-      border-radius: 4px;
-      color: var(--text-secondary, #a0a0a0);
-      cursor: pointer;
-      transition: all 0.15s;
-      flex-shrink: 0;
-    }
-
-    .sidebar-toggle:hover {
-      background: var(--bg-hover, #1e3a5f);
-      color: var(--text-primary, #e0e0e0);
     }
 
     .sidebar-content {
@@ -77,25 +121,30 @@ let DesignerSidebar = class DesignerSidebar extends LitElement {
 
     .sidebar-footer {
       padding: 0.75rem 1rem;
-      border-top: 1px solid var(--border-color, #0f3460);
+      border-top: 1px solid var(--border-color);
+      flex-shrink: 0;
     }
-  `;
+  `; }
     render() {
         return html `
-      <aside class="designer-sidebar ${this.collapsed ? "collapsed" : ""}">
-        <div class="sidebar-header">
-          ${!this.collapsed ? html `<span class="sidebar-header-title">${this.header}</span>` : ""}
+      <div class="sidebar-wrapper">
+        <aside class="designer-sidebar ${this.collapsed ? "collapsed" : ""}">
+          <div class="sidebar-header">
+            <span class="sidebar-header-title">${this.header}</span>
+          </div>
+          <div class="sidebar-content">
+            <slot name="content"></slot>
+          </div>
+          <div class="sidebar-footer">
+            <slot name="footer"></slot>
+          </div>
+        </aside>
+        <div class="sidebar-toggle-container">
           <button class="sidebar-toggle" @click=${this._toggleCollapse}>
-            ${this.collapsed ? "▶" : "◀"}
+            ${this.collapsed ? (this.position === 'left' ? '▶' : '◀') : (this.position === 'left' ? '◀' : '▶')}
           </button>
         </div>
-        <div class="sidebar-content">
-          <slot name="content"></slot>
-        </div>
-        <div class="sidebar-footer">
-          <slot name="footer"></slot>
-        </div>
-      </aside>
+      </div>
     `;
     }
     _toggleCollapse() {

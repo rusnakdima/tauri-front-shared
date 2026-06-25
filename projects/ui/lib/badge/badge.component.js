@@ -2,12 +2,14 @@ import { __decorate } from "tslib";
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, } from "@angular/core";
 import { CommonModule } from "@angular/common";
 let BadgeComponent = class BadgeComponent {
-    label = "";
-    variant = "default";
-    size = "md";
-    icon = null;
-    removable = false;
-    removed = new EventEmitter();
+    constructor() {
+        this.label = "";
+        this.variant = "default";
+        this.size = "md";
+        this.icon = null;
+        this.removable = false;
+        this.removed = new EventEmitter();
+    }
     onRemove(event) {
         event.stopPropagation();
         this.removed.emit();

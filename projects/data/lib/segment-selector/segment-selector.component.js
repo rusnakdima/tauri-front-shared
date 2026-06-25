@@ -2,8 +2,11 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let DataSegmentSelector = class DataSegmentSelector extends LitElement {
-    segments = [];
-    selected = "";
+    constructor() {
+        super(...arguments);
+        this.segments = [];
+        this.selected = "";
+    }
     select(value) {
         this.dispatchEvent(new CustomEvent("selected-change", {
             detail: value,
@@ -14,7 +17,7 @@ let DataSegmentSelector = class DataSegmentSelector extends LitElement {
     isActive(seg) {
         return seg.value === this.selected;
     }
-    static styles = css `
+    static { this.styles = css `
     :host {
       display: inline-block;
     }
@@ -59,7 +62,7 @@ let DataSegmentSelector = class DataSegmentSelector extends LitElement {
     .app-segment-selector__icon {
       font-size: 1rem;
     }
-  `;
+  `; }
     render() {
         return html `
       <div class="app-segment-selector">

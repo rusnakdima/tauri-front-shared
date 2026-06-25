@@ -2,9 +2,15 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let LayoutHeader = class LayoutHeader extends LitElement {
-    title = "";
-    breadcrumbs = [];
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.title = "";
+        this.breadcrumbs = [];
+        this.showThemeToggle = false;
+        this.showCanvasControls = false;
+        this.showForkButton = false;
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -17,6 +23,11 @@ let LayoutHeader = class LayoutHeader extends LitElement {
       padding: 0 1rem;
       background: var(--bg-elevated);
       border-bottom: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    button:hover {
+      background: var(--bg-hover);
     }
 
     .app-header-left {
@@ -73,7 +84,32 @@ let LayoutHeader = class LayoutHeader extends LitElement {
       align-items: center;
       gap: 0.5rem;
     }
-  `;
+
+    .app-header-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .app-header-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  `; }
     _handleHomeClick(e) {
         e.preventDefault();
         this.dispatchEvent(new CustomEvent("home-click", {
@@ -85,6 +121,9 @@ let LayoutHeader = class LayoutHeader extends LitElement {
         if (!link) {
             e.preventDefault();
         }
+    }
+    _emit(name) {
+        this.dispatchEvent(new CustomEvent(name, { bubbles: true, composed: true }));
     }
     render() {
         return html `
@@ -121,7 +160,30 @@ let LayoutHeader = class LayoutHeader extends LitElement {
             ? html `<h1 class="app-header-title">${this.title}</h1>`
             : ""}
         </div>
+        <slot name="toolbar"></slot>
         <div class="app-header-actions">
+          ${this.showThemeToggle
+            ? html `
+                <button
+                  class="app-header-btn"
+                  @click="${() => this._emit("theme-toggle")}"
+                  title="Toggle theme"
+                >
+                  <mat-icon>dark_mode</mat-icon>
+                </button>
+              `
+            : ""}
+          ${this.showForkButton
+            ? html `
+                <button
+                  class="app-header-btn"
+                  @click="${() => this._emit("fork-click")}"
+                  title="Fork"
+                >
+                  <mat-icon>fork_right</mat-icon>
+                </button>
+              `
+            : ""}
           <slot name="actions"></slot>
         </div>
       </header>
@@ -134,6 +196,15 @@ __decorate([
 __decorate([
     property({ type: Array })
 ], LayoutHeader.prototype, "breadcrumbs", void 0);
+__decorate([
+    property({ type: Boolean })
+], LayoutHeader.prototype, "showThemeToggle", void 0);
+__decorate([
+    property({ type: Boolean })
+], LayoutHeader.prototype, "showCanvasControls", void 0);
+__decorate([
+    property({ type: Boolean })
+], LayoutHeader.prototype, "showForkButton", void 0);
 LayoutHeader = __decorate([
     customElement("app-header")
 ], LayoutHeader);

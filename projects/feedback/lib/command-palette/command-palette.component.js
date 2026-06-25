@@ -3,14 +3,16 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, signal
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 let CommandPaletteComponent = class CommandPaletteComponent {
-    commands = [];
-    placeholder = "Search commands...";
-    triggerShortcut = "Ctrl+K";
-    commandSelected = new EventEmitter();
-    closed = new EventEmitter();
-    isOpen = signal(false);
-    searchQuery = signal("");
-    selectedIndex = signal(0);
+    constructor() {
+        this.commands = [];
+        this.placeholder = "Search commands...";
+        this.triggerShortcut = "Ctrl+K";
+        this.commandSelected = new EventEmitter();
+        this.closed = new EventEmitter();
+        this.isOpen = signal(false);
+        this.searchQuery = signal("");
+        this.selectedIndex = signal(0);
+    }
     get filteredCommands() {
         const query = this.searchQuery().toLowerCase().trim();
         if (!query)

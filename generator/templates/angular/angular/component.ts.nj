@@ -1,9 +1,17 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import '@tauri-share/ui';
-import '@tauri-share/data';
-import '@tauri-share/feedback';
-import '@tauri-share/layout';
+{% if featuresInfo.hasUi %}
+import '@tauri-front/ui';
+{% endif %}
+{% if featuresInfo.hasData %}
+import '@tauri-front/data';
+{% endif %}
+{% if featuresInfo.hasFeedback %}
+import '@tauri-front/feedback';
+{% endif %}
+{% if featuresInfo.hasLayout %}
+import '@tauri-front/layout';
+{% endif %}
 
 @Component({
   selector: 'app-{{ kebab_name }}',

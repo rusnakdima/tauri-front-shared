@@ -3,10 +3,12 @@ import { Component, Input, forwardRef, ChangeDetectionStrategy, } from "@angular
 import { CommonModule } from "@angular/common";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 let SwitchComponent = class SwitchComponent {
-    disabled = false;
-    checked = false;
-    onChange = () => { };
-    onTouched = () => { };
+    constructor() {
+        this.disabled = false;
+        this.checked = false;
+        this.onChange = () => { };
+        this.onTouched = () => { };
+    }
     writeValue(value) {
         this.checked = value;
     }

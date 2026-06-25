@@ -2,10 +2,13 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppPagination = class AppPagination extends LitElement {
-    totalItems = 0;
-    currentPage = 1;
-    pageSize = 10;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.totalItems = 0;
+        this.currentPage = 1;
+        this.pageSize = 10;
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -45,7 +48,7 @@ let AppPagination = class AppPagination extends LitElement {
     .app-pagination-ellipsis {
       @apply px-1 text-[var(--text-muted)];
     }
-  `;
+  `; }
     get totalPages() {
         return Math.ceil(this.totalItems / this.pageSize);
     }

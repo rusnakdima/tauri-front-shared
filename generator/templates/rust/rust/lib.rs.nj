@@ -3,8 +3,8 @@ pub mod services;
 
 use std::sync::Arc;
 use tauri::Manager;
-use tauri_shared::services::logger::LoggerService;
-use tauri_shared::services::sync::SyncEngine;
+use tauri_front::services::logger::LoggerService;
+use tauri_front::services::sync::SyncEngine;
 use nosql_orm::prelude::JsonProvider;
 use nosql_orm::provider::DatabaseProvider;
 

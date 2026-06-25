@@ -2,8 +2,11 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let DataJsonView = class DataJsonView extends LitElement {
-    data = null;
-    indent = 2;
+    constructor() {
+        super(...arguments);
+        this.data = null;
+        this.indent = 2;
+    }
     highlightJson(json) {
         return json
             .replace(/&/g, "&amp;")
@@ -18,7 +21,7 @@ let DataJsonView = class DataJsonView extends LitElement {
     get formatted() {
         return JSON.stringify(this.data, null, this.indent);
     }
-    static styles = css `
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -56,7 +59,7 @@ let DataJsonView = class DataJsonView extends LitElement {
     .jv-null {
       color: #808080;
     }
-  `;
+  `; }
     render() {
         const highlighted = this.highlightJson(this.formatted);
         return html ` <pre class="app-json-view" .innerHTML=${highlighted}></pre> `;

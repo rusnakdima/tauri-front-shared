@@ -2,12 +2,15 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppBadge = class AppBadge extends LitElement {
-    label = "";
-    variant = "default";
-    size = "md";
-    icon = null;
-    removable = false;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.label = "";
+        this.variant = "default";
+        this.size = "md";
+        this.icon = null;
+        this.removable = false;
+    }
+    static { this.styles = css `
     :host {
       display: inline-flex;
     }
@@ -72,7 +75,7 @@ let AppBadge = class AppBadge extends LitElement {
     .app-badge-remove i {
       @apply text-xs;
     }
-  `;
+  `; }
     _handleRemove(e) {
         e.stopPropagation();
         this.dispatchEvent(new CustomEvent("remove", { bubbles: true, composed: true }));

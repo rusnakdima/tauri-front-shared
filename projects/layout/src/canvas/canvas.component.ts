@@ -30,6 +30,16 @@ export class SchemaCanvas extends LitElement {
       display: block;
       height: 100%;
       width: 100%;
+      background-image:
+        linear-gradient(var(--border-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    :host(.drag-over) {
+      background-color: rgba(88, 166, 255, 0.1);
+      outline: 2px dashed var(--accent);
+      outline-offset: -2px;
     }
 
     .canvas-wrapper {
@@ -37,7 +47,7 @@ export class SchemaCanvas extends LitElement {
       height: 100%;
       width: 100%;
       overflow: auto;
-      background: var(--bg-primary, #0f0f23);
+      background: var(--bg-primary);
     }
 
     .canvas-grid {
@@ -52,10 +62,10 @@ export class SchemaCanvas extends LitElement {
     .canvas-grid.show-grid {
       background-image: linear-gradient(
           to right,
-          var(--border-color, #0f3460) 1px,
+var(--border-color) 1px,
           transparent 1px
         ),
-        linear-gradient(to bottom, var(--border-color, #0f3460) 1px, transparent 1px);
+        linear-gradient(to bottom, var(--border-color) 1px, transparent 1px);
       background-size: calc(100% / var(--grid-cols)) 60px;
     }
 
@@ -75,16 +85,16 @@ export class SchemaCanvas extends LitElement {
       align-items: center;
       justify-content: center;
       padding: 2rem;
-      border: 2px dashed var(--border-color, #0f3460);
+      border: 2px dashed var(--border-color);
       border-radius: 8px;
-      color: var(--text-muted, #4a4a6a);
+      color: var(--text-muted);
       text-align: center;
       pointer-events: auto;
       transition: all 0.2s;
     }
 
     .canvas-placeholder.drag-over {
-      border-color: var(--accent, #e94560);
+      border-color: var(--accent);
       background: rgba(233, 69, 96, 0.05);
     }
 
@@ -104,8 +114,8 @@ export class SchemaCanvas extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--bg-secondary, #1a1a2e);
-      border: 2px solid var(--border-color, #0f3460);
+      background: var(--bg-secondary);
+      border: 2px solid var(--border-color);
       border-radius: 6px;
       cursor: pointer;
       transition: all 0.15s;
@@ -114,12 +124,12 @@ export class SchemaCanvas extends LitElement {
     }
 
     .canvas-element:hover {
-      border-color: var(--accent-secondary, #533483);
+      border-color: var(--accent-secondary);
       box-shadow: 0 0 0 2px rgba(83, 52, 131, 0.3);
     }
 
     .canvas-element.selected {
-      border-color: var(--accent, #e94560);
+      border-color: var(--accent);
       box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.3);
     }
 
@@ -137,17 +147,17 @@ export class SchemaCanvas extends LitElement {
 
     .element-icon {
       font-size: 1.5rem;
-      color: var(--accent, #e94560);
+color: var(--accent);
     }
 
     .element-name {
       font-size: 0.75rem;
-      color: var(--text-primary, #e0e0e0);
+      color: var(--text-primary);
     }
 
     .element-selector {
       font-size: 0.625rem;
-      color: var(--text-muted, #4a4a6a);
+      color: var(--text-muted);
       font-family: monospace;
     }
 
@@ -155,7 +165,7 @@ export class SchemaCanvas extends LitElement {
       position: absolute;
       width: 10px;
       height: 10px;
-      background: var(--accent, #e94560);
+      background: var(--accent);
       border-radius: 2px;
       opacity: 0;
       transition: opacity 0.15s;
@@ -261,7 +271,7 @@ export class SchemaCanvas extends LitElement {
   private _onElementClick(el: CanvasElement) {
     this.selectedId = el.id;
     this.dispatchEvent(
-      new CustomEvent("element-select", {
+      new CustomEvent("elementSelect", {
         detail: { element: el },
         bubbles: true,
         composed: true,
@@ -302,7 +312,7 @@ export class SchemaCanvas extends LitElement {
 
         this.elements = [...this.elements, newElement];
         this.dispatchEvent(
-          new CustomEvent("element-add", {
+          new CustomEvent("elementAdd", {
             detail: { element: newElement },
             bubbles: true,
             composed: true,

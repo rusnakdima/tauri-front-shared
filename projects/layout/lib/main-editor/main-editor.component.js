@@ -2,7 +2,7 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement } from "lit/decorators.js";
 let MainEditor = class MainEditor extends LitElement {
-    static styles = css `
+    static { this.styles = css `
     :host {
       display: block;
       height: 100%;
@@ -12,8 +12,8 @@ let MainEditor = class MainEditor extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--bg-primary, #1a1a1a);
-      color: var(--text-secondary, #888);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
       font-family: system-ui, sans-serif;
     }
     .placeholder {
@@ -28,7 +28,7 @@ let MainEditor = class MainEditor extends LitElement {
     .placeholder-text {
       font-size: 0.875rem;
     }
-  `;
+  `; }
     render() {
         return html `
       <div class="main-editor">

@@ -2,77 +2,134 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppButton = class AppButton extends LitElement {
-    variant = "primary";
-    size = "md";
-    disabled = false;
-    loading = false;
-    icon = null;
-    iconPosition = "left";
-    fullWidth = false;
-    type = "button";
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.variant = "primary";
+        this.size = "md";
+        this.disabled = false;
+        this.loading = false;
+        this.icon = null;
+        this.iconPosition = "left";
+        this.fullWidth = false;
+        this.type = "button";
+    }
+    static { this.styles = css `
     :host {
       display: inline-flex;
     }
 
     button {
-      @apply inline-flex items-center justify-center gap-2 rounded-lg border border-solid px-4 py-2 text-center font-medium transition-all cursor-pointer;
-      @apply disabled:cursor-not-allowed;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid;
+      padding: 0.5rem 1rem;
+      text-align: center;
+      font-weight: 500;
+      transition: all 0.15s;
+      cursor: pointer;
       border-width: 1px;
     }
 
     button:disabled {
-      @apply opacity-50 cursor-not-allowed;
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .app-btn-primary {
-      @apply border-[var(--accent)] bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] hover:border-[var(--accent-hover)];
+      border-color: var(--accent);
+      background-color: var(--accent);
+      color: var(--text-on-accent);
+    }
+    .app-btn-primary:hover {
+      background-color: var(--accent-hover);
+      border-color: var(--accent-hover);
     }
 
     .app-btn-secondary {
-      @apply border-[var(--border-color)] bg-[var(--bg-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)];
+      border-color: var(--border-color);
+      background-color: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+    .app-btn-secondary:hover {
+      background-color: var(--bg-hover);
     }
 
     .app-btn-danger {
-      @apply border-[var(--error)] bg-[var(--error)] text-white hover:opacity-90;
+      border-color: var(--error);
+      background-color: var(--error);
+      color: var(--text-on-error);
+    }
+    .app-btn-danger:hover {
+      opacity: 0.9;
     }
 
     .app-btn-warning {
-      @apply border-[var(--warning)] bg-[var(--warning)] text-white hover:opacity-90;
+      border-color: var(--warning);
+      background-color: var(--warning);
+      color: var(--text-on-warning);
+    }
+    .app-btn-warning:hover {
+      opacity: 0.9;
     }
 
     .app-btn-success {
-      @apply border-[var(--success)] bg-[var(--success)] text-white hover:opacity-90;
+      border-color: var(--success);
+      background-color: var(--success);
+      color: var(--text-on-success);
+    }
+    .app-btn-success:hover {
+      opacity: 0.9;
     }
 
     .app-btn-ghost {
-      @apply border-transparent bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)];
+      border-color: transparent;
+      background-color: transparent;
+      color: var(--text-secondary);
+    }
+    .app-btn-ghost:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
     }
 
     .app-btn-sm {
-      @apply px-3 py-1 text-sm;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.875rem;
     }
 
     .app-btn-md {
-      @apply px-4 py-2 text-base;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
     }
 
     .app-btn-lg {
-      @apply px-6 py-3 text-lg;
+      padding: 0.75rem 1.5rem;
+      font-size: 1.125rem;
     }
 
     .app-btn-full {
-      @apply w-full;
+      width: 100%;
     }
 
     .app-btn-icon {
-      @apply text-xl;
+      font-size: 1.25rem;
     }
 
     .app-btn-spinner {
-      @apply w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
     }
-  `;
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  `; }
     _handleClick(e) {
         if (this.disabled || this.loading) {
             e.preventDefault();

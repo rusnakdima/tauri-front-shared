@@ -2,13 +2,14 @@ import { __decorate } from "tslib";
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, signal, } from "@angular/core";
 import { CommonModule } from "@angular/common";
 let SnackbarComponent = class SnackbarComponent {
-    type = "default";
-    message = "";
-    duration = 2500;
-    autoDismiss = true;
-    dismissed = new EventEmitter();
-    isVisible = signal(false);
-    timeoutId;
+    constructor() {
+        this.type = "default";
+        this.message = "";
+        this.duration = 2500;
+        this.autoDismiss = true;
+        this.dismissed = new EventEmitter();
+        this.isVisible = signal(false);
+    }
     ngOnInit() {
         this.isVisible.set(true);
         if (this.autoDismiss && this.duration > 0) {

@@ -2,10 +2,13 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let PageContainer = class PageContainer extends LitElement {
-    title = "";
-    subtitle = "";
-    responsivePadding = true;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.title = "";
+        this.subtitle = "";
+        this.responsivePadding = true;
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -53,7 +56,7 @@ let PageContainer = class PageContainer extends LitElement {
       flex: 1;
       overflow: auto;
     }
-  `;
+  `; }
     render() {
         return html `
       <div

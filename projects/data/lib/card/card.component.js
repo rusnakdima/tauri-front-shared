@@ -2,16 +2,19 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let DataCard = class DataCard extends LitElement {
-    cardTitle = "";
-    subtitle = "";
-    footer = "";
-    hoverable = false;
-    elevated = false;
-    gridCol = "";
-    gridRow = "";
-    gridColSpan = 1;
-    gridRowSpan = 1;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.cardTitle = "";
+        this.subtitle = "";
+        this.footer = "";
+        this.hoverable = false;
+        this.elevated = false;
+        this.gridCol = "";
+        this.gridRow = "";
+        this.gridColSpan = 1;
+        this.gridRowSpan = 1;
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -76,7 +79,7 @@ let DataCard = class DataCard extends LitElement {
       padding-top: 0.75rem;
       margin-top: 0.25rem;
     }
-  `;
+  `; }
     render() {
         const style = {};
         if (this.gridCol)

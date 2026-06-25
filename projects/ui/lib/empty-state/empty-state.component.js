@@ -2,11 +2,13 @@ import { __decorate } from "tslib";
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, } from "@angular/core";
 import { CommonModule } from "@angular/common";
 let EmptyStateComponent = class EmptyStateComponent {
-    icon = null;
-    title = "";
-    message = "";
-    actionLabel = null;
-    action = new EventEmitter();
+    constructor() {
+        this.icon = null;
+        this.title = "";
+        this.message = "";
+        this.actionLabel = null;
+        this.action = new EventEmitter();
+    }
     onAction() {
         this.action.emit();
     }

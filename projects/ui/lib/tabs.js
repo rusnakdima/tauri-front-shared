@@ -2,10 +2,13 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppTabs = class AppTabs extends LitElement {
-    tabs = [];
-    activeTab = null;
-    orientation = "horizontal";
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.tabs = [];
+        this.activeTab = null;
+        this.orientation = "horizontal";
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -59,7 +62,7 @@ let AppTabs = class AppTabs extends LitElement {
     .app-tabs-content {
       @apply flex-1 p-4;
     }
-  `;
+  `; }
     _selectTab(tabId, disabled) {
         if (disabled)
             return;

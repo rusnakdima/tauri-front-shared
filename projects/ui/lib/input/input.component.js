@@ -7,16 +7,18 @@ const inputVariants = {
     error: "app-input-error",
 };
 let InputComponent = class InputComponent {
-    type = "text";
-    placeholder = "";
-    label = null;
-    disabled = false;
-    error = null;
-    icon = null;
-    value = "";
-    focused = false;
-    onChange = () => { };
-    onTouched = () => { };
+    constructor() {
+        this.type = "text";
+        this.placeholder = "";
+        this.label = null;
+        this.disabled = false;
+        this.error = null;
+        this.icon = null;
+        this.value = "";
+        this.focused = false;
+        this.onChange = () => { };
+        this.onTouched = () => { };
+    }
     get inputClass() {
         const state = this.error ? "error" : "default";
         const classes = ["app-input", inputVariants[state]];

@@ -2,9 +2,12 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppSwitch = class AppSwitch extends LitElement {
-    disabled = false;
-    checked = false;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.disabled = false;
+        this.checked = false;
+    }
+    static { this.styles = css `
     :host {
       display: inline-flex;
     }
@@ -31,7 +34,7 @@ let AppSwitch = class AppSwitch extends LitElement {
     .app-switch-checked .app-switch-thumb {
       transform: translateX(20px);
     }
-  `;
+  `; }
     _toggle() {
         if (this.disabled)
             return;

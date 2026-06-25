@@ -2,10 +2,13 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppTooltip = class AppTooltip extends LitElement {
-    content = "";
-    position = "top";
-    show = false;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.content = "";
+        this.position = "top";
+        this.show = false;
+    }
+    static { this.styles = css `
     :host {
       display: inline-block;
     }
@@ -34,7 +37,7 @@ let AppTooltip = class AppTooltip extends LitElement {
     .app-tooltip-right {
       @apply left-full top-1/2 -translate-y-1/2 ml-2;
     }
-  `;
+  `; }
     render() {
         return html `
       <div class="app-tooltip-wrapper">

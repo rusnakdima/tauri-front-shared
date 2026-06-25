@@ -10,6 +10,7 @@ export * from "./bottom-panel/bottom-panel.component.js";
 export * from "./designer-sidebar/designer-sidebar.component.js";
 export * from "./component-palette/component-palette.component.js";
 export * from "./canvas/canvas.component.js";
+export * from "./canvas-toolbar/canvas-toolbar.component.js";
 export * from "./properties-panel/properties-panel.component.js";
 export * from "./types.js";
 export { layoutComponents as components } from "./components.js";

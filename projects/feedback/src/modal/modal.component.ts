@@ -1,145 +1,109 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  ChangeDetectionStrategy,
-  signal,
-  ElementRef,
-  ViewChild,
-  AfterViewInit,
-  OnDestroy,
-  HostListener,
-} from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { LitElement, html, css } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 
-export type ModalSize = "sm" | "md" | "lg" | "xl" | "full";
+@customElement('app-modal')
+export class Modal extends LitElement {
+  static override styles = css`
+    :host {
+      display: contents;
+    }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    :host([open]) .modal-overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-content {
+      background: var(--bg-elevated, #21262d);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg, 0 10px 15px rgba(0,0,0,0.5));
+      width: 90%;
+      max-width: var(--modal-width, 600px);
+      max-height: 80vh;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color, #30363d);
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary, #e6edf3);
+      margin: 0;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: var(--text-secondary, #8b949e);
+    }
+    .modal-close:hover {
+      color: var(--text-primary, #e6edf3);
+    }
+    .modal-body {
+      padding: 20px;
+      flex: 1;
+      overflow: auto;
+    }
+    /* Size variants */
+    :host([size="sm"]) .modal-content { max-width: 400px; }
+    :host([size="lg"]) .modal-content { max-width: 800px; }
+    :host([size="xl"]) .modal-content { max-width: 1000px; }
+  `;
 
-@Component({
-  selector: "app-modal",
-  standalone: true,
-  imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: "./modal.component.html",
-  styleUrl: "./modal.component.css",
-})
-export class ModalComponent implements AfterViewInit, OnDestroy {
-  @Input() open = false;
-  @Input() title = "";
-  @Input() size: ModalSize = "md";
-  @Input() closeOnBackdrop = true;
-  @Input() closeOnEscape = true;
-  @Input() showHeader = true;
-  @Input() showFooter = true;
-  @Input() zIndex = 1050;
+  @property({ type: Boolean, reflect: true }) open = false;
+  @property({ type: String }) modalTitle = '';
+  @property({ type: Boolean }) closable = true;
+  @property({ type: String }) size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
 
-  @Output() closed = new EventEmitter<void>();
-
-  @ViewChild("modalContent") modalContent!: ElementRef<HTMLElement>;
-
-  private previousActiveElement: HTMLElement | null = null;
-
-  ngAfterViewInit(): void {}
-
-  ngOnDestroy(): void {
-    this.restoreBodyOverflow();
+  private _close(): void {
+    this.open = false;
+    this.dispatchEvent(new CustomEvent('close', { bubbles: true, composed: true }));
   }
 
-  @HostListener("document:keydown.escape")
-  onEscape(event: KeyboardEvent): void {
-    if (this.open && this.closeOnEscape) {
-      event.preventDefault();
-      this.close();
+  private _handleOverlayClick(e: MouseEvent): void {
+    if (e.target === e.currentTarget && this.closable) {
+      this._close();
     }
   }
 
-  get maxWidth(): string {
-    switch (this.size) {
-      case "sm":
-        return "320px";
-      case "md":
-        return "480px";
-      case "lg":
-        return "640px";
-      case "xl":
-        return "800px";
-      case "full":
-        return "100vw";
-      default:
-        return "480px";
-    }
-  }
-
-  get isFullScreen(): boolean {
-    return this.size === "full";
-  }
-
-  onBackdropClick(): void {
-    if (this.closeOnBackdrop) {
-      this.close();
-    }
-  }
-
-  onClose(): void {
-    this.close();
-  }
-
-  close(): void {
-    this.restoreBodyOverflow();
-    this.closed.emit();
-  }
-
-  private trapFocus(event: KeyboardEvent): void {
-    if (!this.modalContent || !this.open) return;
-
-    const focusableElements =
-      this.modalContent.nativeElement.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-      );
-
-    if (focusableElements.length === 0) return;
-
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-
-    if (event.shiftKey && document.activeElement === firstElement) {
-      event.preventDefault();
-      lastElement.focus();
-    } else if (!event.shiftKey && document.activeElement === lastElement) {
-      event.preventDefault();
-      firstElement.focus();
-    }
-  }
-
-  private handleBodyOverflow(): void {
-    if (this.open) {
-      this.previousActiveElement = document.activeElement as HTMLElement;
-      document.body.style.overflow = "hidden";
-      document.addEventListener("keydown", this.trapFocus.bind(this));
-    }
-  }
-
-  private restoreBodyOverflow(): void {
-    document.body.style.overflow = "";
-    document.removeEventListener("keydown", this.trapFocus.bind(this));
-    if (this.previousActiveElement) {
-      this.previousActiveElement.focus();
-      this.previousActiveElement = null;
-    }
-  }
-
-  ngOnChanges(): void {
-    if (this.open) {
-      this.handleBodyOverflow();
-      setTimeout(() => {
-        const firstFocusable =
-          this.modalContent?.nativeElement?.querySelector<HTMLElement>(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-          );
-        firstFocusable?.focus();
-      }, 0);
-    } else {
-      this.restoreBodyOverflow();
-    }
+  override render() {
+    return html`
+      <div class="modal-overlay" @click="${this._handleOverlayClick}">
+        <div class="modal-content">
+          ${this.modalTitle ? html`
+            <div class="modal-header">
+              <h3 class="modal-title">${this.modalTitle}</h3>
+              ${this.closable ? html`
+                <button class="modal-close" @click="${this._close}">
+                  <mat-icon>close</mat-icon>
+                </button>
+              ` : ''}
+            </div>
+          ` : ''}
+          <div class="modal-body">
+            <slot></slot>
+          </div>
+        </div>
+      </div>
+    `;
   }
 }

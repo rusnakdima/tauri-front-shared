@@ -2,12 +2,14 @@ import { __decorate } from "tslib";
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, } from "@angular/core";
 import { CommonModule } from "@angular/common";
 let ChipComponent = class ChipComponent {
-    label = "";
-    icon = null;
-    removable = false;
-    selected = false;
-    removed = new EventEmitter();
-    selectedChange = new EventEmitter();
+    constructor() {
+        this.label = "";
+        this.icon = null;
+        this.removable = false;
+        this.selected = false;
+        this.removed = new EventEmitter();
+        this.selectedChange = new EventEmitter();
+    }
     onRemove(event) {
         event.stopPropagation();
         this.removed.emit();

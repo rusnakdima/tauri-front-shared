@@ -1,10 +1,8 @@
 import { __decorate } from "tslib";
 import { Injectable } from '@angular/core';
 let IndexedDbService = class IndexedDbService {
-    dbName;
-    storeName;
-    db = null;
     constructor(dbName = 'tauri-app-db', storeName = 'key-value-store') {
+        this.db = null;
         this.dbName = dbName;
         this.storeName = storeName;
         this.initDb();

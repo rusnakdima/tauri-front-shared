@@ -14,11 +14,16 @@
   },
   "scripts": {
     "build": "tsc",
+    "build:watch": "tsc --watch --preserveWatchOutput",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@tauri-front/core": "^0.1.0",
     "@tauri-front/ui": "^0.1.0",
     "lit": "^3.1.0"
+  },
+  "peerDependencies": {
+    "@tauri-front/core": "^0.1.0"
   },
   "devDependencies": {
     "typescript": "^5.3.0"

@@ -2,15 +2,18 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppButton = class AppButton extends LitElement {
-    variant = "primary";
-    size = "md";
-    disabled = false;
-    loading = false;
-    icon = null;
-    iconPosition = "left";
-    fullWidth = false;
-    type = "button";
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.variant = "primary";
+        this.size = "md";
+        this.disabled = false;
+        this.loading = false;
+        this.icon = null;
+        this.iconPosition = "left";
+        this.fullWidth = false;
+        this.type = "button";
+    }
+    static { this.styles = css `
     :host {
       display: inline-flex;
     }
@@ -72,7 +75,7 @@ let AppButton = class AppButton extends LitElement {
     .app-btn-spinner {
       @apply w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
     }
-  `;
+  `; }
     _handleClick(e) {
         if (this.disabled || this.loading) {
             e.preventDefault();

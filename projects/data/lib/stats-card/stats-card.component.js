@@ -2,11 +2,14 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let DataStatsCard = class DataStatsCard extends LitElement {
-    label = "";
-    value = "";
-    icon = "";
-    iconBgClass = "bg-accent";
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.label = "";
+        this.value = "";
+        this.icon = "";
+        this.iconBgClass = "bg-accent";
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -59,7 +62,7 @@ let DataStatsCard = class DataStatsCard extends LitElement {
       color: var(--text-primary);
       line-height: 1.2;
     }
-  `;
+  `; }
     render() {
         return html `
       <div class="app-stats-card">

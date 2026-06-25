@@ -2,8 +2,10 @@ import { __decorate } from "tslib";
 import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 let LoadingComponent = class LoadingComponent {
-    variant = "spinner";
-    size = "md";
+    constructor() {
+        this.variant = "spinner";
+        this.size = "md";
+    }
 };
 __decorate([
     Input()

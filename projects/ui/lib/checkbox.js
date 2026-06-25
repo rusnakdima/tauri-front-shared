@@ -2,11 +2,14 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppCheckbox = class AppCheckbox extends LitElement {
-    label = "";
-    disabled = false;
-    checked = false;
-    indeterminate = false;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.label = "";
+        this.disabled = false;
+        this.checked = false;
+        this.indeterminate = false;
+    }
+    static { this.styles = css `
     :host {
       display: inline-flex;
     }
@@ -44,7 +47,7 @@ let AppCheckbox = class AppCheckbox extends LitElement {
     .app-checkbox-label {
       @apply text-[var(--text-primary)] text-sm;
     }
-  `;
+  `; }
     get state() {
         if (this.indeterminate)
             return "indeterminate";

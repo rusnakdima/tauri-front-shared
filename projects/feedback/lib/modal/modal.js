@@ -2,7 +2,20 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let AppModal = class AppModal extends LitElement {
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.open = false;
+        this.title = "";
+        this.size = "md";
+        this.closeOnBackdrop = true;
+        this.closeOnEscape = true;
+        this.showHeader = true;
+        this.showFooter = true;
+        this.zIndex = 1050;
+        this._previousActiveElement = null;
+        this._handleKeydown = this._onKeyDown.bind(this);
+    }
+    static { this.styles = css `
     :host {
       display: contents;
     }
@@ -122,18 +135,7 @@ let AppModal = class AppModal extends LitElement {
       background-color: var(--bg-secondary, #f9fafb);
       flex-shrink: 0;
     }
-  `;
-    open = false;
-    title = "";
-    size = "md";
-    closeOnBackdrop = true;
-    closeOnEscape = true;
-    showHeader = true;
-    showFooter = true;
-    zIndex = 1050;
-    _previousActiveElement = null;
-    _modalContent;
-    _handleKeydown = this._onKeyDown.bind(this);
+  `; }
     updated(changedProps) {
         if (changedProps.has("open")) {
             if (this.open) {

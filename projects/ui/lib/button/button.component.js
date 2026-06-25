@@ -2,15 +2,17 @@ import { __decorate } from "tslib";
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, } from "@angular/core";
 import { CommonModule } from "@angular/common";
 let ButtonComponent = class ButtonComponent {
-    variant = "primary";
-    size = "md";
-    disabled = false;
-    loading = false;
-    icon = null;
-    iconPosition = "left";
-    fullWidth = false;
-    type = "button";
-    clicked = new EventEmitter();
+    constructor() {
+        this.variant = "primary";
+        this.size = "md";
+        this.disabled = false;
+        this.loading = false;
+        this.icon = null;
+        this.iconPosition = "left";
+        this.fullWidth = false;
+        this.type = "button";
+        this.clicked = new EventEmitter();
+    }
     get buttonClass() {
         const classes = [
             "app-btn",

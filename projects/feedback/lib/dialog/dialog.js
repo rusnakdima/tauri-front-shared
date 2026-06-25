@@ -2,7 +2,17 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppDialog = class AppDialog extends LitElement {
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.show = false;
+        this.title = "";
+        this.size = "md";
+        this.zIndex = 1050;
+        this.backdropClose = true;
+        this.showClose = true;
+        this.showHeader = true;
+    }
+    static { this.styles = css `
     :host {
       display: contents;
     }
@@ -86,14 +96,7 @@ let AppDialog = class AppDialog extends LitElement {
       overflow-y: auto;
       flex: 1;
     }
-  `;
-    show = false;
-    title = "";
-    size = "md";
-    zIndex = 1050;
-    backdropClose = true;
-    showClose = true;
-    showHeader = true;
+  `; }
     _handleBackdropClick() {
         if (this.backdropClose) {
             this._close();

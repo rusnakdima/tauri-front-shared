@@ -2,10 +2,26 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let LayoutSidebar = class LayoutSidebar extends LitElement {
-    items = [];
-    collapsed = false;
-    active = "";
-    _collapsed = false;
+    constructor() {
+        super(...arguments);
+        this.items = [];
+        this.collapsed = false;
+        this.active = "";
+        this._collapsed = false;
+        this._handleResize = () => {
+            this._checkViewport();
+        };
+    }
+    _checkViewport() {
+        if (window.innerWidth < 768 && !this._collapsed) {
+            this._collapsed = true;
+            this.dispatchEvent(new CustomEvent("collapsed-change", {
+                detail: true,
+                bubbles: true,
+                composed: true,
+            }));
+        }
+    }
     updated(changedProperties) {
         if (changedProperties.has("collapsed")) {
             this._collapsed = this.collapsed;
@@ -14,6 +30,11 @@ let LayoutSidebar = class LayoutSidebar extends LitElement {
     connectedCallback() {
         super.connectedCallback();
         this._collapsed = this.collapsed;
+        window.addEventListener("resize", this._handleResize);
+    }
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        window.removeEventListener("resize", this._handleResize);
     }
     _toggleCollapse() {
         this._collapsed = !this._collapsed;
@@ -35,7 +56,7 @@ let LayoutSidebar = class LayoutSidebar extends LitElement {
     _isActive(item) {
         return item.id === this.active;
     }
-    static styles = css `
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -46,8 +67,13 @@ let LayoutSidebar = class LayoutSidebar extends LitElement {
       height: 100%;
       background: var(--bg-secondary);
       border-right: 1px solid var(--border-color);
-      transition: width 0.2s;
+      transition: width 0.3s ease, background-color 0.2s ease;
       width: 240px;
+      backdrop-filter: blur(10px);
+    }
+
+    .sidebar-item:hover {
+      background: var(--bg-hover);
     }
 
     .app-sidebar-collapsed {
@@ -136,7 +162,7 @@ let LayoutSidebar = class LayoutSidebar extends LitElement {
       overflow: hidden;
       text-overflow: ellipsis;
     }
-  `;
+  `; }
     render() {
         return html `
       <aside

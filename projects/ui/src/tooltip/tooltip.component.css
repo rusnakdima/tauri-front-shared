@@ -3,7 +3,7 @@
 }
 
 .app-tooltip {
-  @apply absolute z-50 px-2 py-1 text-xs text-white bg-[var(--bg-elevated)] rounded shadow-lg;
+  @apply absolute z-50 px-2 py-1 text-xs bg-[var(--bg-elevated)] text-[var(--text-primary)] rounded shadow-lg;
   @apply whitespace-nowrap;
 }
 

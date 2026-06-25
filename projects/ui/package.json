@@ -12,15 +12,8 @@
       "types": "./lib/index.d.ts"
     }
   },
-  "scripts": {
-    "build": "tsc && npm run build:lit",
-    "build:lit": "tsc --project tsconfig.lit.json",
-    "lint": "tsc --noEmit"
-  },
-  "dependencies": {
-    "lit": "^3.1.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.3.0"
+"scripts": {
+    "build": "tsc --project tsconfig.lit.json",
+    "build:watch": "tsc --project tsconfig.lit.json --watch --preserveWatchOutput"
   }
 }

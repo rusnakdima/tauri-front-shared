@@ -5,7 +5,7 @@
 }
 
 .app-btn-primary {
-  @apply border-[var(--accent)] bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] hover:border-[var(--accent-hover)];
+  @apply border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] hover:bg-[var(--accent-hover)] hover:border-[var(--accent-hover)];
 }
 
 .app-btn-secondary {
@@ -13,15 +13,15 @@
 }
 
 .app-btn-danger {
-  @apply border-[var(--error)] bg-[var(--error)] text-white hover:opacity-90;
+  @apply border-[var(--error)] bg-[var(--error)] text-[var(--text-on-error)] hover:opacity-90;
 }
 
 .app-btn-warning {
-  @apply border-[var(--warning)] bg-[var(--warning)] text-white hover:opacity-90;
+  @apply border-[var(--warning)] bg-[var(--warning)] text-[var(--text-on-warning)] hover:opacity-90;
 }
 
 .app-btn-success {
-  @apply border-[var(--success)] bg-[var(--success)] text-white hover:opacity-90;
+  @apply border-[var(--success)] bg-[var(--success)] text-[var(--text-on-success)] hover:opacity-90;
 }
 
 .app-btn-ghost {

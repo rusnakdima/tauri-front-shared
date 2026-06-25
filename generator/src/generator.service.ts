@@ -1,11 +1,26 @@
 import { renderAngularPages, renderAngularRoutes, renderAngularApp } from './angular-generator.js';
 import { renderRustLib, renderRustCommands, renderTauriConfig } from './rust-generator.js';
-import type { GeneratorOptions, UiSchema, PageContext, EntityContext } from './types.js';
+import type { GeneratorOptions, UiSchema, PageContext, EntityContext, FeatureInfo } from './types.js';
+import { AVAILABLE_FEATURES } from './types.js';
+
+const FEATURE_PACKAGE_MAP: Record<string, string> = {
+  'core-api': '@tauri-front/core',
+  'ui': '@tauri-front/ui',
+  'layout': '@tauri-front/layout',
+  'theme': '@tauri-front/core',
+  'events': '@tauri-front/core',
+  'data': '@tauri-front/data',
+  'feedback': '@tauri-front/feedback',
+  'storage': '@tauri-front/storage',
+  'grid': '@tauri-front/grid',
+};
 
 export class GeneratorService {
   async generate(options: GeneratorOptions, schema: UiSchema): Promise<void> {
     const pages = this.buildPageContexts(schema.pages || []);
     const entities = this.buildEntityContexts(schema);
+    const features = this.resolveFeatures(options.features);
+    const featuresInfo = this.buildFeaturesInfo(features);
 
     const context = {
       appName: options.appName,
@@ -17,6 +32,8 @@ export class GeneratorService {
       schema,
       pages,
       entities,
+      features,
+      featuresInfo,
     };
 
     await Promise.all([
@@ -81,6 +98,33 @@ export class GeneratorService {
 
   private toSnake(name: string): string {
     return name.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
+  }
+
+  private resolveFeatures(requestedFeatures?: string[]): string[] {
+    if (!requestedFeatures || requestedFeatures.length === 0) {
+      return [...AVAILABLE_FEATURES];
+    }
+    return requestedFeatures.filter(f => AVAILABLE_FEATURES.includes(f as any));
+  }
+
+  private buildFeaturesInfo(features: string[]): FeatureInfo {
+    const packageSet = new Set<string>();
+    for (const feature of features) {
+      const pkg = FEATURE_PACKAGE_MAP[feature];
+      if (pkg) packageSet.add(pkg);
+    }
+    return {
+      hasCoreApi: features.includes('core-api'),
+      hasUi: features.includes('ui'),
+      hasLayout: features.includes('layout'),
+      hasTheme: features.includes('theme'),
+      hasEvents: features.includes('events'),
+      hasData: features.includes('data'),
+      hasFeedback: features.includes('feedback'),
+      hasStorage: features.includes('storage'),
+      hasGrid: features.includes('grid'),
+      packageNames: Array.from(packageSet),
+    };
   }
 }
 

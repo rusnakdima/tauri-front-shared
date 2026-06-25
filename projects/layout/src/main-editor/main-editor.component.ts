@@ -13,8 +13,8 @@ export class MainEditor extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--bg-primary, #1a1a1a);
-      color: var(--text-secondary, #888);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
       font-family: system-ui, sans-serif;
     }
     .placeholder {

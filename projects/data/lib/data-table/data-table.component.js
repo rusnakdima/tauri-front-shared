@@ -2,11 +2,14 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let DataDataTable = class DataDataTable extends LitElement {
-    columns = [];
-    data = [];
-    selectable = false;
-    selectedKey = "";
-    selectedRow = null;
+    constructor() {
+        super(...arguments);
+        this.columns = [];
+        this.data = [];
+        this.selectable = false;
+        this.selectedKey = "";
+        this.selectedRow = null;
+    }
     onRowClick(row) {
         if (!this.selectable)
             return;
@@ -23,7 +26,7 @@ let DataDataTable = class DataDataTable extends LitElement {
         return (this.selectedRow !== null &&
             this.selectedRow[this.selectedKey] === row[this.selectedKey]);
     }
-    static styles = css `
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -103,7 +106,7 @@ let DataDataTable = class DataDataTable extends LitElement {
       color: var(--text-muted);
       padding: 2rem;
     }
-  `;
+  `; }
     render() {
         return html `
       <div class="app-data-table">

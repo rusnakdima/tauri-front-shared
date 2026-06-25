@@ -2,14 +2,15 @@ import { __decorate } from "tslib";
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, signal, } from "@angular/core";
 import { CommonModule } from "@angular/common";
 let ToastComponent = class ToastComponent {
-    type = "info";
-    message = "";
-    duration = 3000;
-    autoDismiss = true;
-    show = false;
-    dismissed = new EventEmitter();
-    isVisible = signal(false);
-    timeoutId;
+    constructor() {
+        this.type = "info";
+        this.message = "";
+        this.duration = 3000;
+        this.autoDismiss = true;
+        this.show = false;
+        this.dismissed = new EventEmitter();
+        this.isVisible = signal(false);
+    }
     ngOnInit() {
         if (this.show && this.autoDismiss) {
             this.startTimer();

@@ -15,6 +15,6 @@
 }
 
 .app-empty-state-action {
-  @apply px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-sm font-medium;
+  @apply px-4 py-2 rounded-lg bg-[var(--accent)] text-[var(--text-on-accent)] text-sm font-medium;
   @apply hover:opacity-90 transition-opacity;
 }

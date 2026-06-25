@@ -2,11 +2,14 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppEmptyState = class AppEmptyState extends LitElement {
-    icon = null;
-    title = "";
-    message = "";
-    actionLabel = null;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.icon = null;
+        this.title = "";
+        this.message = "";
+        this.actionLabel = null;
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -33,7 +36,7 @@ let AppEmptyState = class AppEmptyState extends LitElement {
       border: none;
       cursor: pointer;
     }
-  `;
+  `; }
     _handleAction() {
         this.dispatchEvent(new CustomEvent("action", { bubbles: true, composed: true }));
     }

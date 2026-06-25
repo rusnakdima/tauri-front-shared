@@ -2,38 +2,62 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppEmptyState = class AppEmptyState extends LitElement {
-    icon = null;
-    title = "";
-    message = "";
-    actionLabel = null;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.icon = null;
+        this.title = "";
+        this.message = "";
+        this.actionLabel = null;
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
 
     .app-empty-state {
-      @apply flex flex-col items-center justify-center text-center p-8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
     }
 
     .app-empty-state-icon {
-      @apply text-6xl text-[var(--text-muted)] mb-4;
+      font-size: 3.75rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
     }
 
     .app-empty-state-title {
-      @apply text-lg font-semibold text-[var(--text-primary)] mb-2;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
     }
 
     .app-empty-state-message {
-      @apply text-sm text-[var(--text-secondary)] mb-4 max-w-sm;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      max-width: 24rem;
     }
 
     .app-empty-state-action {
-      @apply px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-sm font-medium;
-      @apply hover:opacity-90 transition-opacity;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      background-color: var(--accent);
+      color: var(--text-on-accent);
+      font-size: 0.875rem;
+      font-weight: 500;
       border: none;
       cursor: pointer;
+      transition: opacity 0.15s;
     }
-  `;
+    .app-empty-state-action:hover {
+      opacity: 0.9;
+    }
+  `; }
     _handleAction() {
         this.dispatchEvent(new CustomEvent("action", { bubbles: true, composed: true }));
     }

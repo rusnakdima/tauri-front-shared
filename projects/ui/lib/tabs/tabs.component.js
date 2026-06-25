@@ -2,10 +2,12 @@ import { __decorate } from "tslib";
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, } from "@angular/core";
 import { CommonModule } from "@angular/common";
 let TabsComponent = class TabsComponent {
-    tabs = [];
-    activeTab = null;
-    orientation = "horizontal";
-    tabChange = new EventEmitter();
+    constructor() {
+        this.tabs = [];
+        this.activeTab = null;
+        this.orientation = "horizontal";
+        this.tabChange = new EventEmitter();
+    }
     selectTab(tabId, disabled) {
         if (disabled)
             return;

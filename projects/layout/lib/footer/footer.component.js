@@ -2,13 +2,16 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let LayoutFooter = class LayoutFooter extends LitElement {
-    text = "";
-    showVersion = true;
-    version = "1.0.0";
+    constructor() {
+        super(...arguments);
+        this.text = "";
+        this.showVersion = true;
+        this.version = "1.0.0";
+    }
     get _currentYear() {
         return new Date().getFullYear();
     }
-    static styles = css `
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -35,7 +38,7 @@ let LayoutFooter = class LayoutFooter extends LitElement {
       background: var(--bg-tertiary);
       border-radius: 0.25rem;
     }
-  `;
+  `; }
     render() {
         return html `
       <footer class="app-footer">

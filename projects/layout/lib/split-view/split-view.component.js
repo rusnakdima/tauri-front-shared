@@ -2,11 +2,14 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let SplitView = class SplitView extends LitElement {
-    mode = "horizontal";
-    dividerPosition = 50;
-    minFirstSize = "200px";
-    minSecondSize = "200px";
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.mode = "horizontal";
+        this.dividerPosition = 50;
+        this.minFirstSize = "200px";
+        this.minSecondSize = "200px";
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -47,7 +50,7 @@ let SplitView = class SplitView extends LitElement {
       height: 8px;
       cursor: row-resize;
     }
-  `;
+  `; }
     render() {
         return html `
       <div

@@ -23,10 +23,27 @@
     "@angular/router": "^{{ angular_version | default('20.0.0') }}",
     "@tauri-apps/api": "^{{ tauri_api_version | default('2.0.0') }}",
     "@tauri-apps/plugin-shell": "^{{ tauri_api_version | default('2.0.0') }}",
-    "@tauri-share/angular": "^{{ tauri_share_version | default('1.0.0') }}",
-    "@tauri-share/ui": "^{{ tauri_share_version | default('1.0.0') }}",
-    "@tauri-share/data": "^{{ tauri_share_version | default('1.0.0') }}",
-    "@tauri-share/feedback": "^{{ tauri_share_version | default('1.0.0') }}",
+    {% if featuresInfo.hasCoreApi %}
+    "@tauri-front/core": "^{{ tauri_share_version | default('0.1.0') }}",
+    {% endif %}
+    {% if featuresInfo.hasUi %}
+    "@tauri-front/ui": "^{{ tauri_share_version | default('0.1.0') }}",
+    {% endif %}
+    {% if featuresInfo.hasLayout %}
+    "@tauri-front/layout": "^{{ tauri_share_version | default('0.1.0') }}",
+    {% endif %}
+    {% if featuresInfo.hasData %}
+    "@tauri-front/data": "^{{ tauri_share_version | default('0.1.0') }}",
+    {% endif %}
+    {% if featuresInfo.hasFeedback %}
+    "@tauri-front/feedback": "^{{ tauri_share_version | default('0.1.0') }}",
+    {% endif %}
+    {% if featuresInfo.hasStorage %}
+    "@tauri-front/storage": "^{{ tauri_share_version | default('0.1.0') }}",
+    {% endif %}
+    {% if featuresInfo.hasGrid %}
+    "@tauri-front/grid": "^{{ tauri_share_version | default('0.1.0') }}",
+    {% endif %}
     "rxjs": "~7.8.0",
     "tslib": "^2.6.0",
     "zone.js": "~0.15.0"

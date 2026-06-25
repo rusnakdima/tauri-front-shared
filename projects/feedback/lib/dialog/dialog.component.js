@@ -2,14 +2,16 @@ import { __decorate } from "tslib";
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, } from "@angular/core";
 import { CommonModule } from "@angular/common";
 let DialogComponent = class DialogComponent {
-    show = false;
-    title = "";
-    size = "md";
-    zIndex = 1050;
-    backdropClose = true;
-    showClose = true;
-    showHeader = true;
-    closed = new EventEmitter();
+    constructor() {
+        this.show = false;
+        this.title = "";
+        this.size = "md";
+        this.zIndex = 1050;
+        this.backdropClose = true;
+        this.showClose = true;
+        this.showHeader = true;
+        this.closed = new EventEmitter();
+    }
     get maxWidth() {
         switch (this.size) {
             case "sm":

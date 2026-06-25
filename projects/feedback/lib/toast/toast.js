@@ -2,7 +2,16 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let AppToast = class AppToast extends LitElement {
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.type = "info";
+        this.message = "";
+        this.duration = 3000;
+        this.autoDismiss = true;
+        this.show = false;
+        this._isVisible = false;
+    }
+    static { this.styles = css `
     :host {
       display: contents;
     }
@@ -99,14 +108,7 @@ let AppToast = class AppToast extends LitElement {
     .app-toast-close i {
       font-size: 1.125rem;
     }
-  `;
-    type = "info";
-    message = "";
-    duration = 3000;
-    autoDismiss = true;
-    show = false;
-    _isVisible = false;
-    _timeoutId;
+  `; }
     connectedCallback() {
         super.connectedCallback();
         if (this.show && this.autoDismiss) {

@@ -2,11 +2,14 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppChip = class AppChip extends LitElement {
-    label = "";
-    icon = null;
-    removable = false;
-    selected = false;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.label = "";
+        this.icon = null;
+        this.removable = false;
+        this.selected = false;
+    }
+    static { this.styles = css `
     :host {
       display: inline-flex;
     }
@@ -45,7 +48,7 @@ let AppChip = class AppChip extends LitElement {
     .app-chip-remove i {
       @apply text-xs;
     }
-  `;
+  `; }
     _handleRemove(e) {
         e.stopPropagation();
         this.dispatchEvent(new CustomEvent("remove", { bubbles: true, composed: true }));

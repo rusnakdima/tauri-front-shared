@@ -3,7 +3,7 @@ import { ApplicationConfig, provideZoneChangeDetection, CUSTOM_ELEMENTS_SCHEMA }
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { routes } from './app.routes';
-import { SignalStoreService, SignalSyncService, SignalLoggerService, DataPatchService } from '@tauri-front/core';
+import { SignalStoreService, SignalSyncService, SignalLoggerService, DataPatchService, EventBusService, ThemeService } from '@tauri-front/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,5 +14,7 @@ export const appConfig: ApplicationConfig = {
     SignalSyncService,
     SignalLoggerService,
     DataPatchService,
+    EventBusService,
+    ThemeService,
   ]
 };

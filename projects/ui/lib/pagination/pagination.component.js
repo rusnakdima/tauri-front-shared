@@ -2,10 +2,12 @@ import { __decorate } from "tslib";
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, } from "@angular/core";
 import { CommonModule } from "@angular/common";
 let PaginationComponent = class PaginationComponent {
-    totalItems = 0;
-    currentPage = 1;
-    pageSize = 10;
-    pageChange = new EventEmitter();
+    constructor() {
+        this.totalItems = 0;
+        this.currentPage = 1;
+        this.pageSize = 10;
+        this.pageChange = new EventEmitter();
+    }
     get totalPages() {
         return Math.ceil(this.totalItems / this.pageSize);
     }

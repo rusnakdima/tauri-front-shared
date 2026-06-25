@@ -2,17 +2,11 @@ import { __decorate } from "tslib";
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 let GridContainerComponent = class GridContainerComponent {
-    cols = '1fr';
-    rows = 'auto';
-    gap = '16px';
-    smCols;
-    mdCols;
-    lgCols;
-    xlCols;
-    smGap;
-    mdGap;
-    lgGap;
-    xlGap;
+    constructor() {
+        this.cols = '1fr';
+        this.rows = 'auto';
+        this.gap = '16px';
+    }
     get containerClasses() {
         const classes = ['grid'];
         if (this.cols.includes('fr') || this.cols === 'auto') {

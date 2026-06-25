@@ -17,10 +17,12 @@
     "build:watch": "ng-packagr -p ng-package.json --watch"
   },
   "peerDependencies": {
+    "@angular/common": ">=17.0.0",
     "@angular/core": ">=17.0.0",
-    "@angular/common": ">=17.0.0"
+    "@tauri-apps/api": ">=2.0.0"
   },
   "devDependencies": {
+    "@tauri-apps/api": "^2.11.1",
     "ng-packagr": "^19.0.0"
   }
 }

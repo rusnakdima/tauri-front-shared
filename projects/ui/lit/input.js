@@ -2,15 +2,18 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let AppInput = class AppInput extends LitElement {
-    type = "text";
-    placeholder = "";
-    label = null;
-    disabled = false;
-    error = null;
-    icon = null;
-    _value = "";
-    _focused = false;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.type = "text";
+        this.placeholder = "";
+        this.label = null;
+        this.disabled = false;
+        this.error = null;
+        this.icon = null;
+        this._value = "";
+        this._focused = false;
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -66,7 +69,7 @@ let AppInput = class AppInput extends LitElement {
     .app-input-error-text {
       @apply text-xs text-[var(--error)];
     }
-  `;
+  `; }
     _handleInput(e) {
         const target = e.target;
         this._value = target.value;

@@ -2,9 +2,12 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppRadio = class AppRadio extends LitElement {
-    options = [];
-    value = null;
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.options = [];
+        this.value = null;
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -42,7 +45,7 @@ let AppRadio = class AppRadio extends LitElement {
     .app-radio-selected .app-radio-label {
       @apply text-[var(--accent)];
     }
-  `;
+  `; }
     _selectOption(optionValue, disabled) {
         if (disabled)
             return;

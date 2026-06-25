@@ -13,7 +13,9 @@
     "build:ui": "cd projects/ui && npm run build",
     "build:data": "cd projects/data && npm run build",
     "build:feedback": "cd projects/feedback && npm run build",
-    "build:layout": "cd projects/layout && npm run build"
+    "build:layout": "cd projects/layout && npm run build",
+    "dev": "npm run build --workspaces && npm run build:watch --workspaces",
+    "build:watch": "npm run build:watch --workspaces"
   },
   "devDependencies": {
     "@angular/cdk": "^20.0.0",
@@ -21,6 +23,7 @@
     "@angular/core": "^20.0.0",
     "@angular/forms": "^20.0.0",
     "@angular/router": "^20.0.0",
+    "@tauri-apps/api": "^2.11.1",
     "lit": "^3.0.0",
     "ng-packagr": "^20.3.2",
     "typescript": "^5.9.3"

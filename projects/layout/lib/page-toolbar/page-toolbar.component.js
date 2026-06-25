@@ -2,10 +2,13 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let PageToolbar = class PageToolbar extends LitElement {
-    title = "";
-    actions = [];
-    filters = [];
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.title = "";
+        this.actions = [];
+        this.filters = [];
+    }
+    static { this.styles = css `
     :host {
       display: block;
     }
@@ -112,7 +115,7 @@ let PageToolbar = class PageToolbar extends LitElement {
     .app-page-toolbar-action-icon {
       font-size: 1rem;
     }
-  `;
+  `; }
     render() {
         return html `
       <div class="app-page-toolbar">

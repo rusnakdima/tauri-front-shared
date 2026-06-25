@@ -2,11 +2,14 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppAvatar = class AppAvatar extends LitElement {
-    src = null;
-    name = "";
-    size = "md";
-    shape = "circle";
-    static styles = css `
+    constructor() {
+        super(...arguments);
+        this.src = null;
+        this.name = "";
+        this.size = "md";
+        this.shape = "circle";
+    }
+    static { this.styles = css `
     :host {
       display: inline-flex;
     }
@@ -54,7 +57,7 @@ let AppAvatar = class AppAvatar extends LitElement {
     .app-avatar-initials {
       @apply w-full h-full flex items-center justify-center;
     }
-  `;
+  `; }
     get initials() {
         if (!this.name)
             return "?";

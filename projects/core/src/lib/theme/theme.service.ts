@@ -15,11 +15,16 @@ export interface AccentShades {
   900: string;
 }
 
+export interface ThemeColors {
+  [variable: string]: string;
+}
+
 @Injectable({ providedIn: "root" })
 export class ThemeService {
   private _mode = signal<ThemeMode>("system");
   private _accentColor = signal<string>("#3b82f6");
   private _accentShades = signal<AccentShades | null>(null);
+  private _registeredThemes = new Map<string, ThemeColors>();
 
   mode = this._mode.asReadonly();
   accentColor = this._accentColor.asReadonly();
@@ -36,9 +41,18 @@ export class ThemeService {
     localStorage.setItem("theme-mode", mode);
   }
 
+  setTheme(theme: ThemeMode): void {
+    this.setMode(theme);
+  }
+
   setAccentColor(color: string): void {
     this._accentColor.set(color);
     localStorage.setItem("theme-accent", color);
+    this.applyAccentShades(color);
+  }
+
+  registerTheme(name: string, colors: ThemeColors): void {
+    this._registeredThemes.set(name, colors);
   }
 
   init(): void {
@@ -72,13 +86,33 @@ export class ThemeService {
         : mode;
 
     root.classList.add(effectiveMode);
+    this.applyAccentShades(accent);
+  }
 
-    const shades = this.calculateShades(accent);
-    this._accentShades.set(shades);
+  private applyAccentShades(accent: string): void {
+    const root = document.documentElement;
+    root.style.setProperty("--accent", accent);
+
+    const shades: AccentShades = {
+      50: `color-mix(in srgb, var(--accent) 10%, white)`,
+      100: `color-mix(in srgb, var(--accent) 20%, white)`,
+      200: `color-mix(in srgb, var(--accent) 40%, white)`,
+      300: `color-mix(in srgb, var(--accent) 60%, white)`,
+      400: `color-mix(in srgb, var(--accent) 80%, white)`,
+      500: accent,
+      600: `color-mix(in srgb, var(--accent) 80%, black)`,
+      700: `color-mix(in srgb, var(--accent) 60%, black)`,
+      800: `color-mix(in srgb, var(--accent) 40%, black)`,
+      900: `color-mix(in srgb, var(--accent) 20%, black)`,
+    };
 
     for (const [key, value] of Object.entries(shades)) {
       root.style.setProperty(`--accent-${key}`, value);
     }
+
+    const computedShades: AccentShades = { ...shades };
+    computedShades[500] = accent;
+    this._accentShades.set(computedShades);
   }
 
   calculateShades(hex: string): AccentShades {

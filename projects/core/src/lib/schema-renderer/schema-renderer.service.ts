@@ -1,40 +1,5 @@
 import { Injectable, signal } from "@angular/core";
-
-export interface GridPosition {
-  column: number;
-  row: number;
-  colSpan?: number;
-  rowSpan?: number;
-}
-
-export interface ComponentDef {
-  id: string;
-  name: string;
-  selector: string;
-  packageType: string;
-  category: string;
-  props: Record<string, unknown>;
-  template?: string;
-  css?: string;
-}
-
-export interface Layout {
-  id: string;
-  type: "grid" | "flex" | "stack";
-  direction?: "row" | "column";
-  gap?: number;
-  class?: string;
-  style?: Record<string, string>;
-  positions?: GridPosition[];
-  children?: string[];
-}
-
-export interface Page {
-  id: string;
-  name: string;
-  layouts: Layout[];
-  components: ComponentDef[];
-}
+import { GridPosition, ComponentDef, Layout, Page } from '../types';
 
 @Injectable({ providedIn: "root" })
 export class SchemaRendererService {

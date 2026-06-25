@@ -447,12 +447,21 @@ export class SchemaRendererService {
         const query = this.buildCrudQuery(resolvedParams);
         return this.crudService.query(entity, query);
       }
-      case "create":
+      case "create": {
+        const item = resolvedParams as { id: string };
+        this.crudService.create(entity, item);
         return;
-      case "update":
+      }
+      case "update": {
+        const id = (params as Record<string, unknown>)["id"] as string;
+        this.crudService.update(entity, id, resolvedParams);
         return;
-      case "delete":
+      }
+      case "delete": {
+        const id = (params as Record<string, unknown>)["id"] as string;
+        this.crudService.delete(entity, id);
         return;
+      }
       default:
         return this.signalStore.get(entity);
     }

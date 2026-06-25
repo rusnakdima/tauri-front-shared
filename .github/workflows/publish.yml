@@ -32,7 +32,7 @@ jobs:
           registry-url: "https://npm.pkg.github.com"
           scope: "@tauri-front"
 
-      - run: npm ci
+      - run: npm install
 
       - name: Publish core
         if: startsWith(github.ref, 'refs/tags/core@')

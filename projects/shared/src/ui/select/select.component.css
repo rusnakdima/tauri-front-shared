@@ -1,0 +1,79 @@
+.app-select-wrapper {
+  @apply relative flex flex-col gap-1;
+}
+
+.app-select {
+  @apply flex items-center justify-between px-3 py-2 rounded-lg border cursor-pointer;
+  @apply bg-[var(--bg-primary)] text-[var(--text-primary)];
+  border: 1px solid var(--border-color);
+}
+
+.app-select:hover:not(.app-select-disabled) {
+  @apply border-[var(--accent)];
+}
+
+.app-select-open {
+  @apply border-[var(--accent)] ring-1 ring-[var(--accent)];
+}
+
+.app-select-error {
+  @apply border-[var(--error)] ring-1 ring-[var(--error)];
+}
+
+.app-select-disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.app-select-value {
+  @apply text-sm;
+}
+
+.app-select-placeholder {
+  @apply text-[var(--text-muted)];
+}
+
+.app-select-icon {
+  @apply text-xl text-[var(--text-muted)];
+}
+
+.app-select-dropdown {
+  @apply absolute top-full left-0 right-0 mt-1 z-50;
+  @apply bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-lg shadow-lg;
+}
+
+.app-select-search {
+  @apply flex items-center gap-2 px-3 py-2 border-b border-[var(--border-color)];
+}
+
+.app-select-search i {
+  @apply text-[var(--text-muted)] text-xl;
+}
+
+.app-select-search-input {
+  @apply flex-1 bg-transparent outline-none text-sm text-[var(--text-primary)];
+}
+
+.app-select-options {
+  @apply max-h-60 overflow-y-auto;
+}
+
+.app-select-option {
+  @apply px-3 py-2 text-sm cursor-pointer;
+  @apply hover:bg-[var(--bg-hover)] transition-colors;
+}
+
+.app-select-option-selected {
+  @apply bg-[var(--accent-100)] text-[var(--accent-700)];
+}
+
+.app-select-option-disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.app-select-empty {
+  @apply px-3 py-2 text-sm text-[var(--text-muted)] text-center;
+}
+
+.app-select-error {
+  @apply text-xs text-[var(--error)];
+}

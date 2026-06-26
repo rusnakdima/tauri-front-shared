@@ -1,0 +1,11 @@
+<div class="app-progress-bar">
+  <div class="app-progress-bar-track">
+    <div
+      class="app-progress-bar-fill"
+      [style.width.%]="clampedPercentage"
+    ></div>
+  </div>
+  @if (showLabel) {
+    <span class="app-progress-bar-label">{{ clampedPercentage }}%</span>
+  }
+</div>

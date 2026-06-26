@@ -1,0 +1,23 @@
+<div class="app-input-wrapper">
+  @if (label) {
+    <label class="app-input-label">{{ label }}</label>
+  }
+  <div class="app-input-container" [class.app-input-focused]="focused">
+    @if (icon) {
+      <i class="material-icons app-input-icon">{{ icon }}</i>
+    }
+    <input
+      [type]="type"
+      [class]="inputClass"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [value]="value"
+      (input)="onInput($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+    />
+  </div>
+  @if (error) {
+    <span class="app-input-error-text">{{ error }}</span>
+  }
+</div>

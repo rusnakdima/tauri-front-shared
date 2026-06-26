@@ -1,0 +1,41 @@
+{
+  "name": "@tauri-front/shared",
+  "version": "0.1.0",
+  "description": "Unified shared library for Tauri apps with style variants",
+  "type": "module",
+  "main": "./dist/fesm2022/tauri-front-shared.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/fesm2022/tauri-front-shared.mjs",
+      "types": "./index.d.ts",
+      "default": "./fesm2022/tauri-front-shared.mjs"
+    },
+    "./core": "./dist/core/index.js",
+    "./ui": "./dist/ui/index.js",
+    "./data": "./dist/data/index.js",
+    "./layout": "./dist/layout/index.js",
+    "./feedback": "./dist/feedback/index.js",
+    "./grid": "./dist/grid/index.js",
+    "./storage": "./dist/storage/index.js",
+    "./core-api": "./dist/core-api/index.js",
+    "./core-crud": "./dist/core-crud/index.js",
+    "./core-i18n": "./dist/core-i18n/index.js",
+    "./core-logger": "./dist/core-logger/index.js",
+    "./core-storage": "./dist/core-storage/index.js",
+    "./package.json": {
+      "default": "./package.json"
+    }
+  },
+  "peerDependencies": {
+    "@angular/common": ">=17.0.0",
+    "@angular/core": ">=17.0.0",
+    "@tauri-apps/api": ">=2.0.0",
+    "lit": "^3.0.0"
+  },
+  "module": "fesm2022/tauri-front-shared.mjs",
+  "typings": "index.d.ts",
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}

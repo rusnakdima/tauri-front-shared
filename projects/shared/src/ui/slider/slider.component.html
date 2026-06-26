@@ -1,0 +1,14 @@
+<div class="app-slider">
+  <input
+    type="range"
+    class="app-slider-input"
+    [min]="min"
+    [max]="max"
+    [step]="step"
+    [value]="value"
+    (input)="onInput($event)"
+  />
+  <div class="app-slider-track">
+    <div class="app-slider-fill" [style.width.%]="percentage"></div>
+  </div>
+</div>

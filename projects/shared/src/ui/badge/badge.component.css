@@ -1,0 +1,56 @@
+.app-badge {
+  @apply inline-flex items-center gap-1 rounded-full font-medium;
+}
+
+.app-badge-sm {
+  @apply px-2 py-0.5 text-xs;
+}
+
+.app-badge-md {
+  @apply px-2.5 py-1 text-sm;
+}
+
+.app-badge-lg {
+  @apply px-3 py-1.5 text-base;
+}
+
+.app-badge-default {
+  @apply bg-[var(--bg-tertiary)] text-[var(--text-secondary)];
+}
+
+.app-badge-primary {
+  @apply bg-[var(--accent-100)] text-[var(--accent-700)];
+}
+
+.app-badge-secondary {
+  @apply bg-[var(--bg-secondary)] text-[var(--text-secondary)];
+}
+
+.app-badge-success {
+  @apply bg-green-100 text-green-700;
+}
+
+.app-badge-warning {
+  @apply bg-yellow-100 text-yellow-700;
+}
+
+.app-badge-error {
+  @apply bg-red-100 text-red-700;
+}
+
+.app-badge-icon {
+  @apply text-inherit;
+}
+
+.app-badge-label {
+  @apply text-inherit;
+}
+
+.app-badge-remove {
+  @apply ml-1 p-0.5 rounded-full hover:bg-black/10 transition-colors;
+  @apply flex items-center justify-center;
+}
+
+.app-badge-remove i {
+  @apply text-xs;
+}

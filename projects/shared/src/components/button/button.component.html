@@ -1,0 +1,24 @@
+import { html } from "lit";
+
+export function renderButtonTemplate() {
+  return html`
+    <button
+      type="${this.type}"
+      class="${this._getButtonClasses()}"
+      ?disabled="${this.disabled || this.loading}"
+      @click="${this._handleClick}"
+    >
+      ${this.loading
+        ? html`<span class="app-btn-spinner"></span>`
+        : html`
+            ${this.icon && this.iconPosition === "left"
+              ? html`<i class="material-icons app-btn-icon">${this.icon}</i>`
+              : ""}
+            <slot></slot>
+            ${this.icon && this.iconPosition === "right"
+              ? html`<i class="material-icons app-btn-icon">${this.icon}</i>`
+              : ""}
+          `}
+    </button>
+  `;
+}

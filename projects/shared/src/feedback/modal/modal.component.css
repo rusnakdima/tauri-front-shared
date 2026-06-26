@@ -1,0 +1,64 @@
+.app-modal-backdrop {
+  @apply fixed inset-0 flex items-center justify-center;
+  @apply bg-black/50 backdrop-blur-sm;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.app-modal-container {
+  @apply w-full bg-[var(--bg-elevated)] rounded-xl shadow-2xl overflow-hidden;
+  @apply flex flex-col;
+  max-height: calc(100vh - 4rem);
+  animation: slideUp 0.2s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.app-modal-fullscreen {
+  @apply rounded-none max-w-full max-h-full h-screen w-screen;
+}
+
+.app-modal-header {
+  @apply flex items-center justify-between px-6 py-4 border-b border-[var(--border-subtle)];
+  @apply flex-shrink-0;
+}
+
+.app-modal-title {
+  @apply text-lg font-semibold text-[var(--text-primary)] m-0;
+}
+
+.app-modal-close {
+  @apply p-1 rounded-lg hover:bg-[var(--bg-hover)] transition-colors;
+  @apply flex items-center justify-center;
+  @apply text-[var(--text-muted)] hover:text-[var(--text-primary)];
+}
+
+.app-modal-close i {
+  @apply text-xl;
+}
+
+.app-modal-body {
+  @apply p-6 overflow-y-auto flex-1;
+}
+
+.app-modal-footer {
+  @apply px-6 py-4 border-t border-[var(--border-subtle)] bg-[var(--bg-secondary)];
+  @apply flex-shrink-0;
+}

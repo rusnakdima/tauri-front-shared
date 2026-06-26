@@ -1,0 +1,29 @@
+<aside class="app-sidebar" [class.app-sidebar-collapsed]="collapsed">
+  <div class="app-sidebar-header">
+    <button
+      class="app-sidebar-toggle material-icons"
+      (click)="toggleCollapse()"
+    >
+      {{ collapsed ? "menu" : "menu_open" }}
+    </button>
+  </div>
+  <nav class="app-sidebar-nav">
+    @for (item of items; track item.id) {
+      <button
+        class="app-sidebar-item"
+        [class.app-sidebar-item-active]="isActive(item)"
+        [class.app-sidebar-item-disabled]="item.disabled"
+        (click)="onItemClick(item)"
+      >
+        @if (item.icon) {
+          <span class="material-icons app-sidebar-item-icon">{{
+            item.icon
+          }}</span>
+        }
+        @if (!collapsed) {
+          <span class="app-sidebar-item-label">{{ item.label }}</span>
+        }
+      </button>
+    }
+  </nav>
+</aside>

@@ -1,0 +1,50 @@
+.app-input-wrapper {
+  @apply flex flex-col gap-1;
+}
+
+.app-input-label {
+  @apply text-sm font-medium text-[var(--text-primary)];
+}
+
+.app-input-container {
+  @apply relative flex items-center;
+}
+
+.app-input {
+  @apply w-full px-3 py-2 rounded-lg border bg-[var(--bg-primary)] text-[var(--text-primary)];
+  @apply placeholder:text-[var(--text-muted)];
+  @apply transition-all outline-none;
+  border: 1px solid var(--border-color);
+}
+
+.app-input:focus {
+  @apply border-[var(--accent)] ring-1 ring-[var(--accent)];
+}
+
+.app-input-default:focus {
+  @apply border-[var(--accent)] ring-1 ring-[var(--accent)];
+}
+
+.app-input-error {
+  @apply border-[var(--error)] ring-1 ring-[var(--error)];
+}
+
+.app-input-with-icon {
+  @apply pl-10;
+}
+
+.app-input-icon {
+  @apply absolute left-3 text-[var(--text-muted)] text-xl;
+}
+
+.app-input-focused .app-input-icon {
+  @apply text-[var(--accent)];
+}
+
+.app-input:disabled {
+  @apply opacity-50 cursor-not-allowed bg-[var(--bg-tertiary)];
+}
+
+.app-input-error-text {
+  @apply text-xs text-[var(--error)];
+}

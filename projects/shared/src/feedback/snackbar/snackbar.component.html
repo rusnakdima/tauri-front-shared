@@ -1,0 +1,11 @@
+@if (isVisible()) {
+  <div class="app-snackbar" [class]="'app-snackbar-' + type" role="status">
+    @if (type !== "default") {
+      <i class="material-icons app-snackbar-icon">{{ icon }}</i>
+    }
+    <span class="app-snackbar-message">{{ message }}</span>
+    <button type="button" class="app-snackbar-action" (click)="dismiss()">
+      <i class="material-icons">close</i>
+    </button>
+  </div>
+}

@@ -1,0 +1,10 @@
+<footer class="app-footer">
+  @if (text) {
+    <span class="app-footer-text">{{ text }}</span>
+  } @else {
+    <span class="app-footer-text">© {{ currentYear }}</span>
+  }
+  @if (showVersion) {
+    <span class="app-footer-version">v{{ version }}</span>
+  }
+</footer>

@@ -1,0 +1,19 @@
+.app-slider {
+  @apply relative w-full py-2;
+}
+
+.app-slider-input {
+  @apply absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10;
+}
+
+.app-slider-track {
+  @apply h-2 rounded-full bg-[var(--bg-tertiary)] overflow-hidden;
+}
+
+.app-slider-fill {
+  @apply h-full rounded-full bg-[var(--accent)] transition-all;
+}
+
+.app-slider-input:focus + .app-slider-track {
+  @apply outline-none ring-2 ring-[var(--accent)] ring-offset-2;
+}

@@ -1,0 +1,57 @@
+.app-btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg border border-solid px-4 py-2 text-center font-medium transition-all cursor-pointer;
+  @apply disabled:cursor-not-allowed;
+  border-width: 1px;
+}
+
+.app-btn-primary {
+  @apply border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] hover:bg-[var(--accent-hover)] hover:border-[var(--accent-hover)];
+}
+
+.app-btn-secondary {
+  @apply border-[var(--border-color)] bg-[var(--bg-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)];
+}
+
+.app-btn-danger {
+  @apply border-[var(--error)] bg-[var(--error)] text-[var(--text-on-error)] hover:opacity-90;
+}
+
+.app-btn-warning {
+  @apply border-[var(--warning)] bg-[var(--warning)] text-[var(--text-on-warning)] hover:opacity-90;
+}
+
+.app-btn-success {
+  @apply border-[var(--success)] bg-[var(--success)] text-[var(--text-on-success)] hover:opacity-90;
+}
+
+.app-btn-ghost {
+  @apply border-transparent bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)];
+}
+
+.app-btn-sm {
+  @apply px-3 py-1 text-sm;
+}
+
+.app-btn-md {
+  @apply px-4 py-2 text-base;
+}
+
+.app-btn-lg {
+  @apply px-6 py-3 text-lg;
+}
+
+.app-btn-full {
+  @apply w-full;
+}
+
+.app-btn-disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.app-btn-icon {
+  @apply text-xl;
+}
+
+.app-btn-spinner {
+  @apply w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
+}

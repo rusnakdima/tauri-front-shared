@@ -1402,9 +1402,39 @@ declare function invokeVoid(command: string, args?: Record<string, unknown>, opt
 declare function invokeWithError<T>(command: string, args?: Record<string, unknown>, options?: InvokeOptionsWithRetry): Promise<T>;
 
 type StyleVariant = "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3";
+interface StyleVariantConfig {
+    id: StyleVariant;
+    name: string;
+    cssFile: string;
+    classPrefix: string;
+    description: string;
+}
 declare function loadStyleVariant(variant: StyleVariant): Promise<void>;
+declare function setCurrentStyle(variant: StyleVariant): void;
 declare function getCurrentStyle(): StyleVariant;
 declare function getStyleClassPrefix(variant: StyleVariant): string;
+declare function getAllStyleVariants(): StyleVariantConfig[];
 
-export { AppAvatar, AppBadge, AppBottomPanel, AppButton, AppCanvas, AppCard, AppChip, AppComponentPalette, AppConfirmDialog, AppDataTable, AppDialog, AppEmptyState, AppFooter, AppHeader, AppInput, AppJsonView, AppLoading, AppModal, AppPageContainer, AppPageToolbar, AppPagination, AppProgressBar, AppPropertiesPanel, AppRadio, AppSegmentSelector, AppSelect, AppSidebar, AppSlider, AppSplitView, AppStatsCard, AppSwitch, AppTableView, AppTabs, AppTextarea, ComponentDiscoveryService, ComponentRegistryService, CrudService, DataBindingResolver, EventBusService, FallbackService, GuardService, InvokeWrapperService, PermissionEvaluator, RbacService, SchemaFetcherService, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SignalLoggerService, SignalStoreService, SignalSyncService, StyleResolver, ThemeService, components, dataComponents, feedbackComponents, getCurrentStyle, getStyleClassPrefix, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, layoutComponents, loadStyleVariant, uiComponents };
-export type { AvatarSize, BadgeSize, BadgeVariant, BottomPanelTab, ButtonSize, ButtonVariant, CanvasElement, ColorMode, ComponentDef, DataBinding, DataTableColumn, DialogSize, ElementConfig, ElementEvents, ElementProperty, GridPosition, InputType, Layout, LoadingSize, ModalSize, ModuleDef, Page, PageMeta, PageSection, PaletteCategory, RenderContext, RouteMatch, ServiceDef, SidebarItem, StyleVariant, TableColumn, Theme, ThemeColors, ToolbarAction, UiSchema };
+declare class UiShowcaseComponent {
+    private themeService;
+    readonly colorModes: readonly ["light", "dark", "system"];
+    readonly styleVariants: StyleVariantConfig[];
+    readonly currentColorMode: i0.WritableSignal<string>;
+    readonly currentStyleVariant: i0.WritableSignal<StyleVariant>;
+    readonly searchQuery: i0.WritableSignal<string>;
+    readonly selectedCategory: i0.WritableSignal<string>;
+    readonly allComponents: SharedComponentDef[];
+    readonly categories: i0.Signal<string[]>;
+    readonly filteredComponents: i0.Signal<SharedComponentDef[]>;
+    setColorMode(mode: string): void;
+    setStyleVariant(variant: StyleVariant): Promise<void>;
+    getComponentDemoContent(comp: SharedComponentDef): string;
+    getComponentProps(comp: SharedComponentDef): Record<string, any>;
+    setComponentProps(el: HTMLElement, props: Record<string, any>): void;
+    renderComponent(card: HTMLElement, comp: SharedComponentDef): Promise<void>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<UiShowcaseComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<UiShowcaseComponent, "app-ui-showcase", never, {}, {}, never, never, true, never>;
+}
+
+export { AppAvatar, AppBadge, AppBottomPanel, AppButton, AppCanvas, AppCard, AppChip, AppComponentPalette, AppConfirmDialog, AppDataTable, AppDialog, AppEmptyState, AppFooter, AppHeader, AppInput, AppJsonView, AppLoading, AppModal, AppPageContainer, AppPageToolbar, AppPagination, AppProgressBar, AppPropertiesPanel, AppRadio, AppSegmentSelector, AppSelect, AppSidebar, AppSlider, AppSplitView, AppStatsCard, AppSwitch, AppTableView, AppTabs, AppTextarea, ComponentDiscoveryService, ComponentRegistryService, CrudService, DataBindingResolver, EventBusService, FallbackService, GuardService, InvokeWrapperService, PermissionEvaluator, RbacService, SchemaFetcherService, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SignalLoggerService, SignalStoreService, SignalSyncService, StyleResolver, ThemeService, UiShowcaseComponent, components, dataComponents, feedbackComponents, getAllStyleVariants, getCurrentStyle, getStyleClassPrefix, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, layoutComponents, loadStyleVariant, setCurrentStyle, uiComponents };
+export type { AvatarSize, BadgeSize, BadgeVariant, BottomPanelTab, ButtonSize, ButtonVariant, CanvasElement, ColorMode, ComponentDef, DataBinding, DataTableColumn, DialogSize, ElementConfig, ElementEvents, ElementProperty, GridPosition, InputType, Layout, LoadingSize, ModalSize, ModuleDef, Page, PageMeta, PageSection, PaletteCategory, RenderContext, RouteMatch, ServiceDef, SharedComponentDef, SharedComponentProp, SidebarItem, StyleVariant, TableColumn, Theme, ThemeColors, ToolbarAction, UiSchema };

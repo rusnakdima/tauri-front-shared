@@ -73,6 +73,8 @@ export type {
   ElementEvents,
   RenderContext,
   ElementConfig,
+  SharedComponentDef,
+  SharedComponentProp,
 } from "./core/lib/types";
 
 export type { RouteMatch } from "./core/lib/schema-router/route-match";
@@ -88,7 +90,12 @@ export {
 // Style system
 export {
   loadStyleVariant,
+  setCurrentStyle,
   getCurrentStyle,
+  getAllStyleVariants,
   getStyleClassPrefix,
 } from "./styles/style-registry";
 export type { StyleVariant } from "./styles/style-registry";
+
+// UI Showcase
+export { UiShowcaseComponent } from "./ui-showcase/ui-showcase.component";

@@ -6,6 +6,8 @@ import { Injectable, inject, signal, computed, effect, ViewChild, Input, Compone
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { invoke } from '@tauri-apps/api/core';
+import * as i1 from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 let AppButton = class AppButton extends LitElement {
     constructor() {
@@ -7290,6 +7292,242 @@ function applyStyleToElement(element, variant) {
     element.classList.add(`${prefix}${element.dataset.baseClass || ""}`);
 }
 
+class UiShowcaseComponent {
+    themeService = inject(ThemeService);
+    colorModes = ["light", "dark", "system"];
+    styleVariants = getAllStyleVariants();
+    currentColorMode = signal(this.themeService.effectiveColorMode(), ...(ngDevMode ? [{ debugName: "currentColorMode" }] : []));
+    currentStyleVariant = signal(getCurrentStyle(), ...(ngDevMode ? [{ debugName: "currentStyleVariant" }] : []));
+    searchQuery = signal("", ...(ngDevMode ? [{ debugName: "searchQuery" }] : []));
+    selectedCategory = signal("all", ...(ngDevMode ? [{ debugName: "selectedCategory" }] : []));
+    allComponents = [
+        ...uiComponents,
+        ...layoutComponents,
+        ...feedbackComponents,
+        ...dataComponents,
+    ];
+    categories = computed(() => {
+        const cats = new Set(this.allComponents.map((c) => c.category));
+        return ["all", ...Array.from(cats)];
+    }, ...(ngDevMode ? [{ debugName: "categories" }] : []));
+    filteredComponents = computed(() => {
+        let result = this.allComponents;
+        const cat = this.selectedCategory();
+        const query = this.searchQuery().toLowerCase();
+        if (cat !== "all") {
+            result = result.filter((c) => c.category === cat);
+        }
+        if (query) {
+            result = result.filter((c) => c.name.toLowerCase().includes(query) ||
+                c.selector.toLowerCase().includes(query));
+        }
+        return result;
+    }, ...(ngDevMode ? [{ debugName: "filteredComponents" }] : []));
+    setColorMode(mode) {
+        this.themeService.setColorMode(mode);
+        this.currentColorMode.set(this.themeService.effectiveColorMode());
+    }
+    async setStyleVariant(variant) {
+        await loadStyleVariant(variant);
+        setCurrentStyle(variant);
+        this.currentStyleVariant.set(variant);
+    }
+    getComponentDemoContent(comp) {
+        switch (comp.id) {
+            case "button":
+                return "Button";
+            case "badge":
+                return "Badge";
+            case "avatar":
+                return "";
+            case "chip":
+                return "Chip";
+            case "input":
+                return "";
+            case "checkbox":
+                return "";
+            case "radio":
+                return "";
+            case "tabs":
+                return "";
+            case "empty-state":
+                return "";
+            case "loading":
+                return "";
+            case "pagination":
+                return "";
+            case "tooltip":
+                return "";
+            case "progress-bar":
+                return "";
+            case "slider":
+                return "";
+            case "select":
+                return "";
+            case "switch":
+                return "";
+            case "card":
+                return "";
+            case "stats-card":
+                return "";
+            case "table-view":
+                return "";
+            case "data-table":
+                return "";
+            case "json-view":
+                return "";
+            case "segment-selector":
+                return "";
+            case "dialog":
+                return "";
+            case "confirm-dialog":
+                return "";
+            case "toast":
+                return "";
+            case "snackbar":
+                return "";
+            case "command-palette":
+                return "";
+            case "modal":
+                return "";
+            case "split-view":
+                return "";
+            case "page-container":
+                return "";
+            case "page-toolbar":
+                return "";
+            case "header":
+                return "";
+            case "sidebar":
+                return "";
+            case "footer":
+                return "";
+            case "main-editor":
+                return "";
+            case "bottom-panel":
+                return "";
+            case "designer-sidebar":
+                return "";
+            case "component-palette":
+                return "";
+            case "canvas":
+                return "";
+            case "canvas-toolbar":
+                return "";
+            default:
+                return "";
+        }
+    }
+    getComponentProps(comp) {
+        const props = {};
+        for (const p of comp.props) {
+            switch (p.name) {
+                case "variant":
+                    if (p.options && p.options.length > 0) {
+                        props[p.name] = p.options[0];
+                    }
+                    break;
+                case "size":
+                    if (p.options && p.options.length > 0) {
+                        props[p.name] = p.options[0];
+                    }
+                    break;
+                case "checked":
+                    props[p.name] = false;
+                    break;
+                case "disabled":
+                    props[p.name] = false;
+                    break;
+                case "title":
+                    props[p.name] = comp.name;
+                    break;
+                case "label":
+                    props[p.name] = comp.name;
+                    break;
+                case "text":
+                    props[p.name] = comp.name;
+                    break;
+                case "placeholder":
+                    props[p.name] = "Enter text...";
+                    break;
+                case "type":
+                    props[p.name] = "text";
+                    break;
+                case "value":
+                    props[p.name] = 50;
+                    break;
+                case "page":
+                    props[p.name] = 1;
+                    break;
+                case "total":
+                    props[p.name] = 10;
+                    break;
+                case "min":
+                    props[p.name] = 0;
+                    break;
+                case "max":
+                    props[p.name] = 100;
+                    break;
+                case "open":
+                    props[p.name] = false;
+                    break;
+                case "options":
+                    props[p.name] = '["Option 1", "Option 2"]';
+                    break;
+                case "tabs":
+                    props[p.name] = '["Tab 1", "Tab 2"]';
+                    break;
+                case "columns":
+                    props[p.name] = '["Name", "Status"]';
+                    break;
+                case "data":
+                    props[p.name] = '[]';
+                    break;
+                case "src":
+                    props[p.name] = "";
+                    break;
+                case "alt":
+                    props[p.name] = "Avatar";
+                    break;
+                default:
+                    if (p.default !== undefined) {
+                        props[p.name] = p.default;
+                    }
+            }
+        }
+        return props;
+    }
+    setComponentProps(el, props) {
+        for (const [key, value] of Object.entries(props)) {
+            if (value !== undefined) {
+                el[key] = value;
+            }
+        }
+    }
+    async renderComponent(card, comp) {
+        const container = card.querySelector(".component-preview");
+        if (!container)
+            return;
+        container.innerHTML = "";
+        try {
+            await customElements.whenDefined(comp.selector);
+            const el = document.createElement(comp.selector);
+            const props = this.getComponentProps(comp);
+            this.setComponentProps(el, props);
+            container.appendChild(el);
+        }
+        catch (e) {
+            container.textContent = comp.selector;
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: UiShowcaseComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: UiShowcaseComponent, isStandalone: true, selector: "app-ui-showcase", ngImport: i0, template: "<div class=\"showcase-container\">\n  <header class=\"showcase-header\">\n    <h1 class=\"showcase-title\">UI Showcase</h1>\n\n    <div class=\"showcase-controls\">\n      <div class=\"control-group\">\n        <span class=\"control-label\">Color Mode</span>\n        <div class=\"button-group\">\n          @for (mode of colorModes; track mode) {\n            <button\n              class=\"mode-btn\"\n              [class.active]=\"currentColorMode() === mode\"\n              (click)=\"setColorMode(mode)\"\n            >\n              {{ mode }}\n            </button>\n          }\n        </div>\n      </div>\n\n      <div class=\"control-group\">\n        <span class=\"control-label\">Style</span>\n        <select\n          class=\"style-select\"\n          [value]=\"currentStyleVariant()\"\n          (change)=\"setStyleVariant($any($event.target).value)\"\n        >\n          @for (v of styleVariants; track v.id) {\n            <option [value]=\"v.id\">{{ v.name }}</option>\n          }\n        </select>\n      </div>\n    </div>\n  </header>\n\n  <div class=\"showcase-filters\">\n    <input\n      type=\"text\"\n      class=\"search-input\"\n      placeholder=\"Search components...\"\n      [value]=\"searchQuery()\"\n      (input)=\"searchQuery.set($any($event.target).value)\"\n    />\n\n    <div class=\"category-tabs\">\n      @for (cat of categories(); track cat) {\n        <button\n          class=\"category-tab\"\n          [class.active]=\"selectedCategory() === cat\"\n          (click)=\"selectedCategory.set(cat)\"\n        >\n          {{ cat }}\n        </button>\n      }\n    </div>\n  </div>\n\n  <div class=\"component-grid\">\n    @for (comp of filteredComponents(); track comp.id) {\n      <div class=\"component-card\">\n        <div class=\"card-header\">\n          <span class=\"component-name\">{{ comp.name }}</span>\n          <code class=\"component-selector\">{{ comp.selector }}</code>\n        </div>\n\n        <div\n          class=\"component-preview\"\n          #card\n          [attr.data-selector]=\"comp.selector\"\n          (mouseenter)=\"renderComponent($any($event.target).closest('.component-card'), comp)\"\n        ></div>\n\n        <div class=\"card-footer\">\n          <span class=\"category-badge\">{{ comp.category }}</span>\n          <span class=\"package-badge\">{{ comp.packageType }}</span>\n        </div>\n      </div>\n    }\n  </div>\n</div>", styles: [".showcase-container{min-height:100vh;background-color:var(--color-bg-primary, #f8fafc);color:var(--color-text-primary, #1e293b)}.showcase-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 2rem;background-color:var(--color-bg-elevated, #ffffff);border-bottom:1px solid var(--color-border, #e2e8f0);position:sticky;top:0;z-index:10;gap:2rem;flex-wrap:wrap}.showcase-title{margin:0;font-size:1.5rem;font-weight:700;color:var(--color-text-primary, #1e293b)}.showcase-controls{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}.control-group{display:flex;align-items:center;gap:.75rem}.control-label{font-size:.875rem;font-weight:500;color:var(--color-text-secondary, #64748b)}.button-group{display:flex;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;overflow:hidden}.mode-btn{padding:.5rem 1rem;border:none;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.mode-btn:not(:last-child){border-right:1px solid var(--color-border, #e2e8f0)}.mode-btn:hover{background-color:var(--color-bg-hover, #f1f5f9)}.mode-btn.active{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.style-select{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.875rem;font-weight:500;cursor:pointer;min-width:160px}.style-select:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.showcase-filters{padding:1.5rem 2rem;display:flex;flex-direction:column;gap:1rem;background-color:var(--color-bg-secondary, #f1f5f9);border-bottom:1px solid var(--color-border, #e2e8f0)}.search-input{padding:.75rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.9375rem;max-width:400px}.search-input::placeholder{color:var(--color-text-muted, #94a3b8)}.search-input:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.category-tabs{display:flex;gap:.5rem;flex-wrap:wrap}.category-tab{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:2rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.category-tab:hover{background-color:var(--color-bg-hover, #f1f5f9)}.category-tab.active{background-color:var(--color-accent, #8b5cf6);border-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.component-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;padding:2rem}.component-card{background-color:var(--color-bg-elevated, #ffffff);border:1px solid var(--color-border, #e2e8f0);border-radius:.75rem;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s}.component-card:hover{box-shadow:0 4px 12px #0000001a}.card-header{display:flex;align-items:center;justify-content:space-between;padding:1rem;border-bottom:1px solid var(--color-border-light, #f1f5f9);gap:.5rem}.component-name{font-size:1rem;font-weight:600;color:var(--color-text-primary, #1e293b)}.component-selector{font-size:.75rem;padding:.25rem .5rem;background-color:var(--color-bg-secondary, #f1f5f9);border-radius:.25rem;color:var(--color-text-secondary, #64748b);font-family:monospace}.component-preview{padding:2rem 1rem;min-height:100px;display:flex;align-items:center;justify-content:center;background-color:var(--color-bg-primary, #f8fafc);flex-wrap:wrap;gap:.5rem}.card-footer{display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;border-top:1px solid var(--color-border-light, #f1f5f9)}.category-badge,.package-badge{font-size:.75rem;padding:.25rem .5rem;border-radius:.25rem;font-weight:500;text-transform:capitalize}.category-badge{background-color:var(--color-bg-secondary, #f1f5f9);color:var(--color-text-secondary, #64748b)}.package-badge{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff);opacity:.8}@media(max-width:768px){.showcase-header{flex-direction:column;align-items:flex-start}.component-grid{grid-template-columns:1fr;padding:1rem}}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1.NgSelectOption, selector: "option", inputs: ["ngValue", "value"] }, { kind: "directive", type: i1.ɵNgSelectMultipleOption, selector: "option", inputs: ["ngValue", "value"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: UiShowcaseComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-ui-showcase", standalone: true, imports: [CommonModule, FormsModule], template: "<div class=\"showcase-container\">\n  <header class=\"showcase-header\">\n    <h1 class=\"showcase-title\">UI Showcase</h1>\n\n    <div class=\"showcase-controls\">\n      <div class=\"control-group\">\n        <span class=\"control-label\">Color Mode</span>\n        <div class=\"button-group\">\n          @for (mode of colorModes; track mode) {\n            <button\n              class=\"mode-btn\"\n              [class.active]=\"currentColorMode() === mode\"\n              (click)=\"setColorMode(mode)\"\n            >\n              {{ mode }}\n            </button>\n          }\n        </div>\n      </div>\n\n      <div class=\"control-group\">\n        <span class=\"control-label\">Style</span>\n        <select\n          class=\"style-select\"\n          [value]=\"currentStyleVariant()\"\n          (change)=\"setStyleVariant($any($event.target).value)\"\n        >\n          @for (v of styleVariants; track v.id) {\n            <option [value]=\"v.id\">{{ v.name }}</option>\n          }\n        </select>\n      </div>\n    </div>\n  </header>\n\n  <div class=\"showcase-filters\">\n    <input\n      type=\"text\"\n      class=\"search-input\"\n      placeholder=\"Search components...\"\n      [value]=\"searchQuery()\"\n      (input)=\"searchQuery.set($any($event.target).value)\"\n    />\n\n    <div class=\"category-tabs\">\n      @for (cat of categories(); track cat) {\n        <button\n          class=\"category-tab\"\n          [class.active]=\"selectedCategory() === cat\"\n          (click)=\"selectedCategory.set(cat)\"\n        >\n          {{ cat }}\n        </button>\n      }\n    </div>\n  </div>\n\n  <div class=\"component-grid\">\n    @for (comp of filteredComponents(); track comp.id) {\n      <div class=\"component-card\">\n        <div class=\"card-header\">\n          <span class=\"component-name\">{{ comp.name }}</span>\n          <code class=\"component-selector\">{{ comp.selector }}</code>\n        </div>\n\n        <div\n          class=\"component-preview\"\n          #card\n          [attr.data-selector]=\"comp.selector\"\n          (mouseenter)=\"renderComponent($any($event.target).closest('.component-card'), comp)\"\n        ></div>\n\n        <div class=\"card-footer\">\n          <span class=\"category-badge\">{{ comp.category }}</span>\n          <span class=\"package-badge\">{{ comp.packageType }}</span>\n        </div>\n      </div>\n    }\n  </div>\n</div>", styles: [".showcase-container{min-height:100vh;background-color:var(--color-bg-primary, #f8fafc);color:var(--color-text-primary, #1e293b)}.showcase-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 2rem;background-color:var(--color-bg-elevated, #ffffff);border-bottom:1px solid var(--color-border, #e2e8f0);position:sticky;top:0;z-index:10;gap:2rem;flex-wrap:wrap}.showcase-title{margin:0;font-size:1.5rem;font-weight:700;color:var(--color-text-primary, #1e293b)}.showcase-controls{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}.control-group{display:flex;align-items:center;gap:.75rem}.control-label{font-size:.875rem;font-weight:500;color:var(--color-text-secondary, #64748b)}.button-group{display:flex;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;overflow:hidden}.mode-btn{padding:.5rem 1rem;border:none;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.mode-btn:not(:last-child){border-right:1px solid var(--color-border, #e2e8f0)}.mode-btn:hover{background-color:var(--color-bg-hover, #f1f5f9)}.mode-btn.active{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.style-select{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.875rem;font-weight:500;cursor:pointer;min-width:160px}.style-select:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.showcase-filters{padding:1.5rem 2rem;display:flex;flex-direction:column;gap:1rem;background-color:var(--color-bg-secondary, #f1f5f9);border-bottom:1px solid var(--color-border, #e2e8f0)}.search-input{padding:.75rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.9375rem;max-width:400px}.search-input::placeholder{color:var(--color-text-muted, #94a3b8)}.search-input:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.category-tabs{display:flex;gap:.5rem;flex-wrap:wrap}.category-tab{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:2rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.category-tab:hover{background-color:var(--color-bg-hover, #f1f5f9)}.category-tab.active{background-color:var(--color-accent, #8b5cf6);border-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.component-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;padding:2rem}.component-card{background-color:var(--color-bg-elevated, #ffffff);border:1px solid var(--color-border, #e2e8f0);border-radius:.75rem;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s}.component-card:hover{box-shadow:0 4px 12px #0000001a}.card-header{display:flex;align-items:center;justify-content:space-between;padding:1rem;border-bottom:1px solid var(--color-border-light, #f1f5f9);gap:.5rem}.component-name{font-size:1rem;font-weight:600;color:var(--color-text-primary, #1e293b)}.component-selector{font-size:.75rem;padding:.25rem .5rem;background-color:var(--color-bg-secondary, #f1f5f9);border-radius:.25rem;color:var(--color-text-secondary, #64748b);font-family:monospace}.component-preview{padding:2rem 1rem;min-height:100px;display:flex;align-items:center;justify-content:center;background-color:var(--color-bg-primary, #f8fafc);flex-wrap:wrap;gap:.5rem}.card-footer{display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;border-top:1px solid var(--color-border-light, #f1f5f9)}.category-badge,.package-badge{font-size:.75rem;padding:.25rem .5rem;border-radius:.25rem;font-weight:500;text-transform:capitalize}.category-badge{background-color:var(--color-bg-secondary, #f1f5f9);color:var(--color-text-secondary, #64748b)}.package-badge{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff);opacity:.8}@media(max-width:768px){.showcase-header{flex-direction:column;align-items:flex-start}.component-grid{grid-template-columns:1fr;padding:1rem}}\n"] }]
+        }] });
+
 // @tauri-front/shared - Unified shared library
 // Explicit re-exports to avoid name collisions
 // Disable Lit dev mode warnings and class field shadowing errors
@@ -7314,5 +7552,5 @@ if (typeof window !== 'undefined') {
  * Generated bundle index. Do not edit.
  */
 
-export { AppAvatar, AppBadge, AppBottomPanel, AppButton, AppCanvas, AppCard, AppChip, AppComponentPalette, AppConfirmDialog, AppDataTable, AppDialog, AppEmptyState, AppFooter, AppHeader, AppInput, AppJsonView, AppLoading, AppModal, AppPageContainer, AppPageToolbar, AppPagination, AppProgressBar, AppPropertiesPanel, AppRadio, AppSegmentSelector, AppSelect, AppSidebar, AppSlider, AppSplitView, AppStatsCard, AppSwitch, AppTableView, AppTabs, AppTextarea, ComponentDiscoveryService, ComponentRegistryService, CrudService, DataBindingResolver, EventBusService, FallbackService, GuardService, InvokeWrapperService, PermissionEvaluator, RbacService, SchemaFetcherService, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SignalLoggerService, SignalStoreService, SignalSyncService, StyleResolver, ThemeService, components, dataComponents, feedbackComponents, getCurrentStyle, getStyleClassPrefix, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, layoutComponents, loadStyleVariant, uiComponents };
+export { AppAvatar, AppBadge, AppBottomPanel, AppButton, AppCanvas, AppCard, AppChip, AppComponentPalette, AppConfirmDialog, AppDataTable, AppDialog, AppEmptyState, AppFooter, AppHeader, AppInput, AppJsonView, AppLoading, AppModal, AppPageContainer, AppPageToolbar, AppPagination, AppProgressBar, AppPropertiesPanel, AppRadio, AppSegmentSelector, AppSelect, AppSidebar, AppSlider, AppSplitView, AppStatsCard, AppSwitch, AppTableView, AppTabs, AppTextarea, ComponentDiscoveryService, ComponentRegistryService, CrudService, DataBindingResolver, EventBusService, FallbackService, GuardService, InvokeWrapperService, PermissionEvaluator, RbacService, SchemaFetcherService, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SignalLoggerService, SignalStoreService, SignalSyncService, StyleResolver, ThemeService, UiShowcaseComponent, components, dataComponents, feedbackComponents, getAllStyleVariants, getCurrentStyle, getStyleClassPrefix, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, layoutComponents, loadStyleVariant, setCurrentStyle, uiComponents };
 //# sourceMappingURL=tauri-front-shared.mjs.map

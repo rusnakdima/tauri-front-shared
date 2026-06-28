@@ -1,10 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
+import { invokeWithRetry, type RetryOptions } from "./retry.service";
 
-export interface RetryOptions {
-  retries?: number;
-  delayMs?: number;
-  timeoutMs?: number;
-}
+export { type RetryOptions };
 
 export class InvokeWrapperService {
   async invoke<T>(cmd: string, args?: Record<string, unknown>): Promise<T> {
@@ -14,22 +11,12 @@ export class InvokeWrapperService {
   async invokeWithRetry<T>(
     cmd: string,
     args?: Record<string, unknown>,
-    options: RetryOptions = {},
+    options: RetryOptions = { maxAttempts: 3, initialDelayMs: 1000, maxDelayMs: 30000 },
   ): Promise<T> {
-    const { retries = 3, delayMs = 1000, timeoutMs = 30000 } = options;
-    let lastError: Error;
-
-    for (let attempt = 0; attempt <= retries; attempt++) {
-      try {
-        return await this.invokeWithTimeout<T>(cmd, args, timeoutMs);
-      } catch (error) {
-        lastError = error as Error;
-        if (attempt < retries) {
-          await this.delay(delayMs * Math.pow(2, attempt));
-        }
-      }
-    }
-    throw lastError!;
+    return invokeWithRetry(
+      () => this.invokeWithTimeout<T>(cmd, args, options.maxDelayMs),
+      options,
+    );
   }
 
   private async invokeWithTimeout<T>(
@@ -47,9 +34,5 @@ export class InvokeWrapperService {
         ),
       ),
     ]);
-  }
-
-  private delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

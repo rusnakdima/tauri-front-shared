@@ -3,10 +3,35 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("app-slider")
 export class AppSlider extends LitElement {
-  @property({ type: Number }) min = 0;
-  @property({ type: Number }) max = 100;
-  @property({ type: Number }) step = 1;
-  @property({ type: Number }) value = 0;
+  @property({ type: Number }) declare min: number;
+  @property({ type: Number }) declare max: number;
+  @property({ type: Number }) declare step: number;
+  @property({ type: Number }) declare value: number;
+  constructor() {
+    super();
+    for (const key of ["min", "max", "step", "value"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["min", "max", "step", "value"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

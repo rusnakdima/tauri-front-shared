@@ -91,13 +91,38 @@ export class AppDialog extends LitElement {
     }
   `;
 
-  @property({ type: Boolean }) show = false;
+  @property({ type: Boolean }) declare show: boolean;
   @property({ type: String }) override title = "";
-  @property({ type: String }) size: DialogSize = "md";
-  @property({ type: Number }) zIndex = 1050;
-  @property({ type: Boolean }) backdropClose = true;
-  @property({ type: Boolean }) showClose = true;
-  @property({ type: Boolean }) showHeader = true;
+  @property({ type: String }) declare size: DialogSize;
+  @property({ type: Number }) declare zIndex: number;
+  @property({ type: Boolean }) declare backdropClose: boolean;
+  @property({ type: Boolean }) declare showClose: boolean;
+  @property({ type: Boolean }) declare showHeader: boolean;
+  constructor() {
+    super();
+    for (const key of ["show", "override", "size", "zIndex", "backdropClose", "showClose", "showHeader"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["show", "override", "size", "zIndex", "backdropClose", "showClose", "showHeader"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   private _handleBackdropClick(): void {
     if (this.backdropClose) {

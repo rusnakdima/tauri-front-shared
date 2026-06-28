@@ -3,11 +3,27 @@ import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let SplitView = class SplitView extends LitElement {
     constructor() {
-        super(...arguments);
-        this.mode = "horizontal";
-        this.dividerPosition = 50;
-        this.minFirstSize = "200px";
-        this.minSecondSize = "200px";
+        super();
+        for (const key of ["mode", "dividerPosition", "minFirstSize", "minSecondSize"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["mode", "dividerPosition", "minFirstSize", "minSecondSize"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
     }
     static { this.styles = css `
     :host {

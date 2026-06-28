@@ -3,10 +3,27 @@ import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppPagination = class AppPagination extends LitElement {
     constructor() {
-        super(...arguments);
-        this.totalItems = 0;
-        this.currentPage = 1;
-        this.pageSize = 10;
+        super();
+        for (const key of ["totalItems", "currentPage", "pageSize"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["totalItems", "currentPage", "pageSize"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
     }
     static { this.styles = css `
     :host {

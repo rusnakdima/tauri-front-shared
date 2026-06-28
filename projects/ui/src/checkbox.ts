@@ -5,10 +5,35 @@ export type CheckboxState = "unchecked" | "checked" | "indeterminate";
 
 @customElement("app-checkbox")
 export class AppCheckbox extends LitElement {
-  @property() label = "";
-  @property({ type: Boolean }) disabled = false;
-  @property({ type: Boolean }) checked = false;
-  @property({ type: Boolean }) indeterminate = false;
+  @property() declare label: string;
+  @property({ type: Boolean }) declare disabled: boolean;
+  @property({ type: Boolean }) declare checked: boolean;
+  @property({ type: Boolean }) declare indeterminate: boolean;
+  constructor() {
+    super();
+    for (const key of ["label", "disabled", "checked", "indeterminate"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["label", "disabled", "checked", "indeterminate"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

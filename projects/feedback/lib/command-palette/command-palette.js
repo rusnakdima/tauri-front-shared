@@ -2,16 +2,6 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let AppCommandPalette = class AppCommandPalette extends LitElement {
-    constructor() {
-        super(...arguments);
-        this.commands = [];
-        this.placeholder = "Search commands...";
-        this.triggerShortcut = "Ctrl+K";
-        this._isOpen = false;
-        this._searchQuery = "";
-        this._selectedIndex = 0;
-        this._handleGlobalKeyDown = this._onGlobalKeyDown.bind(this);
-    }
     static { this.styles = css `
     :host {
       display: contents;
@@ -210,6 +200,20 @@ let AppCommandPalette = class AppCommandPalette extends LitElement {
       border: 1px solid var(--border-subtle, #e5e7eb);
     }
   `; }
+    constructor() {
+        super();
+        this._isOpen = false;
+        this._searchQuery = "";
+        this._selectedIndex = 0;
+        this._handleGlobalKeyDown = this._onGlobalKeyDown.bind(this);
+        for (const key of ["commands", "placeholder", "triggerShortcut"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
     connectedCallback() {
         super.connectedCallback();
         document.addEventListener("keydown", this._handleGlobalKeyDown);

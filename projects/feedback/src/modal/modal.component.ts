@@ -75,10 +75,35 @@ export class Modal extends LitElement {
     }
   `;
 
-  @property({ type: Boolean, reflect: true }) open = false;
-  @property({ type: String }) modalTitle = "";
-  @property({ type: Boolean }) closable = true;
-  @property({ type: String }) size: "sm" | "md" | "lg" | "xl" = "md";
+  @property({ type: Boolean, reflect: true }) declare open: boolean;
+  @property({ type: String }) declare modalTitle: string;
+  @property({ type: Boolean }) declare closable: boolean;
+  @property({ type: String }) declare size: "sm" | "md" | "lg" | "xl";
+  constructor() {
+    super();
+    for (const key of ["open", "modalTitle", "closable", "size"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["open", "modalTitle", "closable", "size"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   private _close(): void {
     this.open = false;

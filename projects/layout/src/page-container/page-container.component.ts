@@ -4,8 +4,33 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("page-container")
 export class PageContainer extends LitElement {
   @property({ type: String }) override title: string = "";
-  @property({ type: String }) subtitle: string = "";
-  @property({ type: Boolean }) responsivePadding: boolean = true;
+  @property({ type: String }) declare subtitle: string;
+  @property({ type: Boolean }) declare responsivePadding: boolean;
+  constructor() {
+    super();
+    for (const key of ["override", "subtitle", "responsivePadding"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["override", "subtitle", "responsivePadding"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

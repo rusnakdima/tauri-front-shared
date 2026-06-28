@@ -3,12 +3,28 @@ import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let DataDataTable = class DataDataTable extends LitElement {
     constructor() {
-        super(...arguments);
-        this.columns = [];
-        this.data = [];
-        this.selectable = false;
-        this.selectedKey = "";
+        super();
         this.selectedRow = null;
+        for (const key of ["columns", "data", "selectable", "selectedKey"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["columns", "data", "selectable", "selectedKey"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
     }
     onRowClick(row) {
         if (!this.selectable)

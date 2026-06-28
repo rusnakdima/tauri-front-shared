@@ -3,8 +3,33 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("data-json-view")
 export class DataJsonView extends LitElement {
-  @property() data: unknown = null;
-  @property({ type: Number }) indent = 2;
+  @property() declare data: unknown;
+  @property({ type: Number }) declare indent: number;
+  constructor() {
+    super();
+    for (const key of ["data", "indent"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["data", "indent"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   private highlightJson(json: string): string {
     return json

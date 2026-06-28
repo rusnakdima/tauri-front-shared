@@ -3,15 +3,6 @@ import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import "../dialog/dialog.js";
 let AppConfirmDialog = class AppConfirmDialog extends LitElement {
-    constructor() {
-        super(...arguments);
-        this.isOpen = false;
-        this.title = "";
-        this.message = "";
-        this.confirmText = "Confirm";
-        this.cancelText = "Cancel";
-        this.confirmVariant = "danger";
-    }
     static { this.styles = css `
     :host {
       display: contents;
@@ -67,6 +58,30 @@ let AppConfirmDialog = class AppConfirmDialog extends LitElement {
       color: white;
     }
   `; }
+    constructor() {
+        super();
+        this.title = "";
+        for (const key of ["isOpen", "override", "message", "confirmText", "cancelText", "confirmVariant"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["isOpen", "override", "message", "confirmText", "cancelText", "confirmVariant"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
+    }
     _onConfirm() {
         this.dispatchEvent(new CustomEvent("confirm", { bubbles: true, composed: true }));
         this.isOpen = false;

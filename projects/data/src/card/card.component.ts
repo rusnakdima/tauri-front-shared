@@ -3,15 +3,40 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("data-card")
 export class DataCard extends LitElement {
-  @property() cardTitle = "";
-  @property() subtitle = "";
-  @property() footer = "";
-  @property({ type: Boolean }) hoverable = false;
-  @property({ type: Boolean }) elevated = false;
-  @property() gridCol = "";
-  @property() gridRow = "";
-  @property({ type: Number }) gridColSpan = 1;
-  @property({ type: Number }) gridRowSpan = 1;
+  @property() declare cardTitle: string;
+  @property() declare subtitle: string;
+  @property() declare footer: string;
+  @property({ type: Boolean }) declare hoverable: boolean;
+  @property({ type: Boolean }) declare elevated: boolean;
+  @property() declare gridCol: string;
+  @property() declare gridRow: string;
+  @property({ type: Number }) declare gridColSpan: number;
+  @property({ type: Number }) declare gridRowSpan: number;
+  constructor() {
+    super();
+    for (const key of ["cardTitle", "subtitle", "footer", "hoverable", "elevated", "gridCol", "gridRow", "gridColSpan", "gridRowSpan"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["cardTitle", "subtitle", "footer", "hoverable", "elevated", "gridCol", "gridRow", "gridColSpan", "gridRowSpan"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

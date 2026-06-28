@@ -3,10 +3,28 @@ import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let PageToolbar = class PageToolbar extends LitElement {
     constructor() {
-        super(...arguments);
+        super();
         this.title = "";
-        this.actions = [];
-        this.filters = [];
+        for (const key of ["override", "actions", "filters"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["override", "actions", "filters"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
     }
     static { this.styles = css `
     :host {

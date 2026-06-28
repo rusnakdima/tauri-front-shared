@@ -3,9 +3,34 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("app-pagination")
 export class AppPagination extends LitElement {
-  @property({ type: Number }) totalItems = 0;
-  @property({ type: Number }) currentPage = 1;
-  @property({ type: Number }) pageSize = 10;
+  @property({ type: Number }) declare totalItems: number;
+  @property({ type: Number }) declare currentPage: number;
+  @property({ type: Number }) declare pageSize: number;
+  constructor() {
+    super();
+    for (const key of ["totalItems", "currentPage", "pageSize"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["totalItems", "currentPage", "pageSize"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

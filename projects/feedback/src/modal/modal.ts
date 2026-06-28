@@ -127,14 +127,25 @@ export class AppModal extends LitElement {
     }
   `;
 
-  @property({ type: Boolean }) open = false;
+  @property({ type: Boolean }) declare open: boolean;
   @property({ type: String }) override title = "";
-  @property({ type: String }) size: ModalSize = "md";
-  @property({ type: Boolean }) closeOnBackdrop = true;
-  @property({ type: Boolean }) closeOnEscape = true;
-  @property({ type: Boolean }) showHeader = true;
-  @property({ type: Boolean }) showFooter = true;
-  @property({ type: Number }) zIndex = 1050;
+  @property({ type: String }) declare size: ModalSize;
+  @property({ type: Boolean }) declare closeOnBackdrop: boolean;
+  @property({ type: Boolean }) declare closeOnEscape: boolean;
+  @property({ type: Boolean }) declare showHeader: boolean;
+  @property({ type: Boolean }) declare showFooter: boolean;
+  @property({ type: Number }) declare zIndex: number;
+  constructor() {
+    super();
+    for (const key of ["open", "override", "size", "closeOnBackdrop", "closeOnEscape", "showHeader", "showFooter", "zIndex"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
 
   @state() private _previousActiveElement: HTMLElement | null = null;
 

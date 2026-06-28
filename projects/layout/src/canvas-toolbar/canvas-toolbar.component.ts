@@ -61,10 +61,35 @@ export class CanvasToolbar extends LitElement {
     }
   `;
 
-  @property({ type: Number }) zoomLevel = 100;
-  @property({ type: Boolean }) showGrid = true;
-  @property({ type: Boolean }) canUndo = true;
-  @property({ type: Boolean }) canRedo = true;
+  @property({ type: Number }) declare zoomLevel: number;
+  @property({ type: Boolean }) declare showGrid: boolean;
+  @property({ type: Boolean }) declare canUndo: boolean;
+  @property({ type: Boolean }) declare canRedo: boolean;
+  constructor() {
+    super();
+    for (const key of ["zoomLevel", "showGrid", "canUndo", "canRedo"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["zoomLevel", "showGrid", "canUndo", "canRedo"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   private _emit(name: string): void {
     this.dispatchEvent(

@@ -1,6 +1,6 @@
 {
   "name": "@tauri-front/shared",
-  "version": "0.1.0",
+  "version": "0.1.1-1782666230370",
   "description": "Unified shared library for Tauri apps with style variants",
   "type": "module",
   "main": "./dist/fesm2022/tauri-front-shared.mjs",

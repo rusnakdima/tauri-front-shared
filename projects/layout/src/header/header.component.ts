@@ -9,10 +9,35 @@ export interface Breadcrumb {
 @customElement("app-header")
 export class LayoutHeader extends LitElement {
   @property({ type: String }) override title: string = "";
-  @property({ type: Array }) breadcrumbs: Breadcrumb[] = [];
-  @property({ type: Boolean }) showThemeToggle = false;
-  @property({ type: Boolean }) showCanvasControls = false;
-  @property({ type: Boolean }) showForkButton = false;
+  @property({ type: Array }) declare breadcrumbs: Breadcrumb[];
+  @property({ type: Boolean }) declare showThemeToggle: boolean;
+  @property({ type: Boolean }) declare showCanvasControls: boolean;
+  @property({ type: Boolean }) declare showForkButton: boolean;
+  constructor() {
+    super();
+    for (const key of ["override", "breadcrumbs", "showThemeToggle", "showCanvasControls", "showForkButton"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["override", "breadcrumbs", "showThemeToggle", "showCanvasControls", "showForkButton"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

@@ -6,8 +6,33 @@ export type LoadingSize = "sm" | "md" | "lg";
 
 @customElement("app-loading")
 export class AppLoading extends LitElement {
-  @property() variant: LoadingVariant = "spinner";
-  @property() size: LoadingSize = "md";
+  @property() declare variant: LoadingVariant;
+  @property() declare size: LoadingSize;
+  constructor() {
+    super();
+    for (const key of ["variant", "size"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["variant", "size"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

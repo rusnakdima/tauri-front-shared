@@ -2,19 +2,6 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let AppModal = class AppModal extends LitElement {
-    constructor() {
-        super(...arguments);
-        this.open = false;
-        this.title = "";
-        this.size = "md";
-        this.closeOnBackdrop = true;
-        this.closeOnEscape = true;
-        this.showHeader = true;
-        this.showFooter = true;
-        this.zIndex = 1050;
-        this._previousActiveElement = null;
-        this._handleKeydown = this._onKeyDown.bind(this);
-    }
     static { this.styles = css `
     :host {
       display: contents;
@@ -136,6 +123,19 @@ let AppModal = class AppModal extends LitElement {
       flex-shrink: 0;
     }
   `; }
+    constructor() {
+        super();
+        this.title = "";
+        this._previousActiveElement = null;
+        this._handleKeydown = this._onKeyDown.bind(this);
+        for (const key of ["open", "override", "size", "closeOnBackdrop", "closeOnEscape", "showHeader", "showFooter", "zIndex"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
     updated(changedProps) {
         if (changedProps.has("open")) {
             if (this.open) {

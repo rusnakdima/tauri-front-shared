@@ -6,10 +6,35 @@ export type AvatarShape = "circle" | "square" | "rounded";
 
 @customElement("app-avatar")
 export class AppAvatar extends LitElement {
-  @property() src: string | null = null;
-  @property() name = "";
-  @property() size: AvatarSize = "md";
-  @property() shape: AvatarShape = "circle";
+  @property() declare src: string | null;
+  @property() declare name: string;
+  @property() declare size: AvatarSize;
+  @property() declare shape: AvatarShape;
+  constructor() {
+    super();
+    for (const key of ["src", "name", "size", "shape"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["src", "name", "size", "shape"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

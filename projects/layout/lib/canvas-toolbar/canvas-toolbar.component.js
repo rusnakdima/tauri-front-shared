@@ -2,13 +2,6 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let CanvasToolbar = class CanvasToolbar extends LitElement {
-    constructor() {
-        super(...arguments);
-        this.zoomLevel = 100;
-        this.showGrid = true;
-        this.canUndo = true;
-        this.canRedo = true;
-    }
     static { this.styles = css `
     :host {
       display: inline-flex;
@@ -66,6 +59,29 @@ let CanvasToolbar = class CanvasToolbar extends LitElement {
       height: 20px;
     }
   `; }
+    constructor() {
+        super();
+        for (const key of ["zoomLevel", "showGrid", "canUndo", "canRedo"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["zoomLevel", "showGrid", "canUndo", "canRedo"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
+    }
     _emit(name) {
         this.dispatchEvent(new CustomEvent(name, { bubbles: true, composed: true }));
     }

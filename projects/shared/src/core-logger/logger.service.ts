@@ -1,3 +1,5 @@
+import { Injectable } from "@angular/core";
+
 export type LogLevel = "debug" | "info" | "warn" | "error";
 
 export interface LogEntry {
@@ -7,6 +9,7 @@ export interface LogEntry {
   context?: string;
 }
 
+@Injectable({ providedIn: 'root' })
 export class LoggerService {
   private _logs: LogEntry[] = [];
 

@@ -3,15 +3,27 @@ import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppButton = class AppButton extends LitElement {
     constructor() {
-        super(...arguments);
-        this.variant = "primary";
-        this.size = "md";
-        this.disabled = false;
-        this.loading = false;
-        this.icon = null;
-        this.iconPosition = "left";
-        this.fullWidth = false;
-        this.type = "button";
+        super();
+        for (const key of ["variant", "size", "disabled", "loading", "icon", "iconPosition", "fullWidth", "type"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["variant", "size", "disabled", "loading", "icon", "iconPosition", "fullWidth", "type"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
     }
     static { this.styles = css `
     :host {

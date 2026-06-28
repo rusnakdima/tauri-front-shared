@@ -16,8 +16,33 @@ export interface PageToolbarFilter {
 @customElement("page-toolbar")
 export class PageToolbar extends LitElement {
   @property({ type: String }) override title: string = "";
-  @property({ type: Array }) actions: PageToolbarAction[] = [];
-  @property({ type: Array }) filters: PageToolbarFilter[] = [];
+  @property({ type: Array }) declare actions: PageToolbarAction[];
+  @property({ type: Array }) declare filters: PageToolbarFilter[];
+  constructor() {
+    super();
+    for (const key of ["override", "actions", "filters"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["override", "actions", "filters"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

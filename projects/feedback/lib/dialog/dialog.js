@@ -2,16 +2,6 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppDialog = class AppDialog extends LitElement {
-    constructor() {
-        super(...arguments);
-        this.show = false;
-        this.title = "";
-        this.size = "md";
-        this.zIndex = 1050;
-        this.backdropClose = true;
-        this.showClose = true;
-        this.showHeader = true;
-    }
     static { this.styles = css `
     :host {
       display: contents;
@@ -97,6 +87,30 @@ let AppDialog = class AppDialog extends LitElement {
       flex: 1;
     }
   `; }
+    constructor() {
+        super();
+        this.title = "";
+        for (const key of ["show", "override", "size", "zIndex", "backdropClose", "showClose", "showHeader"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["show", "override", "size", "zIndex", "backdropClose", "showClose", "showHeader"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
+    }
     _handleBackdropClick() {
         if (this.backdropClose) {
             this._close();

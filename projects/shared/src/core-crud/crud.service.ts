@@ -1,22 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
+import { CrudFilter, CrudQuery, CrudResult } from "./crud.types";
 
-export interface CrudFilter {
-  field: string;
-  operator: "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "contains" | "in";
-  value: unknown;
-}
-
-export interface CrudQuery {
-  filter?: CrudFilter[];
-  sort?: { field: string; direction: "asc" | "desc" };
-  limit?: number;
-  offset?: number;
-}
-
-export interface CrudResult<T> {
-  data: T[];
-  total: number;
-}
+export type { CrudFilter, CrudQuery, CrudResult } from "./crud.types";
 
 export class CrudService {
   constructor(private entityName: string) {}

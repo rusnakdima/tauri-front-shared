@@ -3,11 +3,27 @@ import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let AppAvatar = class AppAvatar extends LitElement {
     constructor() {
-        super(...arguments);
-        this.src = null;
-        this.name = "";
-        this.size = "md";
-        this.shape = "circle";
+        super();
+        for (const key of ["src", "name", "size", "shape"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["src", "name", "size", "shape"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
     }
     static { this.styles = css `
     :host {

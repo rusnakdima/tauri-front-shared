@@ -3,10 +3,27 @@ import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let DesignerSidebar = class DesignerSidebar extends LitElement {
     constructor() {
-        super(...arguments);
-        this.position = "left";
-        this.collapsed = false;
-        this.header = "";
+        super();
+        for (const key of ["position", "collapsed", "header"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["position", "collapsed", "header"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
     }
     static { this.styles = css `
     :host {

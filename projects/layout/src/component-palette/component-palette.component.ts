@@ -12,11 +12,36 @@ export interface PaletteComponent {
 
 @customElement("app-component-palette")
 export class ComponentPalette extends LitElement {
-  @property({ type: Array }) components: PaletteComponent[] = [];
-  @property({ type: String }) selectedCategory = "all";
-  @property({ type: Boolean }) searchable = true;
+  @property({ type: Array }) declare components: PaletteComponent[];
+  @property({ type: String }) declare selectedCategory: string;
+  @property({ type: Boolean }) declare searchable: boolean;
+  constructor() {
+    super();
+    for (const key of ["components", "selectedCategory", "searchable"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
 
-  private _searchQuery = "";
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["components", "selectedCategory", "searchable"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
+
+  private declare _searchQuery: string;
 
   static override styles = css`
     :host {

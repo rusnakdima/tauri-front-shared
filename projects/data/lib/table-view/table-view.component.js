@@ -3,15 +3,30 @@ import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let DataTableView = class DataTableView extends LitElement {
     constructor() {
-        super(...arguments);
-        this.columns = [];
-        this.data = [];
-        this.sortable = false;
-        this.pageSize = 10;
-        this.total = 0;
+        super();
         this.sortKey = "";
         this.sortDir = "asc";
         this.currentPage = 1;
+        for (const key of ["columns", "data", "sortable", "pageSize", "total"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["columns", "data", "sortable", "pageSize", "total"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
     }
     get totalPages() {
         return Math.ceil(this.total / this.pageSize) || 1;

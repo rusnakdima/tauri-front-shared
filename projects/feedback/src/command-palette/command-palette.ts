@@ -211,9 +211,20 @@ export class AppCommandPalette extends LitElement {
     }
   `;
 
-  @property({ type: Array }) commands: Command[] = [];
-  @property({ type: String }) placeholder = "Search commands...";
-  @property({ type: String }) triggerShortcut = "Ctrl+K";
+  @property({ type: Array }) declare commands: Command[];
+  @property({ type: String }) declare placeholder: string;
+  @property({ type: String }) declare triggerShortcut: string;
+  constructor() {
+    super();
+    for (const key of ["commands", "placeholder", "triggerShortcut"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
 
   @state() private _isOpen = false;
   @state() private _searchQuery = "";

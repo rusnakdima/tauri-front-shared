@@ -30,7 +30,11 @@ export class SignalStore {
   }
 
   toJSON(): Record<string, unknown> {
-    return Object.fromEntries(this.store);
+    const result: Record<string, unknown> = {};
+    for (const [key, value] of this.store) {
+      result[key] = value;
+    }
+    return result;
   }
 
   fromJSON(json: Record<string, unknown>): void {

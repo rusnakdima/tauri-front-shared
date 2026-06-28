@@ -12,14 +12,39 @@ export type ButtonSize = "sm" | "md" | "lg";
 
 @customElement("app-button")
 export class AppButton extends LitElement {
-  @property() variant: ButtonVariant = "primary";
-  @property() size: ButtonSize = "md";
-  @property({ type: Boolean }) disabled = false;
-  @property({ type: Boolean }) loading = false;
-  @property() icon: string | null = null;
-  @property() iconPosition: "left" | "right" = "left";
-  @property({ type: Boolean }) fullWidth = false;
-  @property() type: "button" | "submit" | "reset" = "button";
+  @property() declare variant: ButtonVariant;
+  @property() declare size: ButtonSize;
+  @property({ type: Boolean }) declare disabled: boolean;
+  @property({ type: Boolean }) declare loading: boolean;
+  @property() declare icon: string | null;
+  @property() declare iconPosition: "left" | "right";
+  @property({ type: Boolean }) declare fullWidth: boolean;
+  @property() declare type: "button" | "submit" | "reset";
+  constructor() {
+    super();
+    for (const key of ["variant", "size", "disabled", "loading", "icon", "iconPosition", "fullWidth", "type"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["variant", "size", "disabled", "loading", "icon", "iconPosition", "fullWidth", "type"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

@@ -3,11 +3,36 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("app-empty-state")
 export class AppEmptyState extends LitElement {
-  @property() icon: string | null = null;
-  @property() title = "";
-  @property() message = "";
-  @property() actionLabel: string | null = null;
-  @property() variant: "default" | "danger" | "success" = "default";
+  @property() declare icon: string | null;
+  @property() declare title: string;
+  @property() declare message: string;
+  @property() declare actionLabel: string | null;
+  @property() declare variant: "default" | "danger" | "success";
+  constructor() {
+    super();
+    for (const key of ["icon", "title", "message", "actionLabel", "variant"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["icon", "title", "message", "actionLabel", "variant"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

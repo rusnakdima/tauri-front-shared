@@ -3,9 +3,34 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("app-footer")
 export class LayoutFooter extends LitElement {
-  @property({ type: String }) text: string = "";
-  @property({ type: Boolean }) showVersion: boolean = true;
-  @property({ type: String }) version: string = "1.0.0";
+  @property({ type: String }) declare text: string;
+  @property({ type: Boolean }) declare showVersion: boolean;
+  @property({ type: String }) declare version: string;
+  constructor() {
+    super();
+    for (const key of ["text", "showVersion", "version"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["text", "showVersion", "version"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   private get _currentYear(): number {
     return new Date().getFullYear();

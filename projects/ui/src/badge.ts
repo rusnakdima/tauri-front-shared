@@ -12,11 +12,36 @@ export type BadgeSize = "sm" | "md" | "lg";
 
 @customElement("app-badge")
 export class AppBadge extends LitElement {
-  @property() label = "";
-  @property() variant: BadgeVariant = "default";
-  @property() size: BadgeSize = "md";
-  @property() icon: string | null = null;
-  @property({ type: Boolean }) removable = false;
+  @property() declare label: string;
+  @property() declare variant: BadgeVariant;
+  @property() declare size: BadgeSize;
+  @property() declare icon: string | null;
+  @property({ type: Boolean }) declare removable: boolean;
+  constructor() {
+    super();
+    for (const key of ["label", "variant", "size", "icon", "removable"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["label", "variant", "size", "icon", "removable"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

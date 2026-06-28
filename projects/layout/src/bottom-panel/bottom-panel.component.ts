@@ -91,17 +91,35 @@ export class BottomPanel extends LitElement {
     }
   `;
 
-  @property({ type: Array }) tabs: string[] = [
-    "pages",
-    "layouts",
-    "components",
-    "services",
-    "i18n",
-    "json",
-  ];
-  @property({ type: String }) activeTab: string = "pages";
-  @property({ type: Boolean, reflect: true }) collapsed = false;
-  @property({ type: Number }) collapsedHeight = 48;
+  @property({ type: Array }) declare tabs: string[];
+  @property({ type: String }) declare activeTab: string;
+  @property({ type: Boolean, reflect: true }) declare collapsed: boolean;
+  @property({ type: Number }) declare collapsedHeight: number;
+  constructor() {
+    super();
+    for (const key of ["tabs", "activeTab", "collapsed", "collapsedHeight"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["tabs", "activeTab", "collapsed", "collapsedHeight"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   private _toggleCollapse(): void {
     this.collapsed = !this.collapsed;

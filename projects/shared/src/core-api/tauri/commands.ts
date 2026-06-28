@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { Response, ResponseStatus } from "./response";
 import { AppError, ErrorType } from "./error";
+import { invokeWithRetry } from "../retry.service";
 
 export interface InvokeOptionsWithRetry {
   timeout?: number;
@@ -12,10 +13,6 @@ export interface CommandResult<T> {
   success: boolean;
   data: T | null;
   error: AppError | null;
-}
-
-async function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function parseErrorFromInvoke(error: unknown): AppError {
@@ -48,11 +45,9 @@ export async function invokeCommand<T>(
   args?: Record<string, unknown>,
   options?: InvokeOptionsWithRetry,
 ): Promise<CommandResult<T>> {
-  const { timeout = 30000, retryCount = 0, retryDelay = 1000 } = options || {};
+  const { retryCount = 0, retryDelay = 1000 } = options || {};
 
-  let lastError: AppError | null = null;
-
-  for (let attempt = 0; attempt <= retryCount; attempt++) {
+  if (retryCount === 0) {
     try {
       const result = await invoke<T>(command, args);
       return {
@@ -61,19 +56,31 @@ export async function invokeCommand<T>(
         error: null,
       };
     } catch (error) {
-      lastError = parseErrorFromInvoke(error);
-
-      if (attempt < retryCount) {
-        await delay(retryDelay * Math.pow(2, attempt));
-      }
+      return {
+        success: false,
+        data: null,
+        error: parseErrorFromInvoke(error),
+      };
     }
   }
 
-  return {
-    success: false,
-    data: null,
-    error: lastError,
-  };
+  try {
+    const result = await invokeWithRetry(
+      () => invoke<T>(command, args),
+      { maxAttempts: retryCount + 1, initialDelayMs: retryDelay, maxDelayMs: 60000 },
+    );
+    return {
+      success: true,
+      data: result,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      error: parseErrorFromInvoke(error),
+    };
+  }
 }
 
 export async function invokeCommandWithResponse<T>(
@@ -81,7 +88,7 @@ export async function invokeCommandWithResponse<T>(
   args?: Record<string, unknown>,
   options?: InvokeOptionsWithRetry,
 ): Promise<Response<T>> {
-  const { timeout = 30000, retryCount = 0, retryDelay = 1000 } = options || {};
+  const { retryCount = 0, retryDelay = 1000 } = options || {};
 
   let lastResponse: Response<T> = {
     status: ResponseStatus.Error,
@@ -102,7 +109,9 @@ export async function invokeCommandWithResponse<T>(
       }
 
       if (attempt < retryCount) {
-        await delay(retryDelay * Math.pow(2, attempt));
+        await new Promise((resolve) =>
+          setTimeout(resolve, retryDelay * Math.pow(2, attempt)),
+        );
       }
     } catch (error) {
       lastResponse = {
@@ -112,7 +121,9 @@ export async function invokeCommandWithResponse<T>(
       };
 
       if (attempt < retryCount) {
-        await delay(retryDelay * Math.pow(2, attempt));
+        await new Promise((resolve) =>
+          setTimeout(resolve, retryDelay * Math.pow(2, attempt)),
+        );
       }
     }
   }

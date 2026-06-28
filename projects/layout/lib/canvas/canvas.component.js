@@ -3,12 +3,30 @@ import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let SchemaCanvas = class SchemaCanvas extends LitElement {
     constructor() {
-        super(...arguments);
-        this.elements = [];
-        this.gridColumns = 12;
-        this.showGrid = true;
-        this.selectedId = "";
+        super();
         this._dragOverCounter = 0;
+        for (const key of ["elements", "gridColumns", "showGrid", "selectedId"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        // Save values set by Angular before upgrade
+        const saved = {};
+        for (const key of ["elements", "gridColumns", "showGrid", "selectedId"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        // Restore values through the setter (triggers Lit reactivity)
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
     }
     static { this.styles = css `
     :host {

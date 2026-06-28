@@ -3,10 +3,35 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("data-stats-card")
 export class DataStatsCard extends LitElement {
-  @property() label = "";
-  @property() value = "";
-  @property() icon = "";
-  @property() iconBgClass = "bg-accent";
+  @property() declare label: string;
+  @property() declare value: string;
+  @property() declare icon: string;
+  @property() declare iconBgClass: string;
+  constructor() {
+    super();
+    for (const key of ["label", "value", "icon", "iconBgClass"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["label", "value", "icon", "iconBgClass"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

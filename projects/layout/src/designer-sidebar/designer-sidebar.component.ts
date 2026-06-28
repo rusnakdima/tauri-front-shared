@@ -3,9 +3,34 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("app-designer-sidebar")
 export class DesignerSidebar extends LitElement {
-  @property({ type: String }) position: "left" | "right" = "left";
-  @property({ type: Boolean }) collapsed = false;
-  @property({ type: String }) header = "";
+  @property({ type: String }) declare position: "left" | "right";
+  @property({ type: Boolean }) declare collapsed: boolean;
+  @property({ type: String }) declare header: string;
+  constructor() {
+    super();
+    for (const key of ["position", "collapsed", "header"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["position", "collapsed", "header"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

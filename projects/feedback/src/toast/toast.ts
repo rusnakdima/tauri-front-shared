@@ -104,11 +104,22 @@ export class AppToast extends LitElement {
     }
   `;
 
-  @property({ type: String }) type: ToastType = "info";
-  @property({ type: String }) message = "";
-  @property({ type: Number }) duration = 3000;
-  @property({ type: Boolean }) autoDismiss = true;
-  @property({ type: Boolean }) show = false;
+  @property({ type: String }) declare type: ToastType;
+  @property({ type: String }) declare message: string;
+  @property({ type: Number }) declare duration: number;
+  @property({ type: Boolean }) declare autoDismiss: boolean;
+  @property({ type: Boolean }) declare show: boolean;
+  constructor() {
+    super();
+    for (const key of ["type", "message", "duration", "autoDismiss", "show"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
 
   @state() private _isVisible = false;
   private _timeoutId?: number;

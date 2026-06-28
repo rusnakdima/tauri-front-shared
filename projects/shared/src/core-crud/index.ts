@@ -5,3 +5,4 @@ export {
   type CrudQuery,
   type CrudResult,
 } from "./crud.service";
+export type { FilterOperator } from "./crud.types";

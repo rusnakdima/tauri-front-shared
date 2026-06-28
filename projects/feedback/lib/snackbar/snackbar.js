@@ -2,14 +2,6 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let AppSnackbar = class AppSnackbar extends LitElement {
-    constructor() {
-        super(...arguments);
-        this.type = "default";
-        this.message = "";
-        this.duration = 2500;
-        this.autoDismiss = true;
-        this._isVisible = false;
-    }
     static { this.styles = css `
     :host {
       display: contents;
@@ -91,6 +83,17 @@ let AppSnackbar = class AppSnackbar extends LitElement {
       font-size: 1rem;
     }
   `; }
+    constructor() {
+        super();
+        this._isVisible = false;
+        for (const key of ["type", "message", "duration", "autoDismiss"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
     connectedCallback() {
         super.connectedCallback();
         this._isVisible = true;

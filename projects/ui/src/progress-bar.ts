@@ -3,8 +3,33 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("app-progress-bar")
 export class AppProgressBar extends LitElement {
-  @property({ type: Number }) percentage = 0;
-  @property({ type: Boolean }) showLabel = false;
+  @property({ type: Number }) declare percentage: number;
+  @property({ type: Boolean }) declare showLabel: boolean;
+  constructor() {
+    super();
+    for (const key of ["percentage", "showLabel"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["percentage", "showLabel"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

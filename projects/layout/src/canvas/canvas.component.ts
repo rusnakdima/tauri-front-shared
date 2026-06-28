@@ -20,10 +20,37 @@ export interface CanvasElement {
 
 @customElement("app-canvas")
 export class SchemaCanvas extends LitElement {
-  @property({ type: Array }) elements: CanvasElement[] = [];
-  @property({ type: Number }) gridColumns = 12;
-  @property({ type: Boolean }) showGrid = true;
-  @property({ type: String }) selectedId = "";
+  @property({ type: Array }) declare elements: CanvasElement[];
+  @property({ type: Number }) declare gridColumns: number;
+  @property({ type: Boolean }) declare showGrid: boolean;
+  @property({ type: String }) declare selectedId: string;
+  constructor() {
+    super();
+    for (const key of ["elements", "gridColumns", "showGrid", "selectedId"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+
+  override connectedCallback(): void {
+    // Save values set by Angular before upgrade
+    const saved: Record<string, unknown> = {};
+    for (const key of ["elements", "gridColumns", "showGrid", "selectedId"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    // Restore values through the setter (triggers Lit reactivity)
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
 
   static override styles = css`
     :host {

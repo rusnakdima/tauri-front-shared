@@ -1,6 +1,8 @@
+import { FilterOperator } from "../core-crud/crud.types";
+
 export interface QueryFilter {
   field: string;
-  operator: "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "contains" | "in";
+  operator: FilterOperator;
   value: unknown;
 }
 

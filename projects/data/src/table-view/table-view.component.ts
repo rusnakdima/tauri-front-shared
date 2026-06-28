@@ -17,11 +17,36 @@ export interface TablePageEvent {
 export class DataTableView<
   T extends Record<string, unknown>,
 > extends LitElement {
-  @property({ type: Array }) columns: TableColumn[] = [];
-  @property({ type: Array }) data: T[] = [];
-  @property({ type: Boolean }) sortable = false;
-  @property({ type: Number }) pageSize = 10;
-  @property({ type: Number }) total = 0;
+  @property({ type: Array }) declare columns: TableColumn[];
+  @property({ type: Array }) declare data: T[];
+  @property({ type: Boolean }) declare sortable: boolean;
+  @property({ type: Number }) declare pageSize: number;
+  @property({ type: Number }) declare total: number;
+  constructor() {
+    super();
+    for (const key of ["columns", "data", "sortable", "pageSize", "total"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["columns", "data", "sortable", "pageSize", "total"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   @state() private sortKey = "";
   @state() private sortDir: "asc" | "desc" = "asc";

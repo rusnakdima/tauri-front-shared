@@ -3,14 +3,18 @@ import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 let LayoutSidebar = class LayoutSidebar extends LitElement {
     constructor() {
-        super(...arguments);
-        this.items = [];
-        this.collapsed = false;
-        this.active = "";
+        super();
         this._collapsed = false;
         this._handleResize = () => {
             this._checkViewport();
         };
+        for (const key of ["items", "collapsed", "active"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
     }
     _checkViewport() {
         if (window.innerWidth < 768 && !this._collapsed) {

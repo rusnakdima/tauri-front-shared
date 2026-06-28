@@ -62,12 +62,37 @@ export class AppConfirmDialog extends LitElement {
     }
   `;
 
-  @property({ type: Boolean }) isOpen = false;
+  @property({ type: Boolean }) declare isOpen: boolean;
   @property({ type: String }) override title = "";
-  @property({ type: String }) message = "";
-  @property({ type: String }) confirmText = "Confirm";
-  @property({ type: String }) cancelText = "Cancel";
-  @property({ type: String }) confirmVariant: ConfirmVariant = "danger";
+  @property({ type: String }) declare message: string;
+  @property({ type: String }) declare confirmText: string;
+  @property({ type: String }) declare cancelText: string;
+  @property({ type: String }) declare confirmVariant: ConfirmVariant;
+  constructor() {
+    super();
+    for (const key of ["isOpen", "override", "message", "confirmText", "cancelText", "confirmVariant"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["isOpen", "override", "message", "confirmText", "cancelText", "confirmVariant"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   private _onConfirm(): void {
     this.dispatchEvent(

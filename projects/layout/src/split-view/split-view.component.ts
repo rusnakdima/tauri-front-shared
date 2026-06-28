@@ -5,10 +5,35 @@ export type SplitViewMode = "horizontal" | "vertical";
 
 @customElement("split-view")
 export class SplitView extends LitElement {
-  @property({ type: String }) mode: SplitViewMode = "horizontal";
-  @property({ type: Number }) dividerPosition: number = 50;
-  @property({ type: String }) minFirstSize: string = "200px";
-  @property({ type: String }) minSecondSize: string = "200px";
+  @property({ type: String }) declare mode: SplitViewMode;
+  @property({ type: Number }) declare dividerPosition: number;
+  @property({ type: String }) declare minFirstSize: string;
+  @property({ type: String }) declare minSecondSize: string;
+  constructor() {
+    super();
+    for (const key of ["mode", "dividerPosition", "minFirstSize", "minSecondSize"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["mode", "dividerPosition", "minFirstSize", "minSecondSize"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

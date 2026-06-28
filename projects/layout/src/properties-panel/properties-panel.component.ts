@@ -17,8 +17,33 @@ export interface ComponentDef {
 
 @customElement("app-properties-panel")
 export class PropertiesPanel extends LitElement {
-  @property({ type: Object }) element: Record<string, unknown> | null = null;
-  @property({ type: Object }) componentDef: ComponentDef | null = null;
+  @property({ type: Object }) declare element: Record<string, unknown> | null;
+  @property({ type: Object }) declare componentDef: ComponentDef | null;
+  constructor() {
+    super();
+    for (const key of ["element", "componentDef"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["element", "componentDef"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   static override styles = css`
     :host {

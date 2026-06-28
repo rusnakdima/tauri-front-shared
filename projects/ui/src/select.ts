@@ -9,12 +9,37 @@ export interface SelectOption {
 
 @customElement("app-select")
 export class AppSelect extends LitElement {
-  @property() options: SelectOption[] = [];
-  @property() value: string | null = null;
-  @property() placeholder = "Select...";
-  @property({ type: Boolean }) searchable = false;
-  @property({ type: Boolean }) disabled = false;
-  @property() error: string | null = null;
+  @property() declare options: SelectOption[];
+  @property() declare value: string | null;
+  @property() declare placeholder: string;
+  @property({ type: Boolean }) declare searchable: boolean;
+  @property({ type: Boolean }) declare disabled: boolean;
+  @property() declare error: string | null;
+  constructor() {
+    super();
+    for (const key of ["options", "value", "placeholder", "searchable", "disabled", "error"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["options", "value", "placeholder", "searchable", "disabled", "error"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   @state() private _isOpen = false;
   @state() private _searchQuery = "";

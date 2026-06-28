@@ -11,9 +11,20 @@ export interface SidebarItem {
 
 @customElement("app-sidebar")
 export class LayoutSidebar extends LitElement {
-  @property({ type: Array }) items: SidebarItem[] = [];
-  @property({ type: Boolean }) collapsed: boolean = false;
-  @property({ type: String }) active: string = "";
+  @property({ type: Array }) declare items: SidebarItem[];
+  @property({ type: Boolean }) declare collapsed: boolean;
+  @property({ type: String }) declare active: string;
+  constructor() {
+    super();
+    for (const key of ["items", "collapsed", "active"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
 
   @state() private _collapsed: boolean = false;
 

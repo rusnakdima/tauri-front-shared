@@ -2,13 +2,6 @@ import { __decorate } from "tslib";
 import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 let Modal = class Modal extends LitElement {
-    constructor() {
-        super(...arguments);
-        this.open = false;
-        this.modalTitle = "";
-        this.closable = true;
-        this.size = "md";
-    }
     static { this.styles = css `
     :host {
       display: contents;
@@ -80,6 +73,29 @@ let Modal = class Modal extends LitElement {
       max-width: 1000px;
     }
   `; }
+    constructor() {
+        super();
+        for (const key of ["open", "modalTitle", "closable", "size"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["open", "modalTitle", "closable", "size"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
+    }
     _close() {
         this.open = false;
         this.dispatchEvent(new CustomEvent("close", { bubbles: true, composed: true }));

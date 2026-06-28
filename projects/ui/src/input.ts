@@ -12,12 +12,37 @@ export type InputType =
 
 @customElement("app-input")
 export class AppInput extends LitElement {
-  @property() type: InputType = "text";
-  @property() placeholder = "";
-  @property() label: string | null = null;
-  @property({ type: Boolean }) disabled = false;
-  @property() error: string | null = null;
-  @property() icon: string | null = null;
+  @property() declare type: InputType;
+  @property() declare placeholder: string;
+  @property() declare label: string | null;
+  @property({ type: Boolean }) declare disabled: boolean;
+  @property() declare error: string | null;
+  @property() declare icon: string | null;
+  constructor() {
+    super();
+    for (const key of ["type", "placeholder", "label", "disabled", "error", "icon"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
+  override connectedCallback(): void {
+    const saved: Record<string, unknown> = {};
+    for (const key of ["type", "placeholder", "label", "disabled", "error", "icon"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        saved[key] = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+      }
+    }
+    super.connectedCallback();
+    for (const [key, value] of Object.entries(saved)) {
+      (this as Record<string, unknown>)[key] = value;
+    }
+  }
+
 
   @state() private _value = "";
   @state() private _focused = false;

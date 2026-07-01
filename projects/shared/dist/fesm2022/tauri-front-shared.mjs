@@ -2,17 +2,19 @@ import { __decorate } from 'tslib';
 import { LitElement, css, html } from 'lit';
 import { property, customElement, state } from 'lit/decorators.js';
 import * as i0 from '@angular/core';
-import { Injectable, inject, signal, computed, effect, ViewChild, Input, Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Input, CUSTOM_ELEMENTS_SCHEMA, Component, Injectable, inject, signal, computed, effect } from '@angular/core';
+import * as i1 from '@angular/common';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { invoke } from '@tauri-apps/api/core';
-import * as i1 from '@angular/forms';
+import * as i1$1 from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 
 let AppButton = class AppButton extends LitElement {
     constructor() {
         super();
-        for (const key of ["variant", "size", "disabled", "loading", "icon", "iconPosition", "fullWidth", "type"]) {
+        for (const key of ["variant", "buttonStyle", "size", "disabled", "loading", "icon", "iconPosition", "fullWidth", "type", "label"]) {
             if (Object.prototype.hasOwnProperty.call(this, key)) {
                 const val = this[key];
                 delete this[key];
@@ -22,7 +24,7 @@ let AppButton = class AppButton extends LitElement {
     }
     connectedCallback() {
         const saved = {};
-        for (const key of ["variant", "size", "disabled", "loading", "icon", "iconPosition", "fullWidth", "type"]) {
+        for (const key of ["variant", "buttonStyle", "size", "disabled", "loading", "icon", "iconPosition", "fullWidth", "type", "label"]) {
             if (Object.prototype.hasOwnProperty.call(this, key)) {
                 saved[key] = this[key];
                 delete this[key];
@@ -58,62 +60,202 @@ let AppButton = class AppButton extends LitElement {
       cursor: not-allowed;
     }
 
-    .app-btn-primary {
+    /* ========================================
+       SOLID VARIANT (default) - Filled background
+       ======================================== */
+    .app-btn-solid {
       border-color: var(--accent);
       background-color: var(--accent);
       color: var(--text-on-accent);
     }
-    .app-btn-primary:hover {
+    .app-btn-solid:hover {
       background-color: var(--accent-hover);
       border-color: var(--accent-hover);
     }
 
-    .app-btn-secondary {
-      border-color: var(--border-color);
-      background-color: var(--bg-elevated);
-      color: var(--text-primary);
-    }
-    .app-btn-secondary:hover {
-      background-color: var(--bg-hover);
-    }
-
-    .app-btn-danger {
+    .app-btn-solid-danger {
       border-color: var(--error);
       background-color: var(--error);
       color: var(--text-on-error);
     }
-    .app-btn-danger:hover {
+    .app-btn-solid-danger:hover {
       opacity: 0.9;
     }
 
-    .app-btn-warning {
+    .app-btn-solid-warning {
       border-color: var(--warning);
       background-color: var(--warning);
       color: var(--text-on-warning);
     }
-    .app-btn-warning:hover {
+    .app-btn-solid-warning:hover {
       opacity: 0.9;
     }
 
-    .app-btn-success {
+    .app-btn-solid-success {
       border-color: var(--success);
       background-color: var(--success);
       color: var(--text-on-success);
     }
-    .app-btn-success:hover {
+    .app-btn-solid-success:hover {
       opacity: 0.9;
     }
 
+    .app-btn-solid-info {
+      border-color: var(--info);
+      background-color: var(--info);
+      color: var(--text-on-info);
+    }
+    .app-btn-solid-info:hover {
+      opacity: 0.9;
+    }
+
+    /* ========================================
+       OUTLINE VARIANT - Border only, transparent bg
+       ======================================== */
+    .app-btn-outline {
+      border-color: var(--accent);
+      background-color: transparent;
+      color: var(--accent);
+    }
+    .app-btn-outline:hover {
+      background-color: color-mix(in srgb, var(--accent) 10%, transparent);
+    }
+
+    .app-btn-outline-danger {
+      border-color: var(--error);
+      background-color: transparent;
+      color: var(--error);
+    }
+    .app-btn-outline-danger:hover {
+      background-color: color-mix(in srgb, var(--error) 10%, transparent);
+    }
+
+    .app-btn-outline-warning {
+      border-color: var(--warning);
+      background-color: transparent;
+      color: var(--warning);
+    }
+    .app-btn-outline-warning:hover {
+      background-color: color-mix(in srgb, var(--warning) 10%, transparent);
+    }
+
+    .app-btn-outline-success {
+      border-color: var(--success);
+      background-color: transparent;
+      color: var(--success);
+    }
+    .app-btn-outline-success:hover {
+      background-color: color-mix(in srgb, var(--success) 10%, transparent);
+    }
+
+    .app-btn-outline-info {
+      border-color: var(--info);
+      background-color: transparent;
+      color: var(--info);
+    }
+    .app-btn-outline-info:hover {
+      background-color: color-mix(in srgb, var(--info) 10%, transparent);
+    }
+
+    /* ========================================
+       SOFT VARIANT - Light background tint
+       ======================================== */
+    .app-btn-soft {
+      border-color: transparent;
+      background-color: color-mix(in srgb, var(--accent) 10%, transparent);
+      color: var(--accent);
+    }
+    .app-btn-soft:hover {
+      background-color: color-mix(in srgb, var(--accent) 20%, transparent);
+    }
+
+    .app-btn-soft-danger {
+      border-color: transparent;
+      background-color: color-mix(in srgb, var(--error) 10%, transparent);
+      color: var(--error);
+    }
+    .app-btn-soft-danger:hover {
+      background-color: color-mix(in srgb, var(--error) 20%, transparent);
+    }
+
+    .app-btn-soft-warning {
+      border-color: transparent;
+      background-color: color-mix(in srgb, var(--warning) 10%, transparent);
+      color: var(--warning);
+    }
+    .app-btn-soft-warning:hover {
+      background-color: color-mix(in srgb, var(--warning) 20%, transparent);
+    }
+
+    .app-btn-soft-success {
+      border-color: transparent;
+      background-color: color-mix(in srgb, var(--success) 10%, transparent);
+      color: var(--success);
+    }
+    .app-btn-soft-success:hover {
+      background-color: color-mix(in srgb, var(--success) 20%, transparent);
+    }
+
+    .app-btn-soft-info {
+      border-color: transparent;
+      background-color: color-mix(in srgb, var(--info) 10%, transparent);
+      color: var(--info);
+    }
+    .app-btn-soft-info:hover {
+      background-color: color-mix(in srgb, var(--info) 20%, transparent);
+    }
+
+    /* ========================================
+       GHOST VARIANT - No border, transparent bg
+       ======================================== */
     .app-btn-ghost {
       border-color: transparent;
       background-color: transparent;
-      color: var(--text-secondary);
+      color: var(--accent);
     }
     .app-btn-ghost:hover {
-      background-color: var(--bg-hover);
-      color: var(--text-primary);
+      background-color: color-mix(in srgb, var(--accent) 10%, transparent);
     }
 
+    .app-btn-ghost-danger {
+      border-color: transparent;
+      background-color: transparent;
+      color: var(--error);
+    }
+    .app-btn-ghost-danger:hover {
+      background-color: color-mix(in srgb, var(--error) 10%, transparent);
+    }
+
+    .app-btn-ghost-warning {
+      border-color: transparent;
+      background-color: transparent;
+      color: var(--warning);
+    }
+    .app-btn-ghost-warning:hover {
+      background-color: color-mix(in srgb, var(--warning) 10%, transparent);
+    }
+
+    .app-btn-ghost-success {
+      border-color: transparent;
+      background-color: transparent;
+      color: var(--success);
+    }
+    .app-btn-ghost-success:hover {
+      background-color: color-mix(in srgb, var(--success) 10%, transparent);
+    }
+
+    .app-btn-ghost-info {
+      border-color: transparent;
+      background-color: transparent;
+      color: var(--info);
+    }
+    .app-btn-ghost-info:hover {
+      background-color: color-mix(in srgb, var(--info) 10%, transparent);
+    }
+
+    /* ========================================
+       SIZE VARIANTS
+       ======================================== */
     .app-btn-sm {
       padding: 0.25rem 0.5rem;
       font-size: 0.875rem;
@@ -131,6 +273,11 @@ let AppButton = class AppButton extends LitElement {
 
     .app-btn-full {
       width: 100%;
+    }
+
+    .app-btn-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .app-btn-icon {
@@ -151,6 +298,28 @@ let AppButton = class AppButton extends LitElement {
         transform: rotate(360deg);
       }
     }
+
+    /* ========================================
+       LEGACY SUPPORT
+       ======================================== */
+    .app-btn-primary {
+      border-color: var(--accent);
+      background-color: var(--accent);
+      color: var(--text-on-accent);
+    }
+    .app-btn-primary:hover {
+      background-color: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .app-btn-secondary {
+      border-color: var(--border-color);
+      background-color: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+    .app-btn-secondary:hover {
+      background-color: var(--bg-hover);
+    }
   `;
     _handleClick(e) {
         if (this.disabled || this.loading) {
@@ -160,20 +329,28 @@ let AppButton = class AppButton extends LitElement {
         }
         this.dispatchEvent(new CustomEvent("click", { detail: e, bubbles: true, composed: true }));
     }
-    render() {
+    getButtonClass() {
+        const style = this.buttonStyle || "solid";
+        const variant = this.variant || "primary";
+        const styleVariant = style === "solid" && variant === "primary"
+            ? "app-btn-solid"
+            : `app-btn-${style}${variant !== "primary" ? `-${variant}` : ""}`;
         const classes = [
             "app-btn",
-            `app-btn-${this.variant}`,
-            `app-btn-${this.size}`,
+            styleVariant,
+            `app-btn-${this.size || "md"}`,
             this.fullWidth ? "app-btn-full" : "",
             this.disabled || this.loading ? "app-btn-disabled" : "",
         ]
             .filter(Boolean)
             .join(" ");
+        return classes;
+    }
+    render() {
         return html `
       <button
-        type="${this.type}"
-        class="${classes}"
+        type="${this.type || "button"}"
+        class="${this.getButtonClass()}"
         ?disabled="${this.disabled || this.loading}"
         @click="${this._handleClick}"
       >
@@ -183,7 +360,7 @@ let AppButton = class AppButton extends LitElement {
               ${this.icon && this.iconPosition === "left"
                 ? html `<i class="material-icons app-btn-icon">${this.icon}</i>`
                 : ""}
-              <slot></slot>
+              ${this.label ? html `<span>${this.label}</span>` : html `<slot></slot>`}
               ${this.icon && this.iconPosition === "right"
                 ? html `<i class="material-icons app-btn-icon">${this.icon}</i>`
                 : ""}
@@ -195,6 +372,9 @@ let AppButton = class AppButton extends LitElement {
 __decorate([
     property()
 ], AppButton.prototype, "variant", void 0);
+__decorate([
+    property()
+], AppButton.prototype, "buttonStyle", void 0);
 __decorate([
     property()
 ], AppButton.prototype, "size", void 0);
@@ -216,6 +396,9 @@ __decorate([
 __decorate([
     property()
 ], AppButton.prototype, "type", void 0);
+__decorate([
+    property()
+], AppButton.prototype, "label", void 0);
 AppButton = __decorate([
     customElement("app-button")
 ], AppButton);
@@ -4542,81 +4725,1593 @@ AppSegmentSelector = __decorate([
     customElement("app-segment-selector")
 ], AppSegmentSelector);
 
+const ICONS = new Map([
+    [
+        "clear",
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>`,
+    ],
+    [
+        "copy",
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+    </svg>`,
+    ],
+    [
+        "swap",
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="17 1 21 5 17 9"></polyline>
+      <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+      <polyline points="7 23 3 19 7 15"></polyline>
+      <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+    </svg>`,
+    ],
+    [
+        "chevron-down",
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>`,
+    ],
+    [
+        "translate",
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="M2 12h20"></path>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+      <path d="m7 8 2 4 2-4"></path>
+    </svg>`,
+    ],
+    [
+        "spinner",
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-spinner">
+      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+    </svg>`,
+    ],
+    [
+        "keyboard",
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+      <path d="M6 8h.001"></path>
+      <path d="M10 8h.001"></path>
+      <path d="M14 8h.001"></path>
+      <path d="M18 8h.001"></path>
+      <path d="M8 12h.001"></path>
+      <path d="M12 12h.001"></path>
+      <path d="M16 12h.001"></path>
+      <path d="M7 16h10"></path>
+    </svg>`,
+    ],
+]);
+let AppIcon = class AppIcon extends LitElement {
+    constructor() {
+        super();
+        for (const key of ["name", "svgClass"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["name", "svgClass"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
+    }
+    static styles = css `
+    :host {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.25em;
+      height: 1.25em;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      color: inherit;
+    }
+
+    .icon-spinner {
+      animation: icon-spin 1s linear infinite;
+    }
+
+    @keyframes icon-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  `;
+    render() {
+        const svg = ICONS.get(this.name);
+        if (!svg) {
+            return html ``;
+        }
+        return html `<div class="${this.svgClass || ""}">${svg}</div>`;
+    }
+};
+__decorate([
+    property()
+], AppIcon.prototype, "name", void 0);
+__decorate([
+    property()
+], AppIcon.prototype, "svgClass", void 0);
+AppIcon = __decorate([
+    customElement("app-icon")
+], AppIcon);
+
+let AppLanguageSelector = class AppLanguageSelector extends LitElement {
+    constructor() {
+        super();
+        for (const key of ["languages", "value", "label", "labelId"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["languages", "value", "label", "labelId"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
+    }
+    static styles = css `
+    :host {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .selector-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .select-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      padding: 0.5rem 2rem 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-elevated);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .chevron-icon {
+      position: absolute;
+      right: 0.5rem;
+      pointer-events: none;
+      width: 1rem;
+      height: 1rem;
+      color: var(--text-muted);
+    }
+  `;
+    _handleChange(e) {
+        const select = e.target;
+        this.value = select.value;
+        this.dispatchEvent(new CustomEvent("change", {
+            detail: { value: select.value },
+            bubbles: true,
+            composed: true,
+        }));
+    }
+    _getParsedLanguages() {
+        try {
+            return JSON.parse(this.languages || "[]");
+        }
+        catch {
+            return [];
+        }
+    }
+    render() {
+        const langs = this._getParsedLanguages();
+        return html `
+      ${this.label
+            ? html `<span class="selector-label" id="${this.labelId || ""}">${this.label}</span>`
+            : ""}
+      <div class="select-wrapper">
+        <select
+          .value="${this.value || ""}"
+          aria-labelledby="${this.labelId || ""}"
+          @change="${this._handleChange}"
+        >
+          ${langs.map((lang) => html `<option value="${lang.code}">${lang.name}</option>`)}
+        </select>
+        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+    `;
+    }
+};
+__decorate([
+    property()
+], AppLanguageSelector.prototype, "languages", void 0);
+__decorate([
+    property()
+], AppLanguageSelector.prototype, "value", void 0);
+__decorate([
+    property()
+], AppLanguageSelector.prototype, "label", void 0);
+__decorate([
+    property()
+], AppLanguageSelector.prototype, "labelId", void 0);
+AppLanguageSelector = __decorate([
+    customElement("app-language-selector")
+], AppLanguageSelector);
+
+let AppSwapButton = class AppSwapButton extends LitElement {
+    constructor() {
+        super();
+    }
+    static styles = css `
+    :host {
+      display: inline-flex;
+    }
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-elevated);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.15s;
+      padding: 0;
+    }
+
+    button:hover {
+      background-color: var(--accent);
+      color: var(--text-on-accent);
+      border-color: var(--accent);
+    }
+
+    svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  `;
+    _handleClick() {
+        this.dispatchEvent(new CustomEvent("click", {
+            bubbles: true,
+            composed: true,
+        }));
+    }
+    render() {
+        return html `
+      <button type="button" @click="${this._handleClick}" title="Swap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="17 1 21 5 17 9"></polyline>
+          <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+          <polyline points="7 23 3 19 7 15"></polyline>
+          <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+        </svg>
+      </button>
+    `;
+    }
+};
+AppSwapButton = __decorate([
+    customElement("app-swap-button")
+], AppSwapButton);
+
+let AppTextInput = class AppTextInput extends LitElement {
+    _textarea = null;
+    constructor() {
+        super();
+        for (const key of ["value", "placeholder", "charCount", "maxChars", "id", "clearable"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["value", "placeholder", "charCount", "maxChars", "id", "clearable"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
+    }
+    static styles = css `
+    :host {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .input-container {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      background-color: var(--bg-elevated);
+      transition: border-color 0.15s;
+    }
+
+    .input-container:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 2.5rem;
+      padding: 0.5rem 0.75rem;
+      border: none;
+      background: transparent;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      resize: none;
+      outline: none;
+      overflow: hidden;
+    }
+
+    textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.25rem 0.75rem 0.375rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .char-count {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .clear-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      padding: 0;
+    }
+
+    .clear-btn:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .clear-btn svg {
+      width: 0.875rem;
+      height: 0.875rem;
+    }
+  `;
+    _handleInput(e) {
+        const textarea = e.target;
+        this.value = textarea.value;
+        this._autoResize(textarea);
+        this.dispatchEvent(new CustomEvent("input", {
+            detail: { value: textarea.value },
+            bubbles: true,
+            composed: true,
+        }));
+    }
+    _autoResize(textarea) {
+        textarea.style.height = "auto";
+        textarea.style.height = textarea.scrollHeight + "px";
+    }
+    _handleClear() {
+        this.value = "";
+        if (this._textarea) {
+            this._textarea.style.height = "auto";
+        }
+        this.dispatchEvent(new CustomEvent("clear", {
+            bubbles: true,
+            composed: true,
+        }));
+    }
+    updated(changed) {
+        if (changed.has("value") && this._textarea) {
+            this._autoResize(this._textarea);
+        }
+    }
+    render() {
+        const displayCount = this.charCount || `${this.value?.length || 0}${this.maxChars ? `/${this.maxChars}` : ""}`;
+        return html `
+      <div class="input-container">
+        <textarea
+          id="${this.id || ""}"
+          .value="${this.value || ""}"
+          placeholder="${this.placeholder || ""}"
+          @input="${this._handleInput}"
+          @textarea="${(e) => this._autoResize(e.target)}"
+        ></textarea>
+        <div class="footer">
+          <span class="char-count">${displayCount}</span>
+          ${this.clearable
+            ? html `
+                <button class="clear-btn" type="button" @click="${this._handleClear}" title="Clear">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              `
+            : ""}
+        </div>
+      </div>
+    `;
+    }
+    firstUpdated() {
+        this._textarea = this.shadowRoot?.querySelector("textarea") ?? null;
+        if (this._textarea) {
+            this._autoResize(this._textarea);
+        }
+    }
+};
+__decorate([
+    property()
+], AppTextInput.prototype, "value", void 0);
+__decorate([
+    property()
+], AppTextInput.prototype, "placeholder", void 0);
+__decorate([
+    property()
+], AppTextInput.prototype, "charCount", void 0);
+__decorate([
+    property({ type: Number })
+], AppTextInput.prototype, "maxChars", void 0);
+__decorate([
+    property()
+], AppTextInput.prototype, "id", void 0);
+__decorate([
+    property({ type: Boolean })
+], AppTextInput.prototype, "clearable", void 0);
+AppTextInput = __decorate([
+    customElement("app-text-input")
+], AppTextInput);
+
+let AppTranslationOutput = class AppTranslationOutput extends LitElement {
+    _textarea = null;
+    constructor() {
+        super();
+        for (const key of ["value", "placeholder", "id"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["value", "placeholder", "id"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
+    }
+    static styles = css `
+    :host {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .output-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      background-color: var(--bg-elevated);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 2.5rem;
+      padding: 0.5rem 0.75rem;
+      padding-right: 2.5rem;
+      border: none;
+      background: transparent;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      resize: none;
+      outline: none;
+      overflow: hidden;
+    }
+
+    textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 0.375rem;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-elevated);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      padding: 0;
+    }
+
+    .copy-btn:hover {
+      background-color: var(--accent);
+      color: var(--text-on-accent);
+      border-color: var(--accent);
+    }
+
+    .copy-btn svg {
+      width: 0.875rem;
+      height: 0.875rem;
+    }
+  `;
+    _autoResize(textarea) {
+        textarea.style.height = "auto";
+        textarea.style.height = textarea.scrollHeight + "px";
+    }
+    _handleCopy() {
+        if (this.value) {
+            navigator.clipboard.writeText(this.value).catch(() => { });
+        }
+        this.dispatchEvent(new CustomEvent("copy", {
+            detail: { value: this.value },
+            bubbles: true,
+            composed: true,
+        }));
+    }
+    updated(changed) {
+        if (changed.has("value") && this._textarea) {
+            this._autoResize(this._textarea);
+        }
+    }
+    render() {
+        return html `
+      <div class="output-container">
+        <textarea
+          id="${this.id || ""}"
+          .value="${this.value || ""}"
+          placeholder="${this.placeholder || ""}"
+          readonly
+        ></textarea>
+        <button class="copy-btn" type="button" @click="${this._handleCopy}" title="Copy to clipboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+    `;
+    }
+    firstUpdated() {
+        this._textarea = this.shadowRoot?.querySelector("textarea") ?? null;
+        if (this._textarea) {
+            this._autoResize(this._textarea);
+        }
+    }
+};
+__decorate([
+    property()
+], AppTranslationOutput.prototype, "value", void 0);
+__decorate([
+    property()
+], AppTranslationOutput.prototype, "placeholder", void 0);
+__decorate([
+    property()
+], AppTranslationOutput.prototype, "id", void 0);
+AppTranslationOutput = __decorate([
+    customElement("app-translation-output")
+], AppTranslationOutput);
+
+let AppToast = class AppToast extends LitElement {
+    _timeout = null;
+    constructor() {
+        super();
+        for (const key of ["message", "visible", "type"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["message", "visible", "type"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
+    }
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        if (this._timeout) {
+            clearTimeout(this._timeout);
+            this._timeout = null;
+        }
+    }
+    static styles = css `
+    :host {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 9999;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      background-color: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      font-size: 0.875rem;
+      transform: translateY(0);
+      opacity: 1;
+      transition: all 0.3s ease;
+      max-width: 24rem;
+    }
+
+    .toast.hidden {
+      transform: translateY(1rem);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .toast-success {
+      border-color: var(--success);
+      border-left-width: 3px;
+    }
+
+    .toast-error {
+      border-color: var(--error);
+      border-left-width: 3px;
+    }
+
+    .toast-info {
+      border-color: var(--info);
+      border-left-width: 3px;
+    }
+
+    .toast-warning {
+      border-color: var(--warning);
+      border-left-width: 3px;
+    }
+
+    .toast-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .toast-success .toast-icon {
+      color: var(--success);
+    }
+
+    .toast-error .toast-icon {
+      color: var(--error);
+    }
+
+    .toast-info .toast-icon {
+      color: var(--info);
+    }
+
+    .toast-warning .toast-icon {
+      color: var(--warning);
+    }
+
+    .toast-message {
+      flex: 1;
+    }
+
+    .close-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.25rem;
+      height: 1.25rem;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .close-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .close-btn svg {
+      width: 0.75rem;
+      height: 0.75rem;
+    }
+  `;
+    updated(changed) {
+        if (changed.has("visible") && this.visible) {
+            if (this._timeout) {
+                clearTimeout(this._timeout);
+            }
+            this._timeout = setTimeout(() => {
+                this.visible = false;
+                this.dispatchEvent(new CustomEvent("dismiss", {
+                    bubbles: true,
+                    composed: true,
+                }));
+            }, 4000);
+        }
+    }
+    _handleClose() {
+        this.visible = false;
+        if (this._timeout) {
+            clearTimeout(this._timeout);
+            this._timeout = null;
+        }
+        this.dispatchEvent(new CustomEvent("dismiss", {
+            bubbles: true,
+            composed: true,
+        }));
+    }
+    _getIcon() {
+        switch (this.type) {
+            case "success":
+                return html `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+            case "error":
+                return html `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+            case "warning":
+                return html `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+            case "info":
+            default:
+                return html `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+        }
+    }
+    render() {
+        return html `
+      <div class="toast toast-${this.type || "info"} ${this.visible ? "" : "hidden"}">
+        ${this._getIcon()}
+        <span class="toast-message">${this.message}</span>
+        <button class="close-btn" type="button" @click="${this._handleClose}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    `;
+    }
+};
+__decorate([
+    property()
+], AppToast.prototype, "message", void 0);
+__decorate([
+    property({ type: Boolean })
+], AppToast.prototype, "visible", void 0);
+__decorate([
+    property()
+], AppToast.prototype, "type", void 0);
+AppToast = __decorate([
+    customElement("app-toast")
+], AppToast);
+
+let AppThemeToggle = class AppThemeToggle extends LitElement {
+    constructor() {
+        super();
+        for (const key of ["isDark"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["isDark"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
+    }
+    static styles = css `
+    :host {
+      display: inline-flex;
+    }
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-elevated);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.15s;
+      padding: 0;
+    }
+
+    button:hover {
+      background-color: var(--accent);
+      color: var(--text-on-accent);
+      border-color: var(--accent);
+    }
+
+    svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  `;
+    _handleToggle() {
+        this.isDark = !this.isDark;
+        this.dispatchEvent(new CustomEvent("toggle", {
+            detail: { isDark: this.isDark },
+            bubbles: true,
+            composed: true,
+        }));
+    }
+    render() {
+        return html `
+      <button
+        type="button"
+        @click="${this._handleToggle}"
+        title="${this.isDark ? "Switch to light" : "Switch to dark"}"
+      >
+        ${this.isDark
+            ? html `
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            `
+            : html `
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+            `}
+      </button>
+    `;
+    }
+};
+__decorate([
+    property({ type: Boolean })
+], AppThemeToggle.prototype, "isDark", void 0);
+AppThemeToggle = __decorate([
+    customElement("app-theme-toggle")
+], AppThemeToggle);
+
+let AppShortcutsOverlay = class AppShortcutsOverlay extends LitElement {
+    constructor() {
+        super();
+        for (const key of ["open", "shortcuts"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const val = this[key];
+                delete this[key];
+                this[key] = val;
+            }
+        }
+    }
+    connectedCallback() {
+        const saved = {};
+        for (const key of ["open", "shortcuts"]) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                saved[key] = this[key];
+                delete this[key];
+            }
+        }
+        super.connectedCallback();
+        for (const [key, value] of Object.entries(saved)) {
+            this[key] = value;
+        }
+    }
+    static styles = css `
+    :host {
+      display: block;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.5);
+      opacity: 1;
+      transition: opacity 0.2s ease;
+    }
+
+    .overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .modal {
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 28rem;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .modal-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .close-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.375rem;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      padding: 0;
+    }
+
+    .close-btn:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .close-btn svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .shortcut-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .shortcut-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .shortcut-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.75rem;
+      height: 1.75rem;
+      padding: 0 0.375rem;
+      border-radius: 0.25rem;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .shortcut-keys {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      flex-shrink: 0;
+    }
+
+    .shortcut-plus {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+  `;
+    _getParsedShortcuts() {
+        try {
+            return JSON.parse(this.shortcuts || "[]");
+        }
+        catch {
+            return [];
+        }
+    }
+    _handleBackdropClick(e) {
+        if (e.target === e.currentTarget) {
+            this._close();
+        }
+    }
+    _close() {
+        this.open = false;
+        this.dispatchEvent(new CustomEvent("close", {
+            bubbles: true,
+            composed: true,
+        }));
+    }
+    _parseKeys(key) {
+        return key.split("+").map((k) => k.trim());
+    }
+    render() {
+        const shortcuts = this._getParsedShortcuts();
+        return html `
+      <div class="overlay ${this.open ? "" : "hidden"}" @click="${this._handleBackdropClick}">
+        <div class="modal">
+          <div class="modal-header">
+            <h2 class="modal-title">Keyboard Shortcuts</h2>
+            <button class="close-btn" type="button" @click="${this._close}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <ul class="shortcut-list">
+            ${shortcuts.map((s) => html `
+                <li class="shortcut-item">
+                  <span class="shortcut-desc">${s.description}</span>
+                  <span class="shortcut-keys">
+                    ${this._parseKeys(s.key).map((k, i, arr) => html `
+                        <kbd>${k}</kbd>
+                        ${i < arr.length - 1
+            ? html `<span class="shortcut-plus">+</span>`
+            : ""}
+                      `)}
+                  </span>
+                </li>
+              `)}
+          </ul>
+        </div>
+      </div>
+    `;
+    }
+};
+__decorate([
+    property({ type: Boolean })
+], AppShortcutsOverlay.prototype, "open", void 0);
+__decorate([
+    property()
+], AppShortcutsOverlay.prototype, "shortcuts", void 0);
+AppShortcutsOverlay = __decorate([
+    customElement("app-shortcuts-overlay")
+], AppShortcutsOverlay);
+
+class TextComponent {
+    tag = "span";
+    text = "";
+    classes = "";
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: TextComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: TextComponent, isStandalone: true, selector: "app-text", inputs: { tag: "tag", text: "text", classes: "classes" }, ngImport: i0, template: "@if (tag === 'h1') {\n  <h1 [class]=\"classes\">{{ text }}</h1>\n} @else if (tag === 'h2') {\n  <h2 [class]=\"classes\">{{ text }}</h2>\n} @else if (tag === 'p') {\n  <p [class]=\"classes\">{{ text }}</p>\n} @else if (tag === 'footer') {\n  <footer [class]=\"classes\">{{ text }}</footer>\n} @else {\n  <span [class]=\"classes\">{{ text }}</span>\n}\n", styles: [""] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: TextComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-text", standalone: true, schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (tag === 'h1') {\n  <h1 [class]=\"classes\">{{ text }}</h1>\n} @else if (tag === 'h2') {\n  <h2 [class]=\"classes\">{{ text }}</h2>\n} @else if (tag === 'p') {\n  <p [class]=\"classes\">{{ text }}</p>\n} @else if (tag === 'footer') {\n  <footer [class]=\"classes\">{{ text }}</footer>\n} @else {\n  <span [class]=\"classes\">{{ text }}</span>\n}\n" }]
+        }], propDecorators: { tag: [{
+                type: Input
+            }], text: [{
+                type: Input
+            }], classes: [{
+                type: Input
+            }] } });
+
 // Re-export Lit web components from local source files.
 // These will be compiled by ng-packagr.
 
-class ComponentRegistryService {
-    registry = new Map();
-    selectorToId = new Map();
-    registerComponents(components) {
-        for (const def of components) {
-            this.registerComponent(def);
-        }
+class GuardService {
+    guardRegistry = new Map();
+    constructor() {
+        this.registerBuiltInGuards();
     }
-    registerComponent(def) {
-        const selector = this.generateSelector(def);
-        const registered = {
-            def,
-            selector,
-            inputs: this.extractInputs(def),
-            outputs: this.extractOutputs(def),
-        };
-        this.registry.set(def.id, registered);
-        this.selectorToId.set(selector, def.id);
-        return registered;
-    }
-    getComponent(componentId) {
-        return this.registry.get(componentId);
-    }
-    getComponentBySelector(selector) {
-        const id = this.selectorToId.get(selector);
-        return id ? this.registry.get(id) : undefined;
-    }
-    hasComponent(componentId) {
-        return this.registry.has(componentId);
-    }
-    getAllComponents() {
-        return Array.from(this.registry.values());
-    }
-    getComponentIds() {
-        return Array.from(this.registry.keys());
-    }
-    clear() {
-        this.registry.clear();
-        this.selectorToId.clear();
-    }
-    generateSelector(def) {
-        const categoryPrefix = this.getCategoryPrefix(def.category);
-        const nameKebab = this.kebabCase(def.name);
-        return `${categoryPrefix}-${nameKebab}`;
-    }
-    getCategoryPrefix(category) {
-        const prefixes = {
-            ui: "sdui-ui",
-            layout: "sdui-layout",
-            feedback: "sdui-feedback",
-            data: "sdui-data",
-            navigation: "sdui-nav",
-            media: "sdui-media",
-            form: "sdui-form",
-            container: "sdui-container",
-        };
-        return prefixes[category] || "sdui-component";
-    }
-    kebabCase(str) {
-        return str
-            .replace(/([a-z])([A-Z])/g, "$1-$2")
-            .replace(/[\s_]+/g, "-")
-            .toLowerCase();
-    }
-    extractInputs(def) {
-        return Object.keys(def.props).filter((key) => {
-            const prop = def.props[key];
-            return !prop.required;
+    registerBuiltInGuards() {
+        // Auth guard
+        this.register("auth", async () => {
+            const isAuthenticated = this.checkAuthentication();
+            return {
+                allowed: isAuthenticated,
+                redirectTo: isAuthenticated ? undefined : "/login",
+                message: isAuthenticated ? undefined : "Authentication required",
+            };
+        });
+        // Role guard
+        this.register("role", async (params) => {
+            const requiredRole = params?.role;
+            if (!requiredRole) {
+                return { allowed: true };
+            }
+            const hasRole = this.checkRole(requiredRole);
+            return {
+                allowed: hasRole,
+                redirectTo: hasRole ? undefined : "/unauthorized",
+                message: hasRole ? undefined : `Role "${requiredRole}" required`,
+            };
+        });
+        // Permission guard
+        this.register("permission", async (params) => {
+            const permission = params?.permission;
+            if (!permission) {
+                return { allowed: true };
+            }
+            const hasPermission = this.checkPermission(permission);
+            return {
+                allowed: hasPermission,
+                redirectTo: hasPermission ? undefined : "/forbidden",
+                message: hasPermission ? undefined : `Permission "${permission}" required`,
+            };
+        });
+        // Theme guard
+        this.register("theme", async (params) => {
+            const allowedTheme = params?.theme;
+            if (!allowedTheme) {
+                return { allowed: true };
+            }
+            const currentTheme = this.getCurrentTheme();
+            const allowed = currentTheme === allowedTheme;
+            return { allowed };
         });
     }
-    extractOutputs(def) {
-        return def.events || [];
+    register(name, guard) {
+        this.guardRegistry.set(name, guard);
+    }
+    unregister(name) {
+        this.guardRegistry.delete(name);
+    }
+    async canActivate(guardType, params) {
+        const guard = this.guardRegistry.get(guardType);
+        if (!guard) {
+            console.warn(`GuardService: Unknown guard "${guardType}"`);
+            return true; // Default to allowed for unknown guards
+        }
+        try {
+            const result = await guard(params);
+            return result.allowed;
+        }
+        catch (err) {
+            console.error(`GuardService: Error in guard "${guardType}":`, err);
+            return false;
+        }
+    }
+    async evaluate(guardType, params) {
+        const guard = this.guardRegistry.get(guardType);
+        if (!guard) {
+            return { allowed: true };
+        }
+        try {
+            return await guard(params);
+        }
+        catch (err) {
+            console.error(`GuardService: Error in guard "${guardType}":`, err);
+            return { allowed: false, message: "Guard evaluation failed" };
+        }
+    }
+    hasGuard(name) {
+        return this.guardRegistry.has(name);
+    }
+    getRegisteredGuards() {
+        return Array.from(this.guardRegistry.keys());
+    }
+    checkAuthentication() {
+        // Check localStorage or a service
+        const token = localStorage.getItem("auth_token");
+        return !!token;
+    }
+    checkRole(role) {
+        const userRole = localStorage.getItem("user_role");
+        return userRole === role;
+    }
+    checkPermission(permission) {
+        const permissions = JSON.parse(localStorage.getItem("permissions") ?? "[]");
+        return Array.isArray(permissions) && permissions.includes(permission);
+    }
+    getCurrentTheme() {
+        return localStorage.getItem("theme-mode") ?? "light";
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }], ctorParameters: () => [] });
+
+class SchemaRouterService {
+    guardService = inject(GuardService, { optional: true });
+    _schema = signal(null, ...(ngDevMode ? [{ debugName: "_schema" }] : []));
+    _currentPage = signal(null, ...(ngDevMode ? [{ debugName: "_currentPage" }] : []));
+    _currentLayout = signal(null, ...(ngDevMode ? [{ debugName: "_currentLayout" }] : []));
+    _currentRoute = signal("", ...(ngDevMode ? [{ debugName: "_currentRoute" }] : []));
+    _params = signal({}, ...(ngDevMode ? [{ debugName: "_params" }] : []));
+    _queryParams = signal({}, ...(ngDevMode ? [{ debugName: "_queryParams" }] : []));
+    _isLoading = signal(false, ...(ngDevMode ? [{ debugName: "_isLoading" }] : []));
+    _error = signal(null, ...(ngDevMode ? [{ debugName: "_error" }] : []));
+    schema = this._schema.asReadonly();
+    currentPage = this._currentPage.asReadonly();
+    currentLayout = this._currentLayout.asReadonly();
+    currentRoute = this._currentRoute.asReadonly();
+    params = this._params.asReadonly();
+    queryParams = this._queryParams.asReadonly();
+    isLoading = this._isLoading.asReadonly();
+    error = this._error.asReadonly();
+    hasSchema = computed(() => this._schema() !== null, ...(ngDevMode ? [{ debugName: "hasSchema" }] : []));
+    currentPageId = computed(() => this._currentPage()?.id ?? null, ...(ngDevMode ? [{ debugName: "currentPageId" }] : []));
+    currentPageTitle = computed(() => this._currentPage()?.meta?.title ?? "", ...(ngDevMode ? [{ debugName: "currentPageTitle" }] : []));
+    setSchema(schema) {
+        this._schema.set(schema);
+        this._error.set(null);
+    }
+    clearSchema() {
+        this._schema.set(null);
+        this._currentPage.set(null);
+        this._currentLayout.set(null);
+        this._params.set({});
+        this._queryParams.set({});
+    }
+    async navigate(route, options = {}) {
+        this._isLoading.set(true);
+        this._error.set(null);
+        try {
+            const matched = this.resolveRoute(route);
+            if (!matched) {
+                this._error.set(`Route not found: ${route}`);
+                return false;
+            }
+            const { page, params } = matched;
+            // Run guards if configured
+            if (page && this.guardService) {
+                const pageGuards = page.guards;
+                if (pageGuards?.length) {
+                    for (const guard of pageGuards) {
+                        const allowed = await this.guardService.canActivate(guard.type, guard.params);
+                        if (!allowed) {
+                            this._error.set(`Navigation blocked by guard: ${guard.type}`);
+                            return false;
+                        }
+                    }
+                }
+            }
+            if (options.queryParams) {
+                this._queryParams.set(options.queryParams);
+            }
+            this._currentRoute.set(route);
+            this._params.set(params);
+            if (page) {
+                this._currentPage.set(page);
+                // Load layout if specified
+                if (page.layout && this._schema()) {
+                    const layout = this._schema().layouts.find((l) => l.id === page.layout);
+                    this._currentLayout.set(layout ?? null);
+                }
+                else {
+                    this._currentLayout.set(null);
+                }
+            }
+            return true;
+        }
+        catch (err) {
+            this._error.set(err instanceof Error ? err.message : "Navigation failed");
+            return false;
+        }
+        finally {
+            this._isLoading.set(false);
+        }
+    }
+    resolveRoute(route) {
+        const schema = this._schema();
+        if (!schema)
+            return null;
+        // Exact match first
+        let page = schema.pages.find((p) => p.route === route || p.id === route);
+        if (page) {
+            return { page, layout: null, params: {} };
+        }
+        // Try pattern matching with params
+        for (const p of schema.pages) {
+            const { match, params } = this.matchRoute(p.route, route);
+            if (match) {
+                const layout = p.layout ? schema.layouts.find((l) => l.id === p.layout) ?? null : null;
+                return { page: p, layout, params };
+            }
+        }
+        return null;
+    }
+    matchRoute(pattern, path) {
+        const patternParts = pattern.split("/").filter(Boolean);
+        const pathParts = path.split("/").filter(Boolean);
+        const params = {};
+        if (patternParts.length !== pathParts.length) {
+            return { match: false, params: {} };
+        }
+        for (let i = 0; i < patternParts.length; i++) {
+            const p = patternParts[i];
+            const a = pathParts[i];
+            if (p.startsWith(":")) {
+                // Parameter
+                params[p.slice(1)] = a;
+            }
+            else if (p !== a) {
+                return { match: false, params: {} };
+            }
+        }
+        return { match: true, params };
+    }
+    getPage(pageId) {
+        const schema = this._schema();
+        if (!schema)
+            return null;
+        return schema.pages.find((p) => p.id === pageId) ?? null;
+    }
+    getLayout(layoutId) {
+        const schema = this._schema();
+        if (!schema)
+            return null;
+        return schema.layouts.find((l) => l.id === layoutId) ?? null;
+    }
+    getAllPages() {
+        return this._schema()?.pages ?? [];
+    }
+    getAllLayouts() {
+        return this._schema()?.layouts ?? [];
+    }
+    updateQueryParams(params) {
+        this._queryParams.set(params);
+    }
+    reset() {
+        this._currentRoute.set("");
+        this._currentPage.set(null);
+        this._currentLayout.set(null);
+        this._params.set({});
+        this._queryParams.set({});
+        this._isLoading.set(false);
+        this._error.set(null);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }] });
+
+class ComponentRegistryService {
+    registry = new Map();
+    componentManifest = {};
+    constructor() {
+        this.registerBuiltInComponents();
+        this.loadComponentManifest();
+    }
+    registerBuiltInComponents() {
+        // Built-in UI components
+        const components = {
+            // Layout
+            header: { selector: "app-header" },
+            footer: { selector: "app-footer" },
+            sidebar: { selector: "app-sidebar" },
+            "page-container": { selector: "app-page-container" },
+            "page-toolbar": { selector: "app-page-toolbar" },
+            "split-view": { selector: "app-split-view" },
+            "main-editor": { selector: "app-main-editor" },
+            // UI
+            button: { selector: "app-button" },
+            input: { selector: "app-input" },
+            textarea: { selector: "app-textarea" },
+            select: { selector: "app-select" },
+            checkbox: { selector: "app-checkbox" },
+            radio: { selector: "app-radio" },
+            switch: { selector: "app-switch" },
+            slider: { selector: "app-slider" },
+            badge: { selector: "app-badge" },
+            avatar: { selector: "app-avatar" },
+            chip: { selector: "app-chip" },
+            tabs: { selector: "app-tabs" },
+            "empty-state": { selector: "app-empty-state" },
+            loading: { selector: "app-loading" },
+            "progress-bar": { selector: "app-progress-bar" },
+            pagination: { selector: "app-pagination" },
+            tooltip: { selector: "app-tooltip" },
+            // Data
+            card: { selector: "app-card" },
+            "stats-card": { selector: "app-stats-card" },
+            "table-view": { selector: "app-table-view" },
+            "data-table": { selector: "app-data-table" },
+            "json-view": { selector: "app-json-view" },
+            "segment-selector": { selector: "app-segment-selector" },
+            // Feedback
+            dialog: { selector: "app-dialog" },
+            "confirm-dialog": { selector: "app-confirm-dialog" },
+            toast: { selector: "app-toast" },
+            snackbar: { selector: "app-snackbar" },
+            modal: { selector: "app-modal" },
+            "command-palette": { selector: "app-command-palette" },
+            // Grid
+            "grid-container": { selector: "app-grid-container" },
+            "grid-item": { selector: "app-grid-item" },
+            "grid-area": { selector: "app-grid-area" },
+            // Designer
+            "designer-sidebar": { selector: "app-designer-sidebar" },
+            "component-palette": { selector: "app-component-palette" },
+            canvas: { selector: "app-canvas" },
+            "canvas-toolbar": { selector: "app-canvas-toolbar" },
+            "properties-panel": { selector: "app-properties-panel" },
+            "bottom-panel": { selector: "app-bottom-panel" },
+        };
+        Object.entries(components).forEach(([id, def]) => {
+            this.register(id, def);
+        });
+    }
+    async loadComponentManifest() {
+        try {
+            const response = await fetch("/assets/component-manifest.json");
+            if (response.ok) {
+                this.componentManifest = await response.json();
+            }
+        }
+        catch {
+            // Manifest not found, use built-in registry only
+        }
+    }
+    register(componentId, definition) {
+        this.registry.set(componentId, definition);
+    }
+    unregister(componentId) {
+        this.registry.delete(componentId);
+    }
+    get(componentId) {
+        return this.registry.get(componentId);
+    }
+    getSelector(componentId) {
+        const def = this.registry.get(componentId);
+        if (!def) {
+            console.warn(`ComponentRegistry: Unknown component "${componentId}", using fallback selector`);
+            return `app-${componentId}`;
+        }
+        return def.selector;
+    }
+    has(componentId) {
+        return this.registry.has(componentId);
+    }
+    resolveBehavior(componentId) {
+        const def = this.registry.get(componentId);
+        return def?.behaviors;
+    }
+    mergeBehavior(componentId, schemaBehavior) {
+        const registered = this.resolveBehavior(componentId) ?? {};
+        if (!schemaBehavior)
+            return registered;
+        return {
+            selfMethods: { ...registered.selfMethods, ...schemaBehavior.selfMethods },
+            classSetters: { ...registered.classSetters, ...schemaBehavior.classSetters },
+            eventHandlers: this.mergeEventHandlers(registered.eventHandlers, schemaBehavior.eventHandlers),
+        };
+    }
+    mergeEventHandlers(base, override) {
+        if (!base && !override)
+            return undefined;
+        if (!base)
+            return override;
+        if (!override)
+            return base;
+        const merged = { ...base };
+        Object.entries(override).forEach(([event, handlers]) => {
+            const existing = merged[event] ?? [];
+            merged[event] = [...existing, ...handlers];
+        });
+        return merged;
+    }
+    getAllComponentIds() {
+        return Array.from(this.registry.keys());
+    }
+    getComponentsByCategory(category) {
+        // Filter components by category from manifest
+        const manifest = this.componentManifest[category];
+        if (!manifest)
+            return [];
+        return Object.keys(manifest);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentRegistryService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentRegistryService, providedIn: "root" });
@@ -4624,130 +6319,120 @@ class ComponentRegistryService {
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentRegistryService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
-        }] });
+        }], ctorParameters: () => [] });
 
 class DataBindingResolver {
-    context = {
-        data: {},
-        params: {},
-        services: new Map(),
-        functions: new Map(),
-    };
-    bindingPattern = /\{\{([^}]+)\}\}/g;
-    contextPattern = /^(data|param|service|fn)\.([^.]+)(?:\.(.+))?$/;
-    setContext(context) {
-        if (context.data) {
-            this.context.data = { ...this.context.data, ...context.data };
+    functionRegistry = new Map();
+    dataStore = new Map();
+    registerFunction(name, fn) {
+        this.functionRegistry.set(name, fn);
+    }
+    unregisterFunction(name) {
+        this.functionRegistry.delete(name);
+    }
+    setData(entity, data) {
+        this.dataStore.set(entity, data);
+    }
+    getData(entity) {
+        return this.dataStore.get(entity);
+    }
+    clearData(entity) {
+        if (entity) {
+            this.dataStore.delete(entity);
         }
-        if (context.params) {
-            this.context.params = { ...this.context.params, ...context.params };
-        }
-        if (context.services) {
-            context.services.forEach((value, key) => {
-                this.context.services.set(key, value);
-            });
-        }
-        if (context.functions) {
-            context.functions.forEach((value, key) => {
-                this.context.functions.set(key, value);
-            });
+        else {
+            this.dataStore.clear();
         }
     }
-    resolve(template, context) {
-        if (!template)
-            return template;
-        const ctx = context ? { ...this.context, ...context } : this.context;
-        return template.replace(this.bindingPattern, (match, path) => {
-            const resolved = this.resolveValue(path.trim(), ctx);
-            return resolved !== undefined && resolved !== null ? String(resolved) : match;
-        });
+    resolveBinding(binding) {
+        if (!binding)
+            return null;
+        return this.resolve(binding.entity, binding.field);
     }
-    resolveValue(value, context) {
-        const ctx = context ? { ...this.context, ...context } : this.context;
-        if (typeof value !== "string")
-            return value;
-        this.bindingPattern.lastIndex = 0;
-        if (!this.bindingPattern.test(value))
-            return value;
-        return this.resolve(value, ctx);
+    resolveDataBinding(binding) {
+        return this.resolveBinding(binding);
     }
-    resolveDataBinding(binding, context) {
-        const ctx = context ? { ...this.context, ...context } : this.context;
-        const entityData = ctx.data[binding.entity];
-        if (!entityData) {
-            return undefined;
-        }
-        if (!binding.field) {
-            return entityData;
-        }
-        return this.getNestedValue(entityData, binding.field);
-    }
-    bindFunction(name, fn) {
-        this.context.functions.set(name, fn);
-    }
-    getBoundFunction(name) {
-        return this.context.functions.get(name);
-    }
-    hasBinding(template) {
-        if (!template)
-            return false;
-        this.bindingPattern.lastIndex = 0;
-        return this.bindingPattern.test(template);
-    }
-    extractBindingPaths(template) {
-        if (!template)
-            return [];
-        const paths = [];
-        const regex = /\{\{([^}]+)\}\}/g;
-        let match;
-        while ((match = regex.exec(template)) !== null) {
-            paths.push(match[1].trim());
-        }
-        return paths;
-    }
-    getNestedValue(obj, path) {
-        const parts = path.split(".");
-        let current = obj;
+    resolve(entity, field) {
+        const data = this.dataStore.get(entity);
+        if (!data)
+            return null;
+        if (!field)
+            return data;
+        // Support dot notation: "address.city"
+        const parts = field.split(".");
+        let value = data;
         for (const part of parts) {
-            if (current === null || current === undefined) {
-                return undefined;
-            }
-            if (typeof current === "object") {
-                current = current[part];
+            if (value && typeof value === "object" && part in value) {
+                value = value[part];
             }
             else {
-                return undefined;
+                return null;
             }
         }
-        return current;
+        return value;
     }
-    resolveBindingPath(path, ctx) {
-        const match = path.match(this.contextPattern);
-        if (!match) {
-            return this.getNestedValue(ctx.data, path);
+    resolveExpression(expression) {
+        // Parse and evaluate simple expressions like {{ user.name }} or {{ users.length }}
+        const templateRegex = /\{\{([^}]+)\}\}/g;
+        let result = expression;
+        let match;
+        while ((match = templateRegex.exec(expression)) !== null) {
+            const path = match[1].trim();
+            const value = this.resolvePath(path);
+            result = result.replace(match[0], String(value ?? ""));
         }
-        const [, source, name, ...rest] = match;
-        switch (source) {
-            case "data":
-                return this.getNestedValue(ctx.data[name] || {}, rest.join("."));
-            case "param":
-                return ctx.params[name];
-            case "service": {
-                const service = ctx.services.get(name);
-                if (!service)
-                    return undefined;
-                return rest.length > 0 ? this.getNestedValue(service, rest.join(".")) : service;
+        return result;
+    }
+    resolvePath(path) {
+        const parts = path.split(".");
+        if (parts.length === 1) {
+            // Check if it's a registered function
+            if (this.functionRegistry.has(parts[0])) {
+                return this.functionRegistry.get(parts[0])?.call(null);
             }
-            case "fn": {
-                const fn = ctx.functions.get(name);
-                if (typeof fn === "function") {
-                    return fn();
+            // Otherwise check data store
+            for (const data of this.dataStore.values()) {
+                if (parts[0] in data) {
+                    return data[parts[0]];
                 }
-                return undefined;
             }
-            default:
-                return this.getNestedValue(ctx.data, path);
+            return null;
         }
+        const entity = parts[0];
+        const field = parts.slice(1).join(".");
+        return this.resolve(entity, field);
+    }
+    evaluateCondition(condition) {
+        // Support simple conditions: "user.age > 18", "user.name == 'John'"
+        const match = condition.match(/^(.+?)\s*(==|!=|>=|<=|>|<)\s*(.+)$/);
+        if (!match)
+            return false;
+        const [, left, op, right] = match;
+        const leftVal = this.resolveExpression(left.trim());
+        const rightVal = this.resolveExpression(right.trim());
+        switch (op) {
+            case "==": return leftVal == rightVal;
+            case "!=": return leftVal != rightVal;
+            case ">": return Number(leftVal) > Number(rightVal);
+            case "<": return Number(leftVal) < Number(rightVal);
+            case ">=": return Number(leftVal) >= Number(rightVal);
+            case "<=": return Number(leftVal) <= Number(rightVal);
+            default: return false;
+        }
+    }
+    callFunction(fnName, args = []) {
+        const fn = this.functionRegistry.get(fnName);
+        if (!fn) {
+            console.warn(`DataBindingResolver: Function "${fnName}" not found`);
+            return null;
+        }
+        return fn.apply(null, args);
+    }
+    getRegisteredFunctions() {
+        return Array.from(this.functionRegistry.keys());
+    }
+    hasFunction(fnName) {
+        return this.functionRegistry.has(fnName);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataBindingResolver, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataBindingResolver, providedIn: "root" });
@@ -4758,151 +6443,109 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
         }] });
 
 class StyleResolver {
-    theme = null;
-    colorMode = "system";
-    tailwindClassPattern = /^(?:w-|h-|p-|m-|mt-|mb-|ml-|mr-|px-|py-|pt-|pb-|pl-|pr-|gap-|space-|flex|grid|block|inline|hidden|static|relative|absolute|fixed|sticky|inset-|top-|right-|bottom-|left-|z-|text-|bg-|border-|rounded|shadow|opacity|font-|leading-|tracking-|whitespace|overflow|truncate|uppercase|lowercase|capitalize|normal-case|italic|oblique|underline|line-through|no-underline|resize|select|cursor|pointer|not-allowed|animate|transition|transform|rotate|scale|skew|origin|from-|to-|via-|gradient|animate-|duration-|ease-|delay-|repeat|reverse|ping-|pulse-|visible|invisible|opacity-|scale-|rotate-|translate-|skew-|ring-|outline-|appearance-|list-|backdrop-|placeholder-|fill-|stroke-|sr-)/;
-    setTheme(theme) {
-        this.theme = theme;
-    }
-    setColorMode(mode) {
-        this.colorMode = mode;
-    }
-    extractStyles(classString) {
-        const classes = this.parseClasses(classString);
-        const inlineStyles = {};
-        const cssVariables = {};
-        const tailwindClasses = [];
-        const customClasses = [];
-        for (const cls of classes) {
-            if (this.isTailwindClass(cls)) {
-                tailwindClasses.push(cls);
-            }
-            else if (cls.startsWith("--")) {
-                const [varName, value] = this.parseCssVariable(cls);
-                cssVariables[varName] = value;
-            }
-            else {
-                customClasses.push(cls);
-            }
-        }
-        if (this.theme) {
-            const themeVars = this.resolveCssVariables({}, this.theme);
-            Object.assign(cssVariables, themeVars);
-        }
+    DARK_MODE_PREFIX = "dark:";
+    RESPONSIVE_PREFIXES = ["sm:", "md:", "lg:", "xl:", "2xl:"];
+    IMPORTANT_PREFIX = "!";
+    resolveClasses(classes, options = {}) {
+        const { extraClasses = "" } = options;
+        const allClasses = `${classes} ${extraClasses}`.trim();
         return {
-            classes: [...customClasses, ...tailwindClasses],
-            inlineStyles,
-            cssVariables,
+            classes: this.processClasses(allClasses),
+            inlineStyles: {},
         };
     }
-    resolveClasses(baseClasses, overrideClasses, options) {
-        const base = this.extractStyles(baseClasses);
-        if (!overrideClasses) {
-            return base;
-        }
-        const override = this.extractStyles(overrideClasses);
-        const mergedClasses = this.mergeClassLists(base.classes, override.classes);
-        const mergedStyles = { ...base.inlineStyles, ...override.inlineStyles };
-        const mergedVars = { ...base.cssVariables, ...override.cssVariables };
-        return {
-            classes: options?.prefix
-                ? mergedClasses.map((c) => `${options.prefix}${c}`)
-                : mergedClasses,
-            inlineStyles: mergedStyles,
-            cssVariables: mergedVars,
-        };
-    }
-    resolveCssVariables(css, theme) {
-        const resolved = { ...css };
-        if (theme) {
-            resolved["--theme-name"] = theme.name;
-            this.applyThemeColors(resolved, theme.colors);
-        }
-        return resolved;
-    }
-    applyStylesToElement(element, resolved) {
-        element.className = "";
-        if (resolved.classes.length > 0) {
-            element.classList.add(...resolved.classes);
-        }
-        for (const [property, value] of Object.entries(resolved.inlineStyles)) {
-            element.style.setProperty(property, value);
-        }
-        for (const [variable, value] of Object.entries(resolved.cssVariables)) {
-            element.style.setProperty(variable, value);
-        }
-    }
-    extractTailwindClasses(classString) {
-        const parsed = this.parseClasses(classString);
-        return parsed.filter((cls) => this.isTailwindClass(cls));
-    }
-    buildClassString(classes, prefix) {
-        const finalClasses = prefix
-            ? classes.map((c) => (c.startsWith(prefix) ? c : `${prefix}${c}`))
-            : classes;
-        return finalClasses.join(" ");
-    }
-    parseClasses(classString) {
-        if (!classString)
-            return [];
-        return classString.trim().split(/\s+/).filter(Boolean);
-    }
-    parseCssVariable(varString) {
-        const match = varString.match(/^(--[^:]+):\s*(.+)$/);
-        if (match) {
-            return [match[1], match[2]];
-        }
-        return [varString, ""];
-    }
-    isTailwindClass(className) {
-        if (!className)
-            return false;
-        if (this.tailwindClassPattern.test(className))
-            return true;
-        if (className.includes(":")) {
-            const [base] = className.split(":");
-            return this.tailwindClassPattern.test(base);
-        }
-        return false;
-    }
-    mergeClassLists(base, override) {
-        const result = [...base];
-        const overrideSet = new Set(override);
-        for (let i = 0; i < result.length; i++) {
-            const baseClass = result[i];
-            const baseBase = baseClass.split(":")[0];
-            const overrideIdx = override.findIndex((oc) => {
-                const ocBase = oc.split(":")[0];
-                return ocBase === baseBase;
-            });
-            if (overrideIdx !== -1) {
-                result[i] = override[overrideIdx];
-                overrideSet.delete(override[overrideIdx]);
+    processClasses(classes) {
+        const resolved = [];
+        const classList = classes.split(/\s+/).filter(Boolean);
+        for (const cls of classList) {
+            const processed = this.processClass(cls);
+            if (processed) {
+                resolved.push(processed);
             }
         }
-        for (const remaining of overrideSet) {
-            result.push(remaining);
+        return resolved.join(" ");
+    }
+    processClass(cls) {
+        // Handle !important prefix (TailwindCSS v4)
+        let important = false;
+        let className = cls;
+        if (className.startsWith(this.IMPORTANT_PREFIX)) {
+            important = true;
+            className = className.slice(1);
         }
+        // If important, wrap in ! prefix (for TailwindCSS v4)
+        // But also convert to proper format
+        const result = important ? `!${className}` : className;
         return result;
     }
-    applyThemeColors(dest, colors) {
-        dest["--color-bg-primary"] = colors.bgPrimary;
-        dest["--color-bg-secondary"] = colors.bgSecondary;
-        dest["--color-bg-tertiary"] = colors.bgTertiary;
-        dest["--color-bg-elevated"] = colors.bgElevated;
-        dest["--color-bg-hover"] = colors.bgHover;
-        dest["--color-text-primary"] = colors.textPrimary;
-        dest["--color-text-secondary"] = colors.textSecondary;
-        dest["--color-text-muted"] = colors.textMuted;
-        dest["--color-border"] = colors.border;
-        dest["--color-border-light"] = colors.borderLight;
-        dest["--color-primary"] = colors.primary;
-        dest["--color-secondary"] = colors.secondary;
-        dest["--color-accent"] = colors.accent;
-        dest["--color-accent-hover"] = colors.accentHover;
-        dest["--color-success"] = colors.success;
-        dest["--color-warning"] = colors.warning;
-        dest["--color-error"] = colors.error;
+    resolveGridPosition(position) {
+        const gridClasses = [];
+        if (position.colStart != null) {
+            gridClasses.push(`!col-start-${position.colStart}`);
+        }
+        if (position.rowStart != null) {
+            gridClasses.push(`!row-start-${position.rowStart}`);
+        }
+        if (position.colSpan != null) {
+            gridClasses.push(`!col-span-${position.colSpan}`);
+        }
+        if (position.rowSpan != null) {
+            gridClasses.push(`!row-span-${position.rowSpan}`);
+        }
+        if (position.column != null) {
+            gridClasses.push(`!col-${position.column}`);
+        }
+        if (position.row != null) {
+            gridClasses.push(`!row-${position.row}`);
+        }
+        return gridClasses.join(" ");
+    }
+    composeClasses(...classGroups) {
+        return classGroups.filter(Boolean).join(" ");
+    }
+    getVariantClasses(baseClass, variant) {
+        return `${baseClass}-${variant}`;
+    }
+    resolveResponsiveClasses(classes, breakpoint) {
+        const classList = classes.split(/\s+/).filter(Boolean);
+        const prefix = `${breakpoint}:`;
+        return classList
+            .map((cls) => {
+            // If already has a responsive prefix, don't add another
+            if (this.RESPONSIVE_PREFIXES.some((p) => cls.startsWith(p))) {
+                return cls;
+            }
+            return `${prefix}${cls}`;
+        })
+            .join(" ");
+    }
+    resolveDarkModeClasses(classes) {
+        const classList = classes.split(/\s+/).filter(Boolean);
+        return classList
+            .map((cls) => {
+            // If already has dark: prefix, return as-is
+            if (cls.startsWith(this.DARK_MODE_PREFIX)) {
+                return cls;
+            }
+            // If it's a color-related class, add dark: variant
+            if (this.isColorClass(cls)) {
+                return `${this.DARK_MODE_PREFIX}${cls}`;
+            }
+            return cls;
+        })
+            .join(" ");
+    }
+    isColorClass(cls) {
+        const colorPrefixes = [
+            "text-", "bg-", "border-", "fill-", "stroke-",
+            "text-", "bg-", "ring-", "shadow-", "decoration-",
+        ];
+        return colorPrefixes.some((prefix) => cls.startsWith(prefix));
+    }
+    buildCssVariables(vars) {
+        return Object.entries(vars)
+            .map(([k, v]) => `--${k}: ${v}`)
+            .join("; ");
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: StyleResolver, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: StyleResolver, providedIn: "root" });
@@ -4912,874 +6555,211 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
             args: [{ providedIn: "root" }]
         }] });
 
-class SchemaRendererService {
-    componentRegistry = inject(ComponentRegistryService);
-    dataBindingResolver = inject(DataBindingResolver);
-    styleResolver = inject(StyleResolver);
-    _schema = signal(null, ...(ngDevMode ? [{ debugName: "_schema" }] : []));
-    _currentPage = signal(null, ...(ngDevMode ? [{ debugName: "_currentPage" }] : []));
-    _currentLayout = signal(null, ...(ngDevMode ? [{ debugName: "_currentLayout" }] : []));
-    _schemaError = signal(null, ...(ngDevMode ? [{ debugName: "_schemaError" }] : []));
-    _isLoading = signal(false, ...(ngDevMode ? [{ debugName: "_isLoading" }] : []));
-    _renderContext = signal(null, ...(ngDevMode ? [{ debugName: "_renderContext" }] : []));
-    currentPage = this._currentPage.asReadonly();
-    schemaError = this._schemaError.asReadonly();
-    isLoading = this._isLoading.asReadonly();
-    schema = this._schema.asReadonly();
-    currentLayout = computed(() => {
-        const page = this._currentPage();
-        if (!page || !page.layout)
-            return null;
-        return this._schema()?.layouts.find((l) => l.id === page.layout) ?? null;
-    }, ...(ngDevMode ? [{ debugName: "currentLayout" }] : []));
-    elementInstances = new Map();
-    eventHandlers = new Map();
-    setSchema(schema) {
-        this._isLoading.set(true);
-        this._schemaError.set(null);
-        try {
-            this.componentRegistry.registerComponents(schema.components);
-            this.componentRegistry.registerComponents(schema.sharedComponents);
-            this._schema.set(schema);
-            this._isLoading.set(false);
-        }
-        catch (error) {
-            this._schemaError.set(error instanceof Error ? error.message : "Failed to set schema");
-            this._isLoading.set(false);
-        }
-    }
-    getSchema() {
-        return this._schema();
-    }
-    async render(pageId, container, context) {
-        const schema = this._schema();
-        if (!schema) {
-            throw new Error("No schema loaded");
-        }
-        const page = schema.pages.find((p) => p.id === pageId);
-        if (!page) {
-            throw new Error(`Page not found: ${pageId}`);
-        }
-        this._currentPage.set(page);
-        this.updateRenderContext(context);
-        container.innerHTML = "";
-        this.elementInstances.clear();
-        for (const section of Object.values(page.sections)) {
-            if (section.visible) {
-                await this.renderSection(section, container);
-            }
-        }
-    }
-    async renderPage(pageId, container, context) {
-        return this.render(pageId, container, context);
-    }
-    async renderSection(section, container) {
-        const page = this._currentPage();
-        if (!page)
-            return;
-        const elements = section.componentId
-            ? page.canvasElements.filter((e) => e.id.startsWith(section.componentId || ""))
-            : page.canvasElements;
-        for (const element of elements) {
-            await this.createElement(element, container);
-        }
-    }
-    async createElement(canvasElement, parent, options) {
-        const component = this.componentRegistry.getComponent(canvasElement.componentId);
-        if (!component) {
-            return this.createFallbackElement(canvasElement, parent);
-        }
-        const element = document.createElement(component.selector);
-        this.applyGridPosition(element, canvasElement.gridPosition);
-        this.applyClasses(element, canvasElement.classes, component.def);
-        await this.applyProps(element, canvasElement, component);
-        this.applyDataBinding(element, canvasElement);
-        this.applyEvents(element, canvasElement);
-        const insertIndex = options?.insertIndex ?? -1;
-        if (insertIndex >= 0 && insertIndex < parent.children.length) {
-            parent.insertBefore(element, parent.children[insertIndex]);
-        }
-        else {
-            parent.appendChild(element);
-        }
-        this.elementInstances.set(canvasElement.id, element);
-        for (const childId of canvasElement.children) {
-            const childElement = this.getCanvasElement(childId);
-            if (childElement) {
-                await this.createElement(childElement, element);
-            }
-        }
-        return element;
-    }
-    resolveDataBinding(binding) {
-        return this.dataBindingResolver.resolveDataBinding(binding);
-    }
-    resolveProps(componentId, props) {
-        const resolved = {};
-        for (const [key, value] of Object.entries(props)) {
-            if (typeof value === "string" && this.dataBindingResolver.hasBinding(value)) {
-                resolved[key] = this.dataBindingResolver.resolve(value);
-            }
-            else {
-                resolved[key] = value;
-            }
-        }
-        return resolved;
-    }
-    resolveClasses(baseClasses, overrideClasses) {
-        const resolved = this.styleResolver.resolveClasses(baseClasses, overrideClasses);
-        return resolved.classes.join(" ");
-    }
-    extractStylesFromClasses(classString) {
-        const resolved = this.styleResolver.extractStyles(classString);
-        return resolved.cssVariables;
-    }
-    updateElement(elementId, updates) {
-        const element = this.elementInstances.get(elementId);
-        if (!element)
-            return;
-        if (updates.classes) {
-            this.applyClasses(element, updates.classes);
-        }
-        if (updates.gridPosition) {
-            this.applyGridPosition(element, updates.gridPosition);
-        }
-    }
-    destroyElement(elementId) {
-        const element = this.elementInstances.get(elementId);
-        if (element) {
-            element.remove();
-            this.elementInstances.delete(elementId);
-        }
-    }
-    clear() {
-        for (const element of this.elementInstances.values()) {
-            element.remove();
-        }
-        this.elementInstances.clear();
-        this._currentPage.set(null);
-        this._currentLayout.set(null);
-        this._renderContext.set(null);
-    }
-    updateRenderContext(partial) {
-        const current = this._renderContext() || {
-            schema: this._schema(),
-            page: null,
-            layout: null,
-            data: {},
-            params: {},
-            services: new Map(),
-            theme: this.getDefaultTheme(),
-            colorMode: "system",
-            resolvedElements: new Map(),
-            eventHandlers: new Map(),
-        };
-        this._renderContext.set({
-            ...current,
-            ...partial,
-            page: partial?.page ?? this._currentPage() ?? current.page,
-            layout: partial?.layout ?? this.currentLayout() ?? current.layout,
-        });
-        if (partial?.data || partial?.params) {
-            this.dataBindingResolver.setContext({
-                data: partial?.data ?? current.data,
-                params: partial?.params ?? current.params,
-            });
-        }
-    }
-    applyGridPosition(element, position) {
-        const style = element.style;
-        if (position.colStart !== null) {
-            style.gridColumnStart = String(position.colStart);
-        }
-        else {
-            style.gridColumn = `${position.column} / span ${position.colSpan}`;
-        }
-        if (position.rowStart !== null) {
-            style.gridRowStart = String(position.rowStart);
-        }
-        else {
-            style.gridRow = `${position.row} / span ${position.rowSpan}`;
-        }
-    }
-    applyClasses(element, classes, componentDef) {
-        const baseClasses = componentDef?.defaultClasses || "";
-        const resolved = this.styleResolver.resolveClasses(baseClasses, classes);
-        element.classList.add(...resolved.classes);
-        for (const [variable, value] of Object.entries(resolved.cssVariables)) {
-            element.style.setProperty(variable, value);
-        }
-    }
-    async applyProps(element, canvasElement, component) {
-        for (const input of component.inputs) {
-            const value = canvasElement[input];
-            if (value !== undefined) {
-                element[input] = value;
-            }
-        }
-    }
-    applyDataBinding(element, canvasElement) {
-        if (!canvasElement.dataBinding)
-            return;
-        const value = this.resolveDataBinding(canvasElement.dataBinding);
-        const propName = this.getDataBindingTarget(canvasElement.componentId);
-        if (propName && value !== undefined) {
-            element[propName] = value;
-        }
-    }
-    applyEvents(element, canvasElement) {
-        // Event handling via EventBusService can be added here
-    }
-    getCanvasElement(id) {
-        const page = this._currentPage();
-        return page?.canvasElements.find((e) => e.id === id);
-    }
-    createFallbackElement(canvasElement, parent) {
-        const fallback = document.createElement("div");
-        fallback.setAttribute("data-sdui-fallback", canvasElement.componentId);
-        fallback.setAttribute("data-element-id", canvasElement.id);
-        parent.appendChild(fallback);
-        return fallback;
-    }
-    getDataBindingTarget(componentId) {
-        const targets = {
-            "sdui-input": "value",
-            "sdui-select": "value",
-            "sdui-checkbox": "checked",
-            "sdui-switch": "checked",
-            "sdui-slider": "value",
-        };
-        return targets[componentId] || null;
-    }
-    getDefaultTheme() {
-        return {
-            name: "default",
-            label: "Default Theme",
-            colors: {
-                bgPrimary: "#ffffff",
-                bgSecondary: "#f3f4f6",
-                bgTertiary: "#e5e7eb",
-                bgElevated: "#ffffff",
-                bgHover: "#f9fafb",
-                textPrimary: "#111827",
-                textSecondary: "#6b7280",
-                textMuted: "#9ca3af",
-                border: "#d1d5db",
-                borderLight: "#e5e7eb",
-                primary: "#3b82f6",
-                secondary: "#6366f1",
-                accent: "#8b5cf6",
-                accentHover: "#7c3aed",
-                success: "#10b981",
-                warning: "#f59e0b",
-                error: "#ef4444",
-            },
-        };
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-class SchemaRouterService {
-    renderer = inject(SchemaRendererService);
-    ngRouter = inject(Router);
-    _currentPage = signal(null, ...(ngDevMode ? [{ debugName: "_currentPage" }] : []));
-    _currentLayout = signal(null, ...(ngDevMode ? [{ debugName: "_currentLayout" }] : []));
-    _currentRoute = signal(null, ...(ngDevMode ? [{ debugName: "_currentRoute" }] : []));
-    _routeParams = signal({}, ...(ngDevMode ? [{ debugName: "_routeParams" }] : []));
-    currentPage = this._currentPage.asReadonly();
-    currentLayout = this._currentLayout.asReadonly();
-    currentRoute = this._currentRoute.asReadonly();
-    routeParams = this._routeParams.asReadonly();
-    schema = null;
-    routeRegistry = new Map();
-    currentPageSignal = computed(() => this._currentPage(), ...(ngDevMode ? [{ debugName: "currentPageSignal" }] : []));
-    currentLayoutSignal = computed(() => this._currentLayout(), ...(ngDevMode ? [{ debugName: "currentLayoutSignal" }] : []));
-    setSchema(schema) {
-        this.schema = schema;
-        this.renderer.setSchema(schema);
-        this.buildRouteRegistry();
-    }
-    async loadSchema(mode, source) {
-        switch (mode) {
-            case "embedded":
-                break;
-            case "file":
-                break;
-            case "cloud":
-                break;
-        }
-    }
-    async navigate(route, params) {
-        const match = this.resolveRoute(route, params);
-        if (!match) {
-            return false;
-        }
-        if (match.page.layout) {
-            const layout = this.schema?.layouts.find((l) => l.id === match.page.layout);
-            this._currentLayout.set(layout ?? null);
-        }
-        this._currentPage.set(match.page);
-        this._currentRoute.set(route);
-        this._routeParams.set(params || {});
-        return true;
-    }
-    setCurrentPage(page) {
-        this._currentPage.set(page);
-    }
-    setCurrentRoute(route) {
-        this._currentRoute.set(route);
-    }
-    getPage(pageId) {
-        return this.schema?.pages.find((p) => p.id === pageId);
-    }
-    getPageByRoute(route) {
-        return this.routeRegistry.get(route);
-    }
-    resolveRoute(route, params) {
-        const page = this.routeRegistry.get(route);
-        if (!page) {
-            return null;
-        }
-        return {
-            page,
-            params: params || {},
-            guards: [],
-        };
-    }
-    getAllRoutes() {
-        return Array.from(this.routeRegistry.entries()).map(([route, page]) => ({
-            route,
-            page,
-        }));
-    }
-    buildRouteRegistry() {
-        if (!this.schema)
-            return;
-        this.routeRegistry.clear();
-        for (const page of this.schema.pages) {
-            if (page.route) {
-                this.routeRegistry.set(page.route, page);
-            }
-        }
-    }
-    updateRouteParam(key, value) {
-        this._routeParams.update((params) => ({
-            ...params,
-            [key]: value,
-        }));
-    }
-    clearRouteParams() {
-        this._routeParams.set({});
-    }
-    generateRoute(pageId, params) {
-        const page = this.getPage(pageId);
-        if (!page?.route)
-            return null;
-        if (!params)
-            return page.route;
-        let route = page.route;
-        for (const [key, value] of Object.entries(params)) {
-            route = route.replace(`:${key}`, value);
-        }
-        return route;
-    }
-    matchRoute(path) {
-        if (!this.schema)
-            return null;
-        for (const page of this.schema.pages) {
-            if (!page.route)
-                continue;
-            const pattern = this.routeToRegex(page.route);
-            const match = path.match(pattern);
-            if (match) {
-                const params = {};
-                const paramNames = this.extractParamNames(page.route);
-                for (let i = 0; i < paramNames.length; i++) {
-                    params[paramNames[i]] = match[i + 1];
-                }
-                return {
-                    page,
-                    params,
-                    guards: [],
-                };
-            }
-        }
-        return null;
-    }
-    routeToRegex(route) {
-        const escaped = route.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        const pattern = escaped.replace(/:([^/]+)/g, "([^/]+)");
-        return new RegExp(`^${pattern}$`);
-    }
-    extractParamNames(route) {
-        const matches = route.match(/:([^/]+)/g);
-        return matches ? matches.map((m) => m.slice(1)) : [];
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-class GuardService {
-    ngRouter = inject(Router);
-    guardRegistry = new Map();
-    guardFunctions = new Map();
-    registerGuard(name, definition) {
-        this.guardRegistry.set(name, definition);
-    }
-    registerGuardFunction(name, fn) {
-        this.guardFunctions.set(name, fn);
-    }
-    async evaluateGuard(guardName) {
-        const guardFn = this.guardFunctions.get(guardName);
-        if (guardFn) {
-            try {
-                const passed = guardFn();
-                return { guardName, passed };
-            }
-            catch (error) {
-                return {
-                    guardName,
-                    passed: false,
-                    error: error instanceof Error ? error.message : "Guard evaluation failed",
-                };
-            }
-        }
-        const guardDef = this.guardRegistry.get(guardName);
-        if (!guardDef) {
-            return { guardName, passed: true };
-        }
-        const passed = this.evaluateCondition(guardDef.condition);
-        return {
-            guardName,
-            passed,
-            redirectTo: passed ? undefined : guardDef.redirectTo,
-        };
-    }
-    async evaluateGuards(match) {
-        const results = [];
-        for (const guard of match.guards) {
-            const result = await this.evaluateGuard(guard.guardName);
-            results.push(result);
-        }
-        return results;
-    }
-    canActivateGuard(match) {
-        for (const guard of match.guards) {
-            const guardDef = this.guardRegistry.get(guard.guardName);
-            if (!guardDef)
-                continue;
-            const result = this.evaluateCondition(guardDef.condition);
-            if (!result && guard.redirectTo) {
-                return guard.redirectTo;
-            }
-        }
-        return true;
-    }
-    createGuardFunction(guardName) {
-        return async () => {
-            const result = await this.evaluateGuard(guardName);
-            if (result.passed) {
-                return true;
-            }
-            if (result.redirectTo) {
-                await this.ngRouter.navigateByUrl(result.redirectTo);
-                return false;
-            }
-            return this.ngRouter.createUrlTree(["/unauthorized"]);
-        };
-    }
-    evaluateCondition(condition) {
-        try {
-            const fn = new Function(`return ${condition}`);
-            return Boolean(fn());
-        }
-        catch {
-            return false;
-        }
-    }
-    hasGuard(guardName) {
-        return this.guardRegistry.has(guardName) || this.guardFunctions.has(guardName);
-    }
-    clearGuards() {
-        this.guardRegistry.clear();
-        this.guardFunctions.clear();
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-class SchemaRouteViewerComponent {
-    route = "";
-    containerRef;
-    router = inject(SchemaRouterService);
-    renderer = inject(SchemaRendererService);
-    isLoading = signal(false, ...(ngDevMode ? [{ debugName: "isLoading" }] : []));
-    error = signal(null, ...(ngDevMode ? [{ debugName: "error" }] : []));
-    isInitialized = false;
-    constructor() {
-        effect(() => {
-            const currentRoute = this.router.currentRoute();
-            if (currentRoute && this.isInitialized) {
-                this.renderCurrentRoute();
-            }
-        });
-    }
-    ngAfterViewInit() {
-        this.isInitialized = true;
-        if (this.route) {
-            this.loadRoute(this.route);
-        }
-        else {
-            this.renderCurrentRoute();
-        }
-    }
-    ngOnDestroy() {
-        this.renderer.clear();
-    }
-    async loadRoute(route) {
-        this.isLoading.set(true);
-        this.error.set(null);
-        try {
-            await this.router.navigate(route);
-            await this.renderCurrentRoute();
-        }
-        catch (err) {
-            this.error.set(err instanceof Error ? err.message : "Failed to load route");
-        }
-        finally {
-            this.isLoading.set(false);
-        }
-    }
-    async renderCurrentRoute() {
-        const page = this.router.currentPage();
-        const container = this.containerRef?.nativeElement;
-        if (!page || !container) {
-            return;
-        }
-        try {
-            await this.renderer.renderPage(page.id, container);
-        }
-        catch (err) {
-            this.error.set(err instanceof Error ? err.message : "Failed to render page");
-        }
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouteViewerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: SchemaRouteViewerComponent, isStandalone: true, selector: "lib-schema-route-viewer", inputs: { route: "route" }, viewQueries: [{ propertyName: "containerRef", first: true, predicate: ["container"], descendants: true }], ngImport: i0, template: `
-    <div #container class="schema-route-viewer">
-      @if (isLoading()) {
-        <div class="schema-loading">
-          <span>Loading...</span>
-        </div>
-      }
-      @if (error()) {
-        <div class="schema-error">
-          {{ error() }}
-        </div>
-      }
-    </div>
-  `, isInline: true, styles: [":host{display:block;width:100%;height:100%}.schema-route-viewer{width:100%;height:100%;position:relative}.schema-loading,.schema-error{display:flex;align-items:center;justify-content:center;width:100%;height:100%}.schema-error{color:var(--color-error, #ef4444)}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouteViewerComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "lib-schema-route-viewer", standalone: true, imports: [CommonModule], template: `
-    <div #container class="schema-route-viewer">
-      @if (isLoading()) {
-        <div class="schema-loading">
-          <span>Loading...</span>
-        </div>
-      }
-      @if (error()) {
-        <div class="schema-error">
-          {{ error() }}
-        </div>
-      }
-    </div>
-  `, styles: [":host{display:block;width:100%;height:100%}.schema-route-viewer{width:100%;height:100%;position:relative}.schema-loading,.schema-error{display:flex;align-items:center;justify-content:center;width:100%;height:100%}.schema-error{color:var(--color-error, #ef4444)}\n"] }]
-        }], ctorParameters: () => [], propDecorators: { route: [{
-                type: Input
-            }], containerRef: [{
-                type: ViewChild,
-                args: ["container"]
-            }] } });
-
-class SchemaFetcherService {
-    currentSchema = null;
-    currentOptions = null;
-    watchCallback = null;
-    async loadSchema(options) {
-        switch (options.mode) {
-            case "embedded":
-                return this.loadEmbeddedSchema(options.source);
-            case "file":
-                return this.loadFileSchema(options.source);
-            case "cloud":
-                return this.loadCloudSchema(options.source);
-        }
-    }
-    async reloadSchema() {
-        if (!this.currentOptions) {
-            return null;
-        }
-        const schema = await this.loadSchema(this.currentOptions);
-        if (this.watchCallback) {
-            this.watchCallback({
-                schema,
-                timestamp: Date.now(),
-            });
-        }
-        return schema;
-    }
-    watchSchemaChanges(callback) {
-        this.watchCallback = callback;
-        return () => {
-            this.watchCallback = null;
-        };
-    }
-    getCurrentSchema() {
-        return this.currentSchema;
-    }
-    async loadEmbeddedSchema(source) {
-        try {
-            const response = await fetch(source);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-            const schema = await response.json();
-            this.currentSchema = schema;
-            this.currentOptions = { mode: "embedded", source };
-            return schema;
-        }
-        catch (error) {
-            throw new Error(`Failed to load embedded schema from ${source}: ${error}`);
-        }
-    }
-    async loadFileSchema(filePath) {
-        try {
-            const response = await fetch(filePath);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-            const schema = await response.json();
-            this.validateSchema(schema);
-            this.currentSchema = schema;
-            this.currentOptions = { mode: "file", source: filePath };
-            return schema;
-        }
-        catch (error) {
-            throw new Error(`Failed to load schema from file ${filePath}: ${error}`);
-        }
-    }
-    async loadCloudSchema(url) {
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            const schema = await response.json();
-            this.validateSchema(schema);
-            this.currentSchema = schema;
-            this.currentOptions = { mode: "cloud", source: url };
-            return schema;
-        }
-        catch (error) {
-            throw new Error(`Failed to load schema from cloud ${url}: ${error}`);
-        }
-    }
-    validateSchema(schema) {
-        if (!schema || typeof schema !== "object") {
-            throw new Error("Schema must be an object");
-        }
-        const s = schema;
-        if (!s.pages || !Array.isArray(s.pages)) {
-            throw new Error("Schema must have a pages array");
-        }
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaFetcherService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaFetcherService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaFetcherService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
+const LIGHT_THEME_CSS = `
+  :root {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #f1f5f9;
+    --bg-elevated: #ffffff;
+    --bg-hover: #e2e8f0;
+    --bg-active: #cbd5e1;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --text-on-accent: #ffffff;
+    --text-on-error: #ffffff;
+    --text-on-warning: #ffffff;
+    --text-on-success: #ffffff;
+    --text-on-info: #ffffff;
+    --border-color: #e2e8f0;
+    --border-subtle: #f1f5f9;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --accent-light: #dbeafe;
+    --error: #ef4444;
+    --error-light: #fee2e2;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --success: #22c55e;
+    --success-light: #dcfce7;
+    --info: #06b6d4;
+    --info-light: #cffafe;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+`;
+const DARK_THEME_CSS = `
+  [data-theme="dark"] {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-elevated: #21262d;
+    --bg-hover: #30363d;
+    --bg-active: #484f58;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+    --text-on-accent: #ffffff;
+    --text-on-error: #ffffff;
+    --text-on-warning: #ffffff;
+    --text-on-success: #ffffff;
+    --text-on-info: #ffffff;
+    --border-color: #30363d;
+    --border-subtle: #21262d;
+    --accent: #58a6ff;
+    --accent-hover: #79b8ff;
+    --accent-light: #1f3d5c;
+    --error: #f85149;
+    --error-light: #441b1b;
+    --warning: #d29922;
+    --warning-light: #3d2e0a;
+    --success: #3fb950;
+    --success-light: #1a3d2a;
+    --info: #39c5cf;
+    --info-light: #0d3d40;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  }
+`;
 class ThemeService {
-    _currentTheme = signal(null, ...(ngDevMode ? [{ debugName: "_currentTheme" }] : []));
     _colorMode = signal("system", ...(ngDevMode ? [{ debugName: "_colorMode" }] : []));
-    _systemPrefersDark = signal(this.getSystemPrefersDark(), ...(ngDevMode ? [{ debugName: "_systemPrefersDark" }] : []));
-    _overrides = signal({}, ...(ngDevMode ? [{ debugName: "_overrides" }] : []));
-    currentTheme = this._currentTheme.asReadonly();
+    _resolvedMode = signal("light", ...(ngDevMode ? [{ debugName: "_resolvedMode" }] : []));
+    _accentColor = signal("#3b82f6", ...(ngDevMode ? [{ debugName: "_accentColor" }] : []));
+    _customCssVars = signal({}, ...(ngDevMode ? [{ debugName: "_customCssVars" }] : []));
+    styleElement = null;
+    mediaQuery = null;
     colorMode = this._colorMode.asReadonly();
-    effectiveColorMode = computed(() => {
+    resolvedMode = this._resolvedMode.asReadonly();
+    accentColor = this._accentColor.asReadonly();
+    isDark = computed(() => this._resolvedMode() === "dark", ...(ngDevMode ? [{ debugName: "isDark" }] : []));
+    isLight = computed(() => this._resolvedMode() === "light", ...(ngDevMode ? [{ debugName: "isLight" }] : []));
+    constructor() {
+        this.initTheme();
+        this.setupEffect();
+    }
+    initTheme() {
+        if (typeof window === "undefined")
+            return;
+        const saved = localStorage.getItem("theme-mode");
+        if (saved && ["light", "dark", "system"].includes(saved)) {
+            this._colorMode.set(saved);
+        }
+        const savedAccent = localStorage.getItem("theme-accent");
+        if (savedAccent) {
+            this._accentColor.set(savedAccent);
+        }
+        this.mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+        this.updateResolvedMode();
+    }
+    setupEffect() {
+        effect(() => {
+            const mode = this._colorMode();
+            localStorage.setItem("theme-mode", mode);
+            this.updateResolvedMode();
+            this.applyTheme();
+        });
+        effect(() => {
+            const accent = this._accentColor();
+            localStorage.setItem("theme-accent", accent);
+            this.applyTheme();
+        });
+    }
+    updateResolvedMode() {
         const mode = this._colorMode();
         if (mode === "system") {
-            return this._systemPrefersDark() ? "dark" : "light";
+            const prefersDark = this.mediaQuery?.matches ?? false;
+            this._resolvedMode.set(prefersDark ? "dark" : "light");
         }
-        return mode;
-    }, ...(ngDevMode ? [{ debugName: "effectiveColorMode" }] : []));
-    effectiveTheme = computed(() => {
-        const theme = this._currentTheme();
-        const overrides = this._overrides();
-        if (!theme) {
-            return this.getDefaultTheme();
-        }
-        if (!overrides.colors && !overrides.cssVariables) {
-            return theme;
-        }
-        return {
-            ...theme,
-            colors: overrides.colors
-                ? { ...theme.colors, ...overrides.colors }
-                : theme.colors,
-        };
-    }, ...(ngDevMode ? [{ debugName: "effectiveTheme" }] : []));
-    constructor() {
-        this.initSystemPrefersDarkListener();
-    }
-    getTheme() {
-        return this._currentTheme();
-    }
-    setTheme(theme) {
-        this._currentTheme.set(theme);
-        this.applyTheme(theme);
-    }
-    applyTheme(theme) {
-        this._currentTheme.set(theme);
-        if (typeof document !== "undefined") {
-            document.documentElement.setAttribute("data-theme", theme.name);
-            this.applyThemeColors(theme.colors);
-            this.applyCssVariables(this._overrides().cssVariables || {});
+        else {
+            this._resolvedMode.set(mode);
         }
     }
-    setColorMode(mode) {
+    injectStyles() {
+        if (typeof document === "undefined")
+            return;
+        if (!this.styleElement) {
+            this.styleElement = document.createElement("style");
+            this.styleElement.id = "theme-service-styles";
+            document.head.appendChild(this.styleElement);
+        }
+        let css = LIGHT_THEME_CSS + DARK_THEME_CSS;
+        // Apply custom accent color
+        const accent = this._accentColor();
+        css += `
+      :root {
+        --accent: ${accent} !important;
+        --accent-hover: ${this.darkenColor(accent, 15)} !important;
+        --accent-light: ${this.lightenColor(accent, 85)} !important;
+      }
+      [data-theme="dark"] {
+        --accent: ${accent} !important;
+        --accent-hover: ${this.lightenColor(accent, 10)} !important;
+        --accent-light: ${this.darkenColor(accent, 60)} !important;
+      }
+    `;
+        // Apply custom CSS variables
+        const customVars = this._customCssVars();
+        if (Object.keys(customVars).length > 0) {
+            css += `:root { ${Object.entries(customVars).map(([k, v]) => `--${k}: ${v}`).join("; ")} }`;
+        }
+        this.styleElement.textContent = css;
+    }
+    applyTheme() {
+        if (typeof document === "undefined")
+            return;
+        const resolved = this._resolvedMode();
+        const mode = this._colorMode();
+        document.body.setAttribute("data-theme", resolved);
+        if (mode === "system") {
+            document.body.removeAttribute("data-theme");
+        }
+        this.injectStyles();
+    }
+    toggle() {
+        const current = this._resolvedMode();
+        this._colorMode.set(current === "light" ? "dark" : "light");
+    }
+    setMode(mode) {
         this._colorMode.set(mode);
-        if (typeof localStorage !== "undefined") {
-            localStorage.setItem("sdui-color-mode", mode);
-        }
-        this.applyColorMode(mode);
     }
-    toggleColorMode() {
-        const current = this.effectiveColorMode();
-        const next = current === "light" ? "dark" : "light";
-        this.setColorMode(next);
+    setAccentColor(color) {
+        this._accentColor.set(color);
     }
-    overrideColors(colors) {
-        this._overrides.update((o) => ({
-            ...o,
-            colors: { ...o.colors, ...colors },
-        }));
-        const theme = this._currentTheme();
-        if (theme) {
-            this.applyTheme({
-                ...theme,
-                colors: { ...theme.colors, ...colors },
-            });
-        }
+    setCustomCssVariables(vars) {
+        this._customCssVars.set(vars);
+        this.applyTheme();
     }
-    setCssVariables(variables) {
-        this._overrides.update((o) => ({
-            ...o,
-            cssVariables: { ...o.cssVariables, ...variables },
-        }));
-        if (typeof document !== "undefined") {
-            this.applyCssVariables(variables);
-        }
+    getThemeIcon() {
+        return this.isDark() ? "light_mode" : "dark_mode";
     }
-    clearOverrides() {
-        this._overrides.set({});
-        const theme = this._currentTheme();
-        if (theme) {
-            this.applyTheme(theme);
-        }
-    }
-    initSystemPrefersDarkListener() {
-        if (typeof window === "undefined")
-            return;
-        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-        const handler = (e) => {
-            this._systemPrefersDark.set(e.matches);
-        };
-        mediaQuery.addEventListener("change", handler);
-    }
-    getSystemPrefersDark() {
-        if (typeof window === "undefined")
-            return false;
-        return window.matchMedia("(prefers-color-scheme: dark)").matches;
-    }
-    applyThemeColors(colors) {
-        if (typeof document === "undefined")
-            return;
-        const root = document.documentElement;
-        root.style.setProperty("--color-bg-primary", colors.bgPrimary);
-        root.style.setProperty("--color-bg-secondary", colors.bgSecondary);
-        root.style.setProperty("--color-bg-tertiary", colors.bgTertiary);
-        root.style.setProperty("--color-bg-elevated", colors.bgElevated);
-        root.style.setProperty("--color-bg-hover", colors.bgHover);
-        root.style.setProperty("--color-text-primary", colors.textPrimary);
-        root.style.setProperty("--color-text-secondary", colors.textSecondary);
-        root.style.setProperty("--color-text-muted", colors.textMuted);
-        root.style.setProperty("--color-border", colors.border);
-        root.style.setProperty("--color-border-light", colors.borderLight);
-        root.style.setProperty("--color-primary", colors.primary);
-        root.style.setProperty("--color-secondary", colors.secondary);
-        root.style.setProperty("--color-accent", colors.accent);
-        root.style.setProperty("--color-accent-hover", colors.accentHover);
-        root.style.setProperty("--color-success", colors.success);
-        root.style.setProperty("--color-warning", colors.warning);
-        root.style.setProperty("--color-error", colors.error);
-    }
-    applyCssVariables(variables) {
-        if (typeof document === "undefined")
-            return;
-        const root = document.documentElement;
-        for (const [key, value] of Object.entries(variables)) {
-            root.style.setProperty(key, value);
-        }
-    }
-    applyColorMode(mode) {
-        if (typeof document === "undefined")
-            return;
-        const effective = mode === "system"
-            ? (this._systemPrefersDark() ? "dark" : "light")
-            : mode;
-        document.documentElement.setAttribute("data-color-mode", effective);
-    }
-    getDefaultTheme() {
+    getCurrentTheme() {
         return {
-            name: "default",
-            label: "Default Theme",
-            colors: {
-                bgPrimary: "#ffffff",
-                bgSecondary: "#f3f4f6",
-                bgTertiary: "#e5e7eb",
-                bgElevated: "#ffffff",
-                bgHover: "#f9fafb",
-                textPrimary: "#111827",
-                textSecondary: "#6b7280",
-                textMuted: "#9ca3af",
-                border: "#d1d5db",
-                borderLight: "#e5e7eb",
-                primary: "#3b82f6",
-                secondary: "#6366f1",
-                accent: "#8b5cf6",
-                accentHover: "#7c3aed",
-                success: "#10b981",
-                warning: "#f59e0b",
-                error: "#ef4444",
-            },
+            mode: this._colorMode(),
+            accentColor: this._accentColor(),
+            cssVariables: this._customCssVars(),
         };
+    }
+    applyThemeConfig(config) {
+        if (config.mode)
+            this._colorMode.set(config.mode);
+        if (config.accentColor)
+            this._accentColor.set(config.accentColor);
+        if (config.cssVariables)
+            this._customCssVars.set(config.cssVariables);
+    }
+    darkenColor(hex, percent) {
+        return this.adjustColor(hex, -percent);
+    }
+    lightenColor(hex, percent) {
+        return this.adjustColor(hex, percent);
+    }
+    adjustColor(hex, percent) {
+        const num = parseInt(hex.replace("#", ""), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = Math.min(255, Math.max(0, (num >> 16) + amt));
+        const G = Math.min(255, Math.max(0, ((num >> 8) & 0x00ff) + amt));
+        const B = Math.min(255, Math.max(0, (num & 0x0000ff) + amt));
+        return "#" + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, providedIn: "root" });
@@ -5790,95 +6770,114 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
         }], ctorParameters: () => [] });
 
 class EventBusService {
-    handlers = new Map();
+    subscriptions = new Map();
     eventHistory = signal([], ...(ngDevMode ? [{ debugName: "eventHistory" }] : []));
-    maxHistorySize = 100;
-    emit(event, payload, source) {
-        const message = {
-            type: event,
-            payload: payload,
-            metadata: {
-                timestamp: Date.now(),
-                source,
-            },
-        };
-        this.addToHistory(message);
-        const eventHandlers = this.handlers.get(event);
-        if (eventHandlers) {
-            for (const handler of eventHandlers) {
-                try {
-                    handler(payload);
-                }
-                catch (error) {
-                    console.error(`Error in event handler for '${event}':`, error);
-                }
+    toastQueue = signal([], ...(ngDevMode ? [{ debugName: "toastQueue" }] : []));
+    MAX_HISTORY = 100;
+    history = this.eventHistory.asReadonly();
+    pendingToasts = this.toastQueue.asReadonly();
+    hasToasts = computed(() => this.toastQueue().length > 0, ...(ngDevMode ? [{ debugName: "hasToasts" }] : []));
+    emit(event, data) {
+        const timestamp = Date.now();
+        this.eventHistory.update((h) => [
+            ...h,
+            { event, data, timestamp },
+        ].slice(-this.MAX_HISTORY));
+        const subs = this.subscriptions.get(event) ?? [];
+        subs.forEach((sub) => {
+            try {
+                sub.handler.call(sub.context, data);
             }
-        }
-    }
-    on(event, handler) {
-        if (!this.handlers.has(event)) {
-            this.handlers.set(event, new Set());
-        }
-        this.handlers.get(event).add(handler);
-        return {
-            unsubscribe: () => {
-                this.off(event, handler);
-            },
-        };
-    }
-    once(event, handler) {
-        const wrapped = (payload) => {
-            handler(payload);
-            this.off(event, wrapped);
-        };
-        return this.on(event, wrapped);
-    }
-    off(event, handler) {
-        const eventHandlers = this.handlers.get(event);
-        if (eventHandlers) {
-            eventHandlers.delete(handler);
-            if (eventHandlers.size === 0) {
-                this.handlers.delete(event);
+            catch (err) {
+                console.error(`EventBus: Error in handler for "${event}":`, err);
             }
-        }
+        });
     }
-    clear(event) {
-        if (event) {
-            this.handlers.delete(event);
+    on(event, handler, context) {
+        const id = `${event}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const sub = { id, event, handler, context };
+        const existing = this.subscriptions.get(event) ?? [];
+        this.subscriptions.set(event, [...existing, sub]);
+        return () => this.off(event, id);
+    }
+    once(event, handler, context) {
+        const id = `${event}-once-${Date.now()}`;
+        const wrappedHandler = (data) => {
+            handler.call(context, data);
+            this.off(event, id);
+        };
+        const sub = { id, event, handler: wrappedHandler, context };
+        const existing = this.subscriptions.get(event) ?? [];
+        this.subscriptions.set(event, [...existing, sub]);
+        return () => this.off(event, id);
+    }
+    off(event, subscriptionId) {
+        const subs = this.subscriptions.get(event) ?? [];
+        const filtered = subs.filter((s) => s.id !== subscriptionId);
+        if (filtered.length > 0) {
+            this.subscriptions.set(event, filtered);
         }
         else {
-            this.handlers.clear();
+            this.subscriptions.delete(event);
+        }
+    }
+    offAll(event) {
+        if (event) {
+            this.subscriptions.delete(event);
+        }
+        else {
+            this.subscriptions.clear();
         }
     }
     hasListeners(event) {
-        const handlers = this.handlers.get(event);
-        return handlers !== undefined && handlers.size > 0;
+        const subs = this.subscriptions.get(event) ?? [];
+        return subs.length > 0;
     }
     getListenerCount(event) {
-        const handlers = this.handlers.get(event);
-        return handlers?.size ?? 0;
+        return (this.subscriptions.get(event) ?? []).length;
     }
-    getEventHistory(event) {
-        const history = this.eventHistory();
-        if (event) {
-            return history.filter((m) => m.type === event);
+    // Toast-specific methods
+    showToast(message, type = "info", duration = 3000) {
+        const id = `toast-${Date.now()}`;
+        const toast = { id, message, type, duration };
+        this.toastQueue.update((q) => [...q, toast]);
+        if (duration > 0) {
+            setTimeout(() => this.dismissToast(id), duration);
         }
-        return [...history];
+        this.emit("notification", toast);
+        return id;
     }
+    success(message, duration = 3000) {
+        return this.showToast(message, "success", duration);
+    }
+    error(message, duration = 5000) {
+        return this.showToast(message, "error", duration);
+    }
+    warning(message, duration = 4000) {
+        return this.showToast(message, "warning", duration);
+    }
+    info(message, duration = 3000) {
+        return this.showToast(message, "info", duration);
+    }
+    dismissToast(id) {
+        this.toastQueue.update((q) => q.filter((t) => t.id !== id));
+        this.emit("toast-dismissed", id);
+    }
+    dismissAllToasts() {
+        this.toastQueue.set([]);
+        this.emit("all-toasts-dismissed", undefined);
+    }
+    // Convenience: emit notification event (for schema-driven UI)
+    notify(notification) {
+        return this.showToast(notification.message, notification.type, notification.duration);
+    }
+    // Get toast by ID
+    getToast(id) {
+        return this.toastQueue().find((t) => t.id === id);
+    }
+    // Clear history
     clearHistory() {
         this.eventHistory.set([]);
-    }
-    createEventNamespace(namespace) {
-        return new NamespacedEventBus(this, namespace);
-    }
-    addToHistory(message) {
-        this.eventHistory.update((history) => {
-            const updated = [...history, message];
-            if (updated.length > this.maxHistorySize) {
-                return updated.slice(-this.maxHistorySize);
-            }
-            return updated;
-        });
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: EventBusService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: EventBusService, providedIn: "root" });
@@ -5887,422 +6886,362 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
             type: Injectable,
             args: [{ providedIn: "root" }]
         }] });
-class NamespacedEventBus {
-    parent;
-    namespace;
-    constructor(parent, namespace) {
-        this.parent = parent;
-        this.namespace = namespace;
-    }
-    emit(event, payload) {
-        this.parent.emit(`${this.namespace}:${event}`, payload, this.namespace);
-    }
-    on(event, handler) {
-        return this.parent.on(`${this.namespace}:${event}`, handler);
-    }
-    once(event, handler) {
-        return this.parent.once(`${this.namespace}:${event}`, handler);
-    }
-    off(event, handler) {
-        this.parent.off(`${this.namespace}:${event}`, handler);
-    }
-}
 
-class RbacService {
-    _currentUser = signal(null, ...(ngDevMode ? [{ debugName: "_currentUser" }] : []));
-    _roles = signal([], ...(ngDevMode ? [{ debugName: "_roles" }] : []));
-    currentUser = this._currentUser.asReadonly();
-    roles = this._roles.asReadonly();
-    setUser(user) {
-        this._currentUser.set(user);
+class SchemaRendererService {
+    router = inject(SchemaRouterService);
+    componentRegistry = inject(ComponentRegistryService);
+    bindingResolver = inject(DataBindingResolver);
+    styleResolver = inject(StyleResolver);
+    themeService = inject(ThemeService);
+    eventBus = inject(EventBusService);
+    renderContexts = new Map();
+    async renderPage(pageId, container) {
+        const page = this.router.getPage(pageId);
+        if (!page) {
+            throw new Error(`Page not found: ${pageId}`);
+        }
+        await this.render(page, container);
     }
-    setRoles(roles) {
-        this._roles.set(roles);
-    }
-    hasPermission(permission) {
-        const user = this._currentUser();
-        if (!user)
-            return false;
-        const roles = this._roles();
-        for (const roleName of user.roles) {
-            const role = roles.find((r) => r.id === roleName || r.name === roleName);
-            if (role?.permissions.includes(permission)) {
-                return true;
+    async render(page, container) {
+        const context = this.createRenderContext(page);
+        this.renderContexts.set(page.id, context);
+        // Clear container
+        container.innerHTML = "";
+        // Render each canvas element
+        for (const element of page.canvasElements) {
+            const el = await this.renderElement(element, context);
+            if (el) {
+                container.appendChild(el);
             }
         }
-        return false;
     }
-    hasRole(roleId) {
-        const user = this._currentUser();
-        if (!user)
-            return false;
-        return user.roles.includes(roleId);
-    }
-    isAuthenticated() {
-        return this._currentUser() !== null;
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: RbacService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: RbacService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: RbacService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-class PermissionEvaluator {
-    rules = [];
-    addRule(rule) {
-        this.rules.push(rule);
-    }
-    evaluate(resource, action, context) {
-        const matchingRules = this.rules.filter((r) => r.resource === resource && r.action === action);
-        for (const rule of matchingRules) {
-            if (rule.conditions && context) {
-                const conditionsMet = this.evaluateConditions(rule.conditions, context);
-                if (conditionsMet) {
-                    return rule.effect === "allow";
+    async renderLayout(layoutId, container) {
+        const layout = this.router.getLayout(layoutId);
+        if (!layout) {
+            throw new Error(`Layout not found: ${layoutId}`);
+        }
+        // Render layout slots
+        for (const slot of layout.slots ?? []) {
+            const slotContainer = container.querySelector(`[data-slot="${slot.name}"]`);
+            if (slotContainer) {
+                for (const element of slot.elements ?? []) {
+                    const el = await this.renderElement(element, this.createRenderContextForLayout(layout));
+                    if (el) {
+                        slotContainer.appendChild(el);
+                    }
                 }
             }
-            else if (!rule.conditions) {
-                return rule.effect === "allow";
-            }
-        }
-        return false;
-    }
-    clear() {
-        this.rules = [];
-    }
-    evaluateConditions(conditions, context) {
-        for (const [key, expected] of Object.entries(conditions)) {
-            if (context[key] !== expected) {
-                return false;
-            }
-        }
-        return true;
-    }
-}
-
-class FallbackService {
-    parseSchemaWithFallback(jsonString) {
-        try {
-            const schema = JSON.parse(jsonString);
-            return { schema, isFallback: false };
-        }
-        catch (error) {
-            return {
-                schema: this.getFallbackSchema(error instanceof Error ? error.message : "Parse error"),
-                isFallback: true,
-                error: error instanceof Error ? error.message : "Failed to parse schema",
-            };
         }
     }
-    getFallbackSchema(errorMessage) {
+    createRenderContext(page) {
         return {
-            schemaVersion: "1.0.0",
-            app: {
-                id: "fallback",
-                name: "Fallback",
-                version: "1.0.0",
-                description: errorMessage || "Fallback schema",
-                identifier: "com.fallback.app",
-                settings: {
-                    defaultLocale: "en",
-                    supportedLocales: ["en"],
-                    tailwindPreset: "default",
-                    theme: "default",
-                    themes: [],
-                    colorMode: "system",
-                },
-            },
-            pages: [
-                {
-                    id: "error-page",
-                    name: "Error",
-                    route: "/error",
-                    layout: null,
-                    meta: { title: "Error", icon: null, breadcrumb: [] },
-                    sections: {},
-                    canvasElements: [],
-                },
-            ],
-            layouts: [],
-            components: [],
-            sharedComponents: [],
-            services: [],
-            modules: [],
-            i18N: { locales: {} },
+            schema: this.router.schema(),
+            page,
+            layout: null,
+            data: {},
+            params: this.router.params(),
+            services: new Map(),
+            theme: this.themeService.getCurrentTheme(),
+            colorMode: this.themeService.resolvedMode(),
+            resolvedElements: new Map(),
+            eventHandlers: new Map(),
         };
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: FallbackService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: FallbackService, providedIn: "root" });
+    createRenderContextForLayout(layout) {
+        return {
+            schema: this.router.schema(),
+            page: null,
+            layout,
+            data: {},
+            params: this.router.params(),
+            services: new Map(),
+            theme: this.themeService.getCurrentTheme(),
+            colorMode: this.themeService.resolvedMode(),
+            resolvedElements: new Map(),
+            eventHandlers: new Map(),
+        };
+    }
+    async renderElement(element, context) {
+        const def = this.componentRegistry.get(element.componentId);
+        if (!def) {
+            console.warn(`SchemaRenderer: Unknown component "${element.componentId}"`);
+            return null;
+        }
+        const el = document.createElement(def.selector);
+        // Resolve props with data binding
+        const resolvedProps = this.resolveElementProps(element, context);
+        this.applyProps(el, resolvedProps);
+        // Apply styles
+        this.applyStyles(el, element, context);
+        // Apply data binding
+        if (element.dataBinding) {
+            this.applyDataBinding(el, element.dataBinding, context);
+        }
+        // Apply event handlers
+        this.applyEventHandlers(el, element, context);
+        // Register in context
+        context.resolvedElements.set(element.id, el);
+        // Render children
+        for (const childId of element.children ?? []) {
+            const child = context.page?.canvasElements.find((e) => e.id === childId);
+            if (child) {
+                const childEl = await this.renderElement(child, context);
+                if (childEl) {
+                    el.appendChild(childEl);
+                }
+            }
+        }
+        return el;
+    }
+    resolveElementProps(element, context) {
+        const props = { ...element.props };
+        // Resolve binding expressions in string values
+        for (const [key, value] of Object.entries(props)) {
+            if (typeof value === "string" && value.includes("{{")) {
+                props[key] = this.bindingResolver.resolveExpression(value);
+            }
+        }
+        // Add resolved data binding value
+        if (element.dataBinding) {
+            const boundValue = this.bindingResolver.resolveBinding(element.dataBinding);
+            if (boundValue !== null) {
+                props["value"] = boundValue;
+            }
+        }
+        return props;
+    }
+    applyProps(el, props) {
+        for (const [key, value] of Object.entries(props)) {
+            if (key === "class") {
+                el.className = `${el.className} ${value}`.trim();
+                continue;
+            }
+            if (key.startsWith("data-")) {
+                el.setAttribute(key, String(value));
+                continue;
+            }
+            if (key.startsWith("on") && typeof value === "function") {
+                const eventName = key.slice(2).toLowerCase();
+                el.addEventListener(eventName, value);
+                continue;
+            }
+            if (key.startsWith("--")) {
+                el.style.setProperty(key, String(value));
+                continue;
+            }
+            el[key] = value;
+        }
+    }
+    applyStyles(el, element, context) {
+        const styleClasses = [];
+        // Grid position classes
+        if (element.gridPosition) {
+            styleClasses.push(this.styleResolver.resolveGridPosition(element.gridPosition));
+        }
+        // Custom classes
+        if (element.classes) {
+            styleClasses.push(this.styleResolver.resolveClasses(element.classes).classes);
+        }
+        if (styleClasses.length > 0) {
+            el.className = `${el.className} ${styleClasses.join(" ")}`.trim();
+        }
+    }
+    applyDataBinding(el, binding, context) {
+        const value = this.bindingResolver.resolve(binding.entity, binding.field);
+        if (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT") {
+            const inputEl = el;
+            if ("value" in inputEl) {
+                inputEl.value = String(value ?? "");
+            }
+        }
+        else if (el.hasAttribute("content")) {
+            el.setAttribute("content", String(value ?? ""));
+        }
+        else {
+            el.textContent = String(value ?? "");
+        }
+        // Subscribe to data changes for reactive updates
+        // This would require a more complex implementation with signals
+    }
+    applyEventHandlers(el, element, context) {
+        if (!element.events)
+            return;
+        for (const [eventName, handlers] of Object.entries(element.events)) {
+            for (const handler of handlers) {
+                const fn = this.bindingResolver.callFunction(handler.handler, [
+                    handler.params,
+                ]);
+                if (typeof fn === "function") {
+                    const wrappedFn = (e) => {
+                        this.eventBus.emit(`${element.id}:${eventName}`, {
+                            element: element.id,
+                            event: eventName,
+                            params: handler.params,
+                            originalEvent: e,
+                        });
+                        fn.call(null, e, handler.params);
+                    };
+                    el.addEventListener(eventName, wrappedFn);
+                    context.eventHandlers.set(`${element.id}:${eventName}`, wrappedFn);
+                }
+            }
+        }
+    }
+    destroyPage(pageId) {
+        const context = this.renderContexts.get(pageId);
+        if (!context)
+            return;
+        // Clean up event handlers
+        context.eventHandlers.forEach((fn) => {
+            // Remove event listeners
+        });
+        // Clean up resolved elements
+        context.resolvedElements.clear();
+        this.renderContexts.delete(pageId);
+    }
+    getRenderContext(pageId) {
+        return this.renderContexts.get(pageId);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, providedIn: "root" });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: FallbackService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
         }] });
 
-class SignalStore {
-    store = new Map();
-    subscribers = new Set();
-    set(key, value) {
-        this.store.set(key, value);
-        this.notify(key, value);
+class SchemaElementComponent {
+    element;
+    elements = [];
+    registry = inject(ComponentRegistryService);
+    eventBus = inject(EventBusService);
+    get tag() {
+        const def = this.registry.get(this.element.componentId);
+        return def?.selector ?? this.element.componentId;
     }
-    get(key) {
-        return this.store.get(key);
+    get classes() {
+        return this.element.classes ?? "";
     }
-    update(key, fn) {
-        const current = this.store.get(key);
-        const updated = fn(current);
-        this.store.set(key, updated);
-        this.notify(key, updated);
+    get childElements() {
+        return (this.element.children ?? [])
+            .map(id => this.elements.find(e => e.id === id))
+            .filter((e) => e !== undefined);
     }
-    delete(key) {
-        this.store.delete(key);
-        this.notify(key, undefined);
+    get props() {
+        return this.element.props ?? {};
     }
-    keys() {
-        return Array.from(this.store.keys());
+    get isKnownComponent() {
+        return this.registry.has(this.element.componentId);
     }
-    toJSON() {
-        const result = {};
-        for (const [key, value] of this.store) {
-            result[key] = value;
-        }
-        return result;
-    }
-    fromJSON(json) {
-        this.store.clear();
-        for (const [key, value] of Object.entries(json)) {
-            this.store.set(key, value);
-        }
-        this.notifyAll();
-    }
-    subscribe(callback) {
-        this.subscribers.add(callback);
-        return () => {
-            this.subscribers.delete(callback);
-        };
-    }
-    notify(key, value) {
-        for (const callback of this.subscribers) {
-            callback(key, value);
-        }
-    }
-    notifyAll() {
-        for (const [key, value] of this.store) {
-            this.notify(key, value);
-        }
-    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaElementComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: SchemaElementComponent, isStandalone: true, selector: "app-schema-element", inputs: { element: "element", elements: "elements" }, ngImport: i0, template: "<div [id]=\"element.id\" [class]=\"classes\">\n  @if (tag === 'app-button') {\n    <app-button [label]=\"props['label']\" [buttonStyle]=\"props['buttonStyle']\" [variant]=\"props['variant']\" [size]=\"props['size']\"></app-button>\n  } @else if (tag === 'app-language-selector') {\n    <app-language-selector [labelId]=\"props['labelId']\"></app-language-selector>\n  } @else if (tag === 'app-text-input') {\n    <app-text-input [id]=\"props['id']\" [placeholder]=\"props['placeholder']\" [clearable]=\"props['clearable']\" [maxChars]=\"props['maxChars']\"></app-text-input>\n  } @else if (tag === 'app-translation-output') {\n    <app-translation-output [id]=\"props['id']\" [placeholder]=\"props['placeholder']\"></app-translation-output>\n  } @else if (tag === 'app-swap-button') {\n    <app-swap-button></app-swap-button>\n  } @else if (tag === 'app-theme-toggle') {\n    <app-theme-toggle></app-theme-toggle>\n  } @else if (tag === 'app-shortcuts-overlay') {\n    <app-shortcuts-overlay></app-shortcuts-overlay>\n  } @else if (tag === 'app-loading') {\n    <app-loading></app-loading>\n  } @else if (props['text']) {\n    <!-- Plain element with text content: span, p, h1, h2, footer -->\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props['text'] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props['text'] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props['text'] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props['text'] }}</footer>\n      <span *ngSwitchDefault>{{ props['text'] }}</span>\n    </ng-container>\n  }\n  @for (child of childElements; track child.id) {\n    <app-schema-element [element]=\"child\" [elements]=\"elements\"></app-schema-element>\n  }\n</div>\n", styles: [":host{display:contents}\n"], dependencies: [{ kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgSwitch, selector: "[ngSwitch]", inputs: ["ngSwitch"] }, { kind: "directive", type: i1.NgSwitchCase, selector: "[ngSwitchCase]", inputs: ["ngSwitchCase"] }, { kind: "directive", type: i1.NgSwitchDefault, selector: "[ngSwitchDefault]" }] });
 }
-function createSignalStore() {
-    return new SignalStore();
-}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaElementComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-schema-element", standalone: true, imports: [CommonModule], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "<div [id]=\"element.id\" [class]=\"classes\">\n  @if (tag === 'app-button') {\n    <app-button [label]=\"props['label']\" [buttonStyle]=\"props['buttonStyle']\" [variant]=\"props['variant']\" [size]=\"props['size']\"></app-button>\n  } @else if (tag === 'app-language-selector') {\n    <app-language-selector [labelId]=\"props['labelId']\"></app-language-selector>\n  } @else if (tag === 'app-text-input') {\n    <app-text-input [id]=\"props['id']\" [placeholder]=\"props['placeholder']\" [clearable]=\"props['clearable']\" [maxChars]=\"props['maxChars']\"></app-text-input>\n  } @else if (tag === 'app-translation-output') {\n    <app-translation-output [id]=\"props['id']\" [placeholder]=\"props['placeholder']\"></app-translation-output>\n  } @else if (tag === 'app-swap-button') {\n    <app-swap-button></app-swap-button>\n  } @else if (tag === 'app-theme-toggle') {\n    <app-theme-toggle></app-theme-toggle>\n  } @else if (tag === 'app-shortcuts-overlay') {\n    <app-shortcuts-overlay></app-shortcuts-overlay>\n  } @else if (tag === 'app-loading') {\n    <app-loading></app-loading>\n  } @else if (props['text']) {\n    <!-- Plain element with text content: span, p, h1, h2, footer -->\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props['text'] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props['text'] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props['text'] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props['text'] }}</footer>\n      <span *ngSwitchDefault>{{ props['text'] }}</span>\n    </ng-container>\n  }\n  @for (child of childElements; track child.id) {\n    <app-schema-element [element]=\"child\" [elements]=\"elements\"></app-schema-element>\n  }\n</div>\n", styles: [":host{display:contents}\n"] }]
+        }], propDecorators: { element: [{
+                type: Input,
+                args: [{ required: true }]
+            }], elements: [{
+                type: Input,
+                args: [{ required: true }]
+            }] } });
 
-class SignalStoreService {
-    store = createSignalStore();
-    set(key, value) {
-        this.store.set(key, value);
+class SchemaRouteViewerComponent {
+    route = "";
+    router = inject(SchemaRouterService);
+    page = computed(() => this.router.currentPage(), ...(ngDevMode ? [{ debugName: "page" }] : []));
+    ngOnInit() {
+        if (this.route)
+            this.router.navigate(this.route);
     }
-    get(key) {
-        return this.store.get(key);
+    ngOnChanges(changes) {
+        if (changes["route"])
+            this.router.navigate(this.route);
     }
-    update(key, fn) {
-        this.store.update(key, fn);
-    }
-    delete(key) {
-        this.store.delete(key);
-    }
-    keys() {
-        return this.store.keys();
-    }
-    toJSON() {
-        return this.store.toJSON();
-    }
-    fromJSON(json) {
-        this.store.fromJSON(json);
-    }
-    subscribe(callback) {
-        return this.store.subscribe(callback);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, providedIn: "root" });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouteViewerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: SchemaRouteViewerComponent, isStandalone: true, selector: "lib-schema-route-viewer", inputs: { route: "route" }, usesOnChanges: true, ngImport: i0, template: "@if (page(); as p) {\n  <div class=\"schema-page\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element [element]=\"element\" [elements]=\"p.canvasElements\"></app-schema-element>\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{display:contents}\n"], dependencies: [{ kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouteViewerComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "lib-schema-route-viewer", standalone: true, imports: [SchemaElementComponent], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (page(); as p) {\n  <div class=\"schema-page\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element [element]=\"element\" [elements]=\"p.canvasElements\"></app-schema-element>\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{display:contents}\n"] }]
+        }], propDecorators: { route: [{
+                type: Input
+            }] } });
 
-class LoggerService {
-    _logs = [];
-    get logs() {
-        return this._logs;
-    }
-    log(level, message, context) {
-        const entry = {
-            timestamp: new Date(),
-            level,
-            message,
-            context,
-        };
-        this._logs.push(entry);
-        this.writeToConsole(entry);
-    }
-    debug(message, context) {
-        this.log("debug", message, context);
-    }
-    info(message, context) {
-        this.log("info", message, context);
-    }
-    warn(message, context) {
-        this.log("warn", message, context);
-    }
-    error(message, context) {
-        this.log("error", message, context);
-    }
-    getFilteredLogs(level) {
-        if (!level)
-            return [...this._logs];
-        return this._logs.filter((log) => log.level === level);
-    }
-    exportLogs() {
-        return JSON.stringify(this._logs, null, 2);
-    }
-    clear() {
-        this._logs = [];
-    }
-    writeToConsole(entry) {
-        const prefix = `[${entry.timestamp.toISOString()}] [${entry.level.toUpperCase()}]`;
-        const contextStr = entry.context ? ` [${entry.context}]` : "";
-        const fullMessage = `${prefix}${contextStr} ${entry.message}`;
-        switch (entry.level) {
-            case "debug":
-                console.debug(fullMessage);
-                break;
-            case "info":
-                console.info(fullMessage);
-                break;
-            case "warn":
-                console.warn(fullMessage);
-                break;
-            case "error":
-                console.error(fullMessage);
-                break;
+class SchemaFetcherService {
+    http = inject(HttpClient, { optional: true });
+    async loadSchema(options) {
+        switch (options.mode) {
+            case "embedded":
+                return this.loadEmbedded(options.source);
+            case "http":
+                return this.loadHttp(options.source);
+            case "tauri":
+                return this.loadTauri(options.source);
+            default:
+                throw new Error(`Unknown schema load mode: ${options.mode}`);
         }
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: LoggerService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: LoggerService, providedIn: 'root' });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: LoggerService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: 'root' }]
-        }] });
-
-class SignalLoggerService {
-    logger = new LoggerService();
-    debug(message, context) {
-        this.logger.log("debug", message, context);
-    }
-    info(message, context) {
-        this.logger.log("info", message, context);
-    }
-    warn(message, context) {
-        this.logger.log("warn", message, context);
-    }
-    error(message, context) {
-        this.logger.log("error", message, context);
-    }
-    getLogs() {
-        return this.logger.logs;
-    }
-    clear() {
-        this.logger.clear();
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalLoggerService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalLoggerService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalLoggerService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-class SignalSyncService {
-    _state = signal({
-        lastSyncAt: null,
-        isSyncing: false,
-        error: null,
-    }, ...(ngDevMode ? [{ debugName: "_state" }] : []));
-    state = this._state.asReadonly();
-    async sync(fn) {
-        this._state.update((s) => ({ ...s, isSyncing: true, error: null }));
+    async loadEmbedded(source) {
         try {
-            const result = await fn();
-            this._state.update((s) => ({
-                ...s,
-                isSyncing: false,
-                lastSyncAt: Date.now(),
-            }));
-            return result;
+            const response = await fetch(source);
+            if (!response.ok) {
+                throw new Error(`Failed to load embedded schema: ${response.status}`);
+            }
+            const data = await response.json();
+            return data;
         }
-        catch (error) {
-            this._state.update((s) => ({
-                ...s,
-                isSyncing: false,
-                error: error instanceof Error ? error.message : "Sync failed",
-            }));
-            throw error;
+        catch (err) {
+            console.error("SchemaFetcher: Error loading embedded schema:", err);
+            throw err;
         }
     }
-    clearError() {
-        this._state.update((s) => ({ ...s, error: null }));
+    async loadHttp(url) {
+        if (!this.http) {
+            throw new Error("HttpClient not available. Import HttpClientModule or provide provideHttpClient().");
+        }
+        return firstValueFrom(this.http.get(url));
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalSyncService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalSyncService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalSyncService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-class ComponentDiscoveryService {
-    discovered = new Map();
-    discover(components) {
-        const results = [];
-        for (const def of components) {
-            const selector = this.generateSelector(def);
-            const discovered = {
-                def,
-                selector,
-                registered: customElements.get(selector) !== undefined,
+    async loadTauri(commandName) {
+        try {
+            const { invoke } = await import('@tauri-apps/api/core');
+            const schema = await invoke(commandName);
+            return schema;
+        }
+        catch (err) {
+            console.error("SchemaFetcher: Error loading schema via Tauri:", err);
+            throw err;
+        }
+    }
+    async loadSchemaFromFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target?.result);
+                    resolve(data);
+                }
+                catch (err) {
+                    reject(new Error("Invalid schema JSON file"));
+                }
             };
-            this.discovered.set(def.id, discovered);
-            results.push(discovered);
-        }
-        return results;
+            reader.onerror = () => reject(new Error("Failed to read file"));
+            reader.readAsText(file);
+        });
     }
-    getDiscovered(componentId) {
-        return this.discovered.get(componentId);
+    validateSchema(schema) {
+        if (!schema || typeof schema !== "object")
+            return false;
+        const s = schema;
+        return (typeof s.schemaVersion === "string" &&
+            typeof s.app === "object" &&
+            Array.isArray(s.pages));
     }
-    getAllDiscovered() {
-        return Array.from(this.discovered.values());
-    }
-    getRegisteredComponents() {
-        return Array.from(this.discovered.values()).filter((d) => d.registered);
-    }
-    getUnregisteredComponents() {
-        return Array.from(this.discovered.values()).filter((d) => !d.registered);
-    }
-    generateSelector(def) {
-        const nameKebab = def.name
-            .replace(/([a-z])([A-Z])/g, "$1-$2")
-            .replace(/[\s_]+/g, "-")
-            .toLowerCase();
-        return `sdui-${nameKebab}`;
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentDiscoveryService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentDiscoveryService, providedIn: "root" });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaFetcherService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaFetcherService, providedIn: "root" });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentDiscoveryService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaFetcherService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
         }] });
@@ -7296,7 +8235,7 @@ class UiShowcaseComponent {
     themeService = inject(ThemeService);
     colorModes = ["light", "dark", "system"];
     styleVariants = getAllStyleVariants();
-    currentColorMode = signal(this.themeService.effectiveColorMode(), ...(ngDevMode ? [{ debugName: "currentColorMode" }] : []));
+    currentColorMode = signal(this.themeService.colorMode(), ...(ngDevMode ? [{ debugName: "currentColorMode" }] : []));
     currentStyleVariant = signal(getCurrentStyle(), ...(ngDevMode ? [{ debugName: "currentStyleVariant" }] : []));
     searchQuery = signal("", ...(ngDevMode ? [{ debugName: "searchQuery" }] : []));
     selectedCategory = signal("all", ...(ngDevMode ? [{ debugName: "selectedCategory" }] : []));
@@ -7324,8 +8263,8 @@ class UiShowcaseComponent {
         return result;
     }, ...(ngDevMode ? [{ debugName: "filteredComponents" }] : []));
     setColorMode(mode) {
-        this.themeService.setColorMode(mode);
-        this.currentColorMode.set(this.themeService.effectiveColorMode());
+        this.themeService.setMode(mode);
+        this.currentColorMode.set(this.themeService.colorMode());
     }
     async setStyleVariant(variant) {
         await loadStyleVariant(variant);
@@ -7521,7 +8460,7 @@ class UiShowcaseComponent {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: UiShowcaseComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: UiShowcaseComponent, isStandalone: true, selector: "app-ui-showcase", ngImport: i0, template: "<div class=\"showcase-container\">\n  <header class=\"showcase-header\">\n    <h1 class=\"showcase-title\">UI Showcase</h1>\n\n    <div class=\"showcase-controls\">\n      <div class=\"control-group\">\n        <span class=\"control-label\">Color Mode</span>\n        <div class=\"button-group\">\n          @for (mode of colorModes; track mode) {\n            <button\n              class=\"mode-btn\"\n              [class.active]=\"currentColorMode() === mode\"\n              (click)=\"setColorMode(mode)\"\n            >\n              {{ mode }}\n            </button>\n          }\n        </div>\n      </div>\n\n      <div class=\"control-group\">\n        <span class=\"control-label\">Style</span>\n        <select\n          class=\"style-select\"\n          [value]=\"currentStyleVariant()\"\n          (change)=\"setStyleVariant($any($event.target).value)\"\n        >\n          @for (v of styleVariants; track v.id) {\n            <option [value]=\"v.id\">{{ v.name }}</option>\n          }\n        </select>\n      </div>\n    </div>\n  </header>\n\n  <div class=\"showcase-filters\">\n    <input\n      type=\"text\"\n      class=\"search-input\"\n      placeholder=\"Search components...\"\n      [value]=\"searchQuery()\"\n      (input)=\"searchQuery.set($any($event.target).value)\"\n    />\n\n    <div class=\"category-tabs\">\n      @for (cat of categories(); track cat) {\n        <button\n          class=\"category-tab\"\n          [class.active]=\"selectedCategory() === cat\"\n          (click)=\"selectedCategory.set(cat)\"\n        >\n          {{ cat }}\n        </button>\n      }\n    </div>\n  </div>\n\n  <div class=\"component-grid\">\n    @for (comp of filteredComponents(); track comp.id) {\n      <div class=\"component-card\">\n        <div class=\"card-header\">\n          <span class=\"component-name\">{{ comp.name }}</span>\n          <code class=\"component-selector\">{{ comp.selector }}</code>\n        </div>\n\n        <div\n          class=\"component-preview\"\n          #card\n          [attr.data-selector]=\"comp.selector\"\n          (mouseenter)=\"renderComponent($any($event.target).closest('.component-card'), comp)\"\n        ></div>\n\n        <div class=\"card-footer\">\n          <span class=\"category-badge\">{{ comp.category }}</span>\n          <span class=\"package-badge\">{{ comp.packageType }}</span>\n        </div>\n      </div>\n    }\n  </div>\n</div>", styles: [".showcase-container{min-height:100vh;background-color:var(--color-bg-primary, #f8fafc);color:var(--color-text-primary, #1e293b)}.showcase-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 2rem;background-color:var(--color-bg-elevated, #ffffff);border-bottom:1px solid var(--color-border, #e2e8f0);position:sticky;top:0;z-index:10;gap:2rem;flex-wrap:wrap}.showcase-title{margin:0;font-size:1.5rem;font-weight:700;color:var(--color-text-primary, #1e293b)}.showcase-controls{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}.control-group{display:flex;align-items:center;gap:.75rem}.control-label{font-size:.875rem;font-weight:500;color:var(--color-text-secondary, #64748b)}.button-group{display:flex;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;overflow:hidden}.mode-btn{padding:.5rem 1rem;border:none;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.mode-btn:not(:last-child){border-right:1px solid var(--color-border, #e2e8f0)}.mode-btn:hover{background-color:var(--color-bg-hover, #f1f5f9)}.mode-btn.active{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.style-select{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.875rem;font-weight:500;cursor:pointer;min-width:160px}.style-select:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.showcase-filters{padding:1.5rem 2rem;display:flex;flex-direction:column;gap:1rem;background-color:var(--color-bg-secondary, #f1f5f9);border-bottom:1px solid var(--color-border, #e2e8f0)}.search-input{padding:.75rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.9375rem;max-width:400px}.search-input::placeholder{color:var(--color-text-muted, #94a3b8)}.search-input:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.category-tabs{display:flex;gap:.5rem;flex-wrap:wrap}.category-tab{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:2rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.category-tab:hover{background-color:var(--color-bg-hover, #f1f5f9)}.category-tab.active{background-color:var(--color-accent, #8b5cf6);border-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.component-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;padding:2rem}.component-card{background-color:var(--color-bg-elevated, #ffffff);border:1px solid var(--color-border, #e2e8f0);border-radius:.75rem;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s}.component-card:hover{box-shadow:0 4px 12px #0000001a}.card-header{display:flex;align-items:center;justify-content:space-between;padding:1rem;border-bottom:1px solid var(--color-border-light, #f1f5f9);gap:.5rem}.component-name{font-size:1rem;font-weight:600;color:var(--color-text-primary, #1e293b)}.component-selector{font-size:.75rem;padding:.25rem .5rem;background-color:var(--color-bg-secondary, #f1f5f9);border-radius:.25rem;color:var(--color-text-secondary, #64748b);font-family:monospace}.component-preview{padding:2rem 1rem;min-height:100px;display:flex;align-items:center;justify-content:center;background-color:var(--color-bg-primary, #f8fafc);flex-wrap:wrap;gap:.5rem}.card-footer{display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;border-top:1px solid var(--color-border-light, #f1f5f9)}.category-badge,.package-badge{font-size:.75rem;padding:.25rem .5rem;border-radius:.25rem;font-weight:500;text-transform:capitalize}.category-badge{background-color:var(--color-bg-secondary, #f1f5f9);color:var(--color-text-secondary, #64748b)}.package-badge{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff);opacity:.8}@media(max-width:768px){.showcase-header{flex-direction:column;align-items:flex-start}.component-grid{grid-template-columns:1fr;padding:1rem}}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1.NgSelectOption, selector: "option", inputs: ["ngValue", "value"] }, { kind: "directive", type: i1.ɵNgSelectMultipleOption, selector: "option", inputs: ["ngValue", "value"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: UiShowcaseComponent, isStandalone: true, selector: "app-ui-showcase", ngImport: i0, template: "<div class=\"showcase-container\">\n  <header class=\"showcase-header\">\n    <h1 class=\"showcase-title\">UI Showcase</h1>\n\n    <div class=\"showcase-controls\">\n      <div class=\"control-group\">\n        <span class=\"control-label\">Color Mode</span>\n        <div class=\"button-group\">\n          @for (mode of colorModes; track mode) {\n            <button\n              class=\"mode-btn\"\n              [class.active]=\"currentColorMode() === mode\"\n              (click)=\"setColorMode(mode)\"\n            >\n              {{ mode }}\n            </button>\n          }\n        </div>\n      </div>\n\n      <div class=\"control-group\">\n        <span class=\"control-label\">Style</span>\n        <select\n          class=\"style-select\"\n          [value]=\"currentStyleVariant()\"\n          (change)=\"setStyleVariant($any($event.target).value)\"\n        >\n          @for (v of styleVariants; track v.id) {\n            <option [value]=\"v.id\">{{ v.name }}</option>\n          }\n        </select>\n      </div>\n    </div>\n  </header>\n\n  <div class=\"showcase-filters\">\n    <input\n      type=\"text\"\n      class=\"search-input\"\n      placeholder=\"Search components...\"\n      [value]=\"searchQuery()\"\n      (input)=\"searchQuery.set($any($event.target).value)\"\n    />\n\n    <div class=\"category-tabs\">\n      @for (cat of categories(); track cat) {\n        <button\n          class=\"category-tab\"\n          [class.active]=\"selectedCategory() === cat\"\n          (click)=\"selectedCategory.set(cat)\"\n        >\n          {{ cat }}\n        </button>\n      }\n    </div>\n  </div>\n\n  <div class=\"component-grid\">\n    @for (comp of filteredComponents(); track comp.id) {\n      <div class=\"component-card\">\n        <div class=\"card-header\">\n          <span class=\"component-name\">{{ comp.name }}</span>\n          <code class=\"component-selector\">{{ comp.selector }}</code>\n        </div>\n\n        <div\n          class=\"component-preview\"\n          #card\n          [attr.data-selector]=\"comp.selector\"\n          (mouseenter)=\"renderComponent($any($event.target).closest('.component-card'), comp)\"\n        ></div>\n\n        <div class=\"card-footer\">\n          <span class=\"category-badge\">{{ comp.category }}</span>\n          <span class=\"package-badge\">{{ comp.packageType }}</span>\n        </div>\n      </div>\n    }\n  </div>\n</div>", styles: [".showcase-container{min-height:100vh;background-color:var(--color-bg-primary, #f8fafc);color:var(--color-text-primary, #1e293b)}.showcase-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 2rem;background-color:var(--color-bg-elevated, #ffffff);border-bottom:1px solid var(--color-border, #e2e8f0);position:sticky;top:0;z-index:10;gap:2rem;flex-wrap:wrap}.showcase-title{margin:0;font-size:1.5rem;font-weight:700;color:var(--color-text-primary, #1e293b)}.showcase-controls{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}.control-group{display:flex;align-items:center;gap:.75rem}.control-label{font-size:.875rem;font-weight:500;color:var(--color-text-secondary, #64748b)}.button-group{display:flex;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;overflow:hidden}.mode-btn{padding:.5rem 1rem;border:none;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.mode-btn:not(:last-child){border-right:1px solid var(--color-border, #e2e8f0)}.mode-btn:hover{background-color:var(--color-bg-hover, #f1f5f9)}.mode-btn.active{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.style-select{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.875rem;font-weight:500;cursor:pointer;min-width:160px}.style-select:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.showcase-filters{padding:1.5rem 2rem;display:flex;flex-direction:column;gap:1rem;background-color:var(--color-bg-secondary, #f1f5f9);border-bottom:1px solid var(--color-border, #e2e8f0)}.search-input{padding:.75rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.9375rem;max-width:400px}.search-input::placeholder{color:var(--color-text-muted, #94a3b8)}.search-input:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.category-tabs{display:flex;gap:.5rem;flex-wrap:wrap}.category-tab{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:2rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.category-tab:hover{background-color:var(--color-bg-hover, #f1f5f9)}.category-tab.active{background-color:var(--color-accent, #8b5cf6);border-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.component-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;padding:2rem}.component-card{background-color:var(--color-bg-elevated, #ffffff);border:1px solid var(--color-border, #e2e8f0);border-radius:.75rem;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s}.component-card:hover{box-shadow:0 4px 12px #0000001a}.card-header{display:flex;align-items:center;justify-content:space-between;padding:1rem;border-bottom:1px solid var(--color-border-light, #f1f5f9);gap:.5rem}.component-name{font-size:1rem;font-weight:600;color:var(--color-text-primary, #1e293b)}.component-selector{font-size:.75rem;padding:.25rem .5rem;background-color:var(--color-bg-secondary, #f1f5f9);border-radius:.25rem;color:var(--color-text-secondary, #64748b);font-family:monospace}.component-preview{padding:2rem 1rem;min-height:100px;display:flex;align-items:center;justify-content:center;background-color:var(--color-bg-primary, #f8fafc);flex-wrap:wrap;gap:.5rem}.card-footer{display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;border-top:1px solid var(--color-border-light, #f1f5f9)}.category-badge,.package-badge{font-size:.75rem;padding:.25rem .5rem;border-radius:.25rem;font-weight:500;text-transform:capitalize}.category-badge{background-color:var(--color-bg-secondary, #f1f5f9);color:var(--color-text-secondary, #64748b)}.package-badge{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff);opacity:.8}@media(max-width:768px){.showcase-header{flex-direction:column;align-items:flex-start}.component-grid{grid-template-columns:1fr;padding:1rem}}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1$1.NgSelectOption, selector: "option", inputs: ["ngValue", "value"] }, { kind: "directive", type: i1$1.ɵNgSelectMultipleOption, selector: "option", inputs: ["ngValue", "value"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: UiShowcaseComponent, decorators: [{
             type: Component,
@@ -7552,5 +8491,5 @@ if (typeof window !== 'undefined') {
  * Generated bundle index. Do not edit.
  */
 
-export { AppAvatar, AppBadge, AppBottomPanel, AppButton, AppCanvas, AppCard, AppChip, AppComponentPalette, AppConfirmDialog, AppDataTable, AppDialog, AppEmptyState, AppFooter, AppHeader, AppInput, AppJsonView, AppLoading, AppModal, AppPageContainer, AppPageToolbar, AppPagination, AppProgressBar, AppPropertiesPanel, AppRadio, AppSegmentSelector, AppSelect, AppSidebar, AppSlider, AppSplitView, AppStatsCard, AppSwitch, AppTableView, AppTabs, AppTextarea, ComponentDiscoveryService, ComponentRegistryService, CrudService, DataBindingResolver, EventBusService, FallbackService, GuardService, InvokeWrapperService, PermissionEvaluator, RbacService, SchemaFetcherService, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SignalLoggerService, SignalStoreService, SignalSyncService, StyleResolver, ThemeService, UiShowcaseComponent, components, dataComponents, feedbackComponents, getAllStyleVariants, getCurrentStyle, getStyleClassPrefix, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, layoutComponents, loadStyleVariant, setCurrentStyle, uiComponents };
+export { AppAvatar, AppBadge, AppBottomPanel, AppButton, AppCanvas, AppCard, AppChip, AppComponentPalette, AppConfirmDialog, AppDataTable, AppDialog, AppEmptyState, AppFooter, AppHeader, AppIcon, AppInput, AppJsonView, AppLanguageSelector, AppLoading, AppModal, AppPageContainer, AppPageToolbar, AppPagination, AppProgressBar, AppPropertiesPanel, AppRadio, AppSegmentSelector, AppSelect, AppShortcutsOverlay, AppSidebar, AppSlider, AppSplitView, AppStatsCard, AppSwapButton, AppSwitch, AppTableView, AppTabs, AppTextInput, AppTextarea, AppThemeToggle, AppToast, AppTranslationOutput, ComponentRegistryService, CrudService, DataBindingResolver, EventBusService, GuardService, InvokeWrapperService, SchemaFetcherService, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, StyleResolver, TextComponent, ThemeService, UiShowcaseComponent, components, dataComponents, feedbackComponents, getAllStyleVariants, getCurrentStyle, getStyleClassPrefix, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, layoutComponents, loadStyleVariant, setCurrentStyle, uiComponents };
 //# sourceMappingURL=tauri-front-shared.mjs.map

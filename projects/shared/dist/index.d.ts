@@ -1,13 +1,14 @@
 import * as lit from 'lit';
 import { LitElement } from 'lit';
-import * as i0 from '@angular/core';
-import { AfterViewInit, OnDestroy, ElementRef } from '@angular/core';
-import * as _angular_router from '@angular/router';
+import * as _angular_core from '@angular/core';
+import { OnInit, OnChanges, SimpleChanges } from '@angular/core';
 
-type ButtonVariant = "primary" | "secondary" | "danger" | "warning" | "success" | "ghost";
+type ButtonStyle = "solid" | "outline" | "soft" | "ghost";
+type ButtonVariant = "primary" | "danger" | "warning" | "success" | "info";
 type ButtonSize = "sm" | "md" | "lg";
 declare class AppButton extends LitElement {
     variant: ButtonVariant;
+    buttonStyle: ButtonStyle;
     size: ButtonSize;
     disabled: boolean;
     loading: boolean;
@@ -15,10 +16,12 @@ declare class AppButton extends LitElement {
     iconPosition: "left" | "right";
     fullWidth: boolean;
     type: "button" | "submit" | "reset";
+    label: string;
     constructor();
     connectedCallback(): void;
     static styles: lit.CSSResult;
     private _handleClick;
+    private getButtonClass;
     render(): lit.TemplateResult<1>;
 }
 declare global {
@@ -629,207 +632,234 @@ declare global {
     }
 }
 
+type IconName = "clear" | "copy" | "swap" | "chevron-down" | "translate" | "spinner" | "keyboard";
+declare class AppIcon extends LitElement {
+    name: IconName;
+    svgClass: string;
+    constructor();
+    connectedCallback(): void;
+    static styles: lit.CSSResult;
+    render(): lit.TemplateResult<1>;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        "app-icon": AppIcon;
+    }
+}
+
+interface LanguageOption {
+    code: string;
+    name: string;
+}
+declare class AppLanguageSelector extends LitElement {
+    languages: string;
+    value: string;
+    label: string;
+    labelId: string;
+    constructor();
+    connectedCallback(): void;
+    static styles: lit.CSSResult;
+    private _handleChange;
+    private _getParsedLanguages;
+    render(): lit.TemplateResult<1>;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        "app-language-selector": AppLanguageSelector;
+    }
+}
+
+declare class AppSwapButton extends LitElement {
+    constructor();
+    static styles: lit.CSSResult;
+    private _handleClick;
+    render(): lit.TemplateResult<1>;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        "app-swap-button": AppSwapButton;
+    }
+}
+
+declare class AppTextInput extends LitElement {
+    value: string;
+    placeholder: string;
+    charCount: string;
+    maxChars: number;
+    id: string;
+    clearable: boolean;
+    private _textarea;
+    constructor();
+    connectedCallback(): void;
+    static styles: lit.CSSResult;
+    private _handleInput;
+    private _autoResize;
+    private _handleClear;
+    updated(changed: Map<string, unknown>): void;
+    render(): lit.TemplateResult<1>;
+    firstUpdated(): void;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        "app-text-input": AppTextInput;
+    }
+}
+
+declare class AppTranslationOutput extends LitElement {
+    value: string;
+    placeholder: string;
+    id: string;
+    private _textarea;
+    constructor();
+    connectedCallback(): void;
+    static styles: lit.CSSResult;
+    private _autoResize;
+    private _handleCopy;
+    updated(changed: Map<string, unknown>): void;
+    render(): lit.TemplateResult<1>;
+    firstUpdated(): void;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        "app-translation-output": AppTranslationOutput;
+    }
+}
+
+type ToastType = "success" | "error" | "info" | "warning";
+declare class AppToast extends LitElement {
+    message: string;
+    visible: boolean;
+    type: ToastType;
+    private _timeout;
+    constructor();
+    connectedCallback(): void;
+    disconnectedCallback(): void;
+    static styles: lit.CSSResult;
+    updated(changed: Map<string, unknown>): void;
+    private _handleClose;
+    private _getIcon;
+    render(): lit.TemplateResult<1>;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        "app-toast": AppToast;
+    }
+}
+
+declare class AppThemeToggle extends LitElement {
+    isDark: boolean;
+    constructor();
+    connectedCallback(): void;
+    static styles: lit.CSSResult;
+    private _handleToggle;
+    render(): lit.TemplateResult<1>;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        "app-theme-toggle": AppThemeToggle;
+    }
+}
+
+interface ShortcutEntry {
+    key: string;
+    description: string;
+}
+declare class AppShortcutsOverlay extends LitElement {
+    open: boolean;
+    shortcuts: string;
+    constructor();
+    connectedCallback(): void;
+    static styles: lit.CSSResult;
+    private _getParsedShortcuts;
+    private _handleBackdropClick;
+    private _close;
+    private _parseKeys;
+    render(): lit.TemplateResult<1>;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        "app-shortcuts-overlay": AppShortcutsOverlay;
+    }
+}
+
+declare class TextComponent {
+    tag: string;
+    text: string;
+    classes: string;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<TextComponent, never>;
+    static ɵcmp: _angular_core.ɵɵComponentDeclaration<TextComponent, "app-text", never, { "tag": { "alias": "tag"; "required": false; }; "text": { "alias": "text"; "required": false; }; "classes": { "alias": "classes"; "required": false; }; }, {}, never, never, true, never>;
+}
+
+type ColorMode = "light" | "dark" | "system";
+interface Theme {
+    mode: ColorMode;
+    accentColor?: string;
+    cssVariables?: Record<string, string>;
+}
 interface GridPosition {
-    column: number;
-    row: number;
-    colSpan: number;
-    rowSpan: number;
-    colStart: number | null;
-    rowStart: number | null;
+    column?: number | null;
+    row?: number | null;
+    colSpan?: number | null;
+    rowSpan?: number | null;
+    colStart?: number | null;
+    rowStart?: number | null;
 }
 interface DataBinding {
     entity: string;
     field: string | null;
+    transform?: string;
+    format?: string;
+}
+interface ComponentDef {
+    id: string;
+    selector: string;
+    module?: string;
+    behaviors?: ComponentBehavior;
 }
 interface CanvasElement {
     id: string;
     componentId: string;
-    gridPosition: GridPosition;
-    classes: string;
-    children: string[];
-    dataBinding: DataBinding | null;
+    gridPosition?: GridPosition;
+    classes?: string;
+    children?: string[];
+    props?: Record<string, unknown>;
+    dataBinding?: DataBinding | null;
+    events?: ElementEvents;
+    slots?: Record<string, CanvasElement[]>;
 }
-interface ComponentProp {
-    propType: string;
-    defaultValue: string | null;
-    options: string[];
-    required: boolean;
-}
-interface GridDefaults {
-    defaultColSpan: number;
-    defaultRowSpan: number;
-    minWidth: string | null;
-    maxWidth: string | null;
-}
-interface ComponentDef {
+interface Page {
     id: string;
-    name: string;
-    category: string;
-    componentType: string;
-    template: string | null;
-    props: Record<string, ComponentProp>;
-    defaultClasses: string;
-    gridDefaults: GridDefaults | null;
-    slots: string[];
-    allowedChildren: string;
-    events: string[];
-    i18N: Record<string, Record<string, string>>;
-}
-interface LayoutSlot {
-    componentId: string | null;
-    height: string | null;
-    width: string | null;
-    dynamic: boolean;
-    gridColumn: string | null;
-    gridRow: string | null;
-    gridArea: string | null;
-    responsiveClasses: Record<string, string>;
-}
-interface GridTrack {
-    size: string;
-    min: string | null;
-    max: string | null;
-}
-interface GridArea {
-    name: string;
-    columnStart: string;
-    columnEnd: string;
-    rowStart: string;
-    rowEnd: string;
-}
-interface GridTemplate {
-    id: string;
-    columns: GridTrack[];
-    rows: GridTrack[];
-    gap: string;
-    areas: GridArea[];
-    breakpoints: Record<string, string>;
+    route: string;
+    title?: string;
+    layout?: string;
+    canvasElements: CanvasElement[];
+    meta?: {
+        title?: string;
+        class?: string;
+    };
+    guards?: Array<{
+        type: string;
+        params?: Record<string, unknown>;
+    }>;
 }
 interface Layout {
     id: string;
     name: string;
-    slots: Record<string, LayoutSlot>;
-    gridTemplate: GridTemplate | null;
-}
-interface PageMeta {
-    title: string | null;
-    icon: string | null;
-    breadcrumb: string[];
-}
-interface PageSection {
-    componentId: string | null;
-    visible: boolean;
-    dynamic: boolean;
-}
-interface Page {
-    id: string;
-    name: string;
-    route: string;
-    layout: string | null;
-    meta: PageMeta;
-    sections: Record<string, PageSection>;
-    canvasElements: CanvasElement[];
-}
-interface ServiceCrud {
-    create: boolean;
-    read: boolean;
-    update: boolean;
-    delete: boolean;
-    query: boolean;
-}
-interface ServiceField {
-    name: string;
-    fieldType: string;
-    required: boolean;
-    options: string[];
-}
-interface ServiceDef {
-    id: string;
-    name: string;
-    entity: string;
-    provider: string;
-    crud: ServiceCrud;
-    fields: ServiceField[];
-}
-interface CommandDef {
-    name: string;
-    params: string[];
-    returnType: string;
-}
-interface MiddlewareDef {
-    name: string;
-    description: string;
-}
-interface ModuleDef {
-    id: string;
-    name: string;
-    commands: CommandDef[];
-    middleware: MiddlewareDef[];
-}
-interface ThemeColors {
-    bgPrimary: string;
-    bgSecondary: string;
-    bgTertiary: string;
-    bgElevated: string;
-    bgHover: string;
-    textPrimary: string;
-    textSecondary: string;
-    textMuted: string;
-    border: string;
-    borderLight: string;
-    primary: string;
-    secondary: string;
-    accent: string;
-    accentHover: string;
-    success: string;
-    warning: string;
-    error: string;
-}
-interface Theme {
-    name: string;
-    label: string;
-    colors: ThemeColors;
-}
-type ColorMode = "light" | "dark" | "system";
-interface AppSettings {
-    defaultLocale: string;
-    supportedLocales: string[];
-    tailwindPreset: string;
-    theme: string;
-    themes: string[];
-    colorMode: ColorMode;
-}
-interface AppConfig {
-    id: string;
-    name: string;
-    version: string;
-    description: string;
-    identifier: string;
-    settings: AppSettings;
-}
-interface I18nConfig {
-    locales: Record<string, LocaleMap>;
-}
-interface LocaleMap {
-    nav: Record<string, string>;
-    actions: Record<string, string>;
-    messages: Record<string, string>;
+    slots?: Array<{
+        name: string;
+        elements?: CanvasElement[];
+    }>;
 }
 interface UiSchema {
-    schemaVersion: string;
-    app: AppConfig;
+    version: string;
     pages: Page[];
     layouts: Layout[];
-    components: ComponentDef[];
-    sharedComponents: ComponentDef[];
-    services: ServiceDef[];
-    modules: ModuleDef[];
-    i18N: I18nConfig;
+    theme?: Theme;
 }
 interface ElementConfig {
     id: string;
     componentId: string;
-    componentDef: ComponentDef;
+    componentDef: ComponentDef | null;
     gridPosition: GridPosition;
     classes: string;
     children: string[];
@@ -856,11 +886,23 @@ interface RenderContext {
     resolvedElements: Map<string, HTMLElement>;
     eventHandlers: Map<string, Function>;
 }
-interface SharedComponentProp {
-    name: string;
-    type: string;
-    default?: unknown;
-    options?: string[];
+interface ComponentBehavior {
+    selfMethods?: Record<string, string>;
+    classSetters?: Record<string, unknown>;
+    eventHandlers?: ElementEvents;
+}
+type AppColorMode = "light" | "dark" | "system";
+interface ToastNotification {
+    id: string;
+    message: string;
+    type: "success" | "error" | "warning" | "info";
+    duration: number;
+    icon?: string;
+}
+interface ThemeConfig {
+    mode: AppColorMode;
+    accentColor?: string;
+    cssVariables?: Record<string, string>;
 }
 interface SharedComponentDef {
     id: string;
@@ -868,437 +910,283 @@ interface SharedComponentDef {
     selector: string;
     packageType: string;
     category: string;
-    props: SharedComponentProp[];
-    template: string;
-    css: string;
+    props: Array<{
+        name: string;
+        type: string;
+        default?: unknown;
+        options?: string[];
+    }>;
+    template?: string;
+    css?: string;
 }
 
 declare class SchemaRendererService {
+    private router;
     private componentRegistry;
-    private dataBindingResolver;
+    private bindingResolver;
     private styleResolver;
-    private _schema;
-    private _currentPage;
-    private _currentLayout;
-    private _schemaError;
-    private _isLoading;
-    private _renderContext;
-    readonly currentPage: i0.Signal<Page>;
-    readonly schemaError: i0.Signal<string>;
-    readonly isLoading: i0.Signal<boolean>;
-    readonly schema: i0.Signal<UiSchema>;
-    readonly currentLayout: i0.Signal<Layout>;
-    private elementInstances;
-    private eventHandlers;
-    setSchema(schema: UiSchema): void;
-    getSchema(): UiSchema | null;
-    render(pageId: string, container: HTMLElement, context?: Partial<RenderContext>): Promise<void>;
-    renderPage(pageId: string, container: HTMLElement, context?: Partial<RenderContext>): Promise<void>;
-    renderSection(section: PageSection, container: HTMLElement): Promise<void>;
-    createElement(canvasElement: CanvasElement, parent: HTMLElement, options?: {
-        insertIndex?: number;
-        slotName?: string;
-    }): Promise<HTMLElement>;
-    resolveDataBinding(binding: DataBinding): unknown;
-    resolveProps(componentId: string, props: Record<string, unknown>): Record<string, unknown>;
-    resolveClasses(baseClasses: string, overrideClasses?: string): string;
-    extractStylesFromClasses(classString: string): Record<string, string>;
-    updateElement(elementId: string, updates: Partial<CanvasElement>): void;
-    destroyElement(elementId: string): void;
-    clear(): void;
-    private updateRenderContext;
-    private applyGridPosition;
-    private applyClasses;
+    private themeService;
+    private eventBus;
+    private renderContexts;
+    renderPage(pageId: string, container: HTMLElement): Promise<void>;
+    render(page: Page, container: HTMLElement): Promise<void>;
+    renderLayout(layoutId: string, container: HTMLElement): Promise<void>;
+    private createRenderContext;
+    private createRenderContextForLayout;
+    renderElement(element: CanvasElement, context: RenderContext): Promise<HTMLElement | null>;
+    private resolveElementProps;
     private applyProps;
+    private applyStyles;
     private applyDataBinding;
-    private applyEvents;
-    private getCanvasElement;
-    private createFallbackElement;
-    private getDataBindingTarget;
-    private getDefaultTheme;
-    static ɵfac: i0.ɵɵFactoryDeclaration<SchemaRendererService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<SchemaRendererService>;
+    private applyEventHandlers;
+    destroyPage(pageId: string): void;
+    getRenderContext(pageId: string): RenderContext | undefined;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<SchemaRendererService, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<SchemaRendererService>;
 }
 
-interface RegisteredComponent {
-    def: ComponentDef;
+interface ComponentDefinition {
     selector: string;
-    inputs: string[];
-    outputs: string[];
+    module?: string;
+    behaviors?: ComponentBehavior;
 }
 declare class ComponentRegistryService {
     private registry;
-    private selectorToId;
-    registerComponents(components: ComponentDef[]): void;
-    registerComponent(def: ComponentDef): RegisteredComponent;
-    getComponent(componentId: string): RegisteredComponent | undefined;
-    getComponentBySelector(selector: string): RegisteredComponent | undefined;
-    hasComponent(componentId: string): boolean;
-    getAllComponents(): RegisteredComponent[];
-    getComponentIds(): string[];
-    clear(): void;
-    private generateSelector;
-    private getCategoryPrefix;
-    private kebabCase;
-    private extractInputs;
-    private extractOutputs;
-    static ɵfac: i0.ɵɵFactoryDeclaration<ComponentRegistryService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ComponentRegistryService>;
+    private componentManifest;
+    constructor();
+    private registerBuiltInComponents;
+    private loadComponentManifest;
+    register(componentId: string, definition: ComponentDefinition): void;
+    unregister(componentId: string): void;
+    get(componentId: string): ComponentDefinition | undefined;
+    getSelector(componentId: string): string;
+    has(componentId: string): boolean;
+    resolveBehavior(componentId: string): ComponentBehavior | undefined;
+    mergeBehavior(componentId: string, schemaBehavior?: ComponentBehavior): ComponentBehavior;
+    private mergeEventHandlers;
+    getAllComponentIds(): string[];
+    getComponentsByCategory(category: string): string[];
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<ComponentRegistryService, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<ComponentRegistryService>;
 }
 
-interface BindingContext {
-    data: Record<string, Record<string, unknown>>;
-    params: Record<string, string>;
-    services: Map<string, unknown>;
-    functions: Map<string, Function>;
-}
 declare class DataBindingResolver {
-    private context;
-    private bindingPattern;
-    private contextPattern;
-    setContext(context: Partial<BindingContext>): void;
-    resolve(template: string, context?: Partial<BindingContext>): string;
-    resolveValue(value: unknown, context?: Partial<BindingContext>): unknown;
-    resolveDataBinding(binding: DataBinding, context?: Partial<BindingContext>): unknown;
-    bindFunction(name: string, fn: Function): void;
-    getBoundFunction(name: string): Function | undefined;
-    hasBinding(template: string): boolean;
-    extractBindingPaths(template: string): string[];
-    private getNestedValue;
-    private resolveBindingPath;
-    static ɵfac: i0.ɵɵFactoryDeclaration<DataBindingResolver, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<DataBindingResolver>;
+    private functionRegistry;
+    private dataStore;
+    registerFunction(name: string, fn: Function): void;
+    unregisterFunction(name: string): void;
+    setData(entity: string, data: Record<string, unknown>): void;
+    getData(entity: string): Record<string, unknown> | undefined;
+    clearData(entity?: string): void;
+    resolveBinding(binding: DataBinding | null): unknown;
+    resolveDataBinding(binding: DataBinding | null): unknown;
+    resolve(entity: string, field: string | null): unknown;
+    resolveExpression(expression: string): unknown;
+    private resolvePath;
+    evaluateCondition(condition: string): boolean;
+    callFunction(fnName: string, args?: unknown[]): unknown;
+    getRegisteredFunctions(): string[];
+    hasFunction(fnName: string): boolean;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<DataBindingResolver, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<DataBindingResolver>;
 }
 
-interface ResolvedStyles {
-    classes: string[];
+interface StyleResolution {
+    classes: string;
     inlineStyles: Record<string, string>;
-    cssVariables: Record<string, string>;
-}
-interface StyleResolutionOptions {
-    applyThemeVariables: boolean;
-    extractTailwind: boolean;
-    prefix?: string;
 }
 declare class StyleResolver {
-    private theme;
-    private colorMode;
-    private tailwindClassPattern;
-    setTheme(theme: Theme): void;
-    setColorMode(mode: "light" | "dark" | "system"): void;
-    extractStyles(classString: string): ResolvedStyles;
-    resolveClasses(baseClasses: string, overrideClasses?: string, options?: StyleResolutionOptions): ResolvedStyles;
-    resolveCssVariables(css: Record<string, string>, theme?: Theme): Record<string, string>;
-    applyStylesToElement(element: HTMLElement, resolved: ResolvedStyles): void;
-    extractTailwindClasses(classString: string): string[];
-    buildClassString(classes: string[], prefix?: string): string;
-    private parseClasses;
-    private parseCssVariable;
-    private isTailwindClass;
-    private mergeClassLists;
-    private applyThemeColors;
-    static ɵfac: i0.ɵɵFactoryDeclaration<StyleResolver, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<StyleResolver>;
+    private readonly DARK_MODE_PREFIX;
+    private readonly RESPONSIVE_PREFIXES;
+    private readonly IMPORTANT_PREFIX;
+    resolveClasses(classes: string, options?: {
+        colorMode?: "light" | "dark" | "system";
+        extraClasses?: string;
+    }): StyleResolution;
+    private processClasses;
+    private processClass;
+    resolveGridPosition(position: {
+        column?: number | null;
+        row?: number | null;
+        colSpan?: number | null;
+        rowSpan?: number | null;
+        colStart?: number | null;
+        rowStart?: number | null;
+    }): string;
+    composeClasses(...classGroups: (string | undefined | null)[]): string;
+    getVariantClasses(baseClass: string, variant: string): string;
+    resolveResponsiveClasses(classes: string, breakpoint: "sm" | "md" | "lg" | "xl" | "2xl"): string;
+    resolveDarkModeClasses(classes: string): string;
+    private isColorClass;
+    buildCssVariables(vars: Record<string, string>): string;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<StyleResolver, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<StyleResolver>;
 }
 
-interface GuardDefinition {
-    name: string;
-    condition: string;
-    redirectTo?: string;
+interface NavigationOptions {
+    replaceUrl?: boolean;
+    queryParams?: Record<string, string>;
 }
-interface GuardEvaluationResult {
-    guardName: string;
-    passed: boolean;
+declare class SchemaRouterService {
+    private guardService;
+    private readonly _schema;
+    private readonly _currentPage;
+    private readonly _currentLayout;
+    private readonly _currentRoute;
+    private readonly _params;
+    private readonly _queryParams;
+    private readonly _isLoading;
+    private readonly _error;
+    readonly schema: _angular_core.Signal<UiSchema>;
+    readonly currentPage: _angular_core.Signal<Page>;
+    readonly currentLayout: _angular_core.Signal<Layout>;
+    readonly currentRoute: _angular_core.Signal<string>;
+    readonly params: _angular_core.Signal<Record<string, string>>;
+    readonly queryParams: _angular_core.Signal<Record<string, string>>;
+    readonly isLoading: _angular_core.Signal<boolean>;
+    readonly error: _angular_core.Signal<string>;
+    readonly hasSchema: _angular_core.Signal<boolean>;
+    readonly currentPageId: _angular_core.Signal<string>;
+    readonly currentPageTitle: _angular_core.Signal<string>;
+    setSchema(schema: UiSchema): void;
+    clearSchema(): void;
+    navigate(route: string, options?: NavigationOptions): Promise<boolean>;
+    resolveRoute(route: string): {
+        page: Page | null;
+        layout: Layout | null;
+        params: Record<string, string>;
+    } | null;
+    private matchRoute;
+    getPage(pageId: string): Page | null;
+    getLayout(layoutId: string): Layout | null;
+    getAllPages(): Page[];
+    getAllLayouts(): Layout[];
+    updateQueryParams(params: Record<string, string>): void;
+    reset(): void;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<SchemaRouterService, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<SchemaRouterService>;
+}
+
+interface GuardResult {
+    allowed: boolean;
     redirectTo?: string;
-    error?: string;
+    message?: string;
 }
 declare class GuardService {
-    private ngRouter;
     private guardRegistry;
-    private guardFunctions;
-    registerGuard(name: string, definition: GuardDefinition): void;
-    registerGuardFunction(name: string, fn: () => boolean): void;
-    evaluateGuard(guardName: string): Promise<GuardEvaluationResult>;
-    evaluateGuards(match: RouteMatch): Promise<GuardEvaluationResult[]>;
-    canActivateGuard(match: RouteMatch): boolean | string;
-    createGuardFunction(guardName: string): () => Promise<boolean | _angular_router.UrlTree>;
-    private evaluateCondition;
-    hasGuard(guardName: string): boolean;
-    clearGuards(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<GuardService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<GuardService>;
-}
-
-interface RouteMatch {
-    page: Page;
-    params: Record<string, string>;
-    guards: GuardEvaluationResult[];
-}
-
-declare class SchemaRouterService {
-    private renderer;
-    private ngRouter;
-    private _currentPage;
-    private _currentLayout;
-    private _currentRoute;
-    private _routeParams;
-    readonly currentPage: i0.Signal<Page>;
-    readonly currentLayout: i0.Signal<Layout>;
-    readonly currentRoute: i0.Signal<string>;
-    readonly routeParams: i0.Signal<Record<string, string>>;
-    private schema;
-    private routeRegistry;
-    readonly currentPageSignal: i0.Signal<Page>;
-    readonly currentLayoutSignal: i0.Signal<Layout>;
-    setSchema(schema: UiSchema): void;
-    loadSchema(mode: "embedded" | "file" | "cloud", source?: string): Promise<void>;
-    navigate(route: string, params?: Record<string, string>): Promise<boolean>;
-    setCurrentPage(page: Page): void;
-    setCurrentRoute(route: string): void;
-    getPage(pageId: string): Page | undefined;
-    getPageByRoute(route: string): Page | undefined;
-    resolveRoute(route: string, params?: Record<string, string>): RouteMatch | null;
-    getAllRoutes(): Array<{
-        route: string;
-        page: Page;
-    }>;
-    buildRouteRegistry(): void;
-    updateRouteParam(key: string, value: string): void;
-    clearRouteParams(): void;
-    generateRoute(pageId: string, params?: Record<string, string>): string | null;
-    matchRoute(path: string): RouteMatch | null;
-    private routeToRegex;
-    private extractParamNames;
-    static ɵfac: i0.ɵɵFactoryDeclaration<SchemaRouterService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<SchemaRouterService>;
-}
-
-declare class SchemaRouteViewerComponent implements AfterViewInit, OnDestroy {
-    route: string;
-    containerRef: ElementRef<HTMLElement>;
-    private router;
-    private renderer;
-    readonly isLoading: i0.WritableSignal<boolean>;
-    readonly error: i0.WritableSignal<string>;
-    private isInitialized;
     constructor();
-    ngAfterViewInit(): void;
-    ngOnDestroy(): void;
-    loadRoute(route: string): Promise<void>;
-    private renderCurrentRoute;
-    static ɵfac: i0.ɵɵFactoryDeclaration<SchemaRouteViewerComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<SchemaRouteViewerComponent, "lib-schema-route-viewer", never, { "route": { "alias": "route"; "required": false; }; }, {}, never, never, true, never>;
+    private registerBuiltInGuards;
+    register(name: string, guard: (params?: Record<string, unknown>) => Promise<GuardResult>): void;
+    unregister(name: string): void;
+    canActivate(guardType: string, params?: Record<string, unknown>): Promise<boolean>;
+    evaluate(guardType: string, params?: Record<string, unknown>): Promise<GuardResult>;
+    hasGuard(name: string): boolean;
+    getRegisteredGuards(): string[];
+    private checkAuthentication;
+    private checkRole;
+    private checkPermission;
+    private getCurrentTheme;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<GuardService, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<GuardService>;
 }
 
-type SchemaLoadMode = "embedded" | "file" | "cloud";
+declare class SchemaRouteViewerComponent implements OnInit, OnChanges {
+    route: string;
+    private router;
+    readonly page: _angular_core.Signal<Page>;
+    ngOnInit(): void;
+    ngOnChanges(changes: SimpleChanges): void;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<SchemaRouteViewerComponent, never>;
+    static ɵcmp: _angular_core.ɵɵComponentDeclaration<SchemaRouteViewerComponent, "lib-schema-route-viewer", never, { "route": { "alias": "route"; "required": false; }; }, {}, never, never, true, never>;
+}
+
+type SchemaLoadMode = "embedded" | "http" | "tauri";
 interface SchemaLoadOptions {
     mode: SchemaLoadMode;
-    source?: string;
-    watchForChanges?: boolean;
-    reloadDebounceMs?: number;
-}
-interface SchemaChangeEvent {
-    schema: UiSchema;
-    timestamp: number;
+    source: string;
 }
 declare class SchemaFetcherService {
-    private currentSchema;
-    private currentOptions;
-    private watchCallback;
+    private http;
     loadSchema(options: SchemaLoadOptions): Promise<UiSchema>;
-    reloadSchema(): Promise<UiSchema | null>;
-    watchSchemaChanges(callback: (event: SchemaChangeEvent) => void): () => void;
-    getCurrentSchema(): UiSchema | null;
-    private loadEmbeddedSchema;
-    private loadFileSchema;
-    private loadCloudSchema;
-    private validateSchema;
-    static ɵfac: i0.ɵɵFactoryDeclaration<SchemaFetcherService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<SchemaFetcherService>;
+    private loadEmbedded;
+    private loadHttp;
+    private loadTauri;
+    loadSchemaFromFile(file: File): Promise<UiSchema>;
+    validateSchema(schema: unknown): schema is UiSchema;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<SchemaFetcherService, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<SchemaFetcherService>;
 }
 
 declare class ThemeService {
-    private _currentTheme;
-    private _colorMode;
-    private _systemPrefersDark;
-    private _overrides;
-    readonly currentTheme: i0.Signal<Theme>;
-    readonly colorMode: i0.Signal<ColorMode>;
-    readonly effectiveColorMode: i0.Signal<"light" | "dark">;
-    readonly effectiveTheme: i0.Signal<Theme>;
+    private readonly _colorMode;
+    private readonly _resolvedMode;
+    private readonly _accentColor;
+    private readonly _customCssVars;
+    private styleElement;
+    private mediaQuery;
+    readonly colorMode: _angular_core.Signal<ColorMode>;
+    readonly resolvedMode: _angular_core.Signal<"light" | "dark">;
+    readonly accentColor: _angular_core.Signal<string>;
+    readonly isDark: _angular_core.Signal<boolean>;
+    readonly isLight: _angular_core.Signal<boolean>;
     constructor();
-    getTheme(): Theme | null;
-    setTheme(theme: Theme): void;
-    applyTheme(theme: Theme): void;
-    setColorMode(mode: ColorMode): void;
-    toggleColorMode(): void;
-    overrideColors(colors: Partial<ThemeColors>): void;
-    setCssVariables(variables: Record<string, string>): void;
-    clearOverrides(): void;
-    private initSystemPrefersDarkListener;
-    private getSystemPrefersDark;
-    private applyThemeColors;
-    private applyCssVariables;
-    private applyColorMode;
-    private getDefaultTheme;
-    static ɵfac: i0.ɵɵFactoryDeclaration<ThemeService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ThemeService>;
+    private initTheme;
+    private setupEffect;
+    private updateResolvedMode;
+    private injectStyles;
+    private applyTheme;
+    toggle(): void;
+    setMode(mode: ColorMode): void;
+    setAccentColor(color: string): void;
+    setCustomCssVariables(vars: Record<string, string>): void;
+    getThemeIcon(): string;
+    getCurrentTheme(): ThemeConfig;
+    applyThemeConfig(config: ThemeConfig): void;
+    private darkenColor;
+    private lightenColor;
+    private adjustColor;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<ThemeService, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<ThemeService>;
 }
 
-type EventHandler<T = unknown> = (payload: T) => void;
-interface EventSubscription {
-    unsubscribe(): void;
-}
-interface EventMetadata {
-    timestamp: number;
-    source?: string;
-}
-interface EventMessage<T = unknown> {
-    type: string;
-    payload: T;
-    metadata: EventMetadata;
-}
+type EventHandler = (...args: unknown[]) => void;
 declare class EventBusService {
-    private handlers;
+    private subscriptions;
     private eventHistory;
-    private maxHistorySize;
-    emit<T>(event: string, payload?: T, source?: string): void;
-    on<T>(event: string, handler: EventHandler<T>): EventSubscription;
-    once<T>(event: string, handler: EventHandler<T>): EventSubscription;
-    off<T>(event: string, handler: EventHandler<T>): void;
-    clear(event?: string): void;
+    private toastQueue;
+    private readonly MAX_HISTORY;
+    readonly history: _angular_core.Signal<{
+        event: string;
+        data: unknown;
+        timestamp: number;
+    }[]>;
+    readonly pendingToasts: _angular_core.Signal<ToastNotification[]>;
+    readonly hasToasts: _angular_core.Signal<boolean>;
+    emit(event: string, data?: unknown): void;
+    on(event: string, handler: EventHandler, context?: unknown): () => void;
+    once(event: string, handler: EventHandler, context?: unknown): () => void;
+    off(event: string, subscriptionId: string): void;
+    offAll(event?: string): void;
     hasListeners(event: string): boolean;
     getListenerCount(event: string): number;
-    getEventHistory(event?: string): EventMessage[];
+    showToast(message: string, type?: ToastNotification["type"], duration?: number): string;
+    success(message: string, duration?: number): string;
+    error(message: string, duration?: number): string;
+    warning(message: string, duration?: number): string;
+    info(message: string, duration?: number): string;
+    dismissToast(id: string): void;
+    dismissAllToasts(): void;
+    notify(notification: ToastNotification): string;
+    getToast(id: string): ToastNotification | undefined;
     clearHistory(): void;
-    createEventNamespace(namespace: string): NamespacedEventBus;
-    private addToHistory;
-    static ɵfac: i0.ɵɵFactoryDeclaration<EventBusService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<EventBusService>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<EventBusService, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<EventBusService>;
 }
-declare class NamespacedEventBus {
-    private parent;
-    private namespace;
-    constructor(parent: EventBusService, namespace: string);
-    emit<T>(event: string, payload?: T): void;
-    on<T>(event: string, handler: EventHandler<T>): EventSubscription;
-    once<T>(event: string, handler: EventHandler<T>): EventSubscription;
-    off<T>(event: string, handler: EventHandler<T>): void;
-}
-
-interface Role {
-    id: string;
-    name: string;
-    permissions: string[];
-}
-interface User {
-    id: string;
-    username: string;
-    roles: string[];
-}
-declare class RbacService {
-    private _currentUser;
-    private _roles;
-    readonly currentUser: i0.Signal<User>;
-    readonly roles: i0.Signal<Role[]>;
-    setUser(user: User | null): void;
-    setRoles(roles: Role[]): void;
-    hasPermission(permission: string): boolean;
-    hasRole(roleId: string): boolean;
-    isAuthenticated(): boolean;
-    static ɵfac: i0.ɵɵFactoryDeclaration<RbacService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<RbacService>;
-}
-
-interface PermissionRule {
-    resource: string;
-    action: string;
-    effect: "allow" | "deny";
-    conditions?: Record<string, unknown>;
-}
-declare class PermissionEvaluator {
-    private rules;
-    addRule(rule: PermissionRule): void;
-    evaluate(resource: string, action: string, context?: Record<string, unknown>): boolean;
-    clear(): void;
-    private evaluateConditions;
-}
-
-interface FallbackResult<T> {
-    schema: T;
-    isFallback: boolean;
-    error?: string;
-}
-declare class FallbackService {
-    parseSchemaWithFallback<T>(jsonString: string): FallbackResult<T>;
-    getFallbackSchema(errorMessage?: string): UiSchema;
-    static ɵfac: i0.ɵɵFactoryDeclaration<FallbackService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<FallbackService>;
-}
-
-declare class SignalStoreService {
-    private store;
-    set(key: string, value: unknown): void;
-    get(key: string): unknown;
-    update(key: string, fn: (value: unknown) => unknown): void;
-    delete(key: string): void;
-    keys(): string[];
-    toJSON(): Record<string, unknown>;
-    fromJSON(json: Record<string, unknown>): void;
-    subscribe(callback: (key: string, value: unknown) => void): () => void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<SignalStoreService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<SignalStoreService>;
-}
-
-type LogLevel = "debug" | "info" | "warn" | "error";
-interface LogEntry {
-    timestamp: Date;
-    level: LogLevel;
-    message: string;
-    context?: string;
-}
-
-declare class SignalLoggerService {
-    private logger;
-    debug(message: string, context?: string): void;
-    info(message: string, context?: string): void;
-    warn(message: string, context?: string): void;
-    error(message: string, context?: string): void;
-    getLogs(): LogEntry[];
-    clear(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<SignalLoggerService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<SignalLoggerService>;
-}
-
-interface SyncState {
-    lastSyncAt: number | null;
-    isSyncing: boolean;
-    error: string | null;
-}
-declare class SignalSyncService {
-    private _state;
-    readonly state: i0.Signal<SyncState>;
-    sync<T>(fn: () => Promise<T>): Promise<T>;
-    clearError(): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<SignalSyncService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<SignalSyncService>;
-}
-
-interface DiscoveredComponent {
-    def: ComponentDef;
-    selector: string;
-    registered: boolean;
-}
-declare class ComponentDiscoveryService {
-    private discovered;
-    discover(components: ComponentDef[]): DiscoveredComponent[];
-    getDiscovered(componentId: string): DiscoveredComponent | undefined;
-    getAllDiscovered(): DiscoveredComponent[];
-    getRegisteredComponents(): DiscoveredComponent[];
-    getUnregisteredComponents(): DiscoveredComponent[];
-    private generateSelector;
-    static ɵfac: i0.ɵɵFactoryDeclaration<ComponentDiscoveryService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ComponentDiscoveryService>;
+declare global {
+    interface Window {
+        showToast?: (message: string, type?: ToastNotification["type"], duration?: number) => string;
+        eventBus?: EventBusService;
+    }
 }
 
 interface RetryOptions {
@@ -1419,22 +1307,22 @@ declare class UiShowcaseComponent {
     private themeService;
     readonly colorModes: readonly ["light", "dark", "system"];
     readonly styleVariants: StyleVariantConfig[];
-    readonly currentColorMode: i0.WritableSignal<string>;
-    readonly currentStyleVariant: i0.WritableSignal<StyleVariant>;
-    readonly searchQuery: i0.WritableSignal<string>;
-    readonly selectedCategory: i0.WritableSignal<string>;
+    readonly currentColorMode: _angular_core.WritableSignal<string>;
+    readonly currentStyleVariant: _angular_core.WritableSignal<StyleVariant>;
+    readonly searchQuery: _angular_core.WritableSignal<string>;
+    readonly selectedCategory: _angular_core.WritableSignal<string>;
     readonly allComponents: SharedComponentDef[];
-    readonly categories: i0.Signal<string[]>;
-    readonly filteredComponents: i0.Signal<SharedComponentDef[]>;
+    readonly categories: _angular_core.Signal<string[]>;
+    readonly filteredComponents: _angular_core.Signal<SharedComponentDef[]>;
     setColorMode(mode: string): void;
     setStyleVariant(variant: StyleVariant): Promise<void>;
     getComponentDemoContent(comp: SharedComponentDef): string;
     getComponentProps(comp: SharedComponentDef): Record<string, any>;
     setComponentProps(el: HTMLElement, props: Record<string, any>): void;
     renderComponent(card: HTMLElement, comp: SharedComponentDef): Promise<void>;
-    static ɵfac: i0.ɵɵFactoryDeclaration<UiShowcaseComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<UiShowcaseComponent, "app-ui-showcase", never, {}, {}, never, never, true, never>;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<UiShowcaseComponent, never>;
+    static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiShowcaseComponent, "app-ui-showcase", never, {}, {}, never, never, true, never>;
 }
 
-export { AppAvatar, AppBadge, AppBottomPanel, AppButton, AppCanvas, AppCard, AppChip, AppComponentPalette, AppConfirmDialog, AppDataTable, AppDialog, AppEmptyState, AppFooter, AppHeader, AppInput, AppJsonView, AppLoading, AppModal, AppPageContainer, AppPageToolbar, AppPagination, AppProgressBar, AppPropertiesPanel, AppRadio, AppSegmentSelector, AppSelect, AppSidebar, AppSlider, AppSplitView, AppStatsCard, AppSwitch, AppTableView, AppTabs, AppTextarea, ComponentDiscoveryService, ComponentRegistryService, CrudService, DataBindingResolver, EventBusService, FallbackService, GuardService, InvokeWrapperService, PermissionEvaluator, RbacService, SchemaFetcherService, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SignalLoggerService, SignalStoreService, SignalSyncService, StyleResolver, ThemeService, UiShowcaseComponent, components, dataComponents, feedbackComponents, getAllStyleVariants, getCurrentStyle, getStyleClassPrefix, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, layoutComponents, loadStyleVariant, setCurrentStyle, uiComponents };
-export type { AvatarSize, BadgeSize, BadgeVariant, BottomPanelTab, ButtonSize, ButtonVariant, CanvasElement, ColorMode, ComponentDef, DataBinding, DataTableColumn, DialogSize, ElementConfig, ElementEvents, ElementProperty, GridPosition, InputType, Layout, LoadingSize, ModalSize, ModuleDef, Page, PageMeta, PageSection, PaletteCategory, RenderContext, RouteMatch, ServiceDef, SharedComponentDef, SharedComponentProp, SidebarItem, StyleVariant, TableColumn, Theme, ThemeColors, ToolbarAction, UiSchema };
+export { AppAvatar, AppBadge, AppBottomPanel, AppButton, AppCanvas, AppCard, AppChip, AppComponentPalette, AppConfirmDialog, AppDataTable, AppDialog, AppEmptyState, AppFooter, AppHeader, AppIcon, AppInput, AppJsonView, AppLanguageSelector, AppLoading, AppModal, AppPageContainer, AppPageToolbar, AppPagination, AppProgressBar, AppPropertiesPanel, AppRadio, AppSegmentSelector, AppSelect, AppShortcutsOverlay, AppSidebar, AppSlider, AppSplitView, AppStatsCard, AppSwapButton, AppSwitch, AppTableView, AppTabs, AppTextInput, AppTextarea, AppThemeToggle, AppToast, AppTranslationOutput, ComponentRegistryService, CrudService, DataBindingResolver, EventBusService, GuardService, InvokeWrapperService, SchemaFetcherService, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, StyleResolver, TextComponent, ThemeService, UiShowcaseComponent, components, dataComponents, feedbackComponents, getAllStyleVariants, getCurrentStyle, getStyleClassPrefix, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, layoutComponents, loadStyleVariant, setCurrentStyle, uiComponents };
+export type { AvatarSize, BadgeSize, BadgeVariant, BottomPanelTab, ButtonSize, ButtonStyle, ButtonVariant, CanvasElement, ColorMode, ComponentBehavior, ComponentDef, DataBinding, DataTableColumn, DialogSize, ElementConfig, ElementEvents, ElementProperty, GridPosition, IconName, InputType, LanguageOption, Layout, LoadingSize, ModalSize, Page, PaletteCategory, RenderContext, ShortcutEntry, SidebarItem, StyleVariant, TableColumn, Theme, ThemeConfig, ToastNotification, ToastType, ToolbarAction, UiSchema };

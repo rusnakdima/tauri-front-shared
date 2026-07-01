@@ -1,57 +1,230 @@
+/* Button Component - TailwindCSS v4 with 4-style variants */
+/* IMPORTANT: Use ! prefix for important styles in TailwindCSS v4 */
+
 .app-btn {
   @apply inline-flex items-center justify-center gap-2 rounded-lg border border-solid px-4 py-2 text-center font-medium transition-all cursor-pointer;
-  @apply disabled:cursor-not-allowed;
+  @apply !disabled:cursor-not-allowed;
   border-width: 1px;
 }
 
-.app-btn-primary {
-  @apply border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] hover:bg-[var(--accent-hover)] hover:border-[var(--accent-hover)];
+/* ========================================
+   SOLID VARIANT (default) - Filled background
+   ======================================== */
+.app-btn-solid {
+  @apply !border-accent !bg-accent !text-white;
 }
 
-.app-btn-secondary {
-  @apply border-[var(--border-color)] bg-[var(--bg-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)];
+.app-btn-solid:hover {
+  @apply !bg-accent-hover !border-accent-hover;
 }
 
-.app-btn-danger {
-  @apply border-[var(--error)] bg-[var(--error)] text-[var(--text-on-error)] hover:opacity-90;
+.app-btn-solid-danger {
+  @apply !border-error !bg-error !text-white;
 }
 
-.app-btn-warning {
-  @apply border-[var(--warning)] bg-[var(--warning)] text-[var(--text-on-warning)] hover:opacity-90;
+.app-btn-solid-danger:hover {
+  @apply !bg-red-600 !border-red-600;
 }
 
-.app-btn-success {
-  @apply border-[var(--success)] bg-[var(--success)] text-[var(--text-on-success)] hover:opacity-90;
+.app-btn-solid-warning {
+  @apply !border-warning !bg-warning !text-white;
 }
 
+.app-btn-solid-warning:hover {
+  @apply !bg-amber-600 !border-amber-600;
+}
+
+.app-btn-solid-success {
+  @apply !border-success !bg-success !text-white;
+}
+
+.app-btn-solid-success:hover {
+  @apply !bg-green-600 !border-green-600;
+}
+
+.app-btn-solid-info {
+  @apply !border-info !bg-info !text-white;
+}
+
+.app-btn-solid-info:hover {
+  @apply !bg-cyan-600 !border-cyan-600;
+}
+
+/* ========================================
+   OUTLINE VARIANT - Border only, transparent bg
+   ======================================== */
+.app-btn-outline {
+  @apply !border-accent !bg-transparent !text-accent;
+}
+
+.app-btn-outline:hover {
+  @apply !bg-accent/10;
+}
+
+.app-btn-outline-danger {
+  @apply !border-error !bg-transparent !text-error;
+}
+
+.app-btn-outline-danger:hover {
+  @apply !bg-error/10;
+}
+
+.app-btn-outline-warning {
+  @apply !border-warning !bg-transparent !text-warning;
+}
+
+.app-btn-outline-warning:hover {
+  @apply !bg-warning/10;
+}
+
+.app-btn-outline-success {
+  @apply !border-success !bg-transparent !text-success;
+}
+
+.app-btn-outline-success:hover {
+  @apply !bg-success/10;
+}
+
+.app-btn-outline-info {
+  @apply !border-info !bg-transparent !text-info;
+}
+
+.app-btn-outline-info:hover {
+  @apply !bg-info/10;
+}
+
+/* ========================================
+   SOFT VARIANT - Light background tint
+   ======================================== */
+.app-btn-soft {
+  @apply !border-transparent !bg-accent/10 !text-accent;
+}
+
+.app-btn-soft:hover {
+  @apply !bg-accent/20;
+}
+
+.app-btn-soft-danger {
+  @apply !border-transparent !bg-error/10 !text-error;
+}
+
+.app-btn-soft-danger:hover {
+  @apply !bg-error/20;
+}
+
+.app-btn-soft-warning {
+  @apply !border-transparent !bg-warning/10 !text-warning;
+}
+
+.app-btn-soft-warning:hover {
+  @apply !bg-warning/20;
+}
+
+.app-btn-soft-success {
+  @apply !border-transparent !bg-success/10 !text-success;
+}
+
+.app-btn-soft-success:hover {
+  @apply !bg-success/20;
+}
+
+.app-btn-soft-info {
+  @apply !border-transparent !bg-info/10 !text-info;
+}
+
+.app-btn-soft-info:hover {
+  @apply !bg-info/20;
+}
+
+/* ========================================
+   GHOST VARIANT - No border, transparent bg
+   ======================================== */
 .app-btn-ghost {
-  @apply border-transparent bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)];
+  @apply !border-transparent !bg-transparent !text-accent;
 }
 
+.app-btn-ghost:hover {
+  @apply !bg-accent/10;
+}
+
+.app-btn-ghost-danger {
+  @apply !border-transparent !bg-transparent !text-error;
+}
+
+.app-btn-ghost-danger:hover {
+  @apply !bg-error/10;
+}
+
+.app-btn-ghost-warning {
+  @apply !border-transparent !bg-transparent !text-warning;
+}
+
+.app-btn-ghost-warning:hover {
+  @apply !bg-warning/10;
+}
+
+.app-btn-ghost-success {
+  @apply !border-transparent !bg-transparent !text-success;
+}
+
+.app-btn-ghost-success:hover {
+  @apply !bg-success/10;
+}
+
+.app-btn-ghost-info {
+  @apply !border-transparent !bg-transparent !text-info;
+}
+
+.app-btn-ghost-info:hover {
+  @apply !bg-info/10;
+}
+
+/* ========================================
+   SIZE VARIANTS
+   ======================================== */
 .app-btn-sm {
-  @apply px-3 py-1 text-sm;
+  @apply !px-3 !py-1 !text-sm;
 }
 
 .app-btn-md {
-  @apply px-4 py-2 text-base;
+  @apply !px-4 !py-2 !text-base;
 }
 
 .app-btn-lg {
-  @apply px-6 py-3 text-lg;
+  @apply !px-6 !py-3 !text-lg;
 }
 
 .app-btn-full {
-  @apply w-full;
+  @apply !w-full;
 }
 
 .app-btn-disabled {
-  @apply opacity-50 cursor-not-allowed;
+  @apply !opacity-50 !cursor-not-allowed;
 }
 
 .app-btn-icon {
-  @apply text-xl;
+  @apply !text-xl;
 }
 
 .app-btn-spinner {
-  @apply w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
+  @apply !w-4 !h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
+}
+
+/* ========================================
+   LEGACY SUPPORT (for backward compatibility)
+   ======================================== */
+.app-btn-primary {
+  @apply !border-accent !bg-accent !text-white;
+}
+
+.app-btn-primary:hover {
+  @apply !bg-accent-hover !border-accent-hover;
+}
+
+.app-btn-secondary {
+  @apply !border-border-color !bg-bg-elevated !text-text-primary;
+}
+
+.app-btn-secondary:hover {
+  @apply !bg-bg-hover;
 }

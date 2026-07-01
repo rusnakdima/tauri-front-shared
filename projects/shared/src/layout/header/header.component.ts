@@ -139,6 +139,20 @@ export class LayoutHeader extends LitElement {
     );
   }
 
+  private _getThemeIcon(): string {
+    // Check current theme from document or localStorage
+    const isDark = document.body.getAttribute("data-theme") === "dark" ||
+      (document.body.getAttribute("data-theme") === null &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches);
+    // Show sun icon when in dark mode (clicking switches to light),
+    // moon icon when in light mode (clicking switches to dark)
+    return isDark ? "light_mode" : "dark_mode";
+  }
+
+  private _handleThemeToggle(): void {
+    this._emit("theme-toggle");
+  }
+
   override render() {
     return html`
       <header class="app-header">
@@ -183,10 +197,10 @@ export class LayoutHeader extends LitElement {
             ? html`
                 <button
                   class="app-header-btn"
-                  @click="${() => this._emit("theme-toggle")}"
+                  @click="${this._handleThemeToggle}"
                   title="Toggle theme"
                 >
-                  <mat-icon>dark_mode</mat-icon>
+                  <mat-icon>${this._getThemeIcon()}</mat-icon>
                 </button>
               `
             : ""}

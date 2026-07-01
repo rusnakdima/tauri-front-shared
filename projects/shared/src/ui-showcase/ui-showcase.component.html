@@ -1,0 +1,80 @@
+<div class="showcase-container">
+  <header class="showcase-header">
+    <h1 class="showcase-title">UI Showcase</h1>
+
+    <div class="showcase-controls">
+      <div class="control-group">
+        <span class="control-label">Color Mode</span>
+        <div class="button-group">
+          @for (mode of colorModes; track mode) {
+            <button
+              class="mode-btn"
+              [class.active]="currentColorMode() === mode"
+              (click)="setColorMode(mode)"
+            >
+              {{ mode }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="control-label">Style</span>
+        <select
+          class="style-select"
+          [value]="currentStyleVariant()"
+          (change)="setStyleVariant($any($event.target).value)"
+        >
+          @for (v of styleVariants; track v.id) {
+            <option [value]="v.id">{{ v.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="showcase-filters">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search components..."
+      [value]="searchQuery()"
+      (input)="searchQuery.set($any($event.target).value)"
+    />
+
+    <div class="category-tabs">
+      @for (cat of categories(); track cat) {
+        <button
+          class="category-tab"
+          [class.active]="selectedCategory() === cat"
+          (click)="selectedCategory.set(cat)"
+        >
+          {{ cat }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="component-grid">
+    @for (comp of filteredComponents(); track comp.id) {
+      <div class="component-card">
+        <div class="card-header">
+          <span class="component-name">{{ comp.name }}</span>
+          <code class="component-selector">{{ comp.selector }}</code>
+        </div>
+
+        <div
+          class="component-preview"
+          #card
+          [attr.data-selector]="comp.selector"
+          (mouseenter)="renderComponent($any($event.target).closest('.component-card'), comp)"
+        ></div>
+
+        <div class="card-footer">
+          <span class="category-badge">{{ comp.category }}</span>
+          <span class="package-badge">{{ comp.packageType }}</span>
+        </div>
+      </div>
+    }
+  </div>
+</div>

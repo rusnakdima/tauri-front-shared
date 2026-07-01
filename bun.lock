@@ -18,6 +18,7 @@
         "@tauri-apps/api": "^2.11.1",
         "lit": "^3.0.0",
         "ng-packagr": "^20.3.2",
+        "rxjs": "^7.8.2",
         "typescript": "^5.9.3",
       },
     },
@@ -111,6 +112,26 @@
       },
       "peerDependencies": {
         "@tauri-front/core": "^0.1.0",
+      },
+    },
+    "projects/shared": {
+      "name": "@tauri-front/shared",
+      "version": "0.1.1-1782666230370",
+      "devDependencies": {
+        "@angular/cdk": "^20.0.0",
+        "@angular/common": "^20.0.0",
+        "@angular/core": "^20.0.0",
+        "@tauri-apps/api": "^2.11.1",
+        "lit": "^3.0.0",
+        "ng-packagr": "^20.3.2",
+        "typescript": "^5.9.3",
+      },
+      "peerDependencies": {
+        "@angular/common": ">=17.0.0",
+        "@angular/core": ">=17.0.0",
+        "@tauri-apps/api": ">=2.0.0",
+        "lit": "^3.0.0",
+        "rxjs": ">=7.0.0",
       },
     },
     "projects/storage": {
@@ -392,6 +413,8 @@
     "@tauri-front/grid": ["@tauri-front/grid@workspace:projects/grid"],
 
     "@tauri-front/layout": ["@tauri-front/layout@workspace:projects/layout"],
+
+    "@tauri-front/shared": ["@tauri-front/shared@workspace:projects/shared"],
 
     "@tauri-front/storage": ["@tauri-front/storage@workspace:projects/storage"],
 

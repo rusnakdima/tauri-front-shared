@@ -22,24 +22,17 @@ if (typeof window !== 'undefined') {
 // Lit web components (registered as custom elements)
 export * from "./components/index";
 
-// Core SDUI services
+// Core SDUI services (core/lib/)
 export { SchemaRendererService } from "./core/lib/schema-renderer/schema-renderer.service";
-export { ComponentRegistryService } from "./core/lib/schema-renderer/component-registry.service";
-export { DataBindingResolver } from "./core/lib/schema-renderer/data-binding-resolver";
-export { StyleResolver } from "./core/lib/schema-renderer/style-resolver";
+export { ComponentRegistryService } from "./core/lib/component-registry.service";
+export { DataBindingResolver } from "./core/lib/data-binding-resolver";
+export { StyleResolver } from "./core/lib/style-resolver";
 export { SchemaRouterService } from "./core/lib/schema-router/schema-router.service";
 export { GuardService } from "./core/lib/schema-router/guard.service";
 export { SchemaRouteViewerComponent } from "./core/lib/schema-router/schema-route-viewer.component";
 export { SchemaFetcherService } from "./core/lib/schema-fetcher/schema-fetcher.service";
 export { ThemeService } from "./core/lib/theme/theme.service";
 export { EventBusService } from "./core/lib/events/event-bus.service";
-export { RbacService } from "./core/lib/rbac/rbac.service";
-export { PermissionEvaluator } from "./core/lib/rbac/permission-evaluator";
-export { FallbackService } from "./core/lib/fallback/fallback.service";
-export { SignalStoreService } from "./core/lib/signal-store/signal-store.service";
-export { SignalLoggerService } from "./core/lib/signal-logger/signal-logger.service";
-export { SignalSyncService } from "./core/lib/signal-sync/signal-sync.service";
-export { ComponentDiscoveryService } from "./core/lib/component-discovery/service";
 
 // Existing working services
 export { InvokeWrapperService } from "./core-api/invoke-wrapper.service";
@@ -64,20 +57,14 @@ export type {
   GridPosition,
   DataBinding,
   Theme,
-  ThemeColors,
   ColorMode,
-  PageSection,
-  PageMeta,
-  ServiceDef,
-  ModuleDef,
   ElementEvents,
   RenderContext,
   ElementConfig,
-  SharedComponentDef,
-  SharedComponentProp,
+  ComponentBehavior,
+  ToastNotification,
+  ThemeConfig,
 } from "./core/lib/types";
-
-export type { RouteMatch } from "./core/lib/schema-router/route-match";
 
 // Invoke command wrappers
 export {

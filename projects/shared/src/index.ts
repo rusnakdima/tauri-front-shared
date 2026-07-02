@@ -24,19 +24,27 @@ export * from "./components/index";
 
 // Core SDUI services (core/lib/)
 export { SchemaRendererService } from "./core/lib/schema-renderer/schema-renderer.service";
-export { ComponentRegistryService } from "./core/lib/component-registry.service";
-export { DataBindingResolver } from "./core/lib/data-binding-resolver";
-export { StyleResolver } from "./core/lib/style-resolver";
-export { SchemaRouterService } from "./core/lib/schema-router/schema-router.service";
+export { ComponentRegistryService } from "./core/lib/schema-renderer/component-registry";
+export { DataBindingResolverService } from "./core/lib/schema-renderer/data-binding-resolver";
+export type { DataBinding } from "./core/lib/schema-renderer/data-binding-resolver";
+export { LayoutEngineService } from "./core/lib/schema-renderer/layout-engine";
+export type { GridTemplate } from "./core/lib/schema-renderer/layout-engine";
+export { SchemaRouterService } from "./core/lib/schema-renderer/schema-router.service";
+export { SchemaRouteViewerComponent } from "./core/lib/schema-renderer/schema-route-viewer.component";
 export { GuardService } from "./core/lib/schema-router/guard.service";
-export { SchemaRouteViewerComponent } from "./core/lib/schema-router/schema-route-viewer.component";
-export { SchemaFetcherService } from "./core/lib/schema-fetcher/schema-fetcher.service";
 export { ThemeService } from "./core/lib/theme/theme.service";
 export { EventBusService } from "./core/lib/events/event-bus.service";
 
 // Existing working services
 export { InvokeWrapperService } from "./core-api/invoke-wrapper.service";
 export { CrudService } from "./core-crud/crud.service";
+
+// Core API types
+export { ResponseStatus } from "./core-api/tauri/response";
+export type { Response } from "./core-api/tauri/response";
+export { isSuccess, isError, getErrorMessage, unwrapResponse, mapResponse } from "./core-api/tauri/response";
+export { ErrorType, parseError, formatError } from "./core-api/tauri/error";
+export type { AppError } from "./core-api/tauri/error";
 
 // Component metadata
 export {
@@ -53,9 +61,7 @@ export type {
   Page,
   Layout,
   ComponentDef,
-  CanvasElement,
   GridPosition,
-  DataBinding,
   Theme,
   ColorMode,
   ElementEvents,
@@ -73,6 +79,12 @@ export {
   invokeVoid,
   invokeWithError,
 } from "./core-api/tauri/commands";
+
+// Algorithms
+export { quickSort, mergeSort, bubbleSort, insertionSort } from "./algorithms/sorting";
+export type { CompareFn } from "./algorithms/sorting";
+export { createGraph, addNode, addEdge, dijkstra } from "./algorithms/graph";
+export type { Graph, GraphEdge } from "./algorithms/graph";
 
 // Style system
 export {

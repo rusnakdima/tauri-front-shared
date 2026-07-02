@@ -1,7 +1,8 @@
+import * as lit_html from 'lit-html';
 import * as lit from 'lit';
 import { LitElement } from 'lit';
-import * as _angular_core from '@angular/core';
-import { OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import * as i0 from '@angular/core';
+import { OnInit, AfterViewInit, OnDestroy, ElementRef } from '@angular/core';
 
 type ButtonStyle = "solid" | "outline" | "soft" | "ghost";
 type ButtonVariant = "primary" | "danger" | "warning" | "success" | "info";
@@ -22,7 +23,7 @@ declare class AppButton extends LitElement {
     static styles: lit.CSSResult;
     private _handleClick;
     private getButtonClass;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -46,7 +47,7 @@ declare class AppInput extends LitElement {
     private _handleInput;
     private _handleFocus;
     private _handleBlur;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -64,7 +65,7 @@ declare class AppEmptyState extends LitElement {
     connectedCallback(): void;
     static styles: lit.CSSResult;
     private _handleAction;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -82,7 +83,7 @@ declare class AppModal extends LitElement {
     static styles: lit.CSSResult;
     private _handleOverlayClick;
     private _close;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -102,7 +103,7 @@ declare class AppDialog extends LitElement {
     static styles: lit.CSSResult;
     private _handleOverlayClick;
     private _close;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -122,7 +123,7 @@ declare class AppConfirmDialog extends LitElement {
     private _handleCancel;
     private _handleConfirm;
     private _handleOverlayClick;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -136,7 +137,7 @@ declare class AppLoading extends LitElement {
     constructor();
     connectedCallback(): void;
     static styles: lit.CSSResult;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -153,7 +154,7 @@ declare class AppRadio extends LitElement {
     connectedCallback(): void;
     static styles: lit.CSSResult;
     private _handleChange;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -171,7 +172,7 @@ declare class AppSlider extends LitElement {
     connectedCallback(): void;
     static styles: lit.CSSResult;
     private _handleInput;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -186,7 +187,7 @@ declare class AppSwitch extends LitElement {
     connectedCallback(): void;
     static styles: lit.CSSResult;
     private _handleChange;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -203,7 +204,7 @@ declare class AppTextarea extends LitElement {
     connectedCallback(): void;
     static styles: lit.CSSResult;
     private _handleInput;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -220,7 +221,7 @@ declare class AppBadge extends LitElement {
     constructor();
     connectedCallback(): void;
     static styles: lit.CSSResult;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -237,7 +238,7 @@ declare class AppSelect extends LitElement {
     connectedCallback(): void;
     static styles: lit.CSSResult;
     private _handleChange;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -254,7 +255,7 @@ declare class AppCard extends LitElement {
     constructor();
     connectedCallback(): void;
     static styles: lit.CSSResult;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -269,7 +270,7 @@ declare class AppStatsCard extends LitElement {
     constructor();
     connectedCallback(): void;
     static styles: lit.CSSResult;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -289,7 +290,7 @@ declare class AppTableView extends LitElement {
     private _getColumns;
     private _getData;
     static styles: lit.CSSResult;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -312,7 +313,7 @@ declare class AppDataTable extends LitElement {
     private _getData;
     private _handleRowClick;
     static styles: lit.CSSResult;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -327,7 +328,7 @@ declare class AppJsonView extends LitElement {
     private _getFormattedJson;
     static styles: lit.CSSResult;
     private _syntaxHighlight;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -350,7 +351,7 @@ declare class AppComponentPalette extends LitElement {
     private _toggleCategory;
     private _filterComponents;
     static styles: lit.CSSResult;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -366,7 +367,7 @@ declare class AppCanvas extends LitElement {
     constructor();
     connectedCallback(): void;
     static styles: lit.CSSResult;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -391,7 +392,7 @@ declare class AppPropertiesPanel extends LitElement {
     updated(changedProperties: Map<string, unknown>): void;
     private _handlePropertyChange;
     static styles: lit.CSSResult;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -415,7 +416,7 @@ declare class AppBottomPanel extends LitElement {
     private _getTabs;
     private _handleTabClick;
     static styles: lit.CSSResult;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -432,7 +433,7 @@ declare class AppHeader extends LitElement {
     static styles: lit.CSSResult;
     private _handleBack;
     private _getBreadcrumbs;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -458,7 +459,7 @@ declare class AppSidebar extends LitElement {
     private _getItems;
     private _handleItemClick;
     private _renderItem;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -471,7 +472,7 @@ declare class AppFooter extends LitElement {
     constructor();
     connectedCallback(): void;
     static styles: lit.CSSResult;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -484,7 +485,7 @@ declare class AppPageContainer extends LitElement {
     constructor();
     connectedCallback(): void;
     static styles: lit.CSSResult;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -506,7 +507,7 @@ declare class AppPageToolbar extends LitElement {
     static styles: lit.CSSResult;
     private _getActions;
     private _handleActionClick;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -524,7 +525,7 @@ declare class AppSplitView extends LitElement {
     private _isDragging;
     static styles: lit.CSSResult;
     private _onDividerMouseDown;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -542,7 +543,7 @@ declare class AppAvatar extends LitElement {
     static styles: lit.CSSResult;
     private _getInitials;
     private _handleImageError;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -558,7 +559,7 @@ declare class AppChip extends LitElement {
     connectedCallback(): void;
     static styles: lit.CSSResult;
     private _handleRemove;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -576,7 +577,7 @@ declare class AppPagination extends LitElement {
     private get _totalPages();
     private _goTo;
     private _getPageNumbers;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -592,7 +593,7 @@ declare class AppTabs extends LitElement {
     static styles: lit.CSSResult;
     private get _parsedTabs();
     private _selectTab;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -608,7 +609,7 @@ declare class AppProgressBar extends LitElement {
     static styles: lit.CSSResult;
     private get _percentage();
     private _getFillClass;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -624,7 +625,7 @@ declare class AppSegmentSelector extends LitElement {
     static styles: lit.CSSResult;
     private get _parsedOptions();
     private _select;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -639,7 +640,7 @@ declare class AppIcon extends LitElement {
     constructor();
     connectedCallback(): void;
     static styles: lit.CSSResult;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -661,7 +662,7 @@ declare class AppLanguageSelector extends LitElement {
     static styles: lit.CSSResult;
     private _handleChange;
     private _getParsedLanguages;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -673,7 +674,7 @@ declare class AppSwapButton extends LitElement {
     constructor();
     static styles: lit.CSSResult;
     private _handleClick;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -696,7 +697,7 @@ declare class AppTextInput extends LitElement {
     private _autoResize;
     private _handleClear;
     updated(changed: Map<string, unknown>): void;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
     firstUpdated(): void;
 }
 declare global {
@@ -716,7 +717,7 @@ declare class AppTranslationOutput extends LitElement {
     private _autoResize;
     private _handleCopy;
     updated(changed: Map<string, unknown>): void;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
     firstUpdated(): void;
 }
 declare global {
@@ -738,7 +739,7 @@ declare class AppToast extends LitElement {
     updated(changed: Map<string, unknown>): void;
     private _handleClose;
     private _getIcon;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -752,7 +753,7 @@ declare class AppThemeToggle extends LitElement {
     connectedCallback(): void;
     static styles: lit.CSSResult;
     private _handleToggle;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
@@ -774,20 +775,12 @@ declare class AppShortcutsOverlay extends LitElement {
     private _handleBackdropClick;
     private _close;
     private _parseKeys;
-    render(): lit.TemplateResult<1>;
+    render(): lit_html.TemplateResult<1>;
 }
 declare global {
     interface HTMLElementTagNameMap {
         "app-shortcuts-overlay": AppShortcutsOverlay;
     }
-}
-
-declare class TextComponent {
-    tag: string;
-    text: string;
-    classes: string;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<TextComponent, never>;
-    static ɵcmp: _angular_core.ɵɵComponentDeclaration<TextComponent, "app-text", never, { "tag": { "alias": "tag"; "required": false; }; "text": { "alias": "text"; "required": false; }; "classes": { "alias": "classes"; "required": false; }; }, {}, never, never, true, never>;
 }
 
 type ColorMode = "light" | "dark" | "system";
@@ -796,77 +789,16 @@ interface Theme {
     accentColor?: string;
     cssVariables?: Record<string, string>;
 }
-interface GridPosition {
-    column?: number | null;
-    row?: number | null;
-    colSpan?: number | null;
-    rowSpan?: number | null;
-    colStart?: number | null;
-    rowStart?: number | null;
-}
-interface DataBinding {
-    entity: string;
-    field: string | null;
-    transform?: string;
-    format?: string;
-}
-interface ComponentDef {
-    id: string;
-    selector: string;
-    module?: string;
-    behaviors?: ComponentBehavior;
-}
-interface CanvasElement {
-    id: string;
-    componentId: string;
-    gridPosition?: GridPosition;
-    classes?: string;
-    children?: string[];
-    props?: Record<string, unknown>;
-    dataBinding?: DataBinding | null;
-    events?: ElementEvents;
-    slots?: Record<string, CanvasElement[]>;
-}
-interface Page {
-    id: string;
-    route: string;
-    title?: string;
-    layout?: string;
-    canvasElements: CanvasElement[];
-    meta?: {
-        title?: string;
-        class?: string;
-    };
-    guards?: Array<{
-        type: string;
-        params?: Record<string, unknown>;
-    }>;
-}
-interface Layout {
-    id: string;
-    name: string;
-    slots?: Array<{
-        name: string;
-        elements?: CanvasElement[];
-    }>;
-}
 interface UiSchema {
     version: string;
     pages: Page[];
     layouts: Layout[];
     theme?: Theme;
 }
-interface ElementConfig {
-    id: string;
-    componentId: string;
-    componentDef: ComponentDef | null;
-    gridPosition: GridPosition;
-    classes: string;
-    children: string[];
-    dataBinding: DataBinding | null;
-    props: Record<string, unknown>;
-    events: ElementEvents;
-    slots: Record<string, CanvasElement[]>;
+interface ComponentBehavior {
+    selfMethods?: Record<string, string>;
+    classSetters?: Record<string, unknown>;
+    eventHandlers?: ElementEvents;
 }
 interface ElementEvents {
     [eventName: string]: Array<{
@@ -880,19 +812,15 @@ interface RenderContext {
     layout: Layout | null;
     data: Record<string, Record<string, unknown>>;
     params: Record<string, string>;
-    services: Map<string, unknown>;
-    theme: Theme;
-    colorMode: ColorMode;
-    resolvedElements: Map<string, HTMLElement>;
-    eventHandlers: Map<string, Function>;
 }
-interface ComponentBehavior {
-    selfMethods?: Record<string, string>;
-    classSetters?: Record<string, unknown>;
-    eventHandlers?: ElementEvents;
+interface ElementConfig {
+    id: string;
+    componentId: string;
+    componentDef: ComponentDef | null;
+    gridPosition: GridPosition;
+    classes: string;
 }
-type AppColorMode = "light" | "dark" | "system";
-interface ToastNotification {
+interface ToastNotification$1 {
     id: string;
     message: string;
     type: "success" | "error" | "warning" | "info";
@@ -900,275 +828,374 @@ interface ToastNotification {
     icon?: string;
 }
 interface ThemeConfig {
-    mode: AppColorMode;
+    mode: ColorMode;
     accentColor?: string;
     cssVariables?: Record<string, string>;
+}
+interface SharedPropDef {
+    name: string;
+    type: "string" | "number" | "boolean" | "select";
+    default?: unknown;
+    options?: string[];
 }
 interface SharedComponentDef {
     id: string;
     name: string;
     selector: string;
+    packageType: "ui" | "feedback" | "data" | "layout";
+    category: string;
+    icon?: string;
+    defaultClasses?: string;
+    props: SharedPropDef[];
+    template: string;
+    css: string;
+}
+interface GridPosition {
+    column: number;
+    row: number;
+    colSpan?: number;
+    rowSpan?: number;
+    colStart?: number;
+    rowStart?: number;
+}
+interface ComponentDef {
+    id: string;
+    name: string;
+    selector: string;
     packageType: string;
     category: string;
-    props: Array<{
-        name: string;
-        type: string;
-        default?: unknown;
-        options?: string[];
-    }>;
+    props: Record<string, unknown>;
     template?: string;
     css?: string;
+    defaultClasses?: string;
+}
+interface Layout {
+    id: string;
+    type: "grid" | "flex" | "stack";
+    direction?: "row" | "column";
+    gap?: number;
+    class?: string;
+    style?: Record<string, string>;
+    positions?: GridPosition[];
+    children?: string[];
+}
+interface Page {
+    id: string;
+    name: string;
+    layouts: Layout[];
+    components?: ComponentDef[];
+    canvasElements?: ComponentDef[];
 }
 
-declare class SchemaRendererService {
-    private router;
-    private componentRegistry;
-    private bindingResolver;
-    private styleResolver;
-    private themeService;
-    private eventBus;
-    private renderContexts;
-    renderPage(pageId: string, container: HTMLElement): Promise<void>;
-    render(page: Page, container: HTMLElement): Promise<void>;
-    renderLayout(layoutId: string, container: HTMLElement): Promise<void>;
-    private createRenderContext;
-    private createRenderContextForLayout;
-    renderElement(element: CanvasElement, context: RenderContext): Promise<HTMLElement | null>;
-    private resolveElementProps;
-    private applyProps;
-    private applyStyles;
-    private applyDataBinding;
-    private applyEventHandlers;
-    destroyPage(pageId: string): void;
-    getRenderContext(pageId: string): RenderContext | undefined;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<SchemaRendererService, never>;
-    static ɵprov: _angular_core.ɵɵInjectableDeclaration<SchemaRendererService>;
+interface GridTemplate {
+    columns: string[];
+    rows: string[];
+    gap: string;
+}
+declare class LayoutEngineService {
+    resolveClass(layout: Layout): string;
+    renderGridLayout(container: HTMLElement, layout: Layout): void;
+    renderFlexLayout(container: HTMLElement, layout: Layout): void;
+    resolveGridPosition(layout: Layout | undefined, componentId: string): GridPosition | null;
+    resolveGridPositionFromPositions(positions: GridPosition[] | undefined, componentId: string): GridPosition | null;
+    calculateGridSpan(colSpan: number | undefined, rowSpan: number | undefined): {
+        gridColumn: string;
+        gridRow: string;
+    };
+    applyLayoutStyles(container: HTMLElement, layout: Layout, children: string[], getComponentById: (id: string) => {
+        selector: string;
+    } | undefined, resolvePosition: (layout: Layout, childId: string) => GridPosition | null): void;
+    createGridTemplateString(columns: string[], rows: string[]): string;
+    parseGridTemplate(template: GridTemplate): {
+        gridTemplateColumns: string;
+        gridTemplateRows: string;
+        gap: string;
+    };
 }
 
-interface ComponentDefinition {
-    selector: string;
-    module?: string;
-    behaviors?: ComponentBehavior;
-}
-declare class ComponentRegistryService {
-    private registry;
-    private componentManifest;
-    constructor();
-    private registerBuiltInComponents;
-    private loadComponentManifest;
-    register(componentId: string, definition: ComponentDefinition): void;
-    unregister(componentId: string): void;
-    get(componentId: string): ComponentDefinition | undefined;
-    getSelector(componentId: string): string;
-    has(componentId: string): boolean;
-    resolveBehavior(componentId: string): ComponentBehavior | undefined;
-    mergeBehavior(componentId: string, schemaBehavior?: ComponentBehavior): ComponentBehavior;
-    private mergeEventHandlers;
-    getAllComponentIds(): string[];
-    getComponentsByCategory(category: string): string[];
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<ComponentRegistryService, never>;
-    static ɵprov: _angular_core.ɵɵInjectableDeclaration<ComponentRegistryService>;
-}
-
-declare class DataBindingResolver {
-    private functionRegistry;
-    private dataStore;
-    registerFunction(name: string, fn: Function): void;
-    unregisterFunction(name: string): void;
-    setData(entity: string, data: Record<string, unknown>): void;
-    getData(entity: string): Record<string, unknown> | undefined;
-    clearData(entity?: string): void;
-    resolveBinding(binding: DataBinding | null): unknown;
-    resolveDataBinding(binding: DataBinding | null): unknown;
-    resolve(entity: string, field: string | null): unknown;
-    resolveExpression(expression: string): unknown;
-    private resolvePath;
-    evaluateCondition(condition: string): boolean;
-    callFunction(fnName: string, args?: unknown[]): unknown;
-    getRegisteredFunctions(): string[];
-    hasFunction(fnName: string): boolean;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<DataBindingResolver, never>;
-    static ɵprov: _angular_core.ɵɵInjectableDeclaration<DataBindingResolver>;
-}
-
-interface StyleResolution {
+interface CanvasElement {
+    id: string;
+    componentId: string;
+    name: string;
+    icon: string;
+    position?: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
+    gridPosition?: {
+        column: number;
+        row: number;
+        colSpan?: number;
+        rowSpan?: number;
+    };
+    props: Record<string, unknown>;
     classes: string;
-    inlineStyles: Record<string, string>;
+    children: string[];
+    zIndex: number;
+    dataBinding?: {
+        entity: string;
+        field: string;
+    };
+    events?: Record<string, string>;
 }
-declare class StyleResolver {
-    private readonly DARK_MODE_PREFIX;
-    private readonly RESPONSIVE_PREFIXES;
-    private readonly IMPORTANT_PREFIX;
-    resolveClasses(classes: string, options?: {
-        colorMode?: "light" | "dark" | "system";
-        extraClasses?: string;
-    }): StyleResolution;
-    private processClasses;
-    private processClass;
-    resolveGridPosition(position: {
-        column?: number | null;
-        row?: number | null;
-        colSpan?: number | null;
-        rowSpan?: number | null;
-        colStart?: number | null;
-        rowStart?: number | null;
-    }): string;
-    composeClasses(...classGroups: (string | undefined | null)[]): string;
-    getVariantClasses(baseClass: string, variant: string): string;
-    resolveResponsiveClasses(classes: string, breakpoint: "sm" | "md" | "lg" | "xl" | "2xl"): string;
-    resolveDarkModeClasses(classes: string): string;
-    private isColorClass;
-    buildCssVariables(vars: Record<string, string>): string;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<StyleResolver, never>;
-    static ɵprov: _angular_core.ɵɵInjectableDeclaration<StyleResolver>;
+interface PageSchema {
+    id: string;
+    name: string;
+    elements: CanvasElement[];
+    gridTemplate?: GridTemplate;
+}
+declare class SchemaRendererService {
+    private _pages;
+    private _currentPageId;
+    private _navigationStack;
+    private componentRegistry;
+    private dataBindingResolver;
+    private layoutEngine;
+    private dataStore;
+    private crudService;
+    private eventBus;
+    private componentResolver;
+    private routeResolver;
+    pages: i0.Signal<Page[]>;
+    currentPageId: i0.Signal<string>;
+    constructor();
+    registerComponent(def: ComponentDef): void;
+    registerComponents(defs: ComponentDef[]): void;
+    getComponent(selector: string): ComponentDef | undefined;
+    loadSchema(schema: {
+        pages: Page[];
+    }): void;
+    getCurrentPage(): Page | null;
+    setCurrentPage(pageId: string): void;
+    navigateToPage(route: string): void;
+    getNavigationStack(): string[];
+    setRouteResolver(resolver: (route: string) => string | null): void;
+    renderGridLayout(container: HTMLElement, layout: Layout): void;
+    renderFlexLayout(container: HTMLElement, layout: Layout): void;
+    loadComponentModule(selector: string): Promise<CustomElementConstructor>;
+    registerComponentModule(selector: string, module: Record<string, unknown>): void;
+    resolveGridPosition(layoutId: string, componentId: string): GridPosition | null;
+    resolveClass(layout: Layout): string;
+    getComponentProps(componentId: string): Record<string, unknown>;
+    generatePage(pageId: string): {
+        layouts: Layout[];
+        components: ComponentDef[];
+    };
+    setComponentResolver(resolver: (selector: string) => ComponentDef | undefined): void;
+    createElement(data: CanvasElement): Promise<HTMLElement | null>;
+    render(container: HTMLElement, pageSchema: PageSchema): Promise<void>;
+    bindEvents(el: HTMLElement, events: Record<string, string | Function>, elementId: string): void;
+    resolveClasses(elementClasses: string, defaultClasses: string): string;
+    resolveDataBinding(binding: unknown): unknown;
+    private getDataBindingValue;
+    private parseBindingPath;
+    private getNestedValue;
+    static ɵfac: i0.ɵɵFactoryDeclaration<SchemaRendererService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<SchemaRendererService>;
 }
 
-interface NavigationOptions {
-    replaceUrl?: boolean;
-    queryParams?: Record<string, string>;
+declare class ComponentRegistryService {
+    private _componentRegistry;
+    private _componentModules;
+    registerComponent(def: ComponentDef): void;
+    registerComponents(defs: ComponentDef[]): void;
+    getComponent(selector: string): ComponentDef | undefined;
+    registerComponentModule(selector: string, module: Record<string, unknown>): void;
+    loadComponentModule(selector: string): Promise<CustomElementConstructor>;
+    getComponentModules(): Map<string, Record<string, unknown>>;
+    loadComponentsFromSchema(pages: {
+        components?: ComponentDef[];
+        canvasElements?: ComponentDef[];
+    }[]): void;
+    hasComponent(selector: string): boolean;
+    getRegisteredSelectors(): string[];
 }
+
+interface StorageServiceInterface {
+    get<T>(key: string): T | null;
+    set(key: string, value: unknown): void;
+}
+interface CrudFilter$1 {
+    field: string;
+    operator: "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "contains" | "startsWith" | "endsWith";
+    value: unknown;
+}
+interface CrudQuery$1 {
+    filters?: CrudFilter$1[];
+    sortBy?: string;
+    sortAsc?: boolean;
+    limit?: number;
+    offset?: number;
+}
+declare class CrudService$1 {
+    private storage;
+    init(storage: StorageServiceInterface): void;
+    private getStorage;
+    private getCollection;
+    private saveCollection;
+    create<T extends {
+        id: string;
+    }>(collection: string, item: T): void;
+    read<T>(collection: string, id: string): T | null;
+    update<T extends {
+        id: string;
+    }>(collection: string, id: string, changes: Partial<T>): void;
+    delete(collection: string, id: string): void;
+    query<T>(collection: string, q: CrudQuery$1): T[];
+    private applyFilter;
+    private applySort;
+    private addPending;
+    batchCreate<T extends {
+        id: string;
+    }>(collection: string, items: T[]): void;
+    batchDelete(collection: string, ids: string[]): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CrudService$1, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<CrudService$1>;
+}
+
+declare class SignalStoreService {
+    private _state;
+    state: i0.Signal<Record<string, unknown>>;
+    set(key: string, value: unknown): void;
+    get(key: string): unknown;
+    update(key: string, fn: (value: unknown) => unknown): void;
+    delete(key: string): void;
+    keys(): string[];
+    has(key: string): boolean;
+    clear(): void;
+    toJSON(): Record<string, unknown>;
+    fromJSON(json: Record<string, unknown>): void;
+    patch(patch: Record<string, unknown>): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<SignalStoreService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<SignalStoreService>;
+}
+
+interface DataBinding {
+    entity: string;
+    field?: string;
+    path?: string;
+    operation?: "find" | "create" | "update" | "delete";
+    params?: Record<string, unknown>;
+}
+declare class DataBindingResolverService {
+    private signalStore;
+    private crudService;
+    constructor(signalStore: SignalStoreService, crudService: CrudService$1);
+    resolveDataBinding(binding: unknown): unknown;
+    resolveProps(props: Record<string, unknown>, _componentId: string): Record<string, unknown>;
+    private executeCrudOperation;
+    private resolveParams;
+    private buildCrudQuery;
+    private buildFilters;
+    private getDataBindingValue;
+    private parseBindingPath;
+    private getNestedValue;
+}
+
 declare class SchemaRouterService {
-    private guardService;
-    private readonly _schema;
-    private readonly _currentPage;
-    private readonly _currentLayout;
-    private readonly _currentRoute;
-    private readonly _params;
-    private readonly _queryParams;
-    private readonly _isLoading;
-    private readonly _error;
-    readonly schema: _angular_core.Signal<UiSchema>;
-    readonly currentPage: _angular_core.Signal<Page>;
-    readonly currentLayout: _angular_core.Signal<Layout>;
-    readonly currentRoute: _angular_core.Signal<string>;
-    readonly params: _angular_core.Signal<Record<string, string>>;
-    readonly queryParams: _angular_core.Signal<Record<string, string>>;
-    readonly isLoading: _angular_core.Signal<boolean>;
-    readonly error: _angular_core.Signal<string>;
-    readonly hasSchema: _angular_core.Signal<boolean>;
-    readonly currentPageId: _angular_core.Signal<string>;
-    readonly currentPageTitle: _angular_core.Signal<string>;
-    setSchema(schema: UiSchema): void;
-    clearSchema(): void;
-    navigate(route: string, options?: NavigationOptions): Promise<boolean>;
-    resolveRoute(route: string): {
-        page: Page | null;
-        layout: Layout | null;
-        params: Record<string, string>;
-    } | null;
-    private matchRoute;
-    getPage(pageId: string): Page | null;
-    getLayout(layoutId: string): Layout | null;
-    getAllPages(): Page[];
-    getAllLayouts(): Layout[];
-    updateQueryParams(params: Record<string, string>): void;
-    reset(): void;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<SchemaRouterService, never>;
-    static ɵprov: _angular_core.ɵɵInjectableDeclaration<SchemaRouterService>;
+    private _currentRoute;
+    private _schema;
+    currentRoute: i0.Signal<string>;
+    currentPageId: i0.Signal<string>;
+    setSchema(schema: {
+        pages: {
+            id: string;
+            route?: string;
+        }[];
+    }): void;
+    navigate(route: string): void;
+    navigateToPage(pageId: string): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<SchemaRouterService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<SchemaRouterService>;
 }
 
-interface GuardResult {
-    allowed: boolean;
-    redirectTo?: string;
-    message?: string;
-}
-declare class GuardService {
-    private guardRegistry;
-    constructor();
-    private registerBuiltInGuards;
-    register(name: string, guard: (params?: Record<string, unknown>) => Promise<GuardResult>): void;
-    unregister(name: string): void;
-    canActivate(guardType: string, params?: Record<string, unknown>): Promise<boolean>;
-    evaluate(guardType: string, params?: Record<string, unknown>): Promise<GuardResult>;
-    hasGuard(name: string): boolean;
-    getRegisteredGuards(): string[];
-    private checkAuthentication;
-    private checkRole;
-    private checkPermission;
-    private getCurrentTheme;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<GuardService, never>;
-    static ɵprov: _angular_core.ɵɵInjectableDeclaration<GuardService>;
-}
-
-declare class SchemaRouteViewerComponent implements OnInit, OnChanges {
-    route: string;
-    private router;
-    readonly page: _angular_core.Signal<Page>;
+declare class SchemaRouteViewerComponent implements OnInit, AfterViewInit, OnDestroy {
+    contentContainer: ElementRef<HTMLElement>;
+    headerProps: Record<string, unknown>;
+    sidebarProps: Record<string, unknown>;
+    private schemaRenderer;
+    private schemaRouter;
+    private injector;
+    private routeEffect;
     ngOnInit(): void;
-    ngOnChanges(changes: SimpleChanges): void;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<SchemaRouteViewerComponent, never>;
-    static ɵcmp: _angular_core.ɵɵComponentDeclaration<SchemaRouteViewerComponent, "lib-schema-route-viewer", never, { "route": { "alias": "route"; "required": false; }; }, {}, never, never, true, never>;
+    ngAfterViewInit(): void;
+    ngOnDestroy(): void;
+    private renderCurrentPage;
+    private renderElement;
+    static ɵfac: i0.ɵɵFactoryDeclaration<SchemaRouteViewerComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SchemaRouteViewerComponent, "lib-schema-route-viewer", never, {}, {}, never, never, true, never>;
 }
 
-type SchemaLoadMode = "embedded" | "http" | "tauri";
-interface SchemaLoadOptions {
-    mode: SchemaLoadMode;
-    source: string;
-}
-declare class SchemaFetcherService {
-    private http;
-    loadSchema(options: SchemaLoadOptions): Promise<UiSchema>;
-    private loadEmbedded;
-    private loadHttp;
-    private loadTauri;
-    loadSchemaFromFile(file: File): Promise<UiSchema>;
-    validateSchema(schema: unknown): schema is UiSchema;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<SchemaFetcherService, never>;
-    static ɵprov: _angular_core.ɵɵInjectableDeclaration<SchemaFetcherService>;
+declare class GuardService {
+    canActivate(): boolean;
+    static ɵfac: i0.ɵɵFactoryDeclaration<GuardService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<GuardService>;
 }
 
+type ThemeMode = "light" | "dark" | "system";
+interface AccentShades {
+    50: string;
+    100: string;
+    200: string;
+    300: string;
+    400: string;
+    500: string;
+    600: string;
+    700: string;
+    800: string;
+    900: string;
+}
+interface ThemeColors {
+    [variable: string]: string;
+}
 declare class ThemeService {
-    private readonly _colorMode;
-    private readonly _resolvedMode;
-    private readonly _accentColor;
-    private readonly _customCssVars;
-    private styleElement;
-    private mediaQuery;
-    readonly colorMode: _angular_core.Signal<ColorMode>;
-    readonly resolvedMode: _angular_core.Signal<"light" | "dark">;
-    readonly accentColor: _angular_core.Signal<string>;
-    readonly isDark: _angular_core.Signal<boolean>;
-    readonly isLight: _angular_core.Signal<boolean>;
+    private _mode;
+    private _accentColor;
+    private _accentShades;
+    private _registeredThemes;
+    mode: i0.Signal<ThemeMode>;
+    accentColor: i0.Signal<string>;
+    accentShades: i0.Signal<AccentShades>;
+    effectiveColorMode: i0.Signal<"light" | "dark">;
     constructor();
-    private initTheme;
-    private setupEffect;
-    private updateResolvedMode;
-    private injectStyles;
-    private applyTheme;
-    toggle(): void;
-    setMode(mode: ColorMode): void;
+    setMode(mode: ThemeMode): void;
+    setTheme(theme: ThemeMode): void;
     setAccentColor(color: string): void;
-    setCustomCssVariables(vars: Record<string, string>): void;
-    getThemeIcon(): string;
-    getCurrentTheme(): ThemeConfig;
-    applyThemeConfig(config: ThemeConfig): void;
-    private darkenColor;
-    private lightenColor;
-    private adjustColor;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<ThemeService, never>;
-    static ɵprov: _angular_core.ɵɵInjectableDeclaration<ThemeService>;
+    registerTheme(name: string, colors: ThemeColors): void;
+    init(): void;
+    toggle(): void;
+    private applyTheme;
+    private applyAccentShades;
+    calculateShades(hex: string): AccentShades;
+    private hexToRgb;
+    private rgbToHex;
+    hexToRgba(hex: string, alpha: number): string;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ThemeService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ThemeService>;
 }
 
-type EventHandler = (...args: unknown[]) => void;
+interface ToastNotification {
+    id: string;
+    message: string;
+    type: "success" | "error" | "warning" | "info";
+    duration: number;
+    icon?: string;
+}
 declare class EventBusService {
-    private subscriptions;
-    private eventHistory;
-    private toastQueue;
-    private readonly MAX_HISTORY;
-    readonly history: _angular_core.Signal<{
-        event: string;
-        data: unknown;
-        timestamp: number;
-    }[]>;
-    readonly pendingToasts: _angular_core.Signal<ToastNotification[]>;
-    readonly hasToasts: _angular_core.Signal<boolean>;
+    private handlers;
+    private toasts;
+    readonly pendingToasts: i0.Signal<ToastNotification[]>;
+    readonly hasToasts: () => boolean;
     emit(event: string, data?: unknown): void;
-    on(event: string, handler: EventHandler, context?: unknown): () => void;
-    once(event: string, handler: EventHandler, context?: unknown): () => void;
-    off(event: string, subscriptionId: string): void;
+    on(event: string, handler: (data: unknown) => void, context?: unknown): () => void;
+    once(event: string, handler: (data: unknown) => void, context?: unknown): () => void;
+    off(event: string, handler?: Function): void;
     offAll(event?: string): void;
     hasListeners(event: string): boolean;
     getListenerCount(event: string): number;
+    private generateId;
     showToast(message: string, type?: ToastNotification["type"], duration?: number): string;
     success(message: string, duration?: number): string;
     error(message: string, duration?: number): string;
@@ -1179,14 +1206,8 @@ declare class EventBusService {
     notify(notification: ToastNotification): string;
     getToast(id: string): ToastNotification | undefined;
     clearHistory(): void;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<EventBusService, never>;
-    static ɵprov: _angular_core.ɵɵInjectableDeclaration<EventBusService>;
-}
-declare global {
-    interface Window {
-        showToast?: (message: string, type?: ToastNotification["type"], duration?: number) => string;
-        eventBus?: EventBusService;
-    }
+    static ɵfac: i0.ɵɵFactoryDeclaration<EventBusService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<EventBusService>;
 }
 
 interface RetryOptions {
@@ -1234,12 +1255,6 @@ declare class CrudService {
     delete(id: string): Promise<void>;
 }
 
-declare const uiComponents: SharedComponentDef[];
-declare const layoutComponents: SharedComponentDef[];
-declare const feedbackComponents: SharedComponentDef[];
-declare const dataComponents: SharedComponentDef[];
-declare const components: SharedComponentDef[];
-
 declare enum ResponseStatus {
     Success = "success",
     Created = "created",
@@ -1256,6 +1271,11 @@ interface Response<T = unknown> {
     message: string;
     data: T | null;
 }
+declare function isSuccess<T>(response: Response<T>): boolean;
+declare function isError<T>(response: Response<T>): boolean;
+declare function getErrorMessage<T>(response: Response<T>): string | null;
+declare function unwrapResponse<T>(response: Response<T>): T;
+declare function mapResponse<U, T>(response: Response<T>, mapper: (data: T) => U): Response<U>;
 
 interface AppError {
     type: ErrorType;
@@ -1273,6 +1293,14 @@ declare enum ErrorType {
     Database = "database",
     Network = "network"
 }
+declare function parseError(error: unknown): AppError;
+declare function formatError(error: AppError): string;
+
+declare const uiComponents: SharedComponentDef[];
+declare const layoutComponents: SharedComponentDef[];
+declare const feedbackComponents: SharedComponentDef[];
+declare const dataComponents: SharedComponentDef[];
+declare const components: SharedComponentDef[];
 
 interface InvokeOptionsWithRetry {
     timeout?: number;
@@ -1288,6 +1316,22 @@ declare function invokeCommand<T>(command: string, args?: Record<string, unknown
 declare function invokeCommandWithResponse<T>(command: string, args?: Record<string, unknown>, options?: InvokeOptionsWithRetry): Promise<Response<T>>;
 declare function invokeVoid(command: string, args?: Record<string, unknown>, options?: InvokeOptionsWithRetry): Promise<void>;
 declare function invokeWithError<T>(command: string, args?: Record<string, unknown>, options?: InvokeOptionsWithRetry): Promise<T>;
+
+type CompareFn<T> = (a: T, b: T) => number;
+declare function quickSort<T>(arr: T[], compareFn?: CompareFn<T>): T[];
+declare function mergeSort<T>(arr: T[], compareFn?: CompareFn<T>): T[];
+declare function bubbleSort<T>(arr: T[], compareFn?: CompareFn<T>): T[];
+declare function insertionSort<T>(arr: T[], compareFn?: CompareFn<T>): T[];
+
+interface GraphEdge {
+    node: string;
+    weight: number;
+}
+type Graph = Map<string, GraphEdge[]>;
+declare function createGraph(): Graph;
+declare function addNode(graph: Graph, label: string): void;
+declare function addEdge(graph: Graph, from: string, to: string, weight: number): void;
+declare function dijkstra(graph: Graph, start: string): Map<string, number | null>;
 
 type StyleVariant = "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3";
 interface StyleVariantConfig {
@@ -1307,22 +1351,22 @@ declare class UiShowcaseComponent {
     private themeService;
     readonly colorModes: readonly ["light", "dark", "system"];
     readonly styleVariants: StyleVariantConfig[];
-    readonly currentColorMode: _angular_core.WritableSignal<string>;
-    readonly currentStyleVariant: _angular_core.WritableSignal<StyleVariant>;
-    readonly searchQuery: _angular_core.WritableSignal<string>;
-    readonly selectedCategory: _angular_core.WritableSignal<string>;
+    readonly currentColorMode: i0.WritableSignal<string>;
+    readonly currentStyleVariant: i0.WritableSignal<StyleVariant>;
+    readonly searchQuery: i0.WritableSignal<string>;
+    readonly selectedCategory: i0.WritableSignal<string>;
     readonly allComponents: SharedComponentDef[];
-    readonly categories: _angular_core.Signal<string[]>;
-    readonly filteredComponents: _angular_core.Signal<SharedComponentDef[]>;
+    readonly categories: i0.Signal<string[]>;
+    readonly filteredComponents: i0.Signal<SharedComponentDef[]>;
     setColorMode(mode: string): void;
     setStyleVariant(variant: StyleVariant): Promise<void>;
     getComponentDemoContent(comp: SharedComponentDef): string;
     getComponentProps(comp: SharedComponentDef): Record<string, any>;
     setComponentProps(el: HTMLElement, props: Record<string, any>): void;
     renderComponent(card: HTMLElement, comp: SharedComponentDef): Promise<void>;
-    static ɵfac: _angular_core.ɵɵFactoryDeclaration<UiShowcaseComponent, never>;
-    static ɵcmp: _angular_core.ɵɵComponentDeclaration<UiShowcaseComponent, "app-ui-showcase", never, {}, {}, never, never, true, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<UiShowcaseComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<UiShowcaseComponent, "app-ui-showcase", never, {}, {}, never, never, true, never>;
 }
 
-export { AppAvatar, AppBadge, AppBottomPanel, AppButton, AppCanvas, AppCard, AppChip, AppComponentPalette, AppConfirmDialog, AppDataTable, AppDialog, AppEmptyState, AppFooter, AppHeader, AppIcon, AppInput, AppJsonView, AppLanguageSelector, AppLoading, AppModal, AppPageContainer, AppPageToolbar, AppPagination, AppProgressBar, AppPropertiesPanel, AppRadio, AppSegmentSelector, AppSelect, AppShortcutsOverlay, AppSidebar, AppSlider, AppSplitView, AppStatsCard, AppSwapButton, AppSwitch, AppTableView, AppTabs, AppTextInput, AppTextarea, AppThemeToggle, AppToast, AppTranslationOutput, ComponentRegistryService, CrudService, DataBindingResolver, EventBusService, GuardService, InvokeWrapperService, SchemaFetcherService, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, StyleResolver, TextComponent, ThemeService, UiShowcaseComponent, components, dataComponents, feedbackComponents, getAllStyleVariants, getCurrentStyle, getStyleClassPrefix, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, layoutComponents, loadStyleVariant, setCurrentStyle, uiComponents };
-export type { AvatarSize, BadgeSize, BadgeVariant, BottomPanelTab, ButtonSize, ButtonStyle, ButtonVariant, CanvasElement, ColorMode, ComponentBehavior, ComponentDef, DataBinding, DataTableColumn, DialogSize, ElementConfig, ElementEvents, ElementProperty, GridPosition, IconName, InputType, LanguageOption, Layout, LoadingSize, ModalSize, Page, PaletteCategory, RenderContext, ShortcutEntry, SidebarItem, StyleVariant, TableColumn, Theme, ThemeConfig, ToastNotification, ToastType, ToolbarAction, UiSchema };
+export { AppAvatar, AppBadge, AppBottomPanel, AppButton, AppCanvas, AppCard, AppChip, AppComponentPalette, AppConfirmDialog, AppDataTable, AppDialog, AppEmptyState, AppFooter, AppHeader, AppIcon, AppInput, AppJsonView, AppLanguageSelector, AppLoading, AppModal, AppPageContainer, AppPageToolbar, AppPagination, AppProgressBar, AppPropertiesPanel, AppRadio, AppSegmentSelector, AppSelect, AppShortcutsOverlay, AppSidebar, AppSlider, AppSplitView, AppStatsCard, AppSwapButton, AppSwitch, AppTableView, AppTabs, AppTextInput, AppTextarea, AppThemeToggle, AppToast, AppTranslationOutput, ComponentRegistryService, CrudService, DataBindingResolverService, ErrorType, EventBusService, GuardService, InvokeWrapperService, LayoutEngineService, ResponseStatus, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, ThemeService, UiShowcaseComponent, addEdge, addNode, bubbleSort, components, createGraph, dataComponents, dijkstra, feedbackComponents, formatError, getAllStyleVariants, getCurrentStyle, getErrorMessage, getStyleClassPrefix, insertionSort, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isError, isSuccess, layoutComponents, loadStyleVariant, mapResponse, mergeSort, parseError, quickSort, setCurrentStyle, uiComponents, unwrapResponse };
+export type { AppError, AvatarSize, BadgeSize, BadgeVariant, BottomPanelTab, ButtonSize, ButtonStyle, ButtonVariant, ColorMode, CompareFn, ComponentBehavior, ComponentDef, DataBinding, DataTableColumn, DialogSize, ElementConfig, ElementEvents, ElementProperty, Graph, GraphEdge, GridPosition, GridTemplate, IconName, InputType, LanguageOption, Layout, LoadingSize, ModalSize, Page, PaletteCategory, RenderContext, Response, ShortcutEntry, SidebarItem, StyleVariant, TableColumn, Theme, ThemeConfig, ToastNotification$1 as ToastNotification, ToastType, ToolbarAction, UiSchema };

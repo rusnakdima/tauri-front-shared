@@ -31,7 +31,7 @@ export class UiShowcaseComponent {
   readonly styleVariants = getAllStyleVariants();
 
   readonly currentColorMode = signal<string>(
-    this.themeService.colorMode()
+    this.themeService.effectiveColorMode()
   );
   readonly currentStyleVariant = signal<StyleVariant>(getCurrentStyle());
   readonly searchQuery = signal("");
@@ -68,7 +68,7 @@ export class UiShowcaseComponent {
 
   setColorMode(mode: string) {
     this.themeService.setMode(mode as "light" | "dark" | "system");
-    this.currentColorMode.set(this.themeService.colorMode());
+    this.currentColorMode.set(this.themeService.effectiveColorMode());
   }
 
   async setStyleVariant(variant: StyleVariant) {

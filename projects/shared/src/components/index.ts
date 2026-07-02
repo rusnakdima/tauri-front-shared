@@ -44,4 +44,3 @@ export * from "./translation-output/translation-output.component";
 export * from "./toast/toast-component";
 export * from "./theme-toggle/theme-toggle.component";
 export * from "./shortcuts-overlay/shortcuts-overlay.component";
-export * from "../core/lib/schema-router/text.component";

@@ -2,13 +2,10 @@ import { __decorate } from 'tslib';
 import { LitElement, css, html } from 'lit';
 import { property, customElement, state } from 'lit/decorators.js';
 import * as i0 from '@angular/core';
-import { Input, CUSTOM_ELEMENTS_SCHEMA, Component, Injectable, inject, signal, computed, effect } from '@angular/core';
-import * as i1 from '@angular/common';
+import { signal, computed, Injectable, inject, Injector, runInInjectionContext, effect, ViewChild, CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
 import { invoke } from '@tauri-apps/api/core';
-import * as i1$1 from '@angular/forms';
+import * as i1 from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 
 let AppButton = class AppButton extends LitElement {
@@ -5883,1001 +5880,162 @@ AppShortcutsOverlay = __decorate([
     customElement("app-shortcuts-overlay")
 ], AppShortcutsOverlay);
 
-class TextComponent {
-    tag = "span";
-    text = "";
-    classes = "";
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: TextComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: TextComponent, isStandalone: true, selector: "app-text", inputs: { tag: "tag", text: "text", classes: "classes" }, ngImport: i0, template: "@if (tag === 'h1') {\n  <h1 [class]=\"classes\">{{ text }}</h1>\n} @else if (tag === 'h2') {\n  <h2 [class]=\"classes\">{{ text }}</h2>\n} @else if (tag === 'p') {\n  <p [class]=\"classes\">{{ text }}</p>\n} @else if (tag === 'footer') {\n  <footer [class]=\"classes\">{{ text }}</footer>\n} @else {\n  <span [class]=\"classes\">{{ text }}</span>\n}\n", styles: [""] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: TextComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-text", standalone: true, schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (tag === 'h1') {\n  <h1 [class]=\"classes\">{{ text }}</h1>\n} @else if (tag === 'h2') {\n  <h2 [class]=\"classes\">{{ text }}</h2>\n} @else if (tag === 'p') {\n  <p [class]=\"classes\">{{ text }}</p>\n} @else if (tag === 'footer') {\n  <footer [class]=\"classes\">{{ text }}</footer>\n} @else {\n  <span [class]=\"classes\">{{ text }}</span>\n}\n" }]
-        }], propDecorators: { tag: [{
-                type: Input
-            }], text: [{
-                type: Input
-            }], classes: [{
-                type: Input
-            }] } });
-
 // Re-export Lit web components from local source files.
 // These will be compiled by ng-packagr.
 
-class GuardService {
-    guardRegistry = new Map();
-    constructor() {
-        this.registerBuiltInGuards();
+class SignalStoreService {
+    _state = signal({}, ...(ngDevMode ? [{ debugName: "_state" }] : []));
+    state = computed(() => this._state(), ...(ngDevMode ? [{ debugName: "state" }] : []));
+    set(key, value) {
+        this._state.update((state) => ({
+            ...state,
+            [key]: value,
+        }));
     }
-    registerBuiltInGuards() {
-        // Auth guard
-        this.register("auth", async () => {
-            const isAuthenticated = this.checkAuthentication();
-            return {
-                allowed: isAuthenticated,
-                redirectTo: isAuthenticated ? undefined : "/login",
-                message: isAuthenticated ? undefined : "Authentication required",
-            };
-        });
-        // Role guard
-        this.register("role", async (params) => {
-            const requiredRole = params?.role;
-            if (!requiredRole) {
-                return { allowed: true };
-            }
-            const hasRole = this.checkRole(requiredRole);
-            return {
-                allowed: hasRole,
-                redirectTo: hasRole ? undefined : "/unauthorized",
-                message: hasRole ? undefined : `Role "${requiredRole}" required`,
-            };
-        });
-        // Permission guard
-        this.register("permission", async (params) => {
-            const permission = params?.permission;
-            if (!permission) {
-                return { allowed: true };
-            }
-            const hasPermission = this.checkPermission(permission);
-            return {
-                allowed: hasPermission,
-                redirectTo: hasPermission ? undefined : "/forbidden",
-                message: hasPermission ? undefined : `Permission "${permission}" required`,
-            };
-        });
-        // Theme guard
-        this.register("theme", async (params) => {
-            const allowedTheme = params?.theme;
-            if (!allowedTheme) {
-                return { allowed: true };
-            }
-            const currentTheme = this.getCurrentTheme();
-            const allowed = currentTheme === allowedTheme;
-            return { allowed };
+    get(key) {
+        return this._state()[key];
+    }
+    update(key, fn) {
+        const current = this.get(key);
+        this.set(key, fn(current));
+    }
+    delete(key) {
+        this._state.update((state) => {
+            const { [key]: _, ...rest } = state;
+            return rest;
         });
     }
-    register(name, guard) {
-        this.guardRegistry.set(name, guard);
+    keys() {
+        return Object.keys(this._state());
     }
-    unregister(name) {
-        this.guardRegistry.delete(name);
+    has(key) {
+        return key in this._state();
     }
-    async canActivate(guardType, params) {
-        const guard = this.guardRegistry.get(guardType);
-        if (!guard) {
-            console.warn(`GuardService: Unknown guard "${guardType}"`);
-            return true; // Default to allowed for unknown guards
-        }
-        try {
-            const result = await guard(params);
-            return result.allowed;
-        }
-        catch (err) {
-            console.error(`GuardService: Error in guard "${guardType}":`, err);
-            return false;
-        }
+    clear() {
+        this._state.set({});
     }
-    async evaluate(guardType, params) {
-        const guard = this.guardRegistry.get(guardType);
-        if (!guard) {
-            return { allowed: true };
-        }
-        try {
-            return await guard(params);
-        }
-        catch (err) {
-            console.error(`GuardService: Error in guard "${guardType}":`, err);
-            return { allowed: false, message: "Guard evaluation failed" };
-        }
+    toJSON() {
+        return this._state();
     }
-    hasGuard(name) {
-        return this.guardRegistry.has(name);
+    fromJSON(json) {
+        this._state.set(json);
     }
-    getRegisteredGuards() {
-        return Array.from(this.guardRegistry.keys());
+    patch(patch) {
+        this._state.update((state) => ({
+            ...state,
+            ...patch,
+        }));
     }
-    checkAuthentication() {
-        // Check localStorage or a service
-        const token = localStorage.getItem("auth_token");
-        return !!token;
-    }
-    checkRole(role) {
-        const userRole = localStorage.getItem("user_role");
-        return userRole === role;
-    }
-    checkPermission(permission) {
-        const permissions = JSON.parse(localStorage.getItem("permissions") ?? "[]");
-        return Array.isArray(permissions) && permissions.includes(permission);
-    }
-    getCurrentTheme() {
-        return localStorage.getItem("theme-mode") ?? "light";
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, providedIn: "root" });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, providedIn: "root" });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }], ctorParameters: () => [] });
-
-class SchemaRouterService {
-    guardService = inject(GuardService, { optional: true });
-    _schema = signal(null, ...(ngDevMode ? [{ debugName: "_schema" }] : []));
-    _currentPage = signal(null, ...(ngDevMode ? [{ debugName: "_currentPage" }] : []));
-    _currentLayout = signal(null, ...(ngDevMode ? [{ debugName: "_currentLayout" }] : []));
-    _currentRoute = signal("", ...(ngDevMode ? [{ debugName: "_currentRoute" }] : []));
-    _params = signal({}, ...(ngDevMode ? [{ debugName: "_params" }] : []));
-    _queryParams = signal({}, ...(ngDevMode ? [{ debugName: "_queryParams" }] : []));
-    _isLoading = signal(false, ...(ngDevMode ? [{ debugName: "_isLoading" }] : []));
-    _error = signal(null, ...(ngDevMode ? [{ debugName: "_error" }] : []));
-    schema = this._schema.asReadonly();
-    currentPage = this._currentPage.asReadonly();
-    currentLayout = this._currentLayout.asReadonly();
-    currentRoute = this._currentRoute.asReadonly();
-    params = this._params.asReadonly();
-    queryParams = this._queryParams.asReadonly();
-    isLoading = this._isLoading.asReadonly();
-    error = this._error.asReadonly();
-    hasSchema = computed(() => this._schema() !== null, ...(ngDevMode ? [{ debugName: "hasSchema" }] : []));
-    currentPageId = computed(() => this._currentPage()?.id ?? null, ...(ngDevMode ? [{ debugName: "currentPageId" }] : []));
-    currentPageTitle = computed(() => this._currentPage()?.meta?.title ?? "", ...(ngDevMode ? [{ debugName: "currentPageTitle" }] : []));
-    setSchema(schema) {
-        this._schema.set(schema);
-        this._error.set(null);
-    }
-    clearSchema() {
-        this._schema.set(null);
-        this._currentPage.set(null);
-        this._currentLayout.set(null);
-        this._params.set({});
-        this._queryParams.set({});
-    }
-    async navigate(route, options = {}) {
-        this._isLoading.set(true);
-        this._error.set(null);
-        try {
-            const matched = this.resolveRoute(route);
-            if (!matched) {
-                this._error.set(`Route not found: ${route}`);
-                return false;
-            }
-            const { page, params } = matched;
-            // Run guards if configured
-            if (page && this.guardService) {
-                const pageGuards = page.guards;
-                if (pageGuards?.length) {
-                    for (const guard of pageGuards) {
-                        const allowed = await this.guardService.canActivate(guard.type, guard.params);
-                        if (!allowed) {
-                            this._error.set(`Navigation blocked by guard: ${guard.type}`);
-                            return false;
-                        }
-                    }
-                }
-            }
-            if (options.queryParams) {
-                this._queryParams.set(options.queryParams);
-            }
-            this._currentRoute.set(route);
-            this._params.set(params);
-            if (page) {
-                this._currentPage.set(page);
-                // Load layout if specified
-                if (page.layout && this._schema()) {
-                    const layout = this._schema().layouts.find((l) => l.id === page.layout);
-                    this._currentLayout.set(layout ?? null);
-                }
-                else {
-                    this._currentLayout.set(null);
-                }
-            }
-            return true;
-        }
-        catch (err) {
-            this._error.set(err instanceof Error ? err.message : "Navigation failed");
-            return false;
-        }
-        finally {
-            this._isLoading.set(false);
-        }
-    }
-    resolveRoute(route) {
-        const schema = this._schema();
-        if (!schema)
-            return null;
-        // Exact match first
-        let page = schema.pages.find((p) => p.route === route || p.id === route);
-        if (page) {
-            return { page, layout: null, params: {} };
-        }
-        // Try pattern matching with params
-        for (const p of schema.pages) {
-            const { match, params } = this.matchRoute(p.route, route);
-            if (match) {
-                const layout = p.layout ? schema.layouts.find((l) => l.id === p.layout) ?? null : null;
-                return { page: p, layout, params };
-            }
-        }
-        return null;
-    }
-    matchRoute(pattern, path) {
-        const patternParts = pattern.split("/").filter(Boolean);
-        const pathParts = path.split("/").filter(Boolean);
-        const params = {};
-        if (patternParts.length !== pathParts.length) {
-            return { match: false, params: {} };
-        }
-        for (let i = 0; i < patternParts.length; i++) {
-            const p = patternParts[i];
-            const a = pathParts[i];
-            if (p.startsWith(":")) {
-                // Parameter
-                params[p.slice(1)] = a;
-            }
-            else if (p !== a) {
-                return { match: false, params: {} };
-            }
-        }
-        return { match: true, params };
-    }
-    getPage(pageId) {
-        const schema = this._schema();
-        if (!schema)
-            return null;
-        return schema.pages.find((p) => p.id === pageId) ?? null;
-    }
-    getLayout(layoutId) {
-        const schema = this._schema();
-        if (!schema)
-            return null;
-        return schema.layouts.find((l) => l.id === layoutId) ?? null;
-    }
-    getAllPages() {
-        return this._schema()?.pages ?? [];
-    }
-    getAllLayouts() {
-        return this._schema()?.layouts ?? [];
-    }
-    updateQueryParams(params) {
-        this._queryParams.set(params);
-    }
-    reset() {
-        this._currentRoute.set("");
-        this._currentPage.set(null);
-        this._currentLayout.set(null);
-        this._params.set({});
-        this._queryParams.set({});
-        this._isLoading.set(false);
-        this._error.set(null);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
         }] });
-
-class ComponentRegistryService {
-    registry = new Map();
-    componentManifest = {};
-    constructor() {
-        this.registerBuiltInComponents();
-        this.loadComponentManifest();
-    }
-    registerBuiltInComponents() {
-        // Built-in UI components
-        const components = {
-            // Layout
-            header: { selector: "app-header" },
-            footer: { selector: "app-footer" },
-            sidebar: { selector: "app-sidebar" },
-            "page-container": { selector: "app-page-container" },
-            "page-toolbar": { selector: "app-page-toolbar" },
-            "split-view": { selector: "app-split-view" },
-            "main-editor": { selector: "app-main-editor" },
-            // UI
-            button: { selector: "app-button" },
-            input: { selector: "app-input" },
-            textarea: { selector: "app-textarea" },
-            select: { selector: "app-select" },
-            checkbox: { selector: "app-checkbox" },
-            radio: { selector: "app-radio" },
-            switch: { selector: "app-switch" },
-            slider: { selector: "app-slider" },
-            badge: { selector: "app-badge" },
-            avatar: { selector: "app-avatar" },
-            chip: { selector: "app-chip" },
-            tabs: { selector: "app-tabs" },
-            "empty-state": { selector: "app-empty-state" },
-            loading: { selector: "app-loading" },
-            "progress-bar": { selector: "app-progress-bar" },
-            pagination: { selector: "app-pagination" },
-            tooltip: { selector: "app-tooltip" },
-            // Data
-            card: { selector: "app-card" },
-            "stats-card": { selector: "app-stats-card" },
-            "table-view": { selector: "app-table-view" },
-            "data-table": { selector: "app-data-table" },
-            "json-view": { selector: "app-json-view" },
-            "segment-selector": { selector: "app-segment-selector" },
-            // Feedback
-            dialog: { selector: "app-dialog" },
-            "confirm-dialog": { selector: "app-confirm-dialog" },
-            toast: { selector: "app-toast" },
-            snackbar: { selector: "app-snackbar" },
-            modal: { selector: "app-modal" },
-            "command-palette": { selector: "app-command-palette" },
-            // Grid
-            "grid-container": { selector: "app-grid-container" },
-            "grid-item": { selector: "app-grid-item" },
-            "grid-area": { selector: "app-grid-area" },
-            // Designer
-            "designer-sidebar": { selector: "app-designer-sidebar" },
-            "component-palette": { selector: "app-component-palette" },
-            canvas: { selector: "app-canvas" },
-            "canvas-toolbar": { selector: "app-canvas-toolbar" },
-            "properties-panel": { selector: "app-properties-panel" },
-            "bottom-panel": { selector: "app-bottom-panel" },
-        };
-        Object.entries(components).forEach(([id, def]) => {
-            this.register(id, def);
-        });
-    }
-    async loadComponentManifest() {
-        try {
-            const response = await fetch("/assets/component-manifest.json");
-            if (response.ok) {
-                this.componentManifest = await response.json();
-            }
-        }
-        catch {
-            // Manifest not found, use built-in registry only
-        }
-    }
-    register(componentId, definition) {
-        this.registry.set(componentId, definition);
-    }
-    unregister(componentId) {
-        this.registry.delete(componentId);
-    }
-    get(componentId) {
-        return this.registry.get(componentId);
-    }
-    getSelector(componentId) {
-        const def = this.registry.get(componentId);
-        if (!def) {
-            console.warn(`ComponentRegistry: Unknown component "${componentId}", using fallback selector`);
-            return `app-${componentId}`;
-        }
-        return def.selector;
-    }
-    has(componentId) {
-        return this.registry.has(componentId);
-    }
-    resolveBehavior(componentId) {
-        const def = this.registry.get(componentId);
-        return def?.behaviors;
-    }
-    mergeBehavior(componentId, schemaBehavior) {
-        const registered = this.resolveBehavior(componentId) ?? {};
-        if (!schemaBehavior)
-            return registered;
-        return {
-            selfMethods: { ...registered.selfMethods, ...schemaBehavior.selfMethods },
-            classSetters: { ...registered.classSetters, ...schemaBehavior.classSetters },
-            eventHandlers: this.mergeEventHandlers(registered.eventHandlers, schemaBehavior.eventHandlers),
-        };
-    }
-    mergeEventHandlers(base, override) {
-        if (!base && !override)
-            return undefined;
-        if (!base)
-            return override;
-        if (!override)
-            return base;
-        const merged = { ...base };
-        Object.entries(override).forEach(([event, handlers]) => {
-            const existing = merged[event] ?? [];
-            merged[event] = [...existing, ...handlers];
-        });
-        return merged;
-    }
-    getAllComponentIds() {
-        return Array.from(this.registry.keys());
-    }
-    getComponentsByCategory(category) {
-        // Filter components by category from manifest
-        const manifest = this.componentManifest[category];
-        if (!manifest)
-            return [];
-        return Object.keys(manifest);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentRegistryService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentRegistryService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentRegistryService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }], ctorParameters: () => [] });
-
-class DataBindingResolver {
-    functionRegistry = new Map();
-    dataStore = new Map();
-    registerFunction(name, fn) {
-        this.functionRegistry.set(name, fn);
-    }
-    unregisterFunction(name) {
-        this.functionRegistry.delete(name);
-    }
-    setData(entity, data) {
-        this.dataStore.set(entity, data);
-    }
-    getData(entity) {
-        return this.dataStore.get(entity);
-    }
-    clearData(entity) {
-        if (entity) {
-            this.dataStore.delete(entity);
-        }
-        else {
-            this.dataStore.clear();
-        }
-    }
-    resolveBinding(binding) {
-        if (!binding)
-            return null;
-        return this.resolve(binding.entity, binding.field);
-    }
-    resolveDataBinding(binding) {
-        return this.resolveBinding(binding);
-    }
-    resolve(entity, field) {
-        const data = this.dataStore.get(entity);
-        if (!data)
-            return null;
-        if (!field)
-            return data;
-        // Support dot notation: "address.city"
-        const parts = field.split(".");
-        let value = data;
-        for (const part of parts) {
-            if (value && typeof value === "object" && part in value) {
-                value = value[part];
-            }
-            else {
-                return null;
-            }
-        }
-        return value;
-    }
-    resolveExpression(expression) {
-        // Parse and evaluate simple expressions like {{ user.name }} or {{ users.length }}
-        const templateRegex = /\{\{([^}]+)\}\}/g;
-        let result = expression;
-        let match;
-        while ((match = templateRegex.exec(expression)) !== null) {
-            const path = match[1].trim();
-            const value = this.resolvePath(path);
-            result = result.replace(match[0], String(value ?? ""));
-        }
-        return result;
-    }
-    resolvePath(path) {
-        const parts = path.split(".");
-        if (parts.length === 1) {
-            // Check if it's a registered function
-            if (this.functionRegistry.has(parts[0])) {
-                return this.functionRegistry.get(parts[0])?.call(null);
-            }
-            // Otherwise check data store
-            for (const data of this.dataStore.values()) {
-                if (parts[0] in data) {
-                    return data[parts[0]];
-                }
-            }
-            return null;
-        }
-        const entity = parts[0];
-        const field = parts.slice(1).join(".");
-        return this.resolve(entity, field);
-    }
-    evaluateCondition(condition) {
-        // Support simple conditions: "user.age > 18", "user.name == 'John'"
-        const match = condition.match(/^(.+?)\s*(==|!=|>=|<=|>|<)\s*(.+)$/);
-        if (!match)
-            return false;
-        const [, left, op, right] = match;
-        const leftVal = this.resolveExpression(left.trim());
-        const rightVal = this.resolveExpression(right.trim());
-        switch (op) {
-            case "==": return leftVal == rightVal;
-            case "!=": return leftVal != rightVal;
-            case ">": return Number(leftVal) > Number(rightVal);
-            case "<": return Number(leftVal) < Number(rightVal);
-            case ">=": return Number(leftVal) >= Number(rightVal);
-            case "<=": return Number(leftVal) <= Number(rightVal);
-            default: return false;
-        }
-    }
-    callFunction(fnName, args = []) {
-        const fn = this.functionRegistry.get(fnName);
-        if (!fn) {
-            console.warn(`DataBindingResolver: Function "${fnName}" not found`);
-            return null;
-        }
-        return fn.apply(null, args);
-    }
-    getRegisteredFunctions() {
-        return Array.from(this.functionRegistry.keys());
-    }
-    hasFunction(fnName) {
-        return this.functionRegistry.has(fnName);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataBindingResolver, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataBindingResolver, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataBindingResolver, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-class StyleResolver {
-    DARK_MODE_PREFIX = "dark:";
-    RESPONSIVE_PREFIXES = ["sm:", "md:", "lg:", "xl:", "2xl:"];
-    IMPORTANT_PREFIX = "!";
-    resolveClasses(classes, options = {}) {
-        const { extraClasses = "" } = options;
-        const allClasses = `${classes} ${extraClasses}`.trim();
-        return {
-            classes: this.processClasses(allClasses),
-            inlineStyles: {},
-        };
-    }
-    processClasses(classes) {
-        const resolved = [];
-        const classList = classes.split(/\s+/).filter(Boolean);
-        for (const cls of classList) {
-            const processed = this.processClass(cls);
-            if (processed) {
-                resolved.push(processed);
-            }
-        }
-        return resolved.join(" ");
-    }
-    processClass(cls) {
-        // Handle !important prefix (TailwindCSS v4)
-        let important = false;
-        let className = cls;
-        if (className.startsWith(this.IMPORTANT_PREFIX)) {
-            important = true;
-            className = className.slice(1);
-        }
-        // If important, wrap in ! prefix (for TailwindCSS v4)
-        // But also convert to proper format
-        const result = important ? `!${className}` : className;
-        return result;
-    }
-    resolveGridPosition(position) {
-        const gridClasses = [];
-        if (position.colStart != null) {
-            gridClasses.push(`!col-start-${position.colStart}`);
-        }
-        if (position.rowStart != null) {
-            gridClasses.push(`!row-start-${position.rowStart}`);
-        }
-        if (position.colSpan != null) {
-            gridClasses.push(`!col-span-${position.colSpan}`);
-        }
-        if (position.rowSpan != null) {
-            gridClasses.push(`!row-span-${position.rowSpan}`);
-        }
-        if (position.column != null) {
-            gridClasses.push(`!col-${position.column}`);
-        }
-        if (position.row != null) {
-            gridClasses.push(`!row-${position.row}`);
-        }
-        return gridClasses.join(" ");
-    }
-    composeClasses(...classGroups) {
-        return classGroups.filter(Boolean).join(" ");
-    }
-    getVariantClasses(baseClass, variant) {
-        return `${baseClass}-${variant}`;
-    }
-    resolveResponsiveClasses(classes, breakpoint) {
-        const classList = classes.split(/\s+/).filter(Boolean);
-        const prefix = `${breakpoint}:`;
-        return classList
-            .map((cls) => {
-            // If already has a responsive prefix, don't add another
-            if (this.RESPONSIVE_PREFIXES.some((p) => cls.startsWith(p))) {
-                return cls;
-            }
-            return `${prefix}${cls}`;
-        })
-            .join(" ");
-    }
-    resolveDarkModeClasses(classes) {
-        const classList = classes.split(/\s+/).filter(Boolean);
-        return classList
-            .map((cls) => {
-            // If already has dark: prefix, return as-is
-            if (cls.startsWith(this.DARK_MODE_PREFIX)) {
-                return cls;
-            }
-            // If it's a color-related class, add dark: variant
-            if (this.isColorClass(cls)) {
-                return `${this.DARK_MODE_PREFIX}${cls}`;
-            }
-            return cls;
-        })
-            .join(" ");
-    }
-    isColorClass(cls) {
-        const colorPrefixes = [
-            "text-", "bg-", "border-", "fill-", "stroke-",
-            "text-", "bg-", "ring-", "shadow-", "decoration-",
-        ];
-        return colorPrefixes.some((prefix) => cls.startsWith(prefix));
-    }
-    buildCssVariables(vars) {
-        return Object.entries(vars)
-            .map(([k, v]) => `--${k}: ${v}`)
-            .join("; ");
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: StyleResolver, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: StyleResolver, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: StyleResolver, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-const LIGHT_THEME_CSS = `
-  :root {
-    --bg-primary: #f8fafc;
-    --bg-secondary: #f1f5f9;
-    --bg-elevated: #ffffff;
-    --bg-hover: #e2e8f0;
-    --bg-active: #cbd5e1;
-    --text-primary: #1e293b;
-    --text-secondary: #475569;
-    --text-muted: #94a3b8;
-    --text-on-accent: #ffffff;
-    --text-on-error: #ffffff;
-    --text-on-warning: #ffffff;
-    --text-on-success: #ffffff;
-    --text-on-info: #ffffff;
-    --border-color: #e2e8f0;
-    --border-subtle: #f1f5f9;
-    --accent: #3b82f6;
-    --accent-hover: #2563eb;
-    --accent-light: #dbeafe;
-    --error: #ef4444;
-    --error-light: #fee2e2;
-    --warning: #f59e0b;
-    --warning-light: #fef3c7;
-    --success: #22c55e;
-    --success-light: #dcfce7;
-    --info: #06b6d4;
-    --info-light: #cffafe;
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  }
-`;
-const DARK_THEME_CSS = `
-  [data-theme="dark"] {
-    --bg-primary: #0d1117;
-    --bg-secondary: #161b22;
-    --bg-elevated: #21262d;
-    --bg-hover: #30363d;
-    --bg-active: #484f58;
-    --text-primary: #e6edf3;
-    --text-secondary: #8b949e;
-    --text-muted: #6e7681;
-    --text-on-accent: #ffffff;
-    --text-on-error: #ffffff;
-    --text-on-warning: #ffffff;
-    --text-on-success: #ffffff;
-    --text-on-info: #ffffff;
-    --border-color: #30363d;
-    --border-subtle: #21262d;
-    --accent: #58a6ff;
-    --accent-hover: #79b8ff;
-    --accent-light: #1f3d5c;
-    --error: #f85149;
-    --error-light: #441b1b;
-    --warning: #d29922;
-    --warning-light: #3d2e0a;
-    --success: #3fb950;
-    --success-light: #1a3d2a;
-    --info: #39c5cf;
-    --info-light: #0d3d40;
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-  }
-`;
-class ThemeService {
-    _colorMode = signal("system", ...(ngDevMode ? [{ debugName: "_colorMode" }] : []));
-    _resolvedMode = signal("light", ...(ngDevMode ? [{ debugName: "_resolvedMode" }] : []));
-    _accentColor = signal("#3b82f6", ...(ngDevMode ? [{ debugName: "_accentColor" }] : []));
-    _customCssVars = signal({}, ...(ngDevMode ? [{ debugName: "_customCssVars" }] : []));
-    styleElement = null;
-    mediaQuery = null;
-    colorMode = this._colorMode.asReadonly();
-    resolvedMode = this._resolvedMode.asReadonly();
-    accentColor = this._accentColor.asReadonly();
-    isDark = computed(() => this._resolvedMode() === "dark", ...(ngDevMode ? [{ debugName: "isDark" }] : []));
-    isLight = computed(() => this._resolvedMode() === "light", ...(ngDevMode ? [{ debugName: "isLight" }] : []));
-    constructor() {
-        this.initTheme();
-        this.setupEffect();
-    }
-    initTheme() {
-        if (typeof window === "undefined")
-            return;
-        const saved = localStorage.getItem("theme-mode");
-        if (saved && ["light", "dark", "system"].includes(saved)) {
-            this._colorMode.set(saved);
-        }
-        const savedAccent = localStorage.getItem("theme-accent");
-        if (savedAccent) {
-            this._accentColor.set(savedAccent);
-        }
-        this.mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-        this.updateResolvedMode();
-    }
-    setupEffect() {
-        effect(() => {
-            const mode = this._colorMode();
-            localStorage.setItem("theme-mode", mode);
-            this.updateResolvedMode();
-            this.applyTheme();
-        });
-        effect(() => {
-            const accent = this._accentColor();
-            localStorage.setItem("theme-accent", accent);
-            this.applyTheme();
-        });
-    }
-    updateResolvedMode() {
-        const mode = this._colorMode();
-        if (mode === "system") {
-            const prefersDark = this.mediaQuery?.matches ?? false;
-            this._resolvedMode.set(prefersDark ? "dark" : "light");
-        }
-        else {
-            this._resolvedMode.set(mode);
-        }
-    }
-    injectStyles() {
-        if (typeof document === "undefined")
-            return;
-        if (!this.styleElement) {
-            this.styleElement = document.createElement("style");
-            this.styleElement.id = "theme-service-styles";
-            document.head.appendChild(this.styleElement);
-        }
-        let css = LIGHT_THEME_CSS + DARK_THEME_CSS;
-        // Apply custom accent color
-        const accent = this._accentColor();
-        css += `
-      :root {
-        --accent: ${accent} !important;
-        --accent-hover: ${this.darkenColor(accent, 15)} !important;
-        --accent-light: ${this.lightenColor(accent, 85)} !important;
-      }
-      [data-theme="dark"] {
-        --accent: ${accent} !important;
-        --accent-hover: ${this.lightenColor(accent, 10)} !important;
-        --accent-light: ${this.darkenColor(accent, 60)} !important;
-      }
-    `;
-        // Apply custom CSS variables
-        const customVars = this._customCssVars();
-        if (Object.keys(customVars).length > 0) {
-            css += `:root { ${Object.entries(customVars).map(([k, v]) => `--${k}: ${v}`).join("; ")} }`;
-        }
-        this.styleElement.textContent = css;
-    }
-    applyTheme() {
-        if (typeof document === "undefined")
-            return;
-        const resolved = this._resolvedMode();
-        const mode = this._colorMode();
-        document.body.setAttribute("data-theme", resolved);
-        if (mode === "system") {
-            document.body.removeAttribute("data-theme");
-        }
-        this.injectStyles();
-    }
-    toggle() {
-        const current = this._resolvedMode();
-        this._colorMode.set(current === "light" ? "dark" : "light");
-    }
-    setMode(mode) {
-        this._colorMode.set(mode);
-    }
-    setAccentColor(color) {
-        this._accentColor.set(color);
-    }
-    setCustomCssVariables(vars) {
-        this._customCssVars.set(vars);
-        this.applyTheme();
-    }
-    getThemeIcon() {
-        return this.isDark() ? "light_mode" : "dark_mode";
-    }
-    getCurrentTheme() {
-        return {
-            mode: this._colorMode(),
-            accentColor: this._accentColor(),
-            cssVariables: this._customCssVars(),
-        };
-    }
-    applyThemeConfig(config) {
-        if (config.mode)
-            this._colorMode.set(config.mode);
-        if (config.accentColor)
-            this._accentColor.set(config.accentColor);
-        if (config.cssVariables)
-            this._customCssVars.set(config.cssVariables);
-    }
-    darkenColor(hex, percent) {
-        return this.adjustColor(hex, -percent);
-    }
-    lightenColor(hex, percent) {
-        return this.adjustColor(hex, percent);
-    }
-    adjustColor(hex, percent) {
-        const num = parseInt(hex.replace("#", ""), 16);
-        const amt = Math.round(2.55 * percent);
-        const R = Math.min(255, Math.max(0, (num >> 16) + amt));
-        const G = Math.min(255, Math.max(0, ((num >> 8) & 0x00ff) + amt));
-        const B = Math.min(255, Math.max(0, (num & 0x0000ff) + amt));
-        return "#" + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }], ctorParameters: () => [] });
 
 class EventBusService {
-    subscriptions = new Map();
-    eventHistory = signal([], ...(ngDevMode ? [{ debugName: "eventHistory" }] : []));
-    toastQueue = signal([], ...(ngDevMode ? [{ debugName: "toastQueue" }] : []));
-    MAX_HISTORY = 100;
-    history = this.eventHistory.asReadonly();
-    pendingToasts = this.toastQueue.asReadonly();
-    hasToasts = computed(() => this.toastQueue().length > 0, ...(ngDevMode ? [{ debugName: "hasToasts" }] : []));
+    handlers = new Map();
+    toasts = signal([], ...(ngDevMode ? [{ debugName: "toasts" }] : []));
+    pendingToasts = this.toasts.asReadonly();
+    hasToasts = () => this.toasts().length > 0;
     emit(event, data) {
-        const timestamp = Date.now();
-        this.eventHistory.update((h) => [
-            ...h,
-            { event, data, timestamp },
-        ].slice(-this.MAX_HISTORY));
-        const subs = this.subscriptions.get(event) ?? [];
-        subs.forEach((sub) => {
-            try {
-                sub.handler.call(sub.context, data);
-            }
-            catch (err) {
-                console.error(`EventBus: Error in handler for "${event}":`, err);
-            }
-        });
+        const eventHandlers = this.handlers.get(event);
+        if (eventHandlers) {
+            eventHandlers.forEach((handler) => handler(data));
+        }
     }
     on(event, handler, context) {
-        const id = `${event}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        const sub = { id, event, handler, context };
-        const existing = this.subscriptions.get(event) ?? [];
-        this.subscriptions.set(event, [...existing, sub]);
-        return () => this.off(event, id);
+        if (!this.handlers.has(event)) {
+            this.handlers.set(event, new Set());
+        }
+        const eventHandlers = this.handlers.get(event);
+        const wrapped = context ? handler.bind(context) : handler;
+        eventHandlers.add(wrapped);
+        return () => this.off(event, wrapped);
     }
     once(event, handler, context) {
-        const id = `${event}-once-${Date.now()}`;
-        const wrappedHandler = (data) => {
-            handler.call(context, data);
-            this.off(event, id);
+        const wrapped = (...args) => {
+            this.off(event, wrapped);
+            handler.apply(context, args);
         };
-        const sub = { id, event, handler: wrappedHandler, context };
-        const existing = this.subscriptions.get(event) ?? [];
-        this.subscriptions.set(event, [...existing, sub]);
-        return () => this.off(event, id);
+        return this.on(event, wrapped);
     }
-    off(event, subscriptionId) {
-        const subs = this.subscriptions.get(event) ?? [];
-        const filtered = subs.filter((s) => s.id !== subscriptionId);
-        if (filtered.length > 0) {
-            this.subscriptions.set(event, filtered);
+    off(event, handler) {
+        if (!handler) {
+            this.handlers.delete(event);
+            return;
         }
-        else {
-            this.subscriptions.delete(event);
+        const eventHandlers = this.handlers.get(event);
+        if (eventHandlers) {
+            eventHandlers.delete(handler);
+            if (eventHandlers.size === 0) {
+                this.handlers.delete(event);
+            }
         }
     }
     offAll(event) {
         if (event) {
-            this.subscriptions.delete(event);
+            this.handlers.delete(event);
         }
         else {
-            this.subscriptions.clear();
+            this.handlers.clear();
         }
     }
     hasListeners(event) {
-        const subs = this.subscriptions.get(event) ?? [];
-        return subs.length > 0;
+        const handlers = this.handlers.get(event);
+        return handlers !== undefined && handlers.size > 0;
     }
     getListenerCount(event) {
-        return (this.subscriptions.get(event) ?? []).length;
+        return this.handlers.get(event)?.size ?? 0;
     }
-    // Toast-specific methods
-    showToast(message, type = "info", duration = 3000) {
-        const id = `toast-${Date.now()}`;
-        const toast = { id, message, type, duration };
-        this.toastQueue.update((q) => [...q, toast]);
+    generateId() {
+        return `toast-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    }
+    showToast(message, type, duration = 3000) {
+        const notification = {
+            id: this.generateId(),
+            message,
+            type: type ?? "info",
+            duration,
+        };
+        this.toasts.update((t) => [...t, notification]);
         if (duration > 0) {
-            setTimeout(() => this.dismissToast(id), duration);
+            setTimeout(() => this.dismissToast(notification.id), duration);
         }
-        this.emit("notification", toast);
-        return id;
+        return notification.id;
     }
     success(message, duration = 3000) {
         return this.showToast(message, "success", duration);
     }
-    error(message, duration = 5000) {
+    error(message, duration = 3000) {
         return this.showToast(message, "error", duration);
     }
-    warning(message, duration = 4000) {
+    warning(message, duration = 3000) {
         return this.showToast(message, "warning", duration);
     }
     info(message, duration = 3000) {
         return this.showToast(message, "info", duration);
     }
     dismissToast(id) {
-        this.toastQueue.update((q) => q.filter((t) => t.id !== id));
-        this.emit("toast-dismissed", id);
+        this.toasts.update((t) => t.filter((n) => n.id !== id));
     }
     dismissAllToasts() {
-        this.toastQueue.set([]);
-        this.emit("all-toasts-dismissed", undefined);
+        this.toasts.set([]);
     }
-    // Convenience: emit notification event (for schema-driven UI)
     notify(notification) {
-        return this.showToast(notification.message, notification.type, notification.duration);
+        const id = notification.id ?? this.generateId();
+        this.toasts.update((t) => [...t, { ...notification, id }]);
+        if (notification.duration > 0) {
+            setTimeout(() => this.dismissToast(id), notification.duration);
+        }
+        return id;
     }
-    // Get toast by ID
     getToast(id) {
-        return this.toastQueue().find((t) => t.id === id);
+        return this.toasts().find((t) => t.id === id);
     }
-    // Clear history
     clearHistory() {
-        this.eventHistory.set([]);
+        this.toasts.set([]);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: EventBusService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: EventBusService, providedIn: "root" });
@@ -6887,220 +6045,781 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
             args: [{ providedIn: "root" }]
         }] });
 
-class SchemaRendererService {
-    router = inject(SchemaRouterService);
-    componentRegistry = inject(ComponentRegistryService);
-    bindingResolver = inject(DataBindingResolver);
-    styleResolver = inject(StyleResolver);
-    themeService = inject(ThemeService);
-    eventBus = inject(EventBusService);
-    renderContexts = new Map();
-    async renderPage(pageId, container) {
-        const page = this.router.getPage(pageId);
-        if (!page) {
-            throw new Error(`Page not found: ${pageId}`);
-        }
-        await this.render(page, container);
+let CrudService$1 = class CrudService {
+    storage = signal(null, ...(ngDevMode ? [{ debugName: "storage" }] : []));
+    init(storage) {
+        this.storage.set(storage);
     }
-    async render(page, container) {
-        const context = this.createRenderContext(page);
-        this.renderContexts.set(page.id, context);
-        // Clear container
+    getStorage() {
+        const s = this.storage();
+        if (!s)
+            throw new Error("CrudService not initialized");
+        return s;
+    }
+    getCollection(collection) {
+        const data = this.getStorage().get(collection);
+        return data || [];
+    }
+    saveCollection(collection, data) {
+        this.getStorage().set(collection, data);
+    }
+    create(collection, item) {
+        const data = this.getCollection(collection);
+        const timestamp = Date.now();
+        const entity = {
+            ...item,
+            created_at: timestamp,
+            updated_at: timestamp,
+        };
+        data.push(entity);
+        this.saveCollection(collection, data);
+        this.addPending({
+            _op: "create",
+            _ts: timestamp,
+            id: entity.id,
+        });
+    }
+    read(collection, id) {
+        const data = this.getCollection(collection);
+        return (data.find((item) => item.id === id) || null);
+    }
+    update(collection, id, changes) {
+        const data = this.getCollection(collection);
+        const index = data.findIndex((item) => item.id === id);
+        if (index === -1)
+            return;
+        const timestamp = Date.now();
+        const updated = {
+            ...data[index],
+            ...changes,
+            updated_at: timestamp,
+        };
+        data[index] = updated;
+        this.saveCollection(collection, data);
+        this.addPending({
+            _op: "update",
+            _ts: timestamp,
+            id,
+            data: changes,
+        });
+    }
+    delete(collection, id) {
+        const data = this.getCollection(collection);
+        const filtered = data.filter((item) => item.id !== id);
+        this.saveCollection(collection, filtered);
+        this.addPending({
+            _op: "delete",
+            _ts: Date.now(),
+            id,
+        });
+    }
+    query(collection, q) {
+        let data = this.getCollection(collection);
+        if (q.filters) {
+            for (const filter of q.filters) {
+                data = this.applyFilter(data, filter);
+            }
+        }
+        if (q.sortBy) {
+            data = this.applySort(data, q.sortBy, q.sortAsc ?? true);
+        }
+        if (q.offset) {
+            data = data.slice(q.offset);
+        }
+        if (q.limit) {
+            data = data.slice(0, q.limit);
+        }
+        return data;
+    }
+    applyFilter(data, filter) {
+        return data.filter((item) => {
+            const value = item[filter.field];
+            switch (filter.operator) {
+                case "eq":
+                    return value === filter.value;
+                case "ne":
+                    return value !== filter.value;
+                case "gt":
+                    return value > filter.value;
+                case "gte":
+                    return value >= filter.value;
+                case "lt":
+                    return value < filter.value;
+                case "lte":
+                    return value <= filter.value;
+                case "contains":
+                    return String(value)
+                        .toLowerCase()
+                        .includes(String(filter.value).toLowerCase());
+                case "startsWith":
+                    return String(value)
+                        .toLowerCase()
+                        .startsWith(String(filter.value).toLowerCase());
+                case "endsWith":
+                    return String(value)
+                        .toLowerCase()
+                        .endsWith(String(filter.value).toLowerCase());
+                default:
+                    return true;
+            }
+        });
+    }
+    applySort(data, sortBy, asc) {
+        return [...data].sort((a, b) => {
+            const aVal = a[sortBy];
+            const bVal = b[sortBy];
+            if (aVal == null)
+                return 1;
+            if (bVal == null)
+                return -1;
+            const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+            return asc ? cmp : -cmp;
+        });
+    }
+    addPending(op) {
+        const pending = this.getStorage().get("_pending_ops") || [];
+        pending.push(op);
+        this.getStorage().set("_pending_ops", pending);
+    }
+    batchCreate(collection, items) {
+        const data = this.getCollection(collection);
+        const timestamp = Date.now();
+        for (const item of items) {
+            const entity = {
+                ...item,
+                created_at: timestamp,
+                updated_at: timestamp,
+            };
+            data.push(entity);
+        }
+        this.saveCollection(collection, data);
+    }
+    batchDelete(collection, ids) {
+        const data = this.getCollection(collection);
+        const filtered = data.filter((item) => !ids.includes(item.id));
+        this.saveCollection(collection, filtered);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, providedIn: "root" });
+};
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService$1, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }] });
+
+class ComponentRegistryService {
+    _componentRegistry = new Map();
+    _componentModules = new Map();
+    registerComponent(def) {
+        this._componentRegistry.set(def.selector, def);
+    }
+    registerComponents(defs) {
+        for (const def of defs) {
+            this.registerComponent(def);
+        }
+    }
+    getComponent(selector) {
+        return this._componentRegistry.get(selector);
+    }
+    registerComponentModule(selector, module) {
+        const modules = new Map(this._componentModules);
+        modules.set(selector, module);
+        this._componentModules = modules;
+    }
+    async loadComponentModule(selector) {
+        const cached = this._componentModules.get(selector);
+        if (cached) {
+            const constructor = cached["default"];
+            if (constructor)
+                return constructor;
+        }
+        const def = this.getComponent(selector);
+        if (!def) {
+            throw new Error(`Component not found: ${selector}`);
+        }
+        const module = (await import(/* @vite-ignore */ def.selector));
+        this.registerComponentModule(selector, module);
+        const constructor = module["default"];
+        if (!constructor) {
+            throw new Error(`Module ${selector} does not export a default CustomElementConstructor`);
+        }
+        return constructor;
+    }
+    getComponentModules() {
+        return this._componentModules;
+    }
+    loadComponentsFromSchema(pages) {
+        const registry = new Map();
+        for (const page of pages) {
+            const comps = page.canvasElements || page.components || [];
+            for (const comp of comps) {
+                registry.set(comp.selector, comp);
+            }
+        }
+        this._componentRegistry = registry;
+    }
+    hasComponent(selector) {
+        return this._componentRegistry.has(selector);
+    }
+    getRegisteredSelectors() {
+        return Array.from(this._componentRegistry.keys());
+    }
+}
+
+class DataBindingResolverService {
+    signalStore;
+    crudService;
+    constructor(signalStore, crudService) {
+        this.signalStore = signalStore;
+        this.crudService = crudService;
+    }
+    resolveDataBinding(binding) {
+        if (typeof binding === "string") {
+            const pattern = /\{\{data\.([^}]+)\}\}/g;
+            const result = binding.replace(pattern, (_, path) => {
+                const value = this.getDataBindingValue(path);
+                return value !== undefined ? String(value) : binding;
+            });
+            return result;
+        }
+        if (binding && typeof binding === "object" && "entity" in binding) {
+            const db = binding;
+            if (db.operation) {
+                return this.executeCrudOperation(db);
+            }
+            const entityValue = this.signalStore.get(db.entity);
+            if (db.field !== undefined) {
+                return this.getNestedValue(entityValue, db.field);
+            }
+            return entityValue;
+        }
+        return binding;
+    }
+    resolveProps(props, _componentId) {
+        const resolved = {};
+        for (const [key, value] of Object.entries(props)) {
+            resolved[key] = this.resolveDataBinding(value);
+        }
+        return resolved;
+    }
+    executeCrudOperation(binding) {
+        const { entity, operation, params } = binding;
+        const resolvedParams = this.resolveParams(params || {});
+        switch (operation) {
+            case "find": {
+                const query = this.buildCrudQuery(resolvedParams);
+                return this.crudService.query(entity, query);
+            }
+            case "create": {
+                const item = resolvedParams;
+                this.crudService.create(entity, item);
+                return;
+            }
+            case "update": {
+                const id = params["id"];
+                this.crudService.update(entity, id, resolvedParams);
+                return;
+            }
+            case "delete": {
+                const id = params["id"];
+                this.crudService.delete(entity, id);
+                return;
+            }
+            default:
+                return this.signalStore.get(entity);
+        }
+    }
+    resolveParams(params) {
+        const resolved = {};
+        for (const [key, value] of Object.entries(params)) {
+            resolved[key] = this.resolveDataBinding(value);
+        }
+        return resolved;
+    }
+    buildCrudQuery(params) {
+        const query = {};
+        if (params["filter"]) {
+            query.filters = this.buildFilters(params["filter"]);
+        }
+        if (params["sortBy"]) {
+            query.sortBy = params["sortBy"];
+            query.sortAsc = params["sortAsc"] !== false;
+        }
+        if (params["limit"]) {
+            query.limit = params["limit"];
+        }
+        if (params["offset"]) {
+            query.offset = params["offset"];
+        }
+        return query;
+    }
+    buildFilters(filterObj) {
+        const filters = [];
+        for (const [field, value] of Object.entries(filterObj)) {
+            filters.push({ field, operator: "eq", value });
+        }
+        return filters;
+    }
+    getDataBindingValue(path) {
+        const parts = this.parseBindingPath(path);
+        let current = this.signalStore.get(parts[0]);
+        for (let i = 1; i < parts.length; i++) {
+            if (current === null || current === undefined)
+                return undefined;
+            const part = parts[i];
+            const arrayMatch = part.match(/^(\w+)\[(\d+)\]$/);
+            if (arrayMatch) {
+                const [, arrayKey, indexStr] = arrayMatch;
+                const arr = this.getNestedValue(current, arrayKey);
+                if (Array.isArray(arr)) {
+                    const index = parseInt(indexStr, 10);
+                    current = arr[index];
+                }
+                else {
+                    current = undefined;
+                }
+            }
+            else {
+                current = this.getNestedValue(current, part);
+            }
+        }
+        return current;
+    }
+    parseBindingPath(path) {
+        const result = [];
+        const regex = /([^\.]+)\[(\d+)\]|([^\.\[\]]+)/g;
+        let match;
+        while ((match = regex.exec(path)) !== null) {
+            if (match[1] && match[2]) {
+                result.push(`${match[1]}[${match[2]}]`);
+            }
+            else if (match[3]) {
+                result.push(match[3]);
+            }
+        }
+        return result;
+    }
+    getNestedValue(obj, key) {
+        if (obj === null || obj === undefined)
+            return undefined;
+        if (typeof obj !== "object")
+            return undefined;
+        return obj[key];
+    }
+}
+
+class LayoutEngineService {
+    resolveClass(layout) {
+        if (layout.class)
+            return layout.class;
+        const classes = [];
+        if (layout.type === "grid") {
+            classes.push("grid");
+            if (layout.direction === "row")
+                classes.push("grid-flow-col");
+            else
+                classes.push("grid-flow-row");
+            if (layout.gap)
+                classes.push(`gap-${layout.gap}`);
+        }
+        else if (layout.type === "flex") {
+            classes.push("flex");
+            if (layout.direction === "column")
+                classes.push("flex-col");
+            else
+                classes.push("flex-row");
+            if (layout.gap)
+                classes.push(`gap-${layout.gap}`);
+        }
+        else if (layout.type === "stack") {
+            classes.push("flex");
+            classes.push("flex-col");
+            if (layout.gap)
+                classes.push(`gap-${layout.gap}`);
+        }
+        return classes.join(" ");
+    }
+    renderGridLayout(container, layout) {
+        container.style.display = "grid";
+        if (layout.class) {
+            container.className = layout.class;
+        }
+        else {
+            const classes = ["grid"];
+            if (layout.direction === "row")
+                classes.push("grid-flow-col");
+            else
+                classes.push("grid-flow-row");
+            if (layout.gap)
+                classes.push(`gap-${layout.gap}`);
+            container.className = classes.join(" ");
+        }
+        if (layout.style) {
+            Object.assign(container.style, layout.style);
+        }
         container.innerHTML = "";
-        // Render each canvas element
-        for (const element of page.canvasElements) {
-            const el = await this.renderElement(element, context);
+    }
+    renderFlexLayout(container, layout) {
+        container.style.display = "flex";
+        if (layout.class) {
+            container.className = layout.class;
+        }
+        else {
+            const classes = ["flex"];
+            if (layout.direction === "column")
+                classes.push("flex-col");
+            else
+                classes.push("flex-row");
+            if (layout.gap)
+                classes.push(`gap-${layout.gap}`);
+            container.className = classes.join(" ");
+        }
+        if (layout.style) {
+            Object.assign(container.style, layout.style);
+        }
+        container.innerHTML = "";
+    }
+    resolveGridPosition(layout, componentId) {
+        if (!layout || !layout.positions)
+            return null;
+        const pos = layout.positions.find((p) => p[componentId] !== undefined);
+        if (!pos)
+            return null;
+        const position = pos;
+        return {
+            column: position.column || 1,
+            row: position.row || 1,
+            colSpan: position.colSpan || 1,
+            rowSpan: position.rowSpan || 1,
+        };
+    }
+    resolveGridPositionFromPositions(positions, componentId) {
+        if (!positions)
+            return null;
+        const pos = positions.find((p) => p[componentId] !== undefined);
+        if (!pos)
+            return null;
+        const position = pos;
+        return {
+            column: position.column || 1,
+            row: position.row || 1,
+            colSpan: position.colSpan || 1,
+            rowSpan: position.rowSpan || 1,
+        };
+    }
+    calculateGridSpan(colSpan, rowSpan) {
+        return {
+            gridColumn: `1 / span ${colSpan || 1}`,
+            gridRow: `1 / span ${rowSpan || 1}`,
+        };
+    }
+    applyLayoutStyles(container, layout, children, getComponentById, resolvePosition) {
+        if (layout.children) {
+            for (const childId of layout.children) {
+                const component = getComponentById(childId);
+                if (component) {
+                    const el = document.createElement(component.selector);
+                    const position = resolvePosition(layout, childId);
+                    if (position) {
+                        el.style.gridColumn = `${position.column} / span ${position.colSpan || 1}`;
+                        el.style.gridRow = `${position.row} / span ${position.rowSpan || 1}`;
+                    }
+                    container.appendChild(el);
+                }
+            }
+        }
+    }
+    createGridTemplateString(columns, rows) {
+        return {
+            gridTemplateColumns: columns.join(" "),
+            gridTemplateRows: rows.join(" "),
+        };
+    }
+    parseGridTemplate(template) {
+        return {
+            gridTemplateColumns: template.columns.join(" "),
+            gridTemplateRows: template.rows.join(" "),
+            gap: template.gap,
+        };
+    }
+}
+
+class SchemaRendererService {
+    _pages = signal([], ...(ngDevMode ? [{ debugName: "_pages" }] : []));
+    _currentPageId = signal(null, ...(ngDevMode ? [{ debugName: "_currentPageId" }] : []));
+    _navigationStack = signal([], ...(ngDevMode ? [{ debugName: "_navigationStack" }] : []));
+    componentRegistry;
+    dataBindingResolver;
+    layoutEngine;
+    dataStore;
+    crudService;
+    eventBus;
+    componentResolver = null;
+    routeResolver = null;
+    pages = this._pages.asReadonly();
+    currentPageId = this._currentPageId.asReadonly();
+    constructor() {
+        this.dataStore = inject(SignalStoreService);
+        this.crudService = inject(CrudService$1);
+        this.eventBus = inject(EventBusService);
+        this.componentRegistry = new ComponentRegistryService();
+        this.dataBindingResolver = new DataBindingResolverService(this.dataStore, this.crudService);
+        this.layoutEngine = new LayoutEngineService();
+    }
+    registerComponent(def) {
+        this.componentRegistry.registerComponent(def);
+    }
+    registerComponents(defs) {
+        this.componentRegistry.registerComponents(defs);
+    }
+    getComponent(selector) {
+        return this.componentRegistry.getComponent(selector);
+    }
+    loadSchema(schema) {
+        this._pages.set(schema.pages || []);
+        this.componentRegistry.loadComponentsFromSchema(schema.pages || []);
+    }
+    getCurrentPage() {
+        const id = this._currentPageId();
+        if (!id)
+            return null;
+        return this._pages().find((p) => p.id === id) || null;
+    }
+    setCurrentPage(pageId) {
+        this._currentPageId.set(pageId);
+        const stack = [...this._navigationStack()];
+        if (stack[stack.length - 1] !== pageId) {
+            stack.push(pageId);
+            this._navigationStack.set(stack);
+        }
+    }
+    navigateToPage(route) {
+        const resolvedPageId = this.routeResolver
+            ? this.routeResolver(route)
+            : null;
+        if (resolvedPageId) {
+            this.setCurrentPage(resolvedPageId);
+        }
+    }
+    getNavigationStack() {
+        return [...this._navigationStack()];
+    }
+    setRouteResolver(resolver) {
+        this.routeResolver = resolver;
+    }
+    renderGridLayout(container, layout) {
+        this.layoutEngine.renderGridLayout(container, layout);
+        this.layoutEngine.applyLayoutStyles(container, layout, layout.children || [], (childId) => this.getCurrentPage()?.components.find((c) => c.id === childId), (l, childId) => this.layoutEngine.resolveGridPosition(l, childId));
+    }
+    renderFlexLayout(container, layout) {
+        this.layoutEngine.renderFlexLayout(container, layout);
+        container.innerHTML = "";
+        if (layout.children) {
+            for (const childId of layout.children) {
+                const component = this.getCurrentPage()?.components.find((c) => c.id === childId);
+                if (component) {
+                    const el = document.createElement(component.selector);
+                    container.appendChild(el);
+                }
+            }
+        }
+    }
+    async loadComponentModule(selector) {
+        return this.componentRegistry.loadComponentModule(selector);
+    }
+    registerComponentModule(selector, module) {
+        this.componentRegistry.registerComponentModule(selector, module);
+    }
+    resolveGridPosition(layoutId, componentId) {
+        const page = this.getCurrentPage();
+        if (!page)
+            return null;
+        const layout = page.layouts.find((l) => l.id === layoutId);
+        return this.layoutEngine.resolveGridPosition(layout, componentId);
+    }
+    resolveClass(layout) {
+        return this.layoutEngine.resolveClass(layout);
+    }
+    getComponentProps(componentId) {
+        const page = this.getCurrentPage();
+        if (!page)
+            return {};
+        const component = page.components.find((c) => c.id === componentId);
+        return component?.props || {};
+    }
+    generatePage(pageId) {
+        const page = this._pages().find((p) => p.id === pageId);
+        if (!page)
+            return { layouts: [], components: [] };
+        return {
+            layouts: page.layouts,
+            // Support both canvasElements (Designer) and components (generated apps)
+            components: page.canvasElements || page.components || [],
+        };
+    }
+    setComponentResolver(resolver) {
+        this.componentResolver = resolver;
+    }
+    async createElement(data) {
+        const def = this.componentResolver
+            ? this.componentResolver(data.componentId)
+            : this.getComponent(data.componentId);
+        if (!def) {
+            console.warn(`Component not found: ${data.componentId}`);
+            return null;
+        }
+        await customElements.whenDefined(def.selector);
+        const el = document.createElement(def.selector);
+        if (data.gridPosition) {
+            el.style.gridColumn = `${data.gridPosition.column} / span ${data.gridPosition.colSpan || 1}`;
+            el.style.gridRow = `${data.gridPosition.row} / span ${data.gridPosition.rowSpan || 1}`;
+        }
+        else if (data.position) {
+            el.style.position = "absolute";
+            el.style.left = `${data.position.x}px`;
+            el.style.top = `${data.position.y}px`;
+            el.style.width = `${data.position.width}px`;
+            el.style.height = `${data.position.height}px`;
+        }
+        if (data.zIndex) {
+            el.style.zIndex = `${data.zIndex}`;
+        }
+        el.className = this.resolveClasses(data.classes, def.defaultClasses || "");
+        const resolvedProps = this.dataBindingResolver.resolveProps({
+            ...def.props,
+            ...data.props,
+        }, data.id);
+        for (const [key, value] of Object.entries(resolvedProps)) {
+            if (key === "class" || key === "style" || key === "id")
+                continue;
+            if (key.startsWith("on") && typeof value === "function") {
+                const eventName = key[2].toLowerCase() + key.slice(3);
+                el.addEventListener(eventName, value);
+            }
+            else if (key === "disabled" || key === "checked" || key === "readonly") {
+                // Boolean properties: set as property for Lit compatibility
+                el[key] = value === true || value === "true" || value === key;
+            }
+            else {
+                // For Lit web components, use property assignment instead of setAttribute
+                // This properly triggers the component's property setter
+                el[key] = value;
+            }
+        }
+        el.dataset["elementId"] = data.id;
+        el.dataset["componentId"] = data.componentId;
+        if (data.dataBinding) {
+            el.dataset["dataEntity"] = data.dataBinding.entity;
+            if (data.dataBinding.field) {
+                el.dataset["dataField"] = data.dataBinding.field;
+            }
+        }
+        if (data.events) {
+            for (const [eventName, emitEvent] of Object.entries(data.events)) {
+                el.addEventListener(eventName, (e) => {
+                    this.eventBus.emit(emitEvent, { elementId: data.id, event: e });
+                });
+            }
+        }
+        return el;
+    }
+    async render(container, pageSchema) {
+        container.innerHTML = "";
+        if (pageSchema.gridTemplate) {
+            const template = this.layoutEngine.parseGridTemplate(pageSchema.gridTemplate);
+            container.style.display = "grid";
+            container.style.gridTemplateColumns = template.gridTemplateColumns;
+            container.style.gridTemplateRows = template.gridTemplateRows;
+            container.style.gap = template.gap;
+        }
+        for (const element of pageSchema.elements) {
+            const el = await this.createElement(element);
             if (el) {
                 container.appendChild(el);
             }
         }
     }
-    async renderLayout(layoutId, container) {
-        const layout = this.router.getLayout(layoutId);
-        if (!layout) {
-            throw new Error(`Layout not found: ${layoutId}`);
-        }
-        // Render layout slots
-        for (const slot of layout.slots ?? []) {
-            const slotContainer = container.querySelector(`[data-slot="${slot.name}"]`);
-            if (slotContainer) {
-                for (const element of slot.elements ?? []) {
-                    const el = await this.renderElement(element, this.createRenderContextForLayout(layout));
-                    if (el) {
-                        slotContainer.appendChild(el);
+    bindEvents(el, events, elementId) {
+        for (const [eventName, handler] of Object.entries(events)) {
+            if (typeof handler === "function") {
+                el.addEventListener(eventName, handler);
+            }
+            else if (typeof handler === "string") {
+                const resolvedHandler = this.dataBindingResolver.resolveDataBinding(handler);
+                if (typeof resolvedHandler === "string" &&
+                    resolvedHandler.startsWith("{{data.")) {
+                    const dataPath = resolvedHandler
+                        .replace(/\{\{|\}\}/g, "")
+                        .replace("data.", "");
+                    const dataValue = this.getDataBindingValue(dataPath);
+                    if (typeof dataValue === "function") {
+                        el.addEventListener(eventName, dataValue);
                     }
                 }
             }
         }
     }
-    createRenderContext(page) {
-        return {
-            schema: this.router.schema(),
-            page,
-            layout: null,
-            data: {},
-            params: this.router.params(),
-            services: new Map(),
-            theme: this.themeService.getCurrentTheme(),
-            colorMode: this.themeService.resolvedMode(),
-            resolvedElements: new Map(),
-            eventHandlers: new Map(),
-        };
-    }
-    createRenderContextForLayout(layout) {
-        return {
-            schema: this.router.schema(),
-            page: null,
-            layout,
-            data: {},
-            params: this.router.params(),
-            services: new Map(),
-            theme: this.themeService.getCurrentTheme(),
-            colorMode: this.themeService.resolvedMode(),
-            resolvedElements: new Map(),
-            eventHandlers: new Map(),
-        };
-    }
-    async renderElement(element, context) {
-        const def = this.componentRegistry.get(element.componentId);
-        if (!def) {
-            console.warn(`SchemaRenderer: Unknown component "${element.componentId}"`);
-            return null;
+    resolveClasses(elementClasses, defaultClasses) {
+        const classes = new Set();
+        if (defaultClasses) {
+            defaultClasses.split(" ").forEach((c) => classes.add(c));
         }
-        const el = document.createElement(def.selector);
-        // Resolve props with data binding
-        const resolvedProps = this.resolveElementProps(element, context);
-        this.applyProps(el, resolvedProps);
-        // Apply styles
-        this.applyStyles(el, element, context);
-        // Apply data binding
-        if (element.dataBinding) {
-            this.applyDataBinding(el, element.dataBinding, context);
+        if (elementClasses) {
+            elementClasses
+                .split(" ")
+                .filter((c) => c.trim())
+                .forEach((c) => classes.add(c));
         }
-        // Apply event handlers
-        this.applyEventHandlers(el, element, context);
-        // Register in context
-        context.resolvedElements.set(element.id, el);
-        // Render children
-        for (const childId of element.children ?? []) {
-            const child = context.page?.canvasElements.find((e) => e.id === childId);
-            if (child) {
-                const childEl = await this.renderElement(child, context);
-                if (childEl) {
-                    el.appendChild(childEl);
+        return Array.from(classes).join(" ");
+    }
+    resolveDataBinding(binding) {
+        return this.dataBindingResolver.resolveDataBinding(binding);
+    }
+    getDataBindingValue(path) {
+        const parts = this.parseBindingPath(path);
+        let current = this.dataStore.get(parts[0]);
+        for (let i = 1; i < parts.length; i++) {
+            if (current === null || current === undefined)
+                return undefined;
+            const part = parts[i];
+            const arrayMatch = part.match(/^(\w+)\[(\d+)\]$/);
+            if (arrayMatch) {
+                const [, arrayKey, indexStr] = arrayMatch;
+                const arr = this.getNestedValue(current, arrayKey);
+                if (Array.isArray(arr)) {
+                    const index = parseInt(indexStr, 10);
+                    current = arr[index];
+                }
+                else {
+                    current = undefined;
                 }
             }
+            else {
+                current = this.getNestedValue(current, part);
+            }
         }
-        return el;
+        return current;
     }
-    resolveElementProps(element, context) {
-        const props = { ...element.props };
-        // Resolve binding expressions in string values
-        for (const [key, value] of Object.entries(props)) {
-            if (typeof value === "string" && value.includes("{{")) {
-                props[key] = this.bindingResolver.resolveExpression(value);
+    parseBindingPath(path) {
+        const result = [];
+        const regex = /([^\.]+)\[(\d+)\]|([^\.\[\]]+)/g;
+        let match;
+        while ((match = regex.exec(path)) !== null) {
+            if (match[1] && match[2]) {
+                result.push(`${match[1]}[${match[2]}]`);
+            }
+            else if (match[3]) {
+                result.push(match[3]);
             }
         }
-        // Add resolved data binding value
-        if (element.dataBinding) {
-            const boundValue = this.bindingResolver.resolveBinding(element.dataBinding);
-            if (boundValue !== null) {
-                props["value"] = boundValue;
-            }
-        }
-        return props;
+        return result;
     }
-    applyProps(el, props) {
-        for (const [key, value] of Object.entries(props)) {
-            if (key === "class") {
-                el.className = `${el.className} ${value}`.trim();
-                continue;
-            }
-            if (key.startsWith("data-")) {
-                el.setAttribute(key, String(value));
-                continue;
-            }
-            if (key.startsWith("on") && typeof value === "function") {
-                const eventName = key.slice(2).toLowerCase();
-                el.addEventListener(eventName, value);
-                continue;
-            }
-            if (key.startsWith("--")) {
-                el.style.setProperty(key, String(value));
-                continue;
-            }
-            el[key] = value;
-        }
-    }
-    applyStyles(el, element, context) {
-        const styleClasses = [];
-        // Grid position classes
-        if (element.gridPosition) {
-            styleClasses.push(this.styleResolver.resolveGridPosition(element.gridPosition));
-        }
-        // Custom classes
-        if (element.classes) {
-            styleClasses.push(this.styleResolver.resolveClasses(element.classes).classes);
-        }
-        if (styleClasses.length > 0) {
-            el.className = `${el.className} ${styleClasses.join(" ")}`.trim();
-        }
-    }
-    applyDataBinding(el, binding, context) {
-        const value = this.bindingResolver.resolve(binding.entity, binding.field);
-        if (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT") {
-            const inputEl = el;
-            if ("value" in inputEl) {
-                inputEl.value = String(value ?? "");
-            }
-        }
-        else if (el.hasAttribute("content")) {
-            el.setAttribute("content", String(value ?? ""));
-        }
-        else {
-            el.textContent = String(value ?? "");
-        }
-        // Subscribe to data changes for reactive updates
-        // This would require a more complex implementation with signals
-    }
-    applyEventHandlers(el, element, context) {
-        if (!element.events)
-            return;
-        for (const [eventName, handlers] of Object.entries(element.events)) {
-            for (const handler of handlers) {
-                const fn = this.bindingResolver.callFunction(handler.handler, [
-                    handler.params,
-                ]);
-                if (typeof fn === "function") {
-                    const wrappedFn = (e) => {
-                        this.eventBus.emit(`${element.id}:${eventName}`, {
-                            element: element.id,
-                            event: eventName,
-                            params: handler.params,
-                            originalEvent: e,
-                        });
-                        fn.call(null, e, handler.params);
-                    };
-                    el.addEventListener(eventName, wrappedFn);
-                    context.eventHandlers.set(`${element.id}:${eventName}`, wrappedFn);
-                }
-            }
-        }
-    }
-    destroyPage(pageId) {
-        const context = this.renderContexts.get(pageId);
-        if (!context)
-            return;
-        // Clean up event handlers
-        context.eventHandlers.forEach((fn) => {
-            // Remove event listeners
-        });
-        // Clean up resolved elements
-        context.resolvedElements.clear();
-        this.renderContexts.delete(pageId);
-    }
-    getRenderContext(pageId) {
-        return this.renderContexts.get(pageId);
+    getNestedValue(obj, key) {
+        if (obj === null || obj === undefined)
+            return undefined;
+        if (typeof obj !== "object")
+            return undefined;
+        return obj[key];
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, providedIn: "root" });
@@ -7108,143 +6827,329 @@ class SchemaRendererService {
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
+        }], ctorParameters: () => [] });
+
+class SchemaRouterService {
+    _currentRoute = signal('/dashboard', ...(ngDevMode ? [{ debugName: "_currentRoute" }] : []));
+    _schema = signal(null, ...(ngDevMode ? [{ debugName: "_schema" }] : []));
+    currentRoute = this._currentRoute.asReadonly();
+    currentPageId = computed(() => {
+        const schema = this._schema();
+        const route = this._currentRoute();
+        if (!schema)
+            return null;
+        return schema.pages.find(p => p.route === route)?.id || null;
+    }, ...(ngDevMode ? [{ debugName: "currentPageId" }] : []));
+    setSchema(schema) {
+        this._schema.set(schema);
+    }
+    navigate(route) {
+        this._currentRoute.set(route);
+    }
+    navigateToPage(pageId) {
+        const schema = this._schema();
+        if (!schema)
+            return;
+        const page = schema.pages.find(p => p.id === pageId);
+        if (page?.route) {
+            this._currentRoute.set(page.route);
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: 'root' }]
         }] });
 
-class SchemaElementComponent {
-    element;
-    elements = [];
-    registry = inject(ComponentRegistryService);
-    eventBus = inject(EventBusService);
-    get tag() {
-        const def = this.registry.get(this.element.componentId);
-        return def?.selector ?? this.element.componentId;
-    }
-    get classes() {
-        return this.element.classes ?? "";
-    }
-    get childElements() {
-        return (this.element.children ?? [])
-            .map(id => this.elements.find(e => e.id === id))
-            .filter((e) => e !== undefined);
-    }
-    get props() {
-        return this.element.props ?? {};
-    }
-    get isKnownComponent() {
-        return this.registry.has(this.element.componentId);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaElementComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: SchemaElementComponent, isStandalone: true, selector: "app-schema-element", inputs: { element: "element", elements: "elements" }, ngImport: i0, template: "<div [id]=\"element.id\" [class]=\"classes\">\n  @if (tag === 'app-button') {\n    <app-button [label]=\"props['label']\" [buttonStyle]=\"props['buttonStyle']\" [variant]=\"props['variant']\" [size]=\"props['size']\"></app-button>\n  } @else if (tag === 'app-language-selector') {\n    <app-language-selector [labelId]=\"props['labelId']\"></app-language-selector>\n  } @else if (tag === 'app-text-input') {\n    <app-text-input [id]=\"props['id']\" [placeholder]=\"props['placeholder']\" [clearable]=\"props['clearable']\" [maxChars]=\"props['maxChars']\"></app-text-input>\n  } @else if (tag === 'app-translation-output') {\n    <app-translation-output [id]=\"props['id']\" [placeholder]=\"props['placeholder']\"></app-translation-output>\n  } @else if (tag === 'app-swap-button') {\n    <app-swap-button></app-swap-button>\n  } @else if (tag === 'app-theme-toggle') {\n    <app-theme-toggle></app-theme-toggle>\n  } @else if (tag === 'app-shortcuts-overlay') {\n    <app-shortcuts-overlay></app-shortcuts-overlay>\n  } @else if (tag === 'app-loading') {\n    <app-loading></app-loading>\n  } @else if (props['text']) {\n    <!-- Plain element with text content: span, p, h1, h2, footer -->\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props['text'] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props['text'] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props['text'] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props['text'] }}</footer>\n      <span *ngSwitchDefault>{{ props['text'] }}</span>\n    </ng-container>\n  }\n  @for (child of childElements; track child.id) {\n    <app-schema-element [element]=\"child\" [elements]=\"elements\"></app-schema-element>\n  }\n</div>\n", styles: [":host{display:contents}\n"], dependencies: [{ kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgSwitch, selector: "[ngSwitch]", inputs: ["ngSwitch"] }, { kind: "directive", type: i1.NgSwitchCase, selector: "[ngSwitchCase]", inputs: ["ngSwitchCase"] }, { kind: "directive", type: i1.NgSwitchDefault, selector: "[ngSwitchDefault]" }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaElementComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-schema-element", standalone: true, imports: [CommonModule], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "<div [id]=\"element.id\" [class]=\"classes\">\n  @if (tag === 'app-button') {\n    <app-button [label]=\"props['label']\" [buttonStyle]=\"props['buttonStyle']\" [variant]=\"props['variant']\" [size]=\"props['size']\"></app-button>\n  } @else if (tag === 'app-language-selector') {\n    <app-language-selector [labelId]=\"props['labelId']\"></app-language-selector>\n  } @else if (tag === 'app-text-input') {\n    <app-text-input [id]=\"props['id']\" [placeholder]=\"props['placeholder']\" [clearable]=\"props['clearable']\" [maxChars]=\"props['maxChars']\"></app-text-input>\n  } @else if (tag === 'app-translation-output') {\n    <app-translation-output [id]=\"props['id']\" [placeholder]=\"props['placeholder']\"></app-translation-output>\n  } @else if (tag === 'app-swap-button') {\n    <app-swap-button></app-swap-button>\n  } @else if (tag === 'app-theme-toggle') {\n    <app-theme-toggle></app-theme-toggle>\n  } @else if (tag === 'app-shortcuts-overlay') {\n    <app-shortcuts-overlay></app-shortcuts-overlay>\n  } @else if (tag === 'app-loading') {\n    <app-loading></app-loading>\n  } @else if (props['text']) {\n    <!-- Plain element with text content: span, p, h1, h2, footer -->\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props['text'] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props['text'] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props['text'] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props['text'] }}</footer>\n      <span *ngSwitchDefault>{{ props['text'] }}</span>\n    </ng-container>\n  }\n  @for (child of childElements; track child.id) {\n    <app-schema-element [element]=\"child\" [elements]=\"elements\"></app-schema-element>\n  }\n</div>\n", styles: [":host{display:contents}\n"] }]
-        }], propDecorators: { element: [{
-                type: Input,
-                args: [{ required: true }]
-            }], elements: [{
-                type: Input,
-                args: [{ required: true }]
-            }] } });
-
 class SchemaRouteViewerComponent {
-    route = "";
-    router = inject(SchemaRouterService);
-    page = computed(() => this.router.currentPage(), ...(ngDevMode ? [{ debugName: "page" }] : []));
+    contentContainer;
+    headerProps = {};
+    sidebarProps = {};
+    schemaRenderer = inject(SchemaRendererService);
+    schemaRouter = inject(SchemaRouterService);
+    injector = inject(Injector);
+    routeEffect;
     ngOnInit() {
-        if (this.route)
-            this.router.navigate(this.route);
+        // React to route changes by re-rendering when currentPageId changes
+        // effect() must be called within an injection context, so use runInInjectionContext
+        this.routeEffect = runInInjectionContext(this.injector, () => {
+            effect(() => {
+                const pageId = this.schemaRouter.currentPageId();
+                if (pageId) {
+                    this.schemaRenderer.setCurrentPage(pageId);
+                    this.renderCurrentPage();
+                }
+            });
+        });
     }
-    ngOnChanges(changes) {
-        if (changes["route"])
-            this.router.navigate(this.route);
+    ngAfterViewInit() {
+        // Initial render
+        const pageId = this.schemaRouter.currentPageId();
+        if (pageId) {
+            this.schemaRenderer.setCurrentPage(pageId);
+            this.renderCurrentPage();
+        }
+    }
+    ngOnDestroy() {
+        if (this.routeEffect) {
+            this.routeEffect.destroy();
+        }
+    }
+    renderCurrentPage() {
+        const page = this.schemaRenderer.getCurrentPage();
+        if (!page || !this.contentContainer)
+            return;
+        // Clear previous content
+        this.contentContainer.nativeElement.innerHTML = '';
+        // Extract header and sidebar props if defined at page level
+        if (page.headerProps) {
+            this.headerProps = page.headerProps;
+        }
+        if (page.sidebarProps) {
+            this.sidebarProps = page.sidebarProps;
+        }
+        // Render elements from canvasElements or elements
+        const elements = page.canvasElements || page.elements || [];
+        for (const element of elements) {
+            this.renderElement(element);
+        }
+    }
+    renderElement(element) {
+        // Create the Lit web component
+        const el = document.createElement(element.componentId);
+        // Set properties directly (NOT attributes for Lit components)
+        for (const [key, value] of Object.entries(element.props || {})) {
+            el[key] = value;
+        }
+        // Set grid position if present (for grid-based layouts)
+        if (element.gridPosition) {
+            el.style.gridColumn = `${element.gridPosition.column} / span ${element.gridPosition.colSpan || 1}`;
+            el.style.gridRow = `${element.gridPosition.row} / span ${element.gridPosition.rowSpan || 1}`;
+        }
+        else if (element.position) {
+            // Fallback to absolute positioning
+            el.style.position = 'absolute';
+            el.style.left = `${element.position.x}px`;
+            el.style.top = `${element.position.y}px`;
+            el.style.width = `${element.position.width}px`;
+            el.style.height = `${element.position.height}px`;
+        }
+        // Apply z-index if defined
+        if (element.zIndex) {
+            el.style.zIndex = `${element.zIndex}`;
+        }
+        // Apply custom classes
+        if (element.classes) {
+            el.className = element.classes;
+        }
+        // Set element ID for tracking
+        el.dataset['elementId'] = element.id;
+        el.dataset['componentId'] = element.componentId;
+        // Handle data binding if present
+        if (element.dataBinding) {
+            el.dataset['dataEntity'] = element.dataBinding.entity;
+            if (element.dataBinding.field) {
+                el.dataset['dataField'] = element.dataBinding.field;
+            }
+        }
+        this.contentContainer.nativeElement.appendChild(el);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouteViewerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: SchemaRouteViewerComponent, isStandalone: true, selector: "lib-schema-route-viewer", inputs: { route: "route" }, usesOnChanges: true, ngImport: i0, template: "@if (page(); as p) {\n  <div class=\"schema-page\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element [element]=\"element\" [elements]=\"p.canvasElements\"></app-schema-element>\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{display:contents}\n"], dependencies: [{ kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.25", type: SchemaRouteViewerComponent, isStandalone: true, selector: "lib-schema-route-viewer", viewQueries: [{ propertyName: "contentContainer", first: true, predicate: ["contentContainer"], descendants: true }], ngImport: i0, template: `
+    <div class="schema-viewer">
+      <div class="header-slot">
+        <app-header [attr.data]="headerProps"></app-header>
+      </div>
+      <div class="sidebar-slot">
+        <app-sidebar [attr.data]="sidebarProps"></app-sidebar>
+      </div>
+      <div class="content-slot" #contentContainer>
+        <!-- Content elements render here -->
+      </div>
+    </div>
+  `, isInline: true, styles: [".schema-viewer,.header-slot,.sidebar-slot,.content-slot{display:contents}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouteViewerComponent, decorators: [{
             type: Component,
-            args: [{ selector: "lib-schema-route-viewer", standalone: true, imports: [SchemaElementComponent], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (page(); as p) {\n  <div class=\"schema-page\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element [element]=\"element\" [elements]=\"p.canvasElements\"></app-schema-element>\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{display:contents}\n"] }]
-        }], propDecorators: { route: [{
-                type: Input
+            args: [{ selector: 'lib-schema-route-viewer', standalone: true, imports: [CommonModule], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: `
+    <div class="schema-viewer">
+      <div class="header-slot">
+        <app-header [attr.data]="headerProps"></app-header>
+      </div>
+      <div class="sidebar-slot">
+        <app-sidebar [attr.data]="sidebarProps"></app-sidebar>
+      </div>
+      <div class="content-slot" #contentContainer>
+        <!-- Content elements render here -->
+      </div>
+    </div>
+  `, styles: [".schema-viewer,.header-slot,.sidebar-slot,.content-slot{display:contents}\n"] }]
+        }], propDecorators: { contentContainer: [{
+                type: ViewChild,
+                args: ['contentContainer']
             }] } });
 
-class SchemaFetcherService {
-    http = inject(HttpClient, { optional: true });
-    async loadSchema(options) {
-        switch (options.mode) {
-            case "embedded":
-                return this.loadEmbedded(options.source);
-            case "http":
-                return this.loadHttp(options.source);
-            case "tauri":
-                return this.loadTauri(options.source);
-            default:
-                throw new Error(`Unknown schema load mode: ${options.mode}`);
-        }
+class GuardService {
+    canActivate() {
+        return true;
     }
-    async loadEmbedded(source) {
-        try {
-            const response = await fetch(source);
-            if (!response.ok) {
-                throw new Error(`Failed to load embedded schema: ${response.status}`);
-            }
-            const data = await response.json();
-            return data;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: 'root' }]
+        }] });
+
+class ThemeService {
+    _mode = signal("system", ...(ngDevMode ? [{ debugName: "_mode" }] : []));
+    _accentColor = signal("#3b82f6", ...(ngDevMode ? [{ debugName: "_accentColor" }] : []));
+    _accentShades = signal(null, ...(ngDevMode ? [{ debugName: "_accentShades" }] : []));
+    _registeredThemes = new Map();
+    mode = this._mode.asReadonly();
+    accentColor = this._accentColor.asReadonly();
+    accentShades = this._accentShades.asReadonly();
+    effectiveColorMode = computed(() => {
+        const m = this._mode();
+        if (m === "system") {
+            return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
         }
-        catch (err) {
-            console.error("SchemaFetcher: Error loading embedded schema:", err);
-            throw err;
-        }
-    }
-    async loadHttp(url) {
-        if (!this.http) {
-            throw new Error("HttpClient not available. Import HttpClientModule or provide provideHttpClient().");
-        }
-        return firstValueFrom(this.http.get(url));
-    }
-    async loadTauri(commandName) {
-        try {
-            const { invoke } = await import('@tauri-apps/api/core');
-            const schema = await invoke(commandName);
-            return schema;
-        }
-        catch (err) {
-            console.error("SchemaFetcher: Error loading schema via Tauri:", err);
-            throw err;
-        }
-    }
-    async loadSchemaFromFile(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const data = JSON.parse(e.target?.result);
-                    resolve(data);
-                }
-                catch (err) {
-                    reject(new Error("Invalid schema JSON file"));
-                }
-            };
-            reader.onerror = () => reject(new Error("Failed to read file"));
-            reader.readAsText(file);
+        return m;
+    }, ...(ngDevMode ? [{ debugName: "effectiveColorMode" }] : []));
+    constructor() {
+        effect(() => {
+            this.applyTheme(this._mode(), this._accentColor());
         });
     }
-    validateSchema(schema) {
-        if (!schema || typeof schema !== "object")
-            return false;
-        const s = schema;
-        return (typeof s.schemaVersion === "string" &&
-            typeof s.app === "object" &&
-            Array.isArray(s.pages));
+    setMode(mode) {
+        this._mode.set(mode);
+        localStorage.setItem("theme-mode", mode);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaFetcherService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaFetcherService, providedIn: "root" });
+    setTheme(theme) {
+        this.setMode(theme);
+    }
+    setAccentColor(color) {
+        this._accentColor.set(color);
+        localStorage.setItem("theme-accent", color);
+        this.applyAccentShades(color);
+    }
+    registerTheme(name, colors) {
+        this._registeredThemes.set(name, colors);
+    }
+    init() {
+        const savedMode = localStorage.getItem("theme-mode");
+        const savedAccent = localStorage.getItem("theme-accent");
+        if (savedMode)
+            this._mode.set(savedMode);
+        if (savedAccent)
+            this._accentColor.set(savedAccent);
+        const shades = this.calculateShades(savedAccent || "#3b82f6");
+        this._accentShades.set(shades);
+        this.applyTheme(this._mode(), savedAccent || "#3b82f6");
+    }
+    toggle() {
+        const current = document.documentElement.classList.contains("dark")
+            ? "dark"
+            : "light";
+        this.setMode(current === "dark" ? "light" : "dark");
+    }
+    applyTheme(mode, accent) {
+        const root = document.documentElement;
+        root.classList.remove("light", "dark");
+        const effectiveMode = mode === "system"
+            ? window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+            : mode;
+        root.classList.add(effectiveMode);
+        this.applyAccentShades(accent);
+    }
+    applyAccentShades(accent) {
+        const root = document.documentElement;
+        root.style.setProperty("--accent", accent);
+        const shades = {
+            50: `color-mix(in srgb, var(--accent) 10%, white)`,
+            100: `color-mix(in srgb, var(--accent) 20%, white)`,
+            200: `color-mix(in srgb, var(--accent) 40%, white)`,
+            300: `color-mix(in srgb, var(--accent) 60%, white)`,
+            400: `color-mix(in srgb, var(--accent) 80%, white)`,
+            500: accent,
+            600: `color-mix(in srgb, var(--accent) 80%, black)`,
+            700: `color-mix(in srgb, var(--accent) 60%, black)`,
+            800: `color-mix(in srgb, var(--accent) 40%, black)`,
+            900: `color-mix(in srgb, var(--accent) 20%, black)`,
+        };
+        for (const [key, value] of Object.entries(shades)) {
+            root.style.setProperty(`--accent-${key}`, value);
+        }
+        const computedShades = { ...shades };
+        computedShades[500] = accent;
+        this._accentShades.set(computedShades);
+    }
+    calculateShades(hex) {
+        const rgb = this.hexToRgb(hex);
+        if (!rgb) {
+            return {
+                50: "#f0f9ff",
+                100: "#e0f2fe",
+                200: "#bae6fd",
+                300: "#7dd3fc",
+                400: "#38bdf8",
+                500: "#0ea5e9",
+                600: "#0284c7",
+                700: "#0369a1",
+                800: "#075985",
+                900: "#0c4a6e",
+            };
+        }
+        const shades = {
+            50: this.rgbToHex(Math.round(rgb.r * 0.95 + 255 * 0.05), Math.round(rgb.g * 0.95 + 255 * 0.05), Math.round(rgb.b * 0.95 + 255 * 0.05)),
+            100: this.rgbToHex(Math.round(rgb.r * 0.9 + 255 * 0.1), Math.round(rgb.g * 0.9 + 255 * 0.1), Math.round(rgb.b * 0.9 + 255 * 0.1)),
+            200: this.rgbToHex(Math.round(rgb.r * 0.8 + 255 * 0.2), Math.round(rgb.g * 0.8 + 255 * 0.2), Math.round(rgb.b * 0.8 + 255 * 0.2)),
+            300: this.rgbToHex(Math.round(rgb.r * 0.7 + 255 * 0.3), Math.round(rgb.g * 0.7 + 255 * 0.3), Math.round(rgb.b * 0.7 + 255 * 0.3)),
+            400: this.rgbToHex(Math.round(rgb.r * 0.6 + 255 * 0.4), Math.round(rgb.g * 0.6 + 255 * 0.4), Math.round(rgb.b * 0.6 + 255 * 0.4)),
+            500: hex,
+            600: this.rgbToHex(Math.round(rgb.r * 0.8), Math.round(rgb.g * 0.8), Math.round(rgb.b * 0.8)),
+            700: this.rgbToHex(Math.round(rgb.r * 0.6), Math.round(rgb.g * 0.6), Math.round(rgb.b * 0.6)),
+            800: this.rgbToHex(Math.round(rgb.r * 0.4), Math.round(rgb.g * 0.4), Math.round(rgb.b * 0.4)),
+            900: this.rgbToHex(Math.round(rgb.r * 0.2), Math.round(rgb.g * 0.2), Math.round(rgb.b * 0.2)),
+        };
+        return shades;
+    }
+    hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result
+            ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16),
+            }
+            : null;
+    }
+    rgbToHex(r, g, b) {
+        return ("#" +
+            [r, g, b]
+                .map((x) => {
+                const hex = Math.max(0, Math.min(255, x)).toString(16);
+                return hex.length === 1 ? "0" + hex : hex;
+            })
+                .join(""));
+    }
+    hexToRgba(hex, alpha) {
+        const rgb = this.hexToRgb(hex);
+        if (!rgb)
+            return `rgba(0, 0, 0, ${alpha})`;
+        return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, providedIn: "root" });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaFetcherService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
-        }] });
+        }], ctorParameters: () => [] });
 
 async function invokeWithRetry(fn, options) {
     const { maxAttempts, initialDelayMs, maxDelayMs } = options;
@@ -7304,6 +7209,129 @@ class CrudService {
     }
     async delete(id) {
         await this.execute("delete", { id });
+    }
+}
+
+var ResponseStatus;
+(function (ResponseStatus) {
+    ResponseStatus["Success"] = "success";
+    ResponseStatus["Created"] = "created";
+    ResponseStatus["Updated"] = "updated";
+    ResponseStatus["Deleted"] = "deleted";
+    ResponseStatus["Error"] = "error";
+    ResponseStatus["ValidationError"] = "validationError";
+    ResponseStatus["NotFound"] = "notFound";
+    ResponseStatus["Unauthorized"] = "unauthorized";
+    ResponseStatus["Forbidden"] = "forbidden";
+})(ResponseStatus || (ResponseStatus = {}));
+function isSuccess(response) {
+    return (response.status === ResponseStatus.Success ||
+        response.status === ResponseStatus.Created ||
+        response.status === ResponseStatus.Updated ||
+        response.status === ResponseStatus.Deleted);
+}
+function isError(response) {
+    return (response.status === ResponseStatus.Error ||
+        response.status === ResponseStatus.ValidationError ||
+        response.status === ResponseStatus.NotFound ||
+        response.status === ResponseStatus.Unauthorized ||
+        response.status === ResponseStatus.Forbidden);
+}
+function getErrorMessage(response) {
+    if (isError(response)) {
+        return response.message;
+    }
+    return null;
+}
+function unwrapResponse(response) {
+    if (isError(response)) {
+        throw new Error(response.message || "Unknown error");
+    }
+    if (response.data === null) {
+        throw new Error("No data in response");
+    }
+    return response.data;
+}
+function mapResponse(response, mapper) {
+    return {
+        ...response,
+        data: response.data !== null ? mapper(response.data) : null,
+    };
+}
+
+var ErrorType;
+(function (ErrorType) {
+    ErrorType["NotFound"] = "notFound";
+    ErrorType["ValidationError"] = "validationError";
+    ErrorType["Duplicate"] = "duplicate";
+    ErrorType["Unauthorized"] = "unauthorized";
+    ErrorType["Forbidden"] = "forbidden";
+    ErrorType["Internal"] = "internal";
+    ErrorType["Database"] = "database";
+    ErrorType["Network"] = "network";
+})(ErrorType || (ErrorType = {}));
+function isNotFoundError(error) {
+    return error.type === ErrorType.NotFound;
+}
+function isValidationError(error) {
+    return error.type === ErrorType.ValidationError;
+}
+function isDuplicateError(error) {
+    return error.type === ErrorType.Duplicate;
+}
+function isUnauthorizedError(error) {
+    return error.type === ErrorType.Unauthorized;
+}
+function isForbiddenError(error) {
+    return error.type === ErrorType.Forbidden;
+}
+function isInternalError(error) {
+    return error.type === ErrorType.Internal;
+}
+function isDatabaseError(error) {
+    return error.type === ErrorType.Database;
+}
+function isNetworkError(error) {
+    return error.type === ErrorType.Network;
+}
+function parseError(error) {
+    if (error &&
+        typeof error === "object" &&
+        "type" in error &&
+        "message" in error) {
+        return error;
+    }
+    if (error instanceof Error) {
+        return {
+            type: ErrorType.Internal,
+            message: error.message,
+        };
+    }
+    return {
+        type: ErrorType.Internal,
+        message: String(error),
+    };
+}
+function formatError(error) {
+    switch (error.type) {
+        case ErrorType.NotFound:
+            return error.entity ? `${error.entity} not found` : error.message;
+        case ErrorType.ValidationError:
+            return `Validation error: ${error.message}`;
+        case ErrorType.Duplicate:
+            return error.entity ? `${error.entity} already exists` : error.message;
+        case ErrorType.Unauthorized:
+            return "Unauthorized access";
+        case ErrorType.Forbidden:
+            return "Access forbidden";
+        case ErrorType.Internal:
+            return `Internal error: ${error.message}`;
+        case ErrorType.Database:
+            return `Database error: ${error.message}`;
+        case ErrorType.Network:
+            return `Network error: ${error.message}`;
+        default:
+            return error.message;
     }
 }
 
@@ -7884,129 +7912,6 @@ const dataComponents = [
 ];
 const components = uiComponents;
 
-var ResponseStatus;
-(function (ResponseStatus) {
-    ResponseStatus["Success"] = "success";
-    ResponseStatus["Created"] = "created";
-    ResponseStatus["Updated"] = "updated";
-    ResponseStatus["Deleted"] = "deleted";
-    ResponseStatus["Error"] = "error";
-    ResponseStatus["ValidationError"] = "validationError";
-    ResponseStatus["NotFound"] = "notFound";
-    ResponseStatus["Unauthorized"] = "unauthorized";
-    ResponseStatus["Forbidden"] = "forbidden";
-})(ResponseStatus || (ResponseStatus = {}));
-function isSuccess(response) {
-    return (response.status === ResponseStatus.Success ||
-        response.status === ResponseStatus.Created ||
-        response.status === ResponseStatus.Updated ||
-        response.status === ResponseStatus.Deleted);
-}
-function isError(response) {
-    return (response.status === ResponseStatus.Error ||
-        response.status === ResponseStatus.ValidationError ||
-        response.status === ResponseStatus.NotFound ||
-        response.status === ResponseStatus.Unauthorized ||
-        response.status === ResponseStatus.Forbidden);
-}
-function getErrorMessage(response) {
-    if (isError(response)) {
-        return response.message;
-    }
-    return null;
-}
-function unwrapResponse(response) {
-    if (isError(response)) {
-        throw new Error(response.message || "Unknown error");
-    }
-    if (response.data === null) {
-        throw new Error("No data in response");
-    }
-    return response.data;
-}
-function mapResponse(response, mapper) {
-    return {
-        ...response,
-        data: response.data !== null ? mapper(response.data) : null,
-    };
-}
-
-var ErrorType;
-(function (ErrorType) {
-    ErrorType["NotFound"] = "notFound";
-    ErrorType["ValidationError"] = "validationError";
-    ErrorType["Duplicate"] = "duplicate";
-    ErrorType["Unauthorized"] = "unauthorized";
-    ErrorType["Forbidden"] = "forbidden";
-    ErrorType["Internal"] = "internal";
-    ErrorType["Database"] = "database";
-    ErrorType["Network"] = "network";
-})(ErrorType || (ErrorType = {}));
-function isNotFoundError(error) {
-    return error.type === ErrorType.NotFound;
-}
-function isValidationError(error) {
-    return error.type === ErrorType.ValidationError;
-}
-function isDuplicateError(error) {
-    return error.type === ErrorType.Duplicate;
-}
-function isUnauthorizedError(error) {
-    return error.type === ErrorType.Unauthorized;
-}
-function isForbiddenError(error) {
-    return error.type === ErrorType.Forbidden;
-}
-function isInternalError(error) {
-    return error.type === ErrorType.Internal;
-}
-function isDatabaseError(error) {
-    return error.type === ErrorType.Database;
-}
-function isNetworkError(error) {
-    return error.type === ErrorType.Network;
-}
-function parseError(error) {
-    if (error &&
-        typeof error === "object" &&
-        "type" in error &&
-        "message" in error) {
-        return error;
-    }
-    if (error instanceof Error) {
-        return {
-            type: ErrorType.Internal,
-            message: error.message,
-        };
-    }
-    return {
-        type: ErrorType.Internal,
-        message: String(error),
-    };
-}
-function formatError(error) {
-    switch (error.type) {
-        case ErrorType.NotFound:
-            return error.entity ? `${error.entity} not found` : error.message;
-        case ErrorType.ValidationError:
-            return `Validation error: ${error.message}`;
-        case ErrorType.Duplicate:
-            return error.entity ? `${error.entity} already exists` : error.message;
-        case ErrorType.Unauthorized:
-            return "Unauthorized access";
-        case ErrorType.Forbidden:
-            return "Access forbidden";
-        case ErrorType.Internal:
-            return `Internal error: ${error.message}`;
-        case ErrorType.Database:
-            return `Database error: ${error.message}`;
-        case ErrorType.Network:
-            return `Network error: ${error.message}`;
-        default:
-            return error.message;
-    }
-}
-
 function parseErrorFromInvoke(error) {
     if (error && typeof error === "object") {
         const e = error;
@@ -8111,6 +8016,126 @@ async function invokeWithError(command, args, options) {
         throw new Error(errorMsg);
     }
     return result.data;
+}
+
+function defaultCompare(a, b) {
+    if (a < b)
+        return -1;
+    if (a > b)
+        return 1;
+    return 0;
+}
+function quickSort(arr, compareFn = defaultCompare) {
+    if (arr.length <= 1) {
+        return arr.slice();
+    }
+    const pivot = arr[Math.floor(arr.length / 2)];
+    const left = arr.filter((x) => compareFn(x, pivot) < 0);
+    const middle = arr.filter((x) => compareFn(x, pivot) === 0);
+    const right = arr.filter((x) => compareFn(x, pivot) > 0);
+    return [...quickSort(left, compareFn), ...middle, ...quickSort(right, compareFn)];
+}
+function mergeSort(arr, compareFn = defaultCompare) {
+    if (arr.length <= 1) {
+        return arr.slice();
+    }
+    const mid = Math.floor(arr.length / 2);
+    const left = mergeSort(arr.slice(0, mid), compareFn);
+    const right = mergeSort(arr.slice(mid), compareFn);
+    return merge(left, right, compareFn);
+}
+function merge(left, right, compareFn) {
+    const result = [];
+    let i = 0;
+    let j = 0;
+    while (i < left.length && j < right.length) {
+        if (compareFn(left[i], right[j]) <= 0) {
+            result.push(left[i]);
+            i++;
+        }
+        else {
+            result.push(right[j]);
+            j++;
+        }
+    }
+    while (i < left.length) {
+        result.push(left[i]);
+        i++;
+    }
+    while (j < right.length) {
+        result.push(right[j]);
+        j++;
+    }
+    return result;
+}
+function bubbleSort(arr, compareFn = defaultCompare) {
+    const result = arr.slice();
+    const n = result.length;
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n - i - 1; j++) {
+            if (compareFn(result[j], result[j + 1]) > 0) {
+                [result[j], result[j + 1]] = [result[j + 1], result[j]];
+            }
+        }
+    }
+    return result;
+}
+function insertionSort(arr, compareFn = defaultCompare) {
+    const result = arr.slice();
+    for (let i = 1; i < result.length; i++) {
+        const key = result[i];
+        let j = i;
+        while (j > 0 && compareFn(result[j - 1], key) > 0) {
+            result[j] = result[j - 1];
+            j--;
+        }
+        result[j] = key;
+    }
+    return result;
+}
+
+function createGraph() {
+    return new Map();
+}
+function addNode(graph, label) {
+    if (!graph.has(label)) {
+        graph.set(label, []);
+    }
+}
+function addEdge(graph, from, to, weight) {
+    addNode(graph, from);
+    addNode(graph, to);
+    const edges = graph.get(from);
+    edges.push({ node: to, weight });
+}
+function dijkstra(graph, start) {
+    const distances = new Map();
+    const visited = new Set();
+    const queue = [];
+    for (const node of graph.keys()) {
+        distances.set(node, null);
+    }
+    distances.set(start, 0);
+    queue.push({ node: start, distance: 0 });
+    while (queue.length > 0) {
+        queue.sort((a, b) => a.distance - b.distance);
+        const { node: current, distance: currentDist } = queue.shift();
+        if (visited.has(current))
+            continue;
+        visited.add(current);
+        const edges = graph.get(current) || [];
+        for (const edge of edges) {
+            if (visited.has(edge.node))
+                continue;
+            const newDist = currentDist + edge.weight;
+            const existing = distances.get(edge.node);
+            if (existing === null || newDist < existing) {
+                distances.set(edge.node, newDist);
+                queue.push({ node: edge.node, distance: newDist });
+            }
+        }
+    }
+    return distances;
 }
 
 const STYLE_VARIANTS = {
@@ -8235,7 +8260,7 @@ class UiShowcaseComponent {
     themeService = inject(ThemeService);
     colorModes = ["light", "dark", "system"];
     styleVariants = getAllStyleVariants();
-    currentColorMode = signal(this.themeService.colorMode(), ...(ngDevMode ? [{ debugName: "currentColorMode" }] : []));
+    currentColorMode = signal(this.themeService.effectiveColorMode(), ...(ngDevMode ? [{ debugName: "currentColorMode" }] : []));
     currentStyleVariant = signal(getCurrentStyle(), ...(ngDevMode ? [{ debugName: "currentStyleVariant" }] : []));
     searchQuery = signal("", ...(ngDevMode ? [{ debugName: "searchQuery" }] : []));
     selectedCategory = signal("all", ...(ngDevMode ? [{ debugName: "selectedCategory" }] : []));
@@ -8264,7 +8289,7 @@ class UiShowcaseComponent {
     }, ...(ngDevMode ? [{ debugName: "filteredComponents" }] : []));
     setColorMode(mode) {
         this.themeService.setMode(mode);
-        this.currentColorMode.set(this.themeService.colorMode());
+        this.currentColorMode.set(this.themeService.effectiveColorMode());
     }
     async setStyleVariant(variant) {
         await loadStyleVariant(variant);
@@ -8460,7 +8485,7 @@ class UiShowcaseComponent {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: UiShowcaseComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: UiShowcaseComponent, isStandalone: true, selector: "app-ui-showcase", ngImport: i0, template: "<div class=\"showcase-container\">\n  <header class=\"showcase-header\">\n    <h1 class=\"showcase-title\">UI Showcase</h1>\n\n    <div class=\"showcase-controls\">\n      <div class=\"control-group\">\n        <span class=\"control-label\">Color Mode</span>\n        <div class=\"button-group\">\n          @for (mode of colorModes; track mode) {\n            <button\n              class=\"mode-btn\"\n              [class.active]=\"currentColorMode() === mode\"\n              (click)=\"setColorMode(mode)\"\n            >\n              {{ mode }}\n            </button>\n          }\n        </div>\n      </div>\n\n      <div class=\"control-group\">\n        <span class=\"control-label\">Style</span>\n        <select\n          class=\"style-select\"\n          [value]=\"currentStyleVariant()\"\n          (change)=\"setStyleVariant($any($event.target).value)\"\n        >\n          @for (v of styleVariants; track v.id) {\n            <option [value]=\"v.id\">{{ v.name }}</option>\n          }\n        </select>\n      </div>\n    </div>\n  </header>\n\n  <div class=\"showcase-filters\">\n    <input\n      type=\"text\"\n      class=\"search-input\"\n      placeholder=\"Search components...\"\n      [value]=\"searchQuery()\"\n      (input)=\"searchQuery.set($any($event.target).value)\"\n    />\n\n    <div class=\"category-tabs\">\n      @for (cat of categories(); track cat) {\n        <button\n          class=\"category-tab\"\n          [class.active]=\"selectedCategory() === cat\"\n          (click)=\"selectedCategory.set(cat)\"\n        >\n          {{ cat }}\n        </button>\n      }\n    </div>\n  </div>\n\n  <div class=\"component-grid\">\n    @for (comp of filteredComponents(); track comp.id) {\n      <div class=\"component-card\">\n        <div class=\"card-header\">\n          <span class=\"component-name\">{{ comp.name }}</span>\n          <code class=\"component-selector\">{{ comp.selector }}</code>\n        </div>\n\n        <div\n          class=\"component-preview\"\n          #card\n          [attr.data-selector]=\"comp.selector\"\n          (mouseenter)=\"renderComponent($any($event.target).closest('.component-card'), comp)\"\n        ></div>\n\n        <div class=\"card-footer\">\n          <span class=\"category-badge\">{{ comp.category }}</span>\n          <span class=\"package-badge\">{{ comp.packageType }}</span>\n        </div>\n      </div>\n    }\n  </div>\n</div>", styles: [".showcase-container{min-height:100vh;background-color:var(--color-bg-primary, #f8fafc);color:var(--color-text-primary, #1e293b)}.showcase-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 2rem;background-color:var(--color-bg-elevated, #ffffff);border-bottom:1px solid var(--color-border, #e2e8f0);position:sticky;top:0;z-index:10;gap:2rem;flex-wrap:wrap}.showcase-title{margin:0;font-size:1.5rem;font-weight:700;color:var(--color-text-primary, #1e293b)}.showcase-controls{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}.control-group{display:flex;align-items:center;gap:.75rem}.control-label{font-size:.875rem;font-weight:500;color:var(--color-text-secondary, #64748b)}.button-group{display:flex;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;overflow:hidden}.mode-btn{padding:.5rem 1rem;border:none;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.mode-btn:not(:last-child){border-right:1px solid var(--color-border, #e2e8f0)}.mode-btn:hover{background-color:var(--color-bg-hover, #f1f5f9)}.mode-btn.active{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.style-select{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.875rem;font-weight:500;cursor:pointer;min-width:160px}.style-select:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.showcase-filters{padding:1.5rem 2rem;display:flex;flex-direction:column;gap:1rem;background-color:var(--color-bg-secondary, #f1f5f9);border-bottom:1px solid var(--color-border, #e2e8f0)}.search-input{padding:.75rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.9375rem;max-width:400px}.search-input::placeholder{color:var(--color-text-muted, #94a3b8)}.search-input:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.category-tabs{display:flex;gap:.5rem;flex-wrap:wrap}.category-tab{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:2rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.category-tab:hover{background-color:var(--color-bg-hover, #f1f5f9)}.category-tab.active{background-color:var(--color-accent, #8b5cf6);border-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.component-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;padding:2rem}.component-card{background-color:var(--color-bg-elevated, #ffffff);border:1px solid var(--color-border, #e2e8f0);border-radius:.75rem;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s}.component-card:hover{box-shadow:0 4px 12px #0000001a}.card-header{display:flex;align-items:center;justify-content:space-between;padding:1rem;border-bottom:1px solid var(--color-border-light, #f1f5f9);gap:.5rem}.component-name{font-size:1rem;font-weight:600;color:var(--color-text-primary, #1e293b)}.component-selector{font-size:.75rem;padding:.25rem .5rem;background-color:var(--color-bg-secondary, #f1f5f9);border-radius:.25rem;color:var(--color-text-secondary, #64748b);font-family:monospace}.component-preview{padding:2rem 1rem;min-height:100px;display:flex;align-items:center;justify-content:center;background-color:var(--color-bg-primary, #f8fafc);flex-wrap:wrap;gap:.5rem}.card-footer{display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;border-top:1px solid var(--color-border-light, #f1f5f9)}.category-badge,.package-badge{font-size:.75rem;padding:.25rem .5rem;border-radius:.25rem;font-weight:500;text-transform:capitalize}.category-badge{background-color:var(--color-bg-secondary, #f1f5f9);color:var(--color-text-secondary, #64748b)}.package-badge{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff);opacity:.8}@media(max-width:768px){.showcase-header{flex-direction:column;align-items:flex-start}.component-grid{grid-template-columns:1fr;padding:1rem}}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1$1.NgSelectOption, selector: "option", inputs: ["ngValue", "value"] }, { kind: "directive", type: i1$1.ɵNgSelectMultipleOption, selector: "option", inputs: ["ngValue", "value"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: UiShowcaseComponent, isStandalone: true, selector: "app-ui-showcase", ngImport: i0, template: "<div class=\"showcase-container\">\n  <header class=\"showcase-header\">\n    <h1 class=\"showcase-title\">UI Showcase</h1>\n\n    <div class=\"showcase-controls\">\n      <div class=\"control-group\">\n        <span class=\"control-label\">Color Mode</span>\n        <div class=\"button-group\">\n          @for (mode of colorModes; track mode) {\n            <button\n              class=\"mode-btn\"\n              [class.active]=\"currentColorMode() === mode\"\n              (click)=\"setColorMode(mode)\"\n            >\n              {{ mode }}\n            </button>\n          }\n        </div>\n      </div>\n\n      <div class=\"control-group\">\n        <span class=\"control-label\">Style</span>\n        <select\n          class=\"style-select\"\n          [value]=\"currentStyleVariant()\"\n          (change)=\"setStyleVariant($any($event.target).value)\"\n        >\n          @for (v of styleVariants; track v.id) {\n            <option [value]=\"v.id\">{{ v.name }}</option>\n          }\n        </select>\n      </div>\n    </div>\n  </header>\n\n  <div class=\"showcase-filters\">\n    <input\n      type=\"text\"\n      class=\"search-input\"\n      placeholder=\"Search components...\"\n      [value]=\"searchQuery()\"\n      (input)=\"searchQuery.set($any($event.target).value)\"\n    />\n\n    <div class=\"category-tabs\">\n      @for (cat of categories(); track cat) {\n        <button\n          class=\"category-tab\"\n          [class.active]=\"selectedCategory() === cat\"\n          (click)=\"selectedCategory.set(cat)\"\n        >\n          {{ cat }}\n        </button>\n      }\n    </div>\n  </div>\n\n  <div class=\"component-grid\">\n    @for (comp of filteredComponents(); track comp.id) {\n      <div class=\"component-card\">\n        <div class=\"card-header\">\n          <span class=\"component-name\">{{ comp.name }}</span>\n          <code class=\"component-selector\">{{ comp.selector }}</code>\n        </div>\n\n        <div\n          class=\"component-preview\"\n          #card\n          [attr.data-selector]=\"comp.selector\"\n          (mouseenter)=\"renderComponent($any($event.target).closest('.component-card'), comp)\"\n        ></div>\n\n        <div class=\"card-footer\">\n          <span class=\"category-badge\">{{ comp.category }}</span>\n          <span class=\"package-badge\">{{ comp.packageType }}</span>\n        </div>\n      </div>\n    }\n  </div>\n</div>", styles: [".showcase-container{min-height:100vh;background-color:var(--color-bg-primary, #f8fafc);color:var(--color-text-primary, #1e293b)}.showcase-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 2rem;background-color:var(--color-bg-elevated, #ffffff);border-bottom:1px solid var(--color-border, #e2e8f0);position:sticky;top:0;z-index:10;gap:2rem;flex-wrap:wrap}.showcase-title{margin:0;font-size:1.5rem;font-weight:700;color:var(--color-text-primary, #1e293b)}.showcase-controls{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}.control-group{display:flex;align-items:center;gap:.75rem}.control-label{font-size:.875rem;font-weight:500;color:var(--color-text-secondary, #64748b)}.button-group{display:flex;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;overflow:hidden}.mode-btn{padding:.5rem 1rem;border:none;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.mode-btn:not(:last-child){border-right:1px solid var(--color-border, #e2e8f0)}.mode-btn:hover{background-color:var(--color-bg-hover, #f1f5f9)}.mode-btn.active{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.style-select{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.875rem;font-weight:500;cursor:pointer;min-width:160px}.style-select:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.showcase-filters{padding:1.5rem 2rem;display:flex;flex-direction:column;gap:1rem;background-color:var(--color-bg-secondary, #f1f5f9);border-bottom:1px solid var(--color-border, #e2e8f0)}.search-input{padding:.75rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.9375rem;max-width:400px}.search-input::placeholder{color:var(--color-text-muted, #94a3b8)}.search-input:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.category-tabs{display:flex;gap:.5rem;flex-wrap:wrap}.category-tab{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:2rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.category-tab:hover{background-color:var(--color-bg-hover, #f1f5f9)}.category-tab.active{background-color:var(--color-accent, #8b5cf6);border-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.component-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;padding:2rem}.component-card{background-color:var(--color-bg-elevated, #ffffff);border:1px solid var(--color-border, #e2e8f0);border-radius:.75rem;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s}.component-card:hover{box-shadow:0 4px 12px #0000001a}.card-header{display:flex;align-items:center;justify-content:space-between;padding:1rem;border-bottom:1px solid var(--color-border-light, #f1f5f9);gap:.5rem}.component-name{font-size:1rem;font-weight:600;color:var(--color-text-primary, #1e293b)}.component-selector{font-size:.75rem;padding:.25rem .5rem;background-color:var(--color-bg-secondary, #f1f5f9);border-radius:.25rem;color:var(--color-text-secondary, #64748b);font-family:monospace}.component-preview{padding:2rem 1rem;min-height:100px;display:flex;align-items:center;justify-content:center;background-color:var(--color-bg-primary, #f8fafc);flex-wrap:wrap;gap:.5rem}.card-footer{display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;border-top:1px solid var(--color-border-light, #f1f5f9)}.category-badge,.package-badge{font-size:.75rem;padding:.25rem .5rem;border-radius:.25rem;font-weight:500;text-transform:capitalize}.category-badge{background-color:var(--color-bg-secondary, #f1f5f9);color:var(--color-text-secondary, #64748b)}.package-badge{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff);opacity:.8}@media(max-width:768px){.showcase-header{flex-direction:column;align-items:flex-start}.component-grid{grid-template-columns:1fr;padding:1rem}}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1.NgSelectOption, selector: "option", inputs: ["ngValue", "value"] }, { kind: "directive", type: i1.ɵNgSelectMultipleOption, selector: "option", inputs: ["ngValue", "value"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: UiShowcaseComponent, decorators: [{
             type: Component,
@@ -8491,5 +8516,5 @@ if (typeof window !== 'undefined') {
  * Generated bundle index. Do not edit.
  */
 
-export { AppAvatar, AppBadge, AppBottomPanel, AppButton, AppCanvas, AppCard, AppChip, AppComponentPalette, AppConfirmDialog, AppDataTable, AppDialog, AppEmptyState, AppFooter, AppHeader, AppIcon, AppInput, AppJsonView, AppLanguageSelector, AppLoading, AppModal, AppPageContainer, AppPageToolbar, AppPagination, AppProgressBar, AppPropertiesPanel, AppRadio, AppSegmentSelector, AppSelect, AppShortcutsOverlay, AppSidebar, AppSlider, AppSplitView, AppStatsCard, AppSwapButton, AppSwitch, AppTableView, AppTabs, AppTextInput, AppTextarea, AppThemeToggle, AppToast, AppTranslationOutput, ComponentRegistryService, CrudService, DataBindingResolver, EventBusService, GuardService, InvokeWrapperService, SchemaFetcherService, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, StyleResolver, TextComponent, ThemeService, UiShowcaseComponent, components, dataComponents, feedbackComponents, getAllStyleVariants, getCurrentStyle, getStyleClassPrefix, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, layoutComponents, loadStyleVariant, setCurrentStyle, uiComponents };
+export { AppAvatar, AppBadge, AppBottomPanel, AppButton, AppCanvas, AppCard, AppChip, AppComponentPalette, AppConfirmDialog, AppDataTable, AppDialog, AppEmptyState, AppFooter, AppHeader, AppIcon, AppInput, AppJsonView, AppLanguageSelector, AppLoading, AppModal, AppPageContainer, AppPageToolbar, AppPagination, AppProgressBar, AppPropertiesPanel, AppRadio, AppSegmentSelector, AppSelect, AppShortcutsOverlay, AppSidebar, AppSlider, AppSplitView, AppStatsCard, AppSwapButton, AppSwitch, AppTableView, AppTabs, AppTextInput, AppTextarea, AppThemeToggle, AppToast, AppTranslationOutput, ComponentRegistryService, CrudService, DataBindingResolverService, ErrorType, EventBusService, GuardService, InvokeWrapperService, LayoutEngineService, ResponseStatus, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, ThemeService, UiShowcaseComponent, addEdge, addNode, bubbleSort, components, createGraph, dataComponents, dijkstra, feedbackComponents, formatError, getAllStyleVariants, getCurrentStyle, getErrorMessage, getStyleClassPrefix, insertionSort, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isError, isSuccess, layoutComponents, loadStyleVariant, mapResponse, mergeSort, parseError, quickSort, setCurrentStyle, uiComponents, unwrapResponse };
 //# sourceMappingURL=tauri-front-shared.mjs.map

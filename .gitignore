@@ -10,3 +10,9 @@ dist/
 lib/
 !projects/*/dist/
 !projects/*/lib/
+
+# Allow shared library source
+!projects/shared/src/core/
+!projects/shared/src/core/lib/
+!projects/shared/src/algorithms/
+!projects/shared/src/ui-showcase/

@@ -1220,6 +1220,8 @@ declare class InvokeWrapperService {
     invoke<T>(cmd: string, args?: Record<string, unknown>): Promise<T>;
     invokeWithRetry<T>(cmd: string, args?: Record<string, unknown>, options?: RetryOptions): Promise<T>;
     private invokeWithTimeout;
+    static ɵfac: i0.ɵɵFactoryDeclaration<InvokeWrapperService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<InvokeWrapperService>;
 }
 
 type FilterOperator = "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "contains" | "in";

@@ -11,6 +11,8 @@ import { CrudService } from "../crud/crud.service";
 import { ComponentRegistryService } from "./component-registry";
 import { DataBindingResolverService } from "./data-binding-resolver";
 import { LayoutEngineService, GridTemplate } from "./layout-engine";
+import { I18nService } from "../i18n/i18n.service";
+import { StyleVariant, getStyleClassPrefix, getCurrentStyle } from "../../../../styles/style-registry";
 
 export interface CanvasElement {
   id: string;
@@ -220,7 +222,20 @@ export class SchemaRendererService {
       return null;
     }
 
-    await customElements.whenDefined(def.selector);
+    // Only wait for custom elements (names with hyphens), not native HTML elements like div/span/p/footer
+    // Wrap in Promise.race to prevent indefinite hang if component never loads
+    if (def.selector.includes('-')) {
+      try {
+        await Promise.race([
+          customElements.whenDefined(def.selector),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error(`Timeout: ${def.selector}`)), 2000)
+          )
+        ]);
+      } catch (e) {
+        console.warn(`[SchemaRenderer] Element not ready: ${def.selector}`, e);
+      }
+    }
     const el = document.createElement(def.selector);
 
     if (data.gridPosition) {
@@ -238,7 +253,15 @@ export class SchemaRendererService {
       el.style.zIndex = `${data.zIndex}`;
     }
 
+    // Get mapped classes from props (variant, size, etc.)
+    const theme = getCurrentStyle();
+    const mappedClasses = this.mapPropsToClasses(data.componentId, data.props, theme);
+    const mappedClassStr = mappedClasses.join(" ");
+
     el.className = this.resolveClasses(data.classes, def.defaultClasses || "");
+    if (mappedClassStr) {
+      el.className = this.resolveClasses(el.className, mappedClassStr);
+    }
 
     const resolvedProps = this.dataBindingResolver.resolveProps(
       {
@@ -248,8 +271,34 @@ export class SchemaRendererService {
       data.id,
     );
 
+    // Handle text / i18nKey prop for native HTML elements
+    // i18nKey takes precedence over text
+    const i18nKey = resolvedProps["i18nKey"];
+    const textValue = resolvedProps["text"];
+
+    if (i18nKey !== undefined) {
+      const translated = I18nService.instance.t(String(i18nKey));
+      if (!el.shadowRoot) {
+        el.textContent = translated;
+      } else {
+        (el as any)["label"] = translated;
+      }
+    } else if (textValue !== undefined) {
+      if (!el.shadowRoot) {
+        el.textContent = String(textValue);
+      } else {
+        (el as any)["label"] = String(textValue);
+      }
+    }
+
+    // Handle placeholder_i18n prop: resolve via I18nService and set as placeholder
+    const placeholderI18n = resolvedProps["placeholder_i18n"];
+    if (placeholderI18n !== undefined) {
+      (el as any)["placeholder"] = I18nService.instance.t(String(placeholderI18n));
+    }
+
     for (const [key, value] of Object.entries(resolvedProps)) {
-      if (key === "class" || key === "style" || key === "id") continue;
+      if (key === "class" || key === "style" || key === "id" || key === "label" || key === "text" || key === "i18nKey" || key === "placeholder_i18n") continue;
 
       if (key.startsWith("on") && typeof value === "function") {
         const eventName = key[2].toLowerCase() + key.slice(3);
@@ -310,9 +359,37 @@ export class SchemaRendererService {
       container.style.gap = template.gap;
     }
 
+    // 1. Create all elements and track them by ID
+    const elementMap = new Map<string, HTMLElement>();
     for (const element of pageSchema.elements) {
       const el = await this.createElement(element);
       if (el) {
+        elementMap.set(element.id, el);
+      }
+    }
+
+    // 2. Collect all child IDs to identify root elements
+    const childIds = new Set(
+      pageSchema.elements.reduce<string[]>((acc, e) => acc.concat(e.children || []), [])
+    );
+
+    // 3. Append children to parents, then append roots to container
+    for (const element of pageSchema.elements) {
+      const el = elementMap.get(element.id)!;
+      if (!el) continue;
+
+      // Append children to this element
+      if (element.children) {
+        for (const childId of element.children) {
+          const childEl = elementMap.get(childId);
+          if (childEl) {
+            el.appendChild(childEl);
+          }
+        }
+      }
+
+      // Append root elements (not a child of anyone) to container
+      if (!childIds.has(element.id)) {
         container.appendChild(el);
       }
     }
@@ -344,6 +421,55 @@ export class SchemaRendererService {
         }
       }
     }
+  }
+
+  // Maps semantic props to theme CSS classes
+  mapPropsToClasses(componentId: string, props: Record<string, unknown>, theme: StyleVariant): string[] {
+    const classes: string[] = [];
+    const prefix = getStyleClassPrefix(theme);
+
+    // Component-specific variant mappings
+    const variantMaps: Record<string, Record<string, string>> = {
+      "app-button": {
+        filled: "btn",
+        outlined: "btn-outlined",
+        text: "btn-text",
+        icon: "btn-icon",
+      },
+      "app-card": {
+        elevated: "card-elevated",
+        filled: "card-filled",
+        outlined: "card-outlined",
+      },
+      "app-input": {
+        filled: "input-filled",
+        outlined: "input-outlined",
+      },
+    };
+
+    // Size mappings
+    const sizeMaps: Record<string, string> = {
+      sm: "btn-sm",
+      md: "btn-md",
+      lg: "btn-lg",
+    };
+
+    // Apply theme prefix to base variant class
+    const variant = props["variant"] as string;
+    if (variant && variantMaps[componentId]) {
+      const baseClass = variantMaps[componentId][variant];
+      if (baseClass) {
+        classes.push(`${prefix}${baseClass}`);
+      }
+    }
+
+    // Apply size class
+    const size = props["size"] as string;
+    if (size && sizeMaps[size]) {
+      classes.push(`${prefix}${sizeMaps[size]}`);
+    }
+
+    return classes;
   }
 
   resolveClasses(elementClasses: string, defaultClasses: string): string {

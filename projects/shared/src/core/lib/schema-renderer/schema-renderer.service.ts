@@ -12,7 +12,7 @@ import { ComponentRegistryService } from "./component-registry";
 import { DataBindingResolverService } from "./data-binding-resolver";
 import { LayoutEngineService, GridTemplate } from "./layout-engine";
 import { I18nService } from "../i18n/i18n.service";
-import { StyleVariant, getStyleClassPrefix, getCurrentStyle } from "../../../../styles/style-registry";
+import { StyleVariant, getStyleClassPrefix, getCurrentStyle } from "../../../styles/style-registry";
 
 export interface CanvasElement {
   id: string;

@@ -275,9 +275,21 @@ export class SchemaRendererService {
     }
 
     if (data.events) {
-      for (const [eventName, emitEvent] of Object.entries(data.events)) {
+      for (const [eventName, handlers] of Object.entries(data.events)) {
         el.addEventListener(eventName, (e: Event) => {
-          this.eventBus.emit(emitEvent, { elementId: data.id, event: e });
+          // handlers can be string, function, or array of {handler, params?}
+          const handlerList = Array.isArray(handlers) ? handlers : [handlers];
+          for (const h of handlerList) {
+            if (typeof h === "function") {
+              this.eventBus.emit(eventName, { elementId: data.id, event: e });
+            } else if (typeof h === "string") {
+              // Emit a descriptive event name: "elementId:eventName"
+              this.eventBus.emit(`${data.id}:${eventName}`, { elementId: data.id, event: e });
+            } else if (typeof h === "object" && h !== null && "handler" in h) {
+              // Schema format: { handler: "onShortcutsOpen", params?: ... }
+              this.eventBus.emit(`${data.id}:${h.handler}`, { elementId: data.id, event: e });
+            }
+          }
         });
       }
     }

@@ -15,11 +15,6 @@ export interface GlobalStyleContext {
   sizeVariant?: string;   // e.g., "sm", "md", "lg"
 }
 
-export interface GlobalStyleContext {
-  styleVariant?: string; // e.g., "ghost", "solid", "text"
-  sizeVariant?: string; // e.g., "sm", "md", "lg"
-}
-
 export interface StyleVariantConfig {
   id: StyleVariant;
   name: string;

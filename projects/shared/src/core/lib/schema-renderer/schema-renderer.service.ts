@@ -50,7 +50,7 @@ export class SchemaRendererService {
   private _pages = signal<Page[]>([]);
   private _currentPageId = signal<string | null>(null);
   private _navigationStack = signal<string[]>([]);
-  private _appConfig: { styleVariant?: string; sizeVariant?: string } = {};
+  private _appConfig: { variant?: string; size?: string } = {};
 
   private componentRegistry: ComponentRegistryService;
   private dataBindingResolver: DataBindingResolverService;
@@ -92,12 +92,12 @@ export class SchemaRendererService {
     return this.componentRegistry.getComponent(selector);
   }
 
-  loadSchema(schema: { pages: Page[]; app?: { styleVariant?: string; sizeVariant?: string } }): void {
+  loadSchema(schema: { pages: Page[]; app?: { variant?: string; size?: string } }): void {
     this._pages.set(schema.pages || []);
     this.componentRegistry.loadComponentsFromSchema(schema.pages || []);
     this._appConfig = {
-      styleVariant: schema.app?.styleVariant,
-      sizeVariant: schema.app?.sizeVariant,
+      variant: schema.app?.variant,
+      size: schema.app?.size,
     };
   }
 
@@ -261,10 +261,12 @@ export class SchemaRendererService {
     // Get mapped classes from props (variant, size, etc.)
     const theme = getCurrentStyle();
     const globalContext: GlobalStyleContext | undefined =
-      this._appConfig.styleVariant || this._appConfig.sizeVariant
-        ? { styleVariant: this._appConfig.styleVariant, sizeVariant: this._appConfig.sizeVariant }
+      this._appConfig.variant || this._appConfig.size
+        ? { variant: this._appConfig.variant, size: this._appConfig.size }
         : undefined;
-    const mappedClasses = this.mapPropsToClasses(data.componentId, data.props, theme, globalContext);
+    const explicitVariant = data.props?.["variant"] as string | undefined;
+    const explicitSize = data.props?.["size"] as string | undefined;
+    const mappedClasses = this.mapPropsToClasses(data.componentId, data.props, theme, explicitVariant, explicitSize, globalContext);
     const mappedClassStr = mappedClasses.join(" ");
 
     el.className = this.resolveClasses(data.classes, def.defaultClasses || "");
@@ -447,16 +449,21 @@ export class SchemaRendererService {
   //   - fullHeight: true → h-full
   //   - rounded: true → rounded-lg
   //   - elevation: "low"|"medium"|"high" → elevation classes (theme-specific)
-  mapPropsToClasses(componentId: string, props: Record<string, unknown>, theme: StyleVariant, globalContext?: GlobalStyleContext): string[] {
+  mapPropsToClasses(
+    componentId: string,
+    props: Record<string, unknown>,
+    theme: StyleVariant,
+    explicitVariant?: string,
+    explicitSize?: string,
+    globalContext?: GlobalStyleContext,
+  ): string[] {
     const classes: string[] = [];
     if (!props) return classes;
 
-    // 1. Named style from global registry (explicit styleName OR globalContext fallback)
-    const styleName = props["styleName"] as string | undefined;
-    // Use globalContext when no explicit styleName is provided
-    const hasGlobalContext = globalContext?.styleVariant || globalContext?.sizeVariant;
-    if (styleName || hasGlobalContext) {
-      const classesStr = getComponentStyleClasses(theme, componentId, styleName, globalContext);
+    // 1. Named style from variant/size (explicit props OR globalContext fallback)
+    const hasStyle = explicitVariant || explicitSize || globalContext?.variant || globalContext?.size;
+    if (hasStyle) {
+      const classesStr = getComponentStyleClasses(theme, componentId, explicitVariant, explicitSize, globalContext);
       if (classesStr) {
         classes.push(...classesStr.split(" ").filter((c) => c.trim()));
       }

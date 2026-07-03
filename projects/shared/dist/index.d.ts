@@ -880,8 +880,18 @@ declare class LayoutEngineService {
 type StyleVariant = "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3";
 interface ComponentStyleMap {
     [componentId: string]: {
-        [styleName: string]: string;
+        variants: {
+            [variant: string]: string;
+        };
+        sizes?: {
+            [size: string]: string;
+        };
+        default?: string;
     };
+}
+interface GlobalStyleContext {
+    variant?: string;
+    size?: string;
 }
 interface StyleVariantConfig {
     id: StyleVariant;
@@ -896,11 +906,11 @@ declare function setCurrentStyle(variant: StyleVariant): void;
 declare function getCurrentStyle(): StyleVariant;
 declare function getStyleClassPrefix(variant: StyleVariant): string;
 /**
- * Get CSS classes for a component's named style.
- * Uses the global style registry — styleName is resolved based on the theme variant.
- * Returns CSS class string or empty string if not found.
+ * Get CSS classes for a component's variant and size.
+ * Uses the global style registry — variant and size are resolved separately.
+ * Returns CSS class string combining variant and size classes, or empty string if not found.
  */
-declare function getComponentStyleClasses(variant: StyleVariant, componentId: string, styleName: string): string;
+declare function getComponentStyleClasses(theme: StyleVariant, componentId: string, explicitVariant?: string, explicitSize?: string, globalContext?: GlobalStyleContext): string;
 declare function getAllStyleVariants(): StyleVariantConfig[];
 
 interface CanvasElement {
@@ -940,6 +950,7 @@ declare class SchemaRendererService {
     private _pages;
     private _currentPageId;
     private _navigationStack;
+    private _appConfig;
     private componentRegistry;
     private dataBindingResolver;
     private layoutEngine;
@@ -956,6 +967,10 @@ declare class SchemaRendererService {
     getComponent(selector: string): ComponentDef | undefined;
     loadSchema(schema: {
         pages: Page[];
+        app?: {
+            variant?: string;
+            size?: string;
+        };
     }): void;
     getCurrentPage(): Page | null;
     setCurrentPage(pageId: string): void;
@@ -977,7 +992,7 @@ declare class SchemaRendererService {
     createElement(data: CanvasElement): Promise<HTMLElement | null>;
     render(container: HTMLElement, pageSchema: PageSchema): Promise<void>;
     bindEvents(el: HTMLElement, events: Record<string, string | Function>, elementId: string): void;
-    mapPropsToClasses(componentId: string, props: Record<string, unknown>, theme: StyleVariant): string[];
+    mapPropsToClasses(componentId: string, props: Record<string, unknown>, theme: StyleVariant, explicitVariant?: string, explicitSize?: string, globalContext?: GlobalStyleContext): string[];
     resolveClasses(elementClasses: string, defaultClasses: string): string;
     resolveDataBinding(binding: unknown): unknown;
     private getDataBindingValue;

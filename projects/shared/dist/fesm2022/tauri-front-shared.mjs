@@ -9446,26 +9446,31 @@ const STYLE_VARIANTS = {
         description: "Soft raised shadows with clay-like appearance",
         componentStyles: {
             "app-button": {
-                solid: "clay-btn clay-btn-solid",
-                ghost: "clay-btn clay-btn-ghost",
-                text: "clay-btn clay-btn-text",
-                icon: "clay-btn clay-btn-icon",
-                "solid-sm": "clay-btn clay-btn-solid clay-btn-sm",
-                "ghost-sm": "clay-btn clay-btn-ghost clay-btn-sm",
-                "text-sm": "clay-btn clay-btn-text clay-btn-sm",
-                "icon-sm": "clay-btn clay-btn-icon clay-btn-sm",
+                variants: {
+                    solid: "clay-btn clay-btn-solid",
+                    ghost: "clay-btn clay-btn-ghost",
+                    text: "clay-btn clay-btn-text",
+                    icon: "clay-btn clay-btn-icon",
+                },
+                sizes: {
+                    sm: "clay-btn-sm",
+                    md: "",
+                    lg: "",
+                },
             },
             "app-card": {
-                elevated: "clay-card clay-card-elevated",
-                filled: "clay-card clay-card-filled",
-                outlined: "clay-card clay-card-outlined",
+                variants: {
+                    elevated: "clay-card clay-card-elevated",
+                    filled: "clay-card clay-card-filled",
+                    outlined: "clay-card clay-card-outlined",
+                },
             },
-            "app-theme-toggle": { default: "clay-toggle" },
-            "app-swap-button": { default: "clay-swap-btn" },
-            "app-language-selector": { default: "clay-lang-selector" },
-            "app-text-input": { default: "clay-input" },
-            "app-translation-output": { default: "clay-output" },
-            "app-shortcuts-overlay": { default: "clay-overlay" },
+            "app-theme-toggle": { variants: { default: "clay-toggle" } },
+            "app-swap-button": { variants: { default: "clay-swap-btn" } },
+            "app-language-selector": { variants: { default: "clay-lang-selector" } },
+            "app-text-input": { variants: { default: "clay-input" } },
+            "app-translation-output": { variants: { default: "clay-output" } },
+            "app-shortcuts-overlay": { variants: { default: "clay-overlay" } },
         },
     },
     glassmorphism: {
@@ -9476,26 +9481,31 @@ const STYLE_VARIANTS = {
         description: "Frosted glass effect with backdrop blur",
         componentStyles: {
             "app-button": {
-                solid: "glass-btn glass-btn-solid",
-                ghost: "glass-btn glass-btn-ghost",
-                text: "glass-btn glass-btn-text",
-                icon: "glass-btn glass-btn-icon",
-                "solid-sm": "glass-btn glass-btn-solid glass-btn-sm",
-                "ghost-sm": "glass-btn glass-btn-ghost glass-btn-sm",
-                "text-sm": "glass-btn glass-btn-text glass-btn-sm",
-                "icon-sm": "glass-btn glass-btn-icon glass-btn-sm",
+                variants: {
+                    solid: "glass-btn glass-btn-solid",
+                    ghost: "glass-btn glass-btn-ghost",
+                    text: "glass-btn glass-btn-text",
+                    icon: "glass-btn glass-btn-icon",
+                },
+                sizes: {
+                    sm: "glass-btn-sm",
+                    md: "",
+                    lg: "",
+                },
             },
             "app-card": {
-                elevated: "glass-card glass-card-elevated",
-                filled: "glass-card glass-card-filled",
-                outlined: "glass-card glass-card-outlined",
+                variants: {
+                    elevated: "glass-card glass-card-elevated",
+                    filled: "glass-card glass-card-filled",
+                    outlined: "glass-card glass-card-outlined",
+                },
             },
-            "app-theme-toggle": { default: "glass-toggle" },
-            "app-swap-button": { default: "glass-swap-btn" },
-            "app-language-selector": { default: "glass-lang-selector" },
-            "app-text-input": { default: "glass-input" },
-            "app-translation-output": { default: "glass-output" },
-            "app-shortcuts-overlay": { default: "glass-overlay" },
+            "app-theme-toggle": { variants: { default: "glass-toggle" } },
+            "app-swap-button": { variants: { default: "glass-swap-btn" } },
+            "app-language-selector": { variants: { default: "glass-lang-selector" } },
+            "app-text-input": { variants: { default: "glass-input" } },
+            "app-translation-output": { variants: { default: "glass-output" } },
+            "app-shortcuts-overlay": { variants: { default: "glass-overlay" } },
         },
     },
     neumorphism: {
@@ -9506,26 +9516,31 @@ const STYLE_VARIANTS = {
         description: "Soft inset and outset shadows",
         componentStyles: {
             "app-button": {
-                solid: "neu-btn neu-btn-primary",
-                ghost: "neu-btn neu-btn-primary",
-                text: "neu-btn neu-btn-primary",
-                icon: "neu-btn neu-btn-icon",
-                "solid-sm": "neu-btn neu-btn-primary neu-btn-sm",
-                "ghost-sm": "neu-btn neu-btn-primary neu-btn-sm",
-                "text-sm": "neu-btn neu-btn-primary neu-btn-sm",
-                "icon-sm": "neu-btn neu-btn-icon neu-btn-sm",
+                variants: {
+                    solid: "neu-btn neu-btn-primary",
+                    ghost: "neu-btn neu-btn-primary",
+                    text: "neu-btn neu-btn-primary",
+                    icon: "neu-btn neu-btn-icon",
+                },
+                sizes: {
+                    sm: "neu-btn-sm",
+                    md: "",
+                    lg: "",
+                },
             },
             "app-card": {
-                elevated: "neu-card neu-card-elevated",
-                filled: "neu-card neu-card-filled",
-                outlined: "neu-card neu-card-outlined",
+                variants: {
+                    elevated: "neu-card neu-card-elevated",
+                    filled: "neu-card neu-card-filled",
+                    outlined: "neu-card neu-card-outlined",
+                },
             },
-            "app-theme-toggle": { default: "neu-toggle" },
-            "app-swap-button": { default: "neu-swap-btn" },
-            "app-language-selector": { default: "neu-lang-selector" },
-            "app-text-input": { default: "neu-input" },
-            "app-translation-output": { default: "neu-output" },
-            "app-shortcuts-overlay": { default: "neu-overlay" },
+            "app-theme-toggle": { variants: { default: "neu-toggle" } },
+            "app-swap-button": { variants: { default: "neu-swap-btn" } },
+            "app-language-selector": { variants: { default: "neu-lang-selector" } },
+            "app-text-input": { variants: { default: "neu-input" } },
+            "app-translation-output": { variants: { default: "neu-output" } },
+            "app-shortcuts-overlay": { variants: { default: "neu-overlay" } },
         },
     },
     "material-design-v3": {
@@ -9536,26 +9551,31 @@ const STYLE_VARIANTS = {
         description: "Google Material Design 3 with elevation system",
         componentStyles: {
             "app-button": {
-                solid: "m3-btn-filled",
-                ghost: "m3-btn-outlined",
-                text: "m3-btn-text",
-                icon: "m3-btn-icon",
-                "solid-sm": "m3-btn-filled m3-btn-sm",
-                "ghost-sm": "m3-btn-outlined m3-btn-sm",
-                "text-sm": "m3-btn-text m3-btn-sm",
-                "icon-sm": "m3-btn-icon m3-btn-sm",
+                variants: {
+                    solid: "m3-btn-filled",
+                    ghost: "m3-btn-outlined",
+                    text: "m3-btn-text",
+                    icon: "m3-btn-icon",
+                },
+                sizes: {
+                    sm: "m3-btn-sm",
+                    md: "",
+                    lg: "",
+                },
             },
             "app-card": {
-                elevated: "m3-card-elevated",
-                filled: "m3-card-filled",
-                outlined: "m3-card-outlined",
+                variants: {
+                    elevated: "m3-card-elevated",
+                    filled: "m3-card-filled",
+                    outlined: "m3-card-outlined",
+                },
             },
-            "app-theme-toggle": { default: "m3-toggle" },
-            "app-swap-button": { default: "m3-swap-btn" },
-            "app-language-selector": { default: "m3-lang-selector" },
-            "app-text-input": { default: "m3-input" },
-            "app-translation-output": { default: "m3-output" },
-            "app-shortcuts-overlay": { default: "m3-overlay" },
+            "app-theme-toggle": { variants: { default: "m3-toggle" } },
+            "app-swap-button": { variants: { default: "m3-swap-btn" } },
+            "app-language-selector": { variants: { default: "m3-lang-selector" } },
+            "app-text-input": { variants: { default: "m3-input" } },
+            "app-translation-output": { variants: { default: "m3-output" } },
+            "app-shortcuts-overlay": { variants: { default: "m3-overlay" } },
         },
     },
 };
@@ -9616,18 +9636,41 @@ function getStyleClassPrefix(variant) {
     return STYLE_VARIANTS[variant]?.classPrefix || "m3-";
 }
 /**
- * Get CSS classes for a component's named style.
- * Uses the global style registry — styleName is resolved based on the theme variant.
- * Returns CSS class string or empty string if not found.
+ * Get CSS classes for a component's variant and size.
+ * Uses the global style registry — variant and size are resolved separately.
+ * Returns CSS class string combining variant and size classes, or empty string if not found.
  */
-function getComponentStyleClasses(variant, componentId, styleName) {
-    const config = STYLE_VARIANTS[variant];
+function getComponentStyleClasses(theme, componentId, explicitVariant, explicitSize, globalContext) {
+    const config = STYLE_VARIANTS[theme];
     if (!config)
         return "";
     const componentMap = config.componentStyles?.[componentId];
     if (!componentMap)
         return "";
-    return componentMap[styleName] || "";
+    // Resolve variant: explicit > global
+    const resolvedVariant = explicitVariant || globalContext?.variant;
+    // Resolve size: explicit > global
+    const resolvedSize = explicitSize || globalContext?.size;
+    const classes = [];
+    // Get variant class
+    if (resolvedVariant) {
+        const variantClass = componentMap.variants?.[resolvedVariant];
+        if (variantClass) {
+            classes.push(variantClass);
+        }
+    }
+    // Get size class
+    if (resolvedSize && componentMap.sizes) {
+        const sizeClass = componentMap.sizes[resolvedSize];
+        if (sizeClass) {
+            classes.push(sizeClass);
+        }
+    }
+    // If nothing resolved, try default
+    if (classes.length === 0) {
+        return componentMap.default || "";
+    }
+    return classes.join(" ");
 }
 function getAllStyleVariants() {
     return Object.values(STYLE_VARIANTS);
@@ -9664,6 +9707,7 @@ class SchemaRendererService {
     _pages = signal([], ...(ngDevMode ? [{ debugName: "_pages" }] : []));
     _currentPageId = signal(null, ...(ngDevMode ? [{ debugName: "_currentPageId" }] : []));
     _navigationStack = signal([], ...(ngDevMode ? [{ debugName: "_navigationStack" }] : []));
+    _appConfig = {};
     componentRegistry;
     dataBindingResolver;
     layoutEngine;
@@ -9694,6 +9738,10 @@ class SchemaRendererService {
     loadSchema(schema) {
         this._pages.set(schema.pages || []);
         this.componentRegistry.loadComponentsFromSchema(schema.pages || []);
+        this._appConfig = {
+            variant: schema.app?.variant,
+            size: schema.app?.size,
+        };
     }
     getCurrentPage() {
         const id = this._currentPageId();
@@ -9814,7 +9862,12 @@ class SchemaRendererService {
         }
         // Get mapped classes from props (variant, size, etc.)
         const theme = getCurrentStyle();
-        const mappedClasses = this.mapPropsToClasses(data.componentId, data.props, theme);
+        const globalContext = this._appConfig.variant || this._appConfig.size
+            ? { variant: this._appConfig.variant, size: this._appConfig.size }
+            : undefined;
+        const explicitVariant = data.props?.["variant"];
+        const explicitSize = data.props?.["size"];
+        const mappedClasses = this.mapPropsToClasses(data.componentId, data.props, theme, explicitVariant, explicitSize, globalContext);
         const mappedClassStr = mappedClasses.join(" ");
         el.className = this.resolveClasses(data.classes, def.defaultClasses || "");
         if (mappedClassStr) {
@@ -9972,14 +10025,14 @@ class SchemaRendererService {
     //   - fullHeight: true → h-full
     //   - rounded: true → rounded-lg
     //   - elevation: "low"|"medium"|"high" → elevation classes (theme-specific)
-    mapPropsToClasses(componentId, props, theme) {
+    mapPropsToClasses(componentId, props, theme, explicitVariant, explicitSize, globalContext) {
         const classes = [];
         if (!props)
             return classes;
-        // 1. Named style from global registry
-        const styleName = props["styleName"];
-        if (styleName) {
-            const classesStr = getComponentStyleClasses(theme, componentId, styleName);
+        // 1. Named style from variant/size (explicit props OR globalContext fallback)
+        const hasStyle = explicitVariant || explicitSize || globalContext?.variant || globalContext?.size;
+        if (hasStyle) {
+            const classesStr = getComponentStyleClasses(theme, componentId, explicitVariant, explicitSize, globalContext);
             if (classesStr) {
                 classes.push(...classesStr.split(" ").filter((c) => c.trim()));
             }

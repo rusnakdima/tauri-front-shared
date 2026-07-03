@@ -451,9 +451,11 @@ export class SchemaRendererService {
     const classes: string[] = [];
     if (!props) return classes;
 
-    // 1. Named style from global registry
+    // 1. Named style from global registry (explicit styleName OR globalContext fallback)
     const styleName = props["styleName"] as string | undefined;
-    if (styleName) {
+    // Use globalContext when no explicit styleName is provided
+    const hasGlobalContext = globalContext?.styleVariant || globalContext?.sizeVariant;
+    if (styleName || hasGlobalContext) {
       const classesStr = getComponentStyleClasses(theme, componentId, styleName, globalContext);
       if (classesStr) {
         classes.push(...classesStr.split(" ").filter((c) => c.trim()));

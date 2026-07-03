@@ -10,6 +10,16 @@ export interface ComponentStyleMap {
   };
 }
 
+export interface GlobalStyleContext {
+  styleVariant?: string;  // e.g., "ghost", "solid", "text"
+  sizeVariant?: string;   // e.g., "sm", "md", "lg"
+}
+
+export interface GlobalStyleContext {
+  styleVariant?: string; // e.g., "ghost", "solid", "text"
+  sizeVariant?: string; // e.g., "sm", "md", "lg"
+}
+
 export interface StyleVariantConfig {
   id: StyleVariant;
   name: string;
@@ -2435,17 +2445,31 @@ export function getStyleClassPrefix(variant: StyleVariant): string {
  * Get CSS classes for a component's named style.
  * Uses the global style registry — styleName is resolved based on the theme variant.
  * Returns CSS class string or empty string if not found.
+ *
+ * When globalContext is provided and no explicit styleName is given, the global
+ * styleVariant and sizeVariant are combined (e.g. "ghost-sm") and used for lookup.
  */
 export function getComponentStyleClasses(
   variant: StyleVariant,
   componentId: string,
-  styleName: string,
+  styleName?: string,
+  globalContext?: GlobalStyleContext,
 ): string {
   const config = STYLE_VARIANTS[variant];
   if (!config) return "";
+
   const componentMap = config.componentStyles?.[componentId];
   if (!componentMap) return "";
-  return componentMap[styleName] || "";
+
+  // Resolve styleName: explicit > global context > empty
+  const resolvedStyle = styleName
+    || (globalContext?.styleVariant
+      ? `${globalContext.styleVariant}${globalContext.sizeVariant ? `-${globalContext.sizeVariant}` : ""}`
+      : "");
+
+  if (!resolvedStyle) return componentMap["default"] || "";
+
+  return componentMap[resolvedStyle] || "";
 }
 
 export function getAllStyleVariants(): StyleVariantConfig[] {

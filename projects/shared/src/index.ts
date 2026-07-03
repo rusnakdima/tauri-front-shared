@@ -98,8 +98,9 @@ export {
   getCurrentStyle,
   getAllStyleVariants,
   getStyleClassPrefix,
+  getComponentStyleClasses,
 } from "./styles/style-registry";
-export type { StyleVariant } from "./styles/style-registry";
+export type { StyleVariant, ComponentStyleMap } from "./styles/style-registry";
 export { ThemeService as StyleThemeService } from "./styles/theme.service";
 
 // UI Showcase

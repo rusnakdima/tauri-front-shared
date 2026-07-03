@@ -93,7 +93,70 @@ export class ThemeService {
         : mode;
 
     root.classList.add(effectiveMode);
-    this.applyAccentShades(accent);
+    this.applyThemeVariables(effectiveMode, accent);
+  }
+
+  private applyThemeVariables(mode: "light" | "dark", accent: string): void {
+    const root = document.documentElement;
+
+    // Core accent
+    root.style.setProperty("--accent", accent);
+    root.style.setProperty("--accent-hover", this.darkenColor(accent, 0.15));
+
+    // Semantic text colors
+    root.style.setProperty("--text-on-accent", "#ffffff");
+    root.style.setProperty("--text-primary", mode === "dark" ? "#f8fafc" : "#0f172a");
+    root.style.setProperty("--text-secondary", mode === "dark" ? "#94a3b8" : "#64748b");
+    root.style.setProperty("--text-muted", mode === "dark" ? "#64748b" : "#94a3b8");
+    root.style.setProperty("--text-on-error", "#ffffff");
+    root.style.setProperty("--text-on-warning", "#ffffff");
+    root.style.setProperty("--text-on-success", "#ffffff");
+    root.style.setProperty("--text-on-info", "#ffffff");
+
+    // Background colors
+    root.style.setProperty("--bg-elevated", mode === "dark" ? "#1e293b" : "#ffffff");
+    root.style.setProperty("--bg-hover", mode === "dark" ? "#334155" : "#f1f5f9");
+    root.style.setProperty("--bg-primary", mode === "dark" ? "#0f172a" : "#ffffff");
+    root.style.setProperty("--bg-tertiary", mode === "dark" ? "#0f172a" : "#f8fafc");
+
+    // Border colors
+    root.style.setProperty("--border-color", mode === "dark" ? "#334155" : "#e2e8f0");
+
+    // Status colors
+    root.style.setProperty("--error", "#ef4444");
+    root.style.setProperty("--warning", "#f59e0b");
+    root.style.setProperty("--success", "#22c55e");
+    root.style.setProperty("--info", "#06b6d4");
+
+    // Accent shades
+    const shades: AccentShades = {
+      50: `color-mix(in srgb, ${accent} 10%, ${mode === "dark" ? "black" : "white"})`,
+      100: `color-mix(in srgb, ${accent} 20%, ${mode === "dark" ? "black" : "white"})`,
+      200: `color-mix(in srgb, ${accent} 40%, ${mode === "dark" ? "black" : "white"})`,
+      300: `color-mix(in srgb, ${accent} 60%, ${mode === "dark" ? "black" : "white"})`,
+      400: `color-mix(in srgb, ${accent} 80%, ${mode === "dark" ? "black" : "white"})`,
+      500: accent,
+      600: this.darkenColor(accent, 0.15),
+      700: this.darkenColor(accent, 0.25),
+      800: this.darkenColor(accent, 0.35),
+      900: this.darkenColor(accent, 0.45),
+    };
+    for (const [key, value] of Object.entries(shades)) {
+      root.style.setProperty(`--accent-${key}`, value);
+    }
+
+    const computedShades: AccentShades = { ...shades };
+    computedShades[500] = accent;
+    this._accentShades.set(computedShades);
+  }
+
+  private darkenColor(hex: string, amount: number): string {
+    const rgb = this.hexToRgb(hex);
+    if (!rgb) return hex;
+    const r = Math.round(rgb.r * (1 - amount));
+    const g = Math.round(rgb.g * (1 - amount));
+    const b = Math.round(rgb.b * (1 - amount));
+    return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
   }
 
   private applyAccentShades(accent: string): void {

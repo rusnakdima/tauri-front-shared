@@ -7,6 +7,8 @@ export { DataPatchService } from "./data-patch/data-patch.service";
 export { SchemaRendererService } from "./schema-renderer/schema-renderer.service";
 export { ThemeService } from "./theme/theme.service";
 export { EventBusService } from "./events/event-bus.service";
+export { I18nService } from "./i18n/i18n.service";
+export { GlobalStateService } from "./global-state/global-state.service";
 
 // Missing exports - ADDED 2026-06-30
 export { ComponentRegistryService } from "./schema-renderer/component-registry";

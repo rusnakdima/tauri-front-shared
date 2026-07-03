@@ -12,7 +12,7 @@ import { ComponentRegistryService } from "./component-registry";
 import { DataBindingResolverService } from "./data-binding-resolver";
 import { LayoutEngineService, GridTemplate } from "./layout-engine";
 import { I18nService } from "../i18n/i18n.service";
-import { StyleVariant, getStyleClassPrefix, getCurrentStyle } from "../../../styles/style-registry";
+import { StyleVariant, getStyleClassPrefix, getCurrentStyle, getComponentStyleClasses } from "../../../styles/style-registry";
 
 export interface CanvasElement {
   id: string;
@@ -423,50 +423,119 @@ export class SchemaRendererService {
     }
   }
 
-  // Maps semantic props to theme CSS classes
+  // Maps semantic props to theme CSS classes using global style registry
+  // Supports:
+  //   - styleName: named style lookup in componentStyles registry
+  //   - layout: "flex" | "grid" → Tailwind flex/grid classes
+  //   - direction: "row" | "col" → flex-direction
+  //   - gap: "xs"|"sm"|"md"|"lg"|"xl" → gap spacing
+  //   - align: "start"|"center"|"end"|"stretch" → align-items
+  //   - justify: "start"|"center"|"end"|"between"|"around" → justify-content
+  //   - padding: "none"|"xs"|"sm"|"md"|"lg"|"xl" → padding
+  //   - marginTop|marginBottom: "none"|"xs"|"sm"|"md"|"lg"|"xl"
+  //   - maxWidth: "sm"|"md"|"lg"|"xl"|"2xl"|... → max-width
+  //   - mx: "auto" → mx-auto
+  //   - fullHeight: true → h-full
+  //   - rounded: true → rounded-lg
+  //   - elevation: "low"|"medium"|"high" → elevation classes (theme-specific)
   mapPropsToClasses(componentId: string, props: Record<string, unknown>, theme: StyleVariant): string[] {
     const classes: string[] = [];
-    const prefix = getStyleClassPrefix(theme);
+    if (!props) return classes;
 
-    // Component-specific variant mappings
-    const variantMaps: Record<string, Record<string, string>> = {
-      "app-button": {
-        filled: "btn",
-        outlined: "btn-outlined",
-        text: "btn-text",
-        icon: "btn-icon",
-      },
-      "app-card": {
-        elevated: "card-elevated",
-        filled: "card-filled",
-        outlined: "card-outlined",
-      },
-      "app-input": {
-        filled: "input-filled",
-        outlined: "input-outlined",
-      },
-    };
-
-    // Size mappings
-    const sizeMaps: Record<string, string> = {
-      sm: "btn-sm",
-      md: "btn-md",
-      lg: "btn-lg",
-    };
-
-    // Apply theme prefix to base variant class
-    const variant = props["variant"] as string;
-    if (variant && variantMaps[componentId]) {
-      const baseClass = variantMaps[componentId][variant];
-      if (baseClass) {
-        classes.push(`${prefix}${baseClass}`);
+    // 1. Named style from global registry
+    const styleName = props["styleName"] as string | undefined;
+    if (styleName) {
+      const classesStr = getComponentStyleClasses(theme, componentId, styleName);
+      if (classesStr) {
+        classes.push(...classesStr.split(" ").filter((c) => c.trim()));
       }
     }
 
-    // Apply size class
-    const size = props["size"] as string;
-    if (size && sizeMaps[size]) {
-      classes.push(`${prefix}${sizeMaps[size]}`);
+    // 2. Layout type (flex/grid)
+    const layout = props["layout"] as string | undefined;
+    if (layout === "flex") classes.push("flex");
+    else if (layout === "grid") classes.push("grid");
+    else if (layout === "stack") classes.push("flex", "flex-col");
+
+    // 3. Flex direction
+    const direction = props["direction"] as string | undefined;
+    if (direction === "row") classes.push("flex-row");
+    else if (direction === "col") classes.push("flex-col");
+    else if (direction === "row-reverse") classes.push("flex-row-reverse");
+    else if (direction === "col-reverse") classes.push("flex-col-reverse");
+
+    // 4. Gap spacing
+    const gap = props["gap"] as string | undefined;
+    if (gap === "xs") classes.push("gap-1");
+    else if (gap === "sm") classes.push("gap-2");
+    else if (gap === "md") classes.push("gap-4");
+    else if (gap === "lg") classes.push("gap-6");
+    else if (gap === "xl") classes.push("gap-8");
+
+    // 5. Align items
+    const align = props["align"] as string | undefined;
+    if (align === "start") classes.push("items-start");
+    else if (align === "center") classes.push("items-center");
+    else if (align === "end") classes.push("items-end");
+    else if (align === "stretch") classes.push("items-stretch");
+
+    // 6. Justify content
+    const justify = props["justify"] as string | undefined;
+    if (justify === "start") classes.push("justify-start");
+    else if (justify === "center") classes.push("justify-center");
+    else if (justify === "end") classes.push("justify-end");
+    else if (justify === "between") classes.push("justify-between");
+    else if (justify === "around") classes.push("justify-around");
+
+    // 7. Padding
+    const padding = props["padding"] as string | undefined;
+    if (padding === "xs") classes.push("p-1");
+    else if (padding === "sm") classes.push("p-2");
+    else if (padding === "md") classes.push("p-4");
+    else if (padding === "lg") classes.push("p-6");
+    else if (padding === "xl") classes.push("p-8");
+
+    // 8. Margin top/bottom
+    const marginTop = props["marginTop"] as string | undefined;
+    if (marginTop === "xs") classes.push("mt-1");
+    else if (marginTop === "sm") classes.push("mt-2");
+    else if (marginTop === "md") classes.push("mt-4");
+    else if (marginTop === "lg") classes.push("mt-6");
+    else if (marginTop === "xl") classes.push("mt-8");
+
+    const marginBottom = props["marginBottom"] as string | undefined;
+    if (marginBottom === "xs") classes.push("mb-1");
+    else if (marginBottom === "sm") classes.push("mb-2");
+    else if (marginBottom === "md") classes.push("mb-4");
+    else if (marginBottom === "lg") classes.push("mb-6");
+    else if (marginBottom === "xl") classes.push("mb-8");
+
+    // 9. Max width
+    const maxWidth = props["maxWidth"] as string | undefined;
+    if (maxWidth === "sm") classes.push("max-w-sm");
+    else if (maxWidth === "md") classes.push("max-w-md");
+    else if (maxWidth === "lg") classes.push("max-w-lg");
+    else if (maxWidth === "xl") classes.push("max-w-xl");
+    else if (maxWidth === "2xl") classes.push("max-w-2xl");
+    else if (maxWidth === "6xl") classes.push("max-w-6xl");
+
+    // 10. MX auto
+    const mx = props["mx"] as string | undefined;
+    if (mx === "auto") classes.push("mx-auto");
+
+    // 11. Full height
+    const fullHeight = props["fullHeight"] as boolean | undefined;
+    if (fullHeight) classes.push("h-full");
+
+    // 12. Rounded
+    const rounded = props["rounded"] as boolean | undefined;
+    if (rounded) classes.push("rounded-lg");
+
+    // 13. Columns (grid)
+    const columns = props["columns"] as string | undefined;
+    if (columns) {
+      // Support CSS grid column strings like "1fr auto 1fr"
+      classes.push(`grid-cols-${columns.replace(/\s+/g, "-")}`);
     }
 
     return classes;

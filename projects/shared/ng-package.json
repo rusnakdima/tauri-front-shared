@@ -2,5 +2,12 @@
   "$schema": "../../../node_modules/ng-packagr/package.schema.json",
   "lib": {
     "entryFile": "src/index.ts"
-  }
+  },
+  "assets": [
+    {
+      "glob": "**/*",
+      "input": "src/styles",
+      "output": "styles"
+    }
+  ]
 }

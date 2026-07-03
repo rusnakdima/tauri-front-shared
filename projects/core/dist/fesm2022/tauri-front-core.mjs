@@ -3,8 +3,8 @@ import { signal, computed, Injectable, inject, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 class SignalStoreService {
-    _state = signal({}, ...(ngDevMode ? [{ debugName: "_state" }] : []));
-    state = computed(() => this._state(), ...(ngDevMode ? [{ debugName: "state" }] : []));
+    _state = signal({});
+    state = computed(() => this._state());
     set(key, value) {
         this._state.update((state) => ({
             ...state,
@@ -45,24 +45,24 @@ class SignalStoreService {
             ...patch,
         }));
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, providedIn: "root" });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: SignalStoreService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: SignalStoreService, providedIn: "root" });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: SignalStoreService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
         }] });
 
 class SignalSyncService {
     http = inject(HttpClient);
-    _syncStatus = signal("idle", ...(ngDevMode ? [{ debugName: "_syncStatus" }] : []));
-    _lastSyncTime = signal(null, ...(ngDevMode ? [{ debugName: "_lastSyncTime" }] : []));
-    _pendingChanges = signal(0, ...(ngDevMode ? [{ debugName: "_pendingChanges" }] : []));
-    _syncEndpoint = signal("", ...(ngDevMode ? [{ debugName: "_syncEndpoint" }] : []));
-    syncStatus = computed(() => this._syncStatus(), ...(ngDevMode ? [{ debugName: "syncStatus" }] : []));
-    lastSyncTime = computed(() => this._lastSyncTime(), ...(ngDevMode ? [{ debugName: "lastSyncTime" }] : []));
-    pendingChanges = computed(() => this._pendingChanges(), ...(ngDevMode ? [{ debugName: "pendingChanges" }] : []));
-    syncEndpoint = computed(() => this._syncEndpoint(), ...(ngDevMode ? [{ debugName: "syncEndpoint" }] : []));
+    _syncStatus = signal("idle");
+    _lastSyncTime = signal(null);
+    _pendingChanges = signal(0);
+    _syncEndpoint = signal("");
+    syncStatus = computed(() => this._syncStatus());
+    lastSyncTime = computed(() => this._lastSyncTime());
+    pendingChanges = computed(() => this._pendingChanges());
+    syncEndpoint = computed(() => this._syncEndpoint());
     setEndpoint(endpoint) {
         this._syncEndpoint.set(endpoint);
     }
@@ -122,25 +122,25 @@ class SignalSyncService {
             throw error;
         }
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalSyncService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalSyncService, providedIn: "root" });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: SignalSyncService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: SignalSyncService, providedIn: "root" });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalSyncService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: SignalSyncService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
         }] });
 
 class SignalLoggerService {
-    _entries = signal([], ...(ngDevMode ? [{ debugName: "_entries" }] : []));
-    _minLevel = signal("info", ...(ngDevMode ? [{ debugName: "_minLevel" }] : []));
-    _maxEntries = signal(1000, ...(ngDevMode ? [{ debugName: "_maxEntries" }] : []));
-    entries = computed(() => this._entries(), ...(ngDevMode ? [{ debugName: "entries" }] : []));
+    _entries = signal([]);
+    _minLevel = signal("info");
+    _maxEntries = signal(1000);
+    entries = computed(() => this._entries());
     filteredEntries = computed(() => {
         const level = this._minLevel();
         const levels = ["debug", "info", "warn", "error"];
         const minIndex = levels.indexOf(level);
         return this._entries().filter((e) => levels.indexOf(e.level) >= minIndex);
-    }, ...(ngDevMode ? [{ debugName: "filteredEntries" }] : []));
+    });
     setMinLevel(level) {
         this._minLevel.set(level);
     }
@@ -213,16 +213,16 @@ class SignalLoggerService {
             this.error("Failed to import log entries from JSON");
         }
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalLoggerService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalLoggerService, providedIn: "root" });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: SignalLoggerService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: SignalLoggerService, providedIn: "root" });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalLoggerService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: SignalLoggerService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
         }] });
 
 class CrudService {
-    storage = signal(null, ...(ngDevMode ? [{ debugName: "storage" }] : []));
+    storage = signal(null);
     init(storage) {
         this.storage.set(storage);
     }
@@ -375,16 +375,16 @@ class CrudService {
         const filtered = data.filter((item) => !ids.includes(item.id));
         this.saveCollection(collection, filtered);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, providedIn: "root" });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: CrudService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: CrudService, providedIn: "root" });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: CrudService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
         }] });
 
 class DataPatchService {
-    storage = signal(null, ...(ngDevMode ? [{ debugName: "storage" }] : []));
+    storage = signal(null);
     init(storage) {
         this.storage.set(storage);
     }
@@ -469,10 +469,10 @@ class DataPatchService {
     clearCollection(collection) {
         this.saveCollection(collection, []);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataPatchService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataPatchService, providedIn: "root" });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: DataPatchService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: DataPatchService, providedIn: "root" });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataPatchService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: DataPatchService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
         }] });
@@ -502,20 +502,20 @@ class EventBusService {
             }
         }
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: EventBusService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: EventBusService, providedIn: "root" });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: EventBusService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: EventBusService, providedIn: "root" });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: EventBusService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: EventBusService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
         }] });
 
 class SchemaRendererService {
-    _pages = signal([], ...(ngDevMode ? [{ debugName: "_pages" }] : []));
-    _currentPageId = signal(null, ...(ngDevMode ? [{ debugName: "_currentPageId" }] : []));
-    _componentRegistry = signal(new Map(), ...(ngDevMode ? [{ debugName: "_componentRegistry" }] : []));
-    _navigationStack = signal([], ...(ngDevMode ? [{ debugName: "_navigationStack" }] : []));
-    _componentModules = signal(new Map(), ...(ngDevMode ? [{ debugName: "_componentModules" }] : []));
+    _pages = signal([]);
+    _currentPageId = signal(null);
+    _componentRegistry = signal(new Map());
+    _navigationStack = signal([]);
+    _componentModules = signal(new Map());
     dataStore = inject(SignalStoreService);
     crudService = inject(CrudService);
     eventBus = inject(EventBusService);
@@ -975,18 +975,18 @@ class SchemaRendererService {
             return undefined;
         return obj[key];
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, providedIn: "root" });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: SchemaRendererService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: SchemaRendererService, providedIn: "root" });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: SchemaRendererService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
         }] });
 
 class ThemeService {
-    _mode = signal("system", ...(ngDevMode ? [{ debugName: "_mode" }] : []));
-    _accentColor = signal("#3b82f6", ...(ngDevMode ? [{ debugName: "_accentColor" }] : []));
-    _accentShades = signal(null, ...(ngDevMode ? [{ debugName: "_accentShades" }] : []));
+    _mode = signal("system");
+    _accentColor = signal("#3b82f6");
+    _accentShades = signal(null);
     _registeredThemes = new Map();
     mode = this._mode.asReadonly();
     accentColor = this._accentColor.asReadonly();
@@ -1116,10 +1116,10 @@ class ThemeService {
             return `rgba(0, 0, 0, ${alpha})`;
         return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, providedIn: "root" });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: ThemeService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: ThemeService, providedIn: "root" });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "19.2.25", ngImport: i0, type: ThemeService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
         }], ctorParameters: () => [] });

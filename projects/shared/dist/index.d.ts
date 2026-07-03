@@ -3,6 +3,117 @@ import * as lit from 'lit';
 import { LitElement } from 'lit';
 import * as i0 from '@angular/core';
 import { OnInit, AfterViewInit, OnDestroy, ElementRef } from '@angular/core';
+import { Observable } from 'rxjs';
+
+type ColorMode = "light" | "dark" | "system";
+interface Theme {
+    mode: ColorMode;
+    accentColor?: string;
+    cssVariables?: Record<string, string>;
+}
+interface UiSchema {
+    version: string;
+    pages: Page[];
+    layouts: Layout[];
+    theme?: Theme;
+}
+interface ComponentBehavior {
+    selfMethods?: Record<string, string>;
+    classSetters?: Record<string, unknown>;
+    eventHandlers?: ElementEvents;
+}
+interface ElementEvents {
+    [eventName: string]: Array<{
+        handler: string;
+        params?: Record<string, unknown>;
+    }>;
+}
+interface RenderContext {
+    schema: UiSchema;
+    page: Page | null;
+    layout: Layout | null;
+    data: Record<string, Record<string, unknown>>;
+    params: Record<string, string>;
+}
+interface ElementConfig {
+    id: string;
+    componentId: string;
+    componentDef: ComponentDef | null;
+    gridPosition: GridPosition;
+    classes: string;
+}
+interface ToastNotification$1 {
+    id: string;
+    message: string;
+    type: "success" | "error" | "warning" | "info";
+    duration: number;
+    icon?: string;
+}
+interface ThemeConfig {
+    mode: ColorMode;
+    accentColor?: string;
+    cssVariables?: Record<string, string>;
+}
+interface SharedPropDef {
+    name: string;
+    type: "string" | "number" | "boolean" | "select";
+    default?: unknown;
+    options?: string[];
+}
+interface SharedComponentDef {
+    id: string;
+    name: string;
+    selector: string;
+    packageType: "ui" | "feedback" | "data" | "layout";
+    category: string;
+    icon?: string;
+    defaultClasses?: string;
+    props: SharedPropDef[];
+    template: string;
+    css: string;
+}
+interface GridPosition {
+    column: number;
+    row: number;
+    colSpan?: number;
+    rowSpan?: number;
+    colStart?: number;
+    rowStart?: number;
+}
+interface ComponentDef {
+    id: string;
+    name: string;
+    selector: string;
+    packageType: string;
+    category: string;
+    props: Record<string, unknown>;
+    template?: string;
+    css?: string;
+    defaultClasses?: string;
+}
+interface Layout {
+    id: string;
+    type: "grid" | "flex" | "stack";
+    direction?: "row" | "column";
+    gap?: number;
+    class?: string;
+    style?: Record<string, string>;
+    positions?: GridPosition[];
+    children?: string[];
+}
+interface Page {
+    id: string;
+    name: string;
+    layouts: Layout[];
+    components?: ComponentDef[];
+    canvasElements?: ComponentDef[];
+}
+
+declare const uiComponents: SharedComponentDef[];
+declare const layoutComponents: SharedComponentDef[];
+declare const feedbackComponents: SharedComponentDef[];
+declare const dataComponents: SharedComponentDef[];
+declare const components: SharedComponentDef[];
 
 type ButtonStyle = "solid" | "outline" | "soft" | "ghost";
 type ButtonVariant = "primary" | "danger" | "warning" | "success" | "info";
@@ -278,10 +389,6 @@ declare global {
     }
 }
 
-interface TableColumn {
-    name: string;
-    key: string;
-}
 declare class AppTableView extends LitElement {
     columns: string;
     data: string;
@@ -298,10 +405,6 @@ declare global {
     }
 }
 
-interface DataTableColumn {
-    name: string;
-    key: string;
-}
 declare class AppDataTable extends LitElement {
     columns: string;
     data: string;
@@ -336,10 +439,6 @@ declare global {
     }
 }
 
-interface PaletteCategory {
-    name: string;
-    components: string[];
-}
 declare class AppComponentPalette extends LitElement {
     categories: string;
     searchable: boolean;
@@ -375,13 +474,6 @@ declare global {
     }
 }
 
-interface ElementProperty {
-    key: string;
-    label: string;
-    value: unknown;
-    type: "string" | "number" | "boolean" | "select";
-    options?: string[];
-}
 declare class AppPropertiesPanel extends LitElement {
     element: string;
     constructor();
@@ -400,10 +492,6 @@ declare global {
     }
 }
 
-interface BottomPanelTab {
-    id: string;
-    label: string;
-}
 declare class AppBottomPanel extends LitElement {
     tabs: string;
     activeTab: string;
@@ -441,12 +529,6 @@ declare global {
     }
 }
 
-interface SidebarItem {
-    label: string;
-    icon?: string;
-    id?: string;
-    children?: SidebarItem[];
-}
 declare class AppSidebar extends LitElement {
     collapsed: boolean;
     items: string;
@@ -493,12 +575,6 @@ declare global {
     }
 }
 
-interface ToolbarAction {
-    label: string;
-    icon?: string;
-    variant?: "primary" | "secondary" | "danger" | "ghost";
-    id?: string;
-}
 declare class AppPageToolbar extends LitElement {
     title: string;
     actions: string;
@@ -648,10 +724,6 @@ declare global {
     }
 }
 
-interface LanguageOption {
-    code: string;
-    name: string;
-}
 declare class AppLanguageSelector extends LitElement {
     languages: string;
     value: string;
@@ -761,10 +833,6 @@ declare global {
     }
 }
 
-interface ShortcutEntry {
-    key: string;
-    description: string;
-}
 declare class AppShortcutsOverlay extends LitElement {
     open: boolean;
     shortcuts: string;
@@ -781,110 +849,6 @@ declare global {
     interface HTMLElementTagNameMap {
         "app-shortcuts-overlay": AppShortcutsOverlay;
     }
-}
-
-type ColorMode = "light" | "dark" | "system";
-interface Theme {
-    mode: ColorMode;
-    accentColor?: string;
-    cssVariables?: Record<string, string>;
-}
-interface UiSchema {
-    version: string;
-    pages: Page[];
-    layouts: Layout[];
-    theme?: Theme;
-}
-interface ComponentBehavior {
-    selfMethods?: Record<string, string>;
-    classSetters?: Record<string, unknown>;
-    eventHandlers?: ElementEvents;
-}
-interface ElementEvents {
-    [eventName: string]: Array<{
-        handler: string;
-        params?: Record<string, unknown>;
-    }>;
-}
-interface RenderContext {
-    schema: UiSchema;
-    page: Page | null;
-    layout: Layout | null;
-    data: Record<string, Record<string, unknown>>;
-    params: Record<string, string>;
-}
-interface ElementConfig {
-    id: string;
-    componentId: string;
-    componentDef: ComponentDef | null;
-    gridPosition: GridPosition;
-    classes: string;
-}
-interface ToastNotification$1 {
-    id: string;
-    message: string;
-    type: "success" | "error" | "warning" | "info";
-    duration: number;
-    icon?: string;
-}
-interface ThemeConfig {
-    mode: ColorMode;
-    accentColor?: string;
-    cssVariables?: Record<string, string>;
-}
-interface SharedPropDef {
-    name: string;
-    type: "string" | "number" | "boolean" | "select";
-    default?: unknown;
-    options?: string[];
-}
-interface SharedComponentDef {
-    id: string;
-    name: string;
-    selector: string;
-    packageType: "ui" | "feedback" | "data" | "layout";
-    category: string;
-    icon?: string;
-    defaultClasses?: string;
-    props: SharedPropDef[];
-    template: string;
-    css: string;
-}
-interface GridPosition {
-    column: number;
-    row: number;
-    colSpan?: number;
-    rowSpan?: number;
-    colStart?: number;
-    rowStart?: number;
-}
-interface ComponentDef {
-    id: string;
-    name: string;
-    selector: string;
-    packageType: string;
-    category: string;
-    props: Record<string, unknown>;
-    template?: string;
-    css?: string;
-    defaultClasses?: string;
-}
-interface Layout {
-    id: string;
-    type: "grid" | "flex" | "stack";
-    direction?: "row" | "column";
-    gap?: number;
-    class?: string;
-    style?: Record<string, string>;
-    positions?: GridPosition[];
-    children?: string[];
-}
-interface Page {
-    id: string;
-    name: string;
-    layouts: Layout[];
-    components?: ComponentDef[];
-    canvasElements?: ComponentDef[];
 }
 
 interface GridTemplate {
@@ -912,6 +876,32 @@ declare class LayoutEngineService {
         gap: string;
     };
 }
+
+type StyleVariant = "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3";
+interface ComponentStyleMap {
+    [componentId: string]: {
+        [styleName: string]: string;
+    };
+}
+interface StyleVariantConfig {
+    id: StyleVariant;
+    name: string;
+    cssString: string;
+    classPrefix: string;
+    description: string;
+    componentStyles: ComponentStyleMap;
+}
+declare function loadStyleVariant(variant: StyleVariant): Promise<void>;
+declare function setCurrentStyle(variant: StyleVariant): void;
+declare function getCurrentStyle(): StyleVariant;
+declare function getStyleClassPrefix(variant: StyleVariant): string;
+/**
+ * Get CSS classes for a component's named style.
+ * Uses the global style registry — styleName is resolved based on the theme variant.
+ * Returns CSS class string or empty string if not found.
+ */
+declare function getComponentStyleClasses(variant: StyleVariant, componentId: string, styleName: string): string;
+declare function getAllStyleVariants(): StyleVariantConfig[];
 
 interface CanvasElement {
     id: string;
@@ -987,6 +977,7 @@ declare class SchemaRendererService {
     createElement(data: CanvasElement): Promise<HTMLElement | null>;
     render(container: HTMLElement, pageSchema: PageSchema): Promise<void>;
     bindEvents(el: HTMLElement, events: Record<string, string | Function>, elementId: string): void;
+    mapPropsToClasses(componentId: string, props: Record<string, unknown>, theme: StyleVariant): string[];
     resolveClasses(elementClasses: string, defaultClasses: string): string;
     resolveDataBinding(binding: unknown): unknown;
     private getDataBindingValue;
@@ -1123,7 +1114,7 @@ declare class SchemaRouteViewerComponent implements OnInit, AfterViewInit, OnDes
     ngAfterViewInit(): void;
     ngOnDestroy(): void;
     private renderCurrentPage;
-    private renderElement;
+    private createElementNode;
     static ɵfac: i0.ɵɵFactoryDeclaration<SchemaRouteViewerComponent, never>;
     static ɵcmp: i0.ɵɵComponentDeclaration<SchemaRouteViewerComponent, "lib-schema-route-viewer", never, {}, {}, never, never, true, never>;
 }
@@ -1150,7 +1141,7 @@ interface AccentShades {
 interface ThemeColors {
     [variable: string]: string;
 }
-declare class ThemeService {
+declare class ThemeService$1 {
     private _mode;
     private _accentColor;
     private _accentShades;
@@ -1167,13 +1158,15 @@ declare class ThemeService {
     init(): void;
     toggle(): void;
     private applyTheme;
+    private applyThemeVariables;
+    private darkenColor;
     private applyAccentShades;
     calculateShades(hex: string): AccentShades;
     private hexToRgb;
     private rgbToHex;
     hexToRgba(hex: string, alpha: number): string;
-    static ɵfac: i0.ɵɵFactoryDeclaration<ThemeService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ThemeService>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ThemeService$1, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ThemeService$1>;
 }
 
 interface ToastNotification {
@@ -1208,6 +1201,75 @@ declare class EventBusService {
     clearHistory(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<EventBusService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<EventBusService>;
+}
+
+interface Shortcut {
+    id: string;
+    key: string;
+    modifiers?: string[];
+    label: string;
+    category?: string;
+    handler: string;
+    enabled?: boolean;
+}
+declare class ShortcutService {
+    private _shortcuts;
+    private eventBus;
+    readonly shortcuts: i0.Signal<Shortcut[]>;
+    constructor();
+    register(shortcut: Shortcut): () => void;
+    unregister(id: string): void;
+    loadFromSchema(shortcuts: Shortcut[]): void;
+    private _handleKeyDown;
+    private _checkModifiers;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ShortcutService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ShortcutService>;
+}
+
+type Locale = 'en' | 'ru';
+/**
+ * Singleton i18n service for schema-driven UI.
+ * Use I18nService.instance.t('key') to translate.
+ */
+declare class I18nService {
+    private static _instance;
+    static get instance(): I18nService;
+    private readonly _locale;
+    get locale(): i0.Signal<Locale>;
+    get translations(): Record<string, string>;
+    setLocale(locale: Locale): void;
+    /**
+     * Translate a key. Falls back to English, then to the key itself.
+     */
+    t(key: string): string;
+    /**
+     * Get all available locales.
+     */
+    getAvailableLocales(): Locale[];
+    static ɵfac: i0.ɵɵFactoryDeclaration<I18nService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<I18nService>;
+}
+
+/**
+ * Window-level global state for Translator app.
+ * Exposes source/target language codes as signals so any service
+ * (including TranslationService) can read them without prop-drilling.
+ */
+declare class GlobalStateService {
+    private static _instance;
+    static get instance(): GlobalStateService;
+    private readonly _sourceLang;
+    private readonly _targetLang;
+    private readonly _appLocale;
+    get sourceLang(): i0.Signal<string>;
+    get targetLang(): i0.Signal<string>;
+    get appLocale(): i0.Signal<"en" | "ru">;
+    setSourceLang(code: string): void;
+    setTargetLang(code: string): void;
+    setAppLocale(locale: 'en' | 'ru'): void;
+    swapLanguages(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<GlobalStateService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<GlobalStateService>;
 }
 
 interface RetryOptions {
@@ -1298,12 +1360,6 @@ declare enum ErrorType {
 declare function parseError(error: unknown): AppError;
 declare function formatError(error: AppError): string;
 
-declare const uiComponents: SharedComponentDef[];
-declare const layoutComponents: SharedComponentDef[];
-declare const feedbackComponents: SharedComponentDef[];
-declare const dataComponents: SharedComponentDef[];
-declare const components: SharedComponentDef[];
-
 interface InvokeOptionsWithRetry {
     timeout?: number;
     retryCount?: number;
@@ -1335,19 +1391,31 @@ declare function addNode(graph: Graph, label: string): void;
 declare function addEdge(graph: Graph, from: string, to: string, weight: number): void;
 declare function dijkstra(graph: Graph, start: string): Map<string, number | null>;
 
-type StyleVariant = "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3";
-interface StyleVariantConfig {
-    id: StyleVariant;
-    name: string;
-    cssFile: string;
-    classPrefix: string;
-    description: string;
+declare class ThemeService {
+    private readonly _themeChanged$;
+    readonly themeChanged$: Observable<{
+        variant: StyleVariant;
+        isDark: boolean;
+    }>;
+    constructor();
+    loadTheme(variant: StyleVariant): Promise<void>;
+    toggleDarkMode(): void;
+    isDarkMode(): boolean;
+    setDarkMode(enabled: boolean): void;
+    getCurrentTheme(): StyleVariant;
+    private injectThemeStyles;
+    private getDarkModeCSS;
+    private getDarkModeCSSForVariant;
+    private materialDesignV3DarkCSS;
+    private neumorphismDarkCSS;
+    private claymorphismDarkCSS;
+    private glassmorphismDarkCSS;
+    private initializeDarkMode;
+    private loadDarkModePreference;
+    private saveDarkModePreference;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ThemeService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ThemeService>;
 }
-declare function loadStyleVariant(variant: StyleVariant): Promise<void>;
-declare function setCurrentStyle(variant: StyleVariant): void;
-declare function getCurrentStyle(): StyleVariant;
-declare function getStyleClassPrefix(variant: StyleVariant): string;
-declare function getAllStyleVariants(): StyleVariantConfig[];
 
 declare class UiShowcaseComponent {
     private themeService;
@@ -1370,5 +1438,5 @@ declare class UiShowcaseComponent {
     static ɵcmp: i0.ɵɵComponentDeclaration<UiShowcaseComponent, "app-ui-showcase", never, {}, {}, never, never, true, never>;
 }
 
-export { AppAvatar, AppBadge, AppBottomPanel, AppButton, AppCanvas, AppCard, AppChip, AppComponentPalette, AppConfirmDialog, AppDataTable, AppDialog, AppEmptyState, AppFooter, AppHeader, AppIcon, AppInput, AppJsonView, AppLanguageSelector, AppLoading, AppModal, AppPageContainer, AppPageToolbar, AppPagination, AppProgressBar, AppPropertiesPanel, AppRadio, AppSegmentSelector, AppSelect, AppShortcutsOverlay, AppSidebar, AppSlider, AppSplitView, AppStatsCard, AppSwapButton, AppSwitch, AppTableView, AppTabs, AppTextInput, AppTextarea, AppThemeToggle, AppToast, AppTranslationOutput, ComponentRegistryService, CrudService, DataBindingResolverService, ErrorType, EventBusService, GuardService, InvokeWrapperService, LayoutEngineService, ResponseStatus, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, ThemeService, UiShowcaseComponent, addEdge, addNode, bubbleSort, components, createGraph, dataComponents, dijkstra, feedbackComponents, formatError, getAllStyleVariants, getCurrentStyle, getErrorMessage, getStyleClassPrefix, insertionSort, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isError, isSuccess, layoutComponents, loadStyleVariant, mapResponse, mergeSort, parseError, quickSort, setCurrentStyle, uiComponents, unwrapResponse };
-export type { AppError, AvatarSize, BadgeSize, BadgeVariant, BottomPanelTab, ButtonSize, ButtonStyle, ButtonVariant, ColorMode, CompareFn, ComponentBehavior, ComponentDef, DataBinding, DataTableColumn, DialogSize, ElementConfig, ElementEvents, ElementProperty, Graph, GraphEdge, GridPosition, GridTemplate, IconName, InputType, LanguageOption, Layout, LoadingSize, ModalSize, Page, PaletteCategory, RenderContext, Response, ShortcutEntry, SidebarItem, StyleVariant, TableColumn, Theme, ThemeConfig, ToastNotification$1 as ToastNotification, ToastType, ToolbarAction, UiSchema };
+export { ComponentRegistryService, CrudService, DataBindingResolverService, ErrorType, EventBusService, GlobalStateService, GuardService, I18nService, InvokeWrapperService, LayoutEngineService, ResponseStatus, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, ShortcutService, ThemeService as StyleThemeService, ThemeService$1 as ThemeService, UiShowcaseComponent, addEdge, addNode, bubbleSort, components, createGraph, dataComponents, dijkstra, feedbackComponents, formatError, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage, getStyleClassPrefix, insertionSort, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isError, isSuccess, layoutComponents, loadStyleVariant, mapResponse, mergeSort, parseError, quickSort, setCurrentStyle, uiComponents, unwrapResponse };
+export type { AppError, ColorMode, CompareFn, ComponentBehavior, ComponentDef, ComponentStyleMap, DataBinding, ElementConfig, ElementEvents, Graph, GraphEdge, GridPosition, GridTemplate, Layout, Page, RenderContext, Response, Shortcut, StyleVariant, Theme, ThemeConfig, ToastNotification$1 as ToastNotification, UiSchema };

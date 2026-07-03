@@ -27,7 +27,8 @@
       "@tauri-front/data": ["projects/data"],
       "@tauri-front/feedback": ["projects/feedback"],
       "@tauri-front/layout": ["projects/layout"]
-    }
+    },
+
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

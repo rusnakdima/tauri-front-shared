@@ -95,13 +95,39 @@ export class SchemaRouteViewerComponent implements OnInit, AfterViewInit, OnDest
     // Render elements from canvasElements or elements
     const elements: CanvasElement[] = (page as any).canvasElements || (page as any).elements || [];
 
+    // Build element map and handle hierarchy
+    const elementMap = new Map<string, HTMLElement>();
     for (const element of elements) {
-      this.renderElement(element);
+      const el = this.createElementNode(element);
+      if (el) {
+        elementMap.set(element.id, el);
+      }
+    }
+
+    // Collect child IDs to identify roots
+    const childIds = new Set(
+      elements.reduce<string[]>((acc, e) => acc.concat(e.children || []), [])
+    );
+
+    // Append children to parents, roots to container
+    for (const element of elements) {
+      const el = elementMap.get(element.id);
+      if (!el) continue;
+      if (element.children) {
+        for (const childId of element.children) {
+          const childEl = elementMap.get(childId);
+          if (childEl) {
+            el.appendChild(childEl);
+          }
+        }
+      }
+      if (!childIds.has(element.id)) {
+        this.contentContainer.nativeElement.appendChild(el);
+      }
     }
   }
 
-  private renderElement(element: CanvasElement): void {
-    // Create the Lit web component
+  private createElementNode(element: CanvasElement): HTMLElement | null {
     const el = document.createElement(element.componentId);
 
     // Set properties directly (NOT attributes for Lit components)
@@ -144,6 +170,6 @@ export class SchemaRouteViewerComponent implements OnInit, AfterViewInit, OnDest
       }
     }
 
-    this.contentContainer.nativeElement.appendChild(el);
+    return el;
   }
 }

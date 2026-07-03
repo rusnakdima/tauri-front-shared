@@ -28,6 +28,10 @@ export class AppThemeToggle extends LitElement {
     for (const [key, value] of Object.entries(saved)) {
       (this as Record<string, unknown>)[key] = value;
     }
+    // Initialize isDark from actual DOM state if not already set
+    if (!this.isDark) {
+      this.isDark = document.documentElement.classList.contains("dark");
+    }
   }
 
   static override styles = css`

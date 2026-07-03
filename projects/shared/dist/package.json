@@ -24,7 +24,6 @@
   },
   "module": "fesm2022/tauri-front-shared.mjs",
   "typings": "index.d.ts",
-  "sideEffects": true,
   "dependencies": {
     "tslib": "^2.3.0"
   }

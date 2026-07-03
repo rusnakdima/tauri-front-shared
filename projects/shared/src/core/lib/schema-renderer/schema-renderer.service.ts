@@ -1,10 +1,5 @@
 import { Injectable, signal, inject } from "@angular/core";
-import {
-  GridPosition,
-  ComponentDef,
-  Layout,
-  Page,
-} from "../types";
+import { GridPosition, ComponentDef, Layout, Page } from "../types";
 import { SignalStoreService } from "../signal-store/signal-store.service";
 import { EventBusService } from "../events/event-bus.service";
 import { CrudService } from "../crud/crud.service";
@@ -12,7 +7,13 @@ import { ComponentRegistryService } from "./component-registry";
 import { DataBindingResolverService } from "./data-binding-resolver";
 import { LayoutEngineService, GridTemplate } from "./layout-engine";
 import { I18nService } from "../i18n/i18n.service";
-import { StyleVariant, getStyleClassPrefix, getCurrentStyle, getComponentStyleClasses, GlobalStyleContext } from "../../../styles/style-registry";
+import {
+  StyleVariant,
+  getStyleClassPrefix,
+  getCurrentStyle,
+  getComponentStyleClasses,
+  GlobalStyleContext,
+} from "../../../styles/style-registry";
 
 export interface CanvasElement {
   id: string;
@@ -61,8 +62,7 @@ export class SchemaRendererService {
   private eventBus: EventBusService;
 
   private componentResolver:
-    | ((selector: string) => ComponentDef | undefined)
-    | null = null;
+    ((selector: string) => ComponentDef | undefined) | null = null;
   private routeResolver: ((route: string) => string | null) | null = null;
 
   pages = this._pages.asReadonly();
@@ -92,7 +92,10 @@ export class SchemaRendererService {
     return this.componentRegistry.getComponent(selector);
   }
 
-  loadSchema(schema: { pages: Page[]; app?: { variant?: string; size?: string } }): void {
+  loadSchema(schema: {
+    pages: Page[];
+    app?: { variant?: string; size?: string };
+  }): void {
     this._pages.set(schema.pages || []);
     this.componentRegistry.loadComponentsFromSchema(schema.pages || []);
     this._appConfig = {
@@ -139,7 +142,8 @@ export class SchemaRendererService {
       container,
       layout,
       layout.children || [],
-      (childId) => this.getCurrentPage()?.components.find((c) => c.id === childId),
+      (childId) =>
+        this.getCurrentPage()?.components.find((c) => c.id === childId),
       (l, childId) => this.layoutEngine.resolveGridPosition(l, childId),
     );
   }
@@ -229,13 +233,16 @@ export class SchemaRendererService {
 
     // Only wait for custom elements (names with hyphens), not native HTML elements like div/span/p/footer
     // Wrap in Promise.race to prevent indefinite hang if component never loads
-    if (def.selector.includes('-')) {
+    if (def.selector.includes("-")) {
       try {
         await Promise.race([
           customElements.whenDefined(def.selector),
           new Promise((_, reject) =>
-            setTimeout(() => reject(new Error(`Timeout: ${def.selector}`)), 2000)
-          )
+            setTimeout(
+              () => reject(new Error(`Timeout: ${def.selector}`)),
+              2000,
+            ),
+          ),
         ]);
       } catch (e) {
         console.warn(`[SchemaRenderer] Element not ready: ${def.selector}`, e);
@@ -266,7 +273,14 @@ export class SchemaRendererService {
         : undefined;
     const explicitVariant = data.props?.["variant"] as string | undefined;
     const explicitSize = data.props?.["size"] as string | undefined;
-    const mappedClasses = this.mapPropsToClasses(data.componentId, data.props, theme, explicitVariant, explicitSize, globalContext);
+    const mappedClasses = this.mapPropsToClasses(
+      data.componentId,
+      data.props,
+      theme,
+      explicitVariant,
+      explicitSize,
+      globalContext,
+    );
     const mappedClassStr = mappedClasses.join(" ");
 
     el.className = this.resolveClasses(data.classes, def.defaultClasses || "");
@@ -305,16 +319,31 @@ export class SchemaRendererService {
     // Handle placeholder_i18n prop: resolve via I18nService and set as placeholder
     const placeholderI18n = resolvedProps["placeholder_i18n"];
     if (placeholderI18n !== undefined) {
-      (el as any)["placeholder"] = I18nService.instance.t(String(placeholderI18n));
+      (el as any)["placeholder"] = I18nService.instance.t(
+        String(placeholderI18n),
+      );
     }
 
     for (const [key, value] of Object.entries(resolvedProps)) {
-      if (key === "class" || key === "style" || key === "id" || key === "label" || key === "text" || key === "i18nKey" || key === "placeholder_i18n") continue;
+      if (
+        key === "class" ||
+        key === "style" ||
+        key === "id" ||
+        key === "label" ||
+        key === "text" ||
+        key === "i18nKey" ||
+        key === "placeholder_i18n"
+      )
+        continue;
 
       if (key.startsWith("on") && typeof value === "function") {
         const eventName = key[2].toLowerCase() + key.slice(3);
         el.addEventListener(eventName, value as EventListener);
-      } else if (key === "disabled" || key === "checked" || key === "readonly") {
+      } else if (
+        key === "disabled" ||
+        key === "checked" ||
+        key === "readonly"
+      ) {
         // Boolean properties: set as property for Lit compatibility
         (el as any)[key] = value === true || value === "true" || value === key;
       } else {
@@ -344,10 +373,16 @@ export class SchemaRendererService {
               this.eventBus.emit(eventName, { elementId: data.id, event: e });
             } else if (typeof h === "string") {
               // Emit a descriptive event name: "elementId:eventName"
-              this.eventBus.emit(`${data.id}:${eventName}`, { elementId: data.id, event: e });
+              this.eventBus.emit(`${data.id}:${eventName}`, {
+                elementId: data.id,
+                event: e,
+              });
             } else if (typeof h === "object" && h !== null && "handler" in h) {
               // Schema format: { handler: "onShortcutsOpen", params?: ... }
-              this.eventBus.emit(`${data.id}:${h.handler}`, { elementId: data.id, event: e });
+              this.eventBus.emit(`${data.id}:${h.handler}`, {
+                elementId: data.id,
+                event: e,
+              });
             }
           }
         });
@@ -381,7 +416,10 @@ export class SchemaRendererService {
 
     // 2. Collect all child IDs to identify root elements
     const childIds = new Set(
-      pageSchema.elements.reduce<string[]>((acc, e) => acc.concat(e.children || []), [])
+      pageSchema.elements.reduce<string[]>(
+        (acc, e) => acc.concat(e.children || []),
+        [],
+      ),
     );
 
     // 3. Append children to parents, then append roots to container
@@ -415,9 +453,8 @@ export class SchemaRendererService {
       if (typeof handler === "function") {
         el.addEventListener(eventName, handler as EventListener);
       } else if (typeof handler === "string") {
-        const resolvedHandler = this.dataBindingResolver.resolveDataBinding(
-          handler,
-        );
+        const resolvedHandler =
+          this.dataBindingResolver.resolveDataBinding(handler);
         if (
           typeof resolvedHandler === "string" &&
           resolvedHandler.startsWith("{{data.")
@@ -461,9 +498,19 @@ export class SchemaRendererService {
     if (!props) return classes;
 
     // 1. Named style from variant/size (explicit props OR globalContext fallback)
-    const hasStyle = explicitVariant || explicitSize || globalContext?.variant || globalContext?.size;
+    const hasStyle =
+      explicitVariant ||
+      explicitSize ||
+      globalContext?.variant ||
+      globalContext?.size;
     if (hasStyle) {
-      const classesStr = getComponentStyleClasses(theme, componentId, explicitVariant, explicitSize, globalContext);
+      const classesStr = getComponentStyleClasses(
+        theme,
+        componentId,
+        explicitVariant,
+        explicitSize,
+        globalContext,
+      );
       if (classesStr) {
         classes.push(...classesStr.split(" ").filter((c) => c.trim()));
       }

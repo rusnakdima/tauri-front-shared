@@ -12,7 +12,7 @@ import { ComponentRegistryService } from "./component-registry";
 import { DataBindingResolverService } from "./data-binding-resolver";
 import { LayoutEngineService, GridTemplate } from "./layout-engine";
 import { I18nService } from "../i18n/i18n.service";
-import { StyleVariant, getStyleClassPrefix, getCurrentStyle, getComponentStyleClasses } from "../../../styles/style-registry";
+import { StyleVariant, getStyleClassPrefix, getCurrentStyle, getComponentStyleClasses, GlobalStyleContext } from "../../../styles/style-registry";
 
 export interface CanvasElement {
   id: string;
@@ -50,6 +50,7 @@ export class SchemaRendererService {
   private _pages = signal<Page[]>([]);
   private _currentPageId = signal<string | null>(null);
   private _navigationStack = signal<string[]>([]);
+  private _appConfig: { styleVariant?: string; sizeVariant?: string } = {};
 
   private componentRegistry: ComponentRegistryService;
   private dataBindingResolver: DataBindingResolverService;
@@ -91,9 +92,13 @@ export class SchemaRendererService {
     return this.componentRegistry.getComponent(selector);
   }
 
-  loadSchema(schema: { pages: Page[] }): void {
+  loadSchema(schema: { pages: Page[]; app?: { styleVariant?: string; sizeVariant?: string } }): void {
     this._pages.set(schema.pages || []);
     this.componentRegistry.loadComponentsFromSchema(schema.pages || []);
+    this._appConfig = {
+      styleVariant: schema.app?.styleVariant,
+      sizeVariant: schema.app?.sizeVariant,
+    };
   }
 
   getCurrentPage(): Page | null {
@@ -255,7 +260,11 @@ export class SchemaRendererService {
 
     // Get mapped classes from props (variant, size, etc.)
     const theme = getCurrentStyle();
-    const mappedClasses = this.mapPropsToClasses(data.componentId, data.props, theme);
+    const globalContext: GlobalStyleContext | undefined =
+      this._appConfig.styleVariant || this._appConfig.sizeVariant
+        ? { styleVariant: this._appConfig.styleVariant, sizeVariant: this._appConfig.sizeVariant }
+        : undefined;
+    const mappedClasses = this.mapPropsToClasses(data.componentId, data.props, theme, globalContext);
     const mappedClassStr = mappedClasses.join(" ");
 
     el.className = this.resolveClasses(data.classes, def.defaultClasses || "");
@@ -438,14 +447,14 @@ export class SchemaRendererService {
   //   - fullHeight: true → h-full
   //   - rounded: true → rounded-lg
   //   - elevation: "low"|"medium"|"high" → elevation classes (theme-specific)
-  mapPropsToClasses(componentId: string, props: Record<string, unknown>, theme: StyleVariant): string[] {
+  mapPropsToClasses(componentId: string, props: Record<string, unknown>, theme: StyleVariant, globalContext?: GlobalStyleContext): string[] {
     const classes: string[] = [];
     if (!props) return classes;
 
     // 1. Named style from global registry
     const styleName = props["styleName"] as string | undefined;
     if (styleName) {
-      const classesStr = getComponentStyleClasses(theme, componentId, styleName);
+      const classesStr = getComponentStyleClasses(theme, componentId, styleName, globalContext);
       if (classesStr) {
         classes.push(...classesStr.split(" ").filter((c) => c.trim()));
       }

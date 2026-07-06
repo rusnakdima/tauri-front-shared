@@ -17,6 +17,18 @@ export class LayoutSidebar extends LitElement {
 
   @state() private _collapsed: boolean = false;
 
+  constructor() {
+    super();
+    // Clean up all class fields that shadow Lit reactive properties
+    for (const key of ["items", "collapsed", "active", "_collapsed"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
   private _handleResize = () => {
     this._checkViewport();
   };

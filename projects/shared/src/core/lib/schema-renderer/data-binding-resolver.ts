@@ -20,19 +20,51 @@ import { CrudService } from "../crud/crud.service";
 import { SignalStoreService } from "../signal-store/signal-store.service";
 
 export class DataBindingResolverService {
+  private _params: Record<string, string> = {};
+  private _functions: Record<string, Function> = {};
+
   constructor(
     private signalStore: SignalStoreService,
     private crudService: CrudService,
   ) {}
 
+  setParams(params: Record<string, string>): void {
+    this._params = params;
+  }
+
+  registerFunction(name: string, fn: Function): void {
+    this._functions[name] = fn;
+  }
+
+  registerFunctions(fns: Record<string, Function>): void {
+    this._functions = { ...this._functions, ...fns };
+  }
+
   resolveDataBinding(binding: unknown): unknown {
     if (typeof binding === "string") {
-      const pattern = /\{\{data\.([^}]+)\}\}/g;
-      const result = binding.replace(pattern, (_, path) => {
+      // Resolve {{functions.name(args)}} pattern
+      const fnPattern = /\{\{functions\.([^}]+)\}\}/g;
+      const fnResult = binding.replace(fnPattern, (_, callExpr) => {
+        const value = this.resolveFunctionCall(callExpr);
+        return value !== undefined ? String(value) : binding;
+      });
+      if (fnResult !== binding) return fnResult;
+
+      // Resolve {{params.*}} pattern
+      const paramsPattern = /\{\{params\.([^}]+)\}\}/g;
+      const paramsResult = binding.replace(paramsPattern, (_, path) => {
+        const value = this.resolveParamsPath(path);
+        return value !== undefined ? String(value) : binding;
+      });
+      if (paramsResult !== binding) return paramsResult;
+
+      // Resolve {{data.*}} pattern
+      const dataPattern = /\{\{data\.([^}]+)\}\}/g;
+      const dataResult = binding.replace(dataPattern, (_, path) => {
         const value = this.getDataBindingValue(path);
         return value !== undefined ? String(value) : binding;
       });
-      return result;
+      return dataResult;
     }
 
     if (binding && typeof binding === "object" && "entity" in binding) {
@@ -48,6 +80,63 @@ export class DataBindingResolverService {
     }
 
     return binding;
+  }
+
+  private resolveFunctionCall(callExpr: string): unknown {
+    // Parse "name(arg1, arg2)" or "name(arg1, 'string', key: value)"
+    const match = callExpr.match(/^(\w+)\((.*)\)$/);
+    if (!match) {
+      // No args — treat as property access on functions registry
+      return this._functions[callExpr];
+    }
+
+    const [, fnName, argsStr] = match;
+    const fn = this._functions[fnName];
+    if (typeof fn !== "function") return undefined;
+
+    const args = this.parseCallArgs(argsStr);
+    // Resolve each argument (may contain nested bindings)
+    const resolvedArgs = args.map((arg) => this.resolveDataBinding(arg));
+    return fn(...resolvedArgs);
+  }
+
+  private parseCallArgs(argsStr: string): string[] {
+    if (!argsStr.trim()) return [];
+    const result: string[] = [];
+    let current = "";
+    let depth = 0;
+    let inString = false;
+    let stringChar = "";
+
+    for (const char of argsStr) {
+      if ((char === '"' || char === "'") && !inString) {
+        inString = true;
+        stringChar = char;
+        current += char;
+      } else if (char === stringChar && inString) {
+        inString = false;
+        stringChar = "";
+        current += char;
+      } else if (char === "(" && !inString) {
+        depth++;
+        current += char;
+      } else if (char === ")" && !inString) {
+        depth--;
+        current += char;
+      } else if (char === "," && depth === 0 && !inString) {
+        result.push(current.trim());
+        current = "";
+      } else {
+        current += char;
+      }
+    }
+
+    if (current.trim()) result.push(current.trim());
+    return result;
+  }
+
+  private resolveParamsPath(path: string): unknown {
+    return this.getNestedValue(this._params, path);
   }
 
   resolveProps(

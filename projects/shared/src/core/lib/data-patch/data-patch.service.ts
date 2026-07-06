@@ -1,5 +1,5 @@
 import { Injectable, signal } from "@angular/core";
-import { StorageService } from "@tauri-front/storage";
+import { StorageService } from "../../../storage/storage.service";
 
 @Injectable({ providedIn: "root" })
 export class DataPatchService {

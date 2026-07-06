@@ -22,6 +22,18 @@ export class AppInput extends LitElement {
   @state() private _value = "";
   @state() private _focused = false;
 
+  constructor() {
+    super();
+    // Clean up all class fields that shadow Lit reactive properties
+    for (const key of ["type", "placeholder", "label", "disabled", "error", "icon", "_value", "_focused"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
   static override styles = css`
     :host {
       display: block;

@@ -106,15 +106,57 @@ export interface Layout {
   style?: Record<string, string>;
   positions?: GridPosition[];
   children?: string[];
+
+  // Flex wrap
+  flexWrap?: "wrap" | "nowrap" | "wrap-reverse";
+
+  // Flex grow/shrink
+  flexGrow?: boolean;
+  flexShrink?: boolean;
+  flexBasis?: "auto" | "full" | "half" | "third" | "quarter";
+
+  // Container-level alignment
+  alignItems?: "start" | "center" | "end" | "stretch" | "baseline";
+  alignContent?: "start" | "center" | "end" | "between" | "around" | "evenly";
+  justifyItems?: "start" | "center" | "end" | "stretch";
+
+  // Item-level alignment
+  justifySelf?: "start" | "center" | "end" | "stretch" | "auto";
+  alignSelf?: "start" | "center" | "end" | "stretch" | "auto";
+
+  // Grid template
+  gridTemplateColumns?: string;
+  gridTemplateRows?: string;
+
+  // Gap (row/col separate)
+  rowGap?: number;
+  colGap?: number;
+
+  // Sizing
+  width?: "full" | "auto" | "screen" | "fit";
+  height?: "full" | "auto" | "screen" | "fit";
+
+  // Margin/Padding shorthands
+  marginX?: "auto" | number;
+  marginY?: number;
+  paddingX?: number;
+  paddingY?: number;
+
+  // Responsive layout variants
+  responsive?: Record<string, Partial<Layout>>;
 }
 
 export interface Page {
   id: string;
   name: string;
+  route?: string;
+  meta?: { title?: string; icon?: string };
+  // Reference to a specific layout by ID (optional, defaults to first layout)
+  layout?: string;
   layouts: Layout[];
   // components: for generated apps, canvasElements: for Designer
   components?: ComponentDef[];
-  canvasElements?: ComponentDef[];
+  canvasElements?: CanvasElement[];
 }
 
 export interface CanvasElement {
@@ -122,5 +164,54 @@ export interface CanvasElement {
   componentId: string;
   gridPosition?: GridPosition;
   classes?: string;
-  children?: string[];
+  // Nested children elements (hierarchical structure)
+  children?: CanvasElement[];
+  // Layout props
+  props?: Record<string, unknown>;
+  // Route-based visibility
+  routes?: {
+    include?: string[];
+    exclude?: string[];
+  };
+  // Default values for component props
+  defaults?: Record<string, unknown>;
+  // Conditional visibility
+  visible?: boolean | { when?: string; equals?: unknown };
+  // Data binding
+  bind?: { store?: string; field?: string };
+  // Event handlers
+  events?: Record<string, string>;
+  position?: { x: number; y: number; width: number; height: number };
+  zIndex?: number;
+  dataBinding?: { entity: string; field: string };
+}
+
+// Layout element for global layout regions (header, footer, sidebar)
+export interface LayoutElement {
+  id: string;
+  componentId: string;
+  classes?: string;
+  props?: Record<string, unknown>;
+  // Nested children elements (hierarchical structure)
+  children?: LayoutElement[];
+  routes?: {
+    include?: string[];
+    exclude?: string[];
+  };
+  defaults?: Record<string, unknown>;
+  visible?: boolean | { when?: string; equals?: unknown };
+  bind?: { store?: string; field?: string };
+  events?: Record<string, string>;
+}
+
+// Root app schema with layout regions
+export interface AppSchema {
+  id: string;
+  schemaVersion?: string;
+  app?: { id?: string; name?: string; style?: string };
+  layout?: LayoutElement;
+  layoutRegions?: LayoutElement[];
+  pages: Page[];
+  handlers?: Record<string, unknown>;
+  stores?: Record<string, unknown>;
 }

@@ -20,7 +20,7 @@ export class AppInput extends LitElement {
   @property() declare icon: string | null;
   constructor() {
     super();
-    for (const key of ["type", "placeholder", "label", "disabled", "error", "icon"]) {
+    for (const key of ["type", "placeholder", "label", "disabled", "error", "icon", "_value", "_focused"]) {
       if (Object.prototype.hasOwnProperty.call(this, key)) {
         const val = (this as Record<string, unknown>)[key];
         delete (this as Record<string, unknown>)[key];
@@ -31,7 +31,7 @@ export class AppInput extends LitElement {
 
   override connectedCallback(): void {
     const saved: Record<string, unknown> = {};
-    for (const key of ["type", "placeholder", "label", "disabled", "error", "icon"]) {
+    for (const key of ["type", "placeholder", "label", "disabled", "error", "icon", "_value", "_focused"]) {
       if (Object.prototype.hasOwnProperty.call(this, key)) {
         saved[key] = (this as Record<string, unknown>)[key];
         delete (this as Record<string, unknown>)[key];

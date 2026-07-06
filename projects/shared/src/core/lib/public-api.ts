@@ -1,4 +1,6 @@
 // Angular-specific services (keep local implementations)
+export { ErrorHandlerService, type ErrorLogEntry, type RetryConfig } from "./error-handler/error-handler.service";
+export { BaseDestroyableComponent } from "./base-destroyable.component";
 export { SignalStoreService } from "./signal-store/signal-store.service";
 export { SignalSyncService } from "./signal-sync/signal-sync.service";
 export { SignalLoggerService } from "./signal-logger/signal-logger.service";
@@ -14,7 +16,11 @@ export { GlobalStateService } from "./global-state/global-state.service";
 export { ComponentRegistryService } from "./schema-renderer/component-registry";
 export { DataBindingResolverService } from "./schema-renderer/data-binding-resolver";
 export { LayoutEngineService } from "./schema-renderer/layout-engine";
-export { SchemaRouterService } from "./schema-renderer/schema-router.service";
-export { SchemaRouteViewerComponent } from "./schema-renderer/schema-route-viewer.component";
+export { SchemaRouterService } from "./schema-router/schema-router.service";
+export { SchemaRouteViewerComponent } from "./schema-router/schema-route-viewer.component";
+
+export * from "./rbac/permission.service";
+export * from "./rbac/rbac.guard";
+export * from "./rbac/rbac-has-permission.directive";
 
 export * from "./types";

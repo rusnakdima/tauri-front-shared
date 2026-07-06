@@ -10,7 +10,7 @@ import {
 const DARK_MODE_STORAGE_KEY = "tauri-front-dark-mode";
 
 @Injectable({ providedIn: "root" })
-export class ThemeService {
+export class StyleThemeService {
   private readonly _themeChanged$ = new BehaviorSubject<{
     variant: StyleVariant;
     isDark: boolean;

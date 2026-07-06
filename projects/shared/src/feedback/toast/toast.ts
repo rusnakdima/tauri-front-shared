@@ -113,6 +113,18 @@ export class AppToast extends LitElement {
   @state() private _isVisible = false;
   private _timeoutId?: number;
 
+  constructor() {
+    super();
+    // Clean up all class fields that shadow Lit reactive properties
+    for (const key of ["type", "message", "duration", "autoDismiss", "show", "_isVisible"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
   override connectedCallback(): void {
     super.connectedCallback();
     if (this.show && this.autoDismiss) {

@@ -1,24 +1,21 @@
 export type StyleVariant =
-  | "claymorphism"
-  | "glassmorphism"
-  | "neumorphism"
-  | "material-design-v3";
+  "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3";
 
 export interface ComponentStyleMap {
   [componentId: string]: {
     variants: {
-      [variant: string]: string;  // e.g., "solid" → "m3-btn-filled"
+      [variant: string]: string; // e.g., "solid" → "m3-btn-filled"
     };
     sizes?: {
-      [size: string]: string;   // e.g., "sm" → "m3-btn-sm"
+      [size: string]: string; // e.g., "sm" → "m3-btn-sm"
     };
     default?: string;
   };
 }
 
 export interface GlobalStyleContext {
-  variant?: string;  // e.g., "ghost", "solid", "text"
-  size?: string;     // e.g., "sm", "md", "lg"
+  variant?: string; // e.g., "ghost", "solid", "text"
+  size?: string; // e.g., "sm", "md", "lg"
 }
 
 export interface StyleVariantConfig {

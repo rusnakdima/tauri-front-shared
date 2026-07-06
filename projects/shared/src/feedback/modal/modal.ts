@@ -141,6 +141,18 @@ export class AppModal extends LitElement {
   private _modalContent?: HTMLElement;
   private _handleKeydown = this._onKeyDown.bind(this);
 
+  constructor() {
+    super();
+    // Clean up all class fields that shadow Lit reactive properties
+    for (const key of ["open", "title", "size", "closeOnBackdrop", "closeOnEscape", "showHeader", "showFooter", "zIndex", "_previousActiveElement"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
   override updated(changedProps: Map<string, unknown>): void {
     if (changedProps.has("open")) {
       if (this.open) {

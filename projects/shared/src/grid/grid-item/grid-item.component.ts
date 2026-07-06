@@ -5,14 +5,8 @@ import { CommonModule } from "@angular/common";
   selector: "app-grid-item",
   standalone: true,
   imports: [CommonModule],
-  template: `<ng-content></ng-content>`,
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-    `,
-  ],
+  templateUrl: "./grid-item.component.html",
+  styleUrl: "./grid-item.component.css",
 })
 export class GridItemComponent {
   @Input() col: number | string = "auto";

@@ -17,6 +17,18 @@ export class DataDataTable<
 
   @state() private selectedRow: T | null = null;
 
+  constructor() {
+    super();
+    // Clean up all class fields that shadow Lit reactive properties
+    for (const key of ["columns", "data", "selectable", "selectedKey", "selectedRow"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
   private onRowClick(row: T): void {
     if (!this.selectable) return;
     this.selectedRow = this.selectedRow === row ? null : row;

@@ -1,37 +1,57 @@
+import { Injectable } from "@angular/core";
 import { invoke } from "@tauri-apps/api/core";
 import { CrudFilter, CrudQuery, CrudResult } from "./crud.types";
 
 export type { CrudFilter, CrudQuery, CrudResult } from "./crud.types";
 
-export class CrudService {
-  constructor(private entityName: string) {}
-
-  async execute<T>(
-    operation: "find" | "create" | "update" | "delete",
+@Injectable({ providedIn: "root" })
+export abstract class CrudService {
+  abstract execute<T>(
+    operation: string,
+    entity: string,
     params?: Record<string, unknown>,
-  ): Promise<{ data?: T; results?: CrudResult<T> }> {
-    return invoke(`crud_${operation}`, {
-      entity: this.entityName,
-      ...params,
+  ): Promise<T>;
+
+  async find<T>(entity: string, id: string): Promise<T | null> {
+    const result = await this.execute<{ data?: T }>("find", entity, { filter: { id } });
+    return result.data ?? null;
+  }
+
+  async findAll<T>(entity: string, filter?: unknown): Promise<T[]> {
+    const result = await this.execute<CrudResult<T>>("find", entity, {
+      filter: filter as Record<string, unknown>,
     });
+    return result.data ?? [];
   }
 
-  async find<T>(query?: CrudQuery): Promise<CrudResult<T>> {
-    const result = await this.execute<T>("find", { query });
-    return result.results ?? { data: [], total: 0 };
+  async create<T>(entity: string, data: unknown): Promise<T> {
+    const result = await this.execute<{ data: T }>("create", entity, { data });
+    return result.data;
   }
 
-  async create<T>(data: Partial<T>): Promise<T> {
-    const result = await this.execute<T>("create", { data });
-    return result.data as T;
+  async update<T>(entity: string, id: string, data: unknown): Promise<T> {
+    const result = await this.execute<{ data: T }>("update", entity, { id, data });
+    return result.data;
   }
 
-  async update<T>(id: string, data: Partial<T>): Promise<T> {
-    const result = await this.execute<T>("update", { id, data });
-    return result.data as T;
+  async patch<T>(entity: string, id: string, data: unknown): Promise<T> {
+    const result = await this.execute<{ data: T }>("patch", entity, { id, data });
+    return result.data;
   }
 
-  async delete(id: string): Promise<void> {
-    await this.execute("delete", { id });
+  async delete(entity: string, id: string): Promise<void> {
+    await this.execute("delete", entity, { id });
+  }
+
+  async count(entity: string): Promise<number> {
+    const result = await this.execute<{ count: number }>("count", entity);
+    return result.count;
+  }
+
+  async exists(entity: string, id: string): Promise<boolean> {
+    const result = await this.execute<{ exists: boolean }>("exists", entity, {
+      id,
+    });
+    return result.exists;
   }
 }

@@ -221,6 +221,18 @@ export class AppCommandPalette extends LitElement {
 
   private _handleGlobalKeyDown = this._onGlobalKeyDown.bind(this);
 
+  constructor() {
+    super();
+    // Clean up all class fields that shadow Lit reactive properties
+    for (const key of ["commands", "placeholder", "triggerShortcut", "_isOpen", "_searchQuery", "_selectedIndex"]) {
+      if (Object.prototype.hasOwnProperty.call(this, key)) {
+        const val = (this as Record<string, unknown>)[key];
+        delete (this as Record<string, unknown>)[key];
+        (this as Record<string, unknown>)[key] = val;
+      }
+    }
+  }
+
   override connectedCallback(): void {
     super.connectedCallback();
     document.addEventListener("keydown", this._handleGlobalKeyDown);

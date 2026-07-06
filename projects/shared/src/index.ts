@@ -33,14 +33,16 @@ export {
 import "./register-components";
 
 // Core SDUI services (core/lib/)
+export { BaseDestroyableComponent } from "./core/lib/base-destroyable.component";
 export { SchemaRendererService } from "./core/lib/schema-renderer/schema-renderer.service";
 export { ComponentRegistryService } from "./core/lib/schema-renderer/component-registry";
+export { ComponentRegistryService as ComponentRegistryNgService } from "./core/lib/component-registry.service";
 export { DataBindingResolverService } from "./core/lib/schema-renderer/data-binding-resolver";
 export type { DataBinding } from "./core/lib/schema-renderer/data-binding-resolver";
 export { LayoutEngineService } from "./core/lib/schema-renderer/layout-engine";
 export type { GridTemplate } from "./core/lib/schema-renderer/layout-engine";
-export { SchemaRouterService } from "./core/lib/schema-renderer/schema-router.service";
-export { SchemaRouteViewerComponent } from "./core/lib/schema-renderer/schema-route-viewer.component";
+export { SchemaRouterService } from "./core/lib/schema-router/schema-router.service";
+export { SchemaRouteViewerComponent } from "./core/lib/schema-router/schema-route-viewer.component";
 export { GuardService } from "./core/lib/schema-router/guard.service";
 export { ThemeService } from "./core/lib/theme/theme.service";
 export { EventBusService } from "./core/lib/events/event-bus.service";
@@ -48,10 +50,19 @@ export { ShortcutService } from "./core/lib/shortcuts/shortcut.service";
 export type { Shortcut } from "./core/lib/shortcuts/shortcut.service";
 export { I18nService } from "./core/lib/i18n/i18n.service";
 export { GlobalStateService } from "./core/lib/global-state/global-state.service";
+export { ErrorHandlerService } from "./core/lib/error-handler/error-handler.service";
+export type { ErrorLogEntry, RetryConfig } from "./core/lib/error-handler/error-handler.service";
+
+// Missing services
+export { SignalStoreService } from "./core/lib/signal-store/signal-store.service";
+export { SignalSyncService } from "./core/lib/signal-sync/signal-sync.service";
+export { DataPatchService } from "./core/lib/data-patch/data-patch.service";
+export { ToastService } from "./core/lib/toast/toast.service";
+export { SchemaElementComponent } from "./core/lib/schema-router/schema-element.component";
 
 // Existing working services
 export { InvokeWrapperService } from "./core-api/invoke-wrapper.service";
-export { CrudService } from "./core-crud/crud.service";
+export { CrudService as RemoteCrudService } from "./core-crud/crud.service";
 
 // Core API types
 export { ResponseStatus } from "./core-api/tauri/response";
@@ -63,8 +74,11 @@ export type { AppError } from "./core-api/tauri/error";
 // Types from core/lib
 export type {
   UiSchema,
+  AppSchema,
   Page,
   Layout,
+  LayoutElement,
+  CanvasElement,
   ComponentDef,
   GridPosition,
   Theme,
@@ -85,11 +99,10 @@ export {
   invokeWithError,
 } from "./core-api/tauri/commands";
 
-// Algorithms
-export { quickSort, mergeSort, bubbleSort, insertionSort } from "./algorithms/sorting";
-export type { CompareFn } from "./algorithms/sorting";
-export { createGraph, addNode, addEdge, dijkstra } from "./algorithms/graph";
-export type { Graph, GraphEdge } from "./algorithms/graph";
+// Utilities
+export { sortBy } from "./utils/sorting";
+export { clamp } from "./utils/math";
+export { timeAgo } from "./utils/time";
 
 // Style system
 export {
@@ -101,7 +114,21 @@ export {
   getComponentStyleClasses,
 } from "./styles/style-registry";
 export type { StyleVariant, ComponentStyleMap } from "./styles/style-registry";
-export { ThemeService as StyleThemeService } from "./styles/theme.service";
+export { StyleThemeService } from "./styles/theme.service";
 
 // UI Showcase
 export { UiShowcaseComponent } from "./ui-showcase/ui-showcase.component";
+
+// RBAC / Permission Service
+export { PermissionService } from "./core/lib/rbac/permission.service";
+export type {
+  Permission,
+  Role,
+  User,
+  PermissionCheckResult,
+  TodoPermissionContext,
+  FieldPermissionContext,
+} from "./core/lib/rbac/permission.service";
+export { TodoPermission } from "./core/lib/rbac/permission.service";
+export { rbacGuard, rbacRoleGuard } from "./core/lib/rbac/rbac.guard";
+export { RbacHasPermissionDirective, RbacHasRoleDirective } from "./core/lib/rbac/rbac-has-permission.directive";

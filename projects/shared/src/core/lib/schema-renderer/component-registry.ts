@@ -1,5 +1,7 @@
+import { Injectable } from "@angular/core";
 import { ComponentDef } from "../types";
 
+@Injectable({ providedIn: "root" })
 export class ComponentRegistryService {
   private _componentRegistry = new Map<string, ComponentDef>();
   private _componentModules = new Map<string, Record<string, unknown>>();
@@ -65,13 +67,10 @@ export class ComponentRegistryService {
     return this._componentModules;
   }
 
-  loadComponentsFromSchema(
-    pages: { components?: ComponentDef[]; canvasElements?: ComponentDef[] }[],
-  ): void {
+  loadComponentsFromSchema(pages: { components?: ComponentDef[] }[]): void {
     const registry = new Map<string, ComponentDef>();
     for (const page of pages) {
-      const comps = page.canvasElements || page.components || [];
-      for (const comp of comps) {
+      for (const comp of page.components || []) {
         registry.set(comp.selector, comp);
       }
     }

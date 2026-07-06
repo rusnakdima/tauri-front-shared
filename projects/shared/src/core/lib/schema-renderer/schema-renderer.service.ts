@@ -3,7 +3,7 @@ import { GridPosition, ComponentDef, Layout, Page, LayoutElement, AppSchema, Can
 import { SignalStoreService } from "../signal-store/signal-store.service";
 import { EventBusService } from "../events/event-bus.service";
 import { CrudService } from "../crud/crud.service";
-import { ComponentRegistryService } from "./component-registry";
+import { ComponentRegistryService } from "../component-registry.service";
 import { DataBindingResolverService } from "./data-binding-resolver";
 import { LayoutEngineService, GridTemplate } from "./layout-engine";
 import { I18nService } from "../i18n/i18n.service";
@@ -39,10 +39,7 @@ export class SchemaRendererService {
   private crudService = inject(CrudService);
   private eventBus = inject(EventBusService);
   private componentRegistry = inject(ComponentRegistryService);
-  private dataBindingResolver = new DataBindingResolverService(
-    this.dataStore,
-    this.crudService,
-  );
+  private dataBindingResolver = inject(DataBindingResolverService);
   private layoutEngine = new LayoutEngineService();
 
   private componentResolver:

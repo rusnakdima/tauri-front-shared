@@ -962,7 +962,14 @@ interface GridTemplate {
     gap: string;
 }
 declare class LayoutEngineService {
+    private themeService;
     resolveClass(layout: Layout): string;
+    /**
+     * Applies theme CSS custom properties to a layout container element.
+     * Uses ThemeService to get the current accent color and computed shades,
+     * then sets them as inline CSS variables on the container.
+     */
+    applyThemeVariables(container: HTMLElement): void;
     renderGridLayout(container: HTMLElement, layout: Layout): void;
     renderFlexLayout(container: HTMLElement, layout: Layout): void;
     resolveGridPosition(layout: Layout | undefined, componentId: string): GridPosition | null;
@@ -980,6 +987,8 @@ declare class LayoutEngineService {
         gridTemplateRows: string;
         gap: string;
     };
+    static ɵfac: i0.ɵɵFactoryDeclaration<LayoutEngineService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<LayoutEngineService>;
 }
 
 type StyleVariant = "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3";
@@ -1100,24 +1109,6 @@ declare class SchemaRendererService {
     static ɵprov: i0.ɵɵInjectableDeclaration<SchemaRendererService>;
 }
 
-declare class ComponentRegistryService$1 {
-    private _componentRegistry;
-    private _componentModules;
-    registerComponent(def: ComponentDef): void;
-    registerComponents(defs: ComponentDef[]): void;
-    getComponent(selector: string): ComponentDef | undefined;
-    registerComponentModule(selector: string, module: Record<string, unknown>): void;
-    loadComponentModule(selector: string): Promise<CustomElementConstructor>;
-    getComponentModules(): Map<string, Record<string, unknown>>;
-    loadComponentsFromSchema(pages: {
-        components?: ComponentDef[];
-    }[]): void;
-    hasComponent(selector: string): boolean;
-    getRegisteredSelectors(): string[];
-    static ɵfac: i0.ɵɵFactoryDeclaration<ComponentRegistryService$1, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ComponentRegistryService$1>;
-}
-
 interface ComponentDefinition {
     selector: string;
     module?: string;
@@ -1126,6 +1117,8 @@ interface ComponentDefinition {
 declare class ComponentRegistryService {
     private registry;
     private componentManifest;
+    private _schemaComponents;
+    private _componentModules;
     constructor();
     private registerBuiltInComponents;
     private loadComponentManifest;
@@ -1139,6 +1132,17 @@ declare class ComponentRegistryService {
     private mergeEventHandlers;
     getAllComponentIds(): string[];
     getComponentsByCategory(category: string): string[];
+    registerComponent(def: ComponentDef): void;
+    registerComponents(defs: ComponentDef[]): void;
+    getComponent(selector: string): ComponentDef | undefined;
+    registerComponentModule(selector: string, module: Record<string, unknown>): void;
+    loadComponentModule(selector: string): Promise<CustomElementConstructor>;
+    getComponentModules(): Map<string, Record<string, unknown>>;
+    loadComponentsFromSchema(pages: {
+        components?: ComponentDef[];
+    }[]): void;
+    hasComponent(selector: string): boolean;
+    getRegisteredSelectors(): string[];
     static ɵfac: i0.ɵɵFactoryDeclaration<ComponentRegistryService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<ComponentRegistryService>;
 }
@@ -1230,6 +1234,8 @@ declare class DataBindingResolverService {
     private getDataBindingValue;
     private parseBindingPath;
     private getNestedValue;
+    static ɵfac: i0.ɵɵFactoryDeclaration<DataBindingResolverService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<DataBindingResolverService>;
 }
 
 interface NavigationOptions {
@@ -2009,5 +2015,5 @@ declare class RbacHasRoleDirective implements OnInit {
     static ɵdir: i0.ɵɵDirectiveDeclaration<RbacHasRoleDirective, "[rbacHasRole]", never, { "role": { "alias": "rbacHasRole"; "required": false; }; }, {}, never, never, true, never>;
 }
 
-export { BaseDestroyableComponent, ComponentRegistryService as ComponentRegistryNgService, ComponentRegistryService$1 as ComponentRegistryService, DataBindingResolverService, DataPatchService, ErrorHandlerService, ErrorType, EventBusService, GlobalStateService, GuardService, I18nService, InvokeWrapperService, LayoutEngineService, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, CrudService as RemoteCrudService, ResponseStatus, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, ShortcutService, SignalStoreService, SignalSyncService, StyleThemeService, ThemeService, ToastService, TodoPermission, UiShowcaseComponent, clamp, components, dataComponents, feedbackComponents, formatError, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage, getStyleClassPrefix, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isError, isSuccess, layoutComponents, loadStyleVariant, mapResponse, parseError, rbacGuard, rbacRoleGuard, setCurrentStyle, sortBy, timeAgo, uiComponents, unwrapResponse };
+export { BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, DataPatchService, ErrorHandlerService, ErrorType, EventBusService, GlobalStateService, GuardService, I18nService, InvokeWrapperService, LayoutEngineService, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, CrudService as RemoteCrudService, ResponseStatus, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, ShortcutService, SignalStoreService, SignalSyncService, StyleThemeService, ThemeService, ToastService, TodoPermission, UiShowcaseComponent, clamp, components, dataComponents, feedbackComponents, formatError, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage, getStyleClassPrefix, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isError, isSuccess, layoutComponents, loadStyleVariant, mapResponse, parseError, rbacGuard, rbacRoleGuard, setCurrentStyle, sortBy, timeAgo, uiComponents, unwrapResponse };
 export type { AppError, AppSchema, CanvasElement, ColorMode, ComponentBehavior, ComponentDef, ComponentStyleMap, DataBinding, ElementConfig, ElementEvents, ErrorLogEntry, FieldPermissionContext, GridPosition, GridTemplate, Layout, LayoutElement, Page, Permission, PermissionCheckResult, RenderContext, Response, RetryConfig, Role, Shortcut, StyleVariant, Theme, ThemeConfig, ToastNotification$1 as ToastNotification, TodoPermissionContext, UiSchema, User };

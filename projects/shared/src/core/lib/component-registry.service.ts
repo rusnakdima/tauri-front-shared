@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import type { ComponentBehavior, ElementEvents } from "./types";
+import type { ComponentBehavior, ElementEvents, ComponentDef } from "./types";
 
 export interface ComponentDefinition {
   selector: string;
@@ -11,6 +11,8 @@ export interface ComponentDefinition {
 export class ComponentRegistryService {
   private registry = new Map<string, ComponentDefinition>();
   private componentManifest: Record<string, unknown> = {};
+  private _schemaComponents = new Map<string, ComponentDef>();
+  private _componentModules = new Map<string, Record<string, unknown>>();
 
   constructor() {
     this.registerBuiltInComponents();
@@ -163,5 +165,86 @@ export class ComponentRegistryService {
     const manifest = this.componentManifest[category] as Record<string, unknown> | undefined;
     if (!manifest) return [];
     return Object.keys(manifest);
+  }
+
+  // Schema-based component registration (delegated from schema-renderer/component-registry.ts)
+
+  registerComponent(def: ComponentDef): void {
+    this._schemaComponents.set(def.selector, def);
+  }
+
+  registerComponents(defs: ComponentDef[]): void {
+    for (const def of defs) {
+      this.registerComponent(def);
+    }
+  }
+
+  getComponent(selector: string): ComponentDef | undefined {
+    return this._schemaComponents.get(selector);
+  }
+
+  registerComponentModule(
+    selector: string,
+    module: Record<string, unknown>,
+  ): void {
+    const modules = new Map(this._componentModules);
+    modules.set(selector, module);
+    this._componentModules = modules;
+  }
+
+  async loadComponentModule(
+    selector: string,
+  ): Promise<CustomElementConstructor> {
+    const cached = this._componentModules.get(selector);
+    if (cached) {
+      const constructor = (
+        cached as Record<string, CustomElementConstructor>
+      )["default"];
+      if (constructor) return constructor;
+    }
+
+    const def = this._schemaComponents.get(selector) as ComponentDef | undefined;
+    if (!def) {
+      throw new Error(`Component not found: ${selector}`);
+    }
+
+    const module = (await import(/* @vite-ignore */ def.selector)) as Record<
+      string,
+      unknown
+    >;
+    this.registerComponentModule(selector, module);
+
+    const constructor = (
+      module as Record<string, CustomElementConstructor>
+    )["default"];
+    if (!constructor) {
+      throw new Error(
+        `Module ${selector} does not export a default CustomElementConstructor`,
+      );
+    }
+
+    return constructor;
+  }
+
+  getComponentModules(): Map<string, Record<string, unknown>> {
+    return this._componentModules;
+  }
+
+  loadComponentsFromSchema(pages: { components?: ComponentDef[] }[]): void {
+    const registry = new Map<string, ComponentDef>();
+    for (const page of pages) {
+      for (const comp of page.components || []) {
+        registry.set(comp.selector, comp);
+      }
+    }
+    this._schemaComponents = registry;
+  }
+
+  hasComponent(selector: string): boolean {
+    return this._schemaComponents.has(selector);
+  }
+
+  getRegisteredSelectors(): string[] {
+    return Array.from(this._schemaComponents.keys());
   }
 }

@@ -1,3 +1,4 @@
+import { Injectable } from "@angular/core";
 import { CrudFilter } from "../crud/crud.service";
 
 export interface DataBinding {
@@ -19,6 +20,7 @@ export interface CrudQuery {
 import { CrudService } from "../crud/crud.service";
 import { SignalStoreService } from "../signal-store/signal-store.service";
 
+@Injectable({ providedIn: "root" })
 export class DataBindingResolverService {
   private _params: Record<string, string> = {};
   private _functions: Record<string, Function> = {};

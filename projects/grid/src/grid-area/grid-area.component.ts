@@ -5,14 +5,8 @@ import { CommonModule } from "@angular/common";
   selector: "app-grid-area",
   standalone: true,
   imports: [CommonModule],
-  template: `<ng-content></ng-content>`,
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-    `,
-  ],
+  templateUrl: "./grid-area.component.html",
+  styleUrl: "./grid-area.component.css",
 })
 export class GridAreaComponent {
   @Input() name: string = "";

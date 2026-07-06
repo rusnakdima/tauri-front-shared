@@ -1,3 +1,3 @@
+// NOTE: This standalone package is deprecated. Use @tauri-front/shared instead.
+// Only InvokeWrapperService is still maintained here as a non-Angular utility.
 export { InvokeWrapperService, } from "./invoke-wrapper.service";
-export { TauriApiService, } from "./tauri-api.service";
-export { ErrorHandlerService } from "./error-handler.service";

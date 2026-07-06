@@ -54,14 +54,8 @@ GridItemComponent = __decorate([
         selector: "app-grid-item",
         standalone: true,
         imports: [CommonModule],
-        template: `<ng-content></ng-content>`,
-        styles: [
-            `
-      :host {
-        display: block;
-      }
-    `,
-        ],
+        templateUrl: "./grid-item.component.html",
+        styleUrl: "./grid-item.component.css",
     })
 ], GridItemComponent);
 export { GridItemComponent };

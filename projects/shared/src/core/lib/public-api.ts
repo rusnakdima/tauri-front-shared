@@ -13,7 +13,7 @@ export { I18nService } from "./i18n/i18n.service";
 export { GlobalStateService } from "./global-state/global-state.service";
 
 // Missing exports - ADDED 2026-06-30
-export { ComponentRegistryService } from "./schema-renderer/component-registry";
+export { ComponentRegistryService } from "./component-registry.service";
 export { DataBindingResolverService } from "./schema-renderer/data-binding-resolver";
 export { LayoutEngineService } from "./schema-renderer/layout-engine";
 export { SchemaRouterService } from "./schema-router/schema-router.service";

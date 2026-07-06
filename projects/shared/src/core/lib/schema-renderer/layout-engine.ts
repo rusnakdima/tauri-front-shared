@@ -1,4 +1,6 @@
+import { Injectable, inject } from "@angular/core";
 import { Layout, GridPosition } from "../types";
+import { ThemeService } from "../theme/theme.service";
 
 export interface GridTemplate {
   columns: string[];
@@ -6,7 +8,10 @@ export interface GridTemplate {
   gap: string;
 }
 
+@Injectable({ providedIn: "root" })
 export class LayoutEngineService {
+  private themeService = inject(ThemeService, { optional: true });
+
   resolveClass(layout: Layout): string {
     if (layout.class) return layout.class;
 
@@ -79,6 +84,52 @@ export class LayoutEngineService {
     return classes.join(" ");
   }
 
+  /**
+   * Applies theme CSS custom properties to a layout container element.
+   * Uses ThemeService to get the current accent color and computed shades,
+   * then sets them as inline CSS variables on the container.
+   */
+  applyThemeVariables(container: HTMLElement): void {
+    if (!this.themeService) return;
+
+    const root = document.documentElement;
+    const accent = this.themeService.accentColor();
+
+    // Copy theme CSS variables from root to the container
+    // This ensures layout containers have explicit theme values even if
+    // they are inside shadow DOM or have custom styling contexts
+    const themeVars = [
+      "--text-primary",
+      "--text-secondary",
+      "--text-muted",
+      "--bg-primary",
+      "--bg-elevated",
+      "--bg-hover",
+      "--bg-tertiary",
+      "--border-color",
+      "--error",
+      "--warning",
+      "--success",
+      "--info",
+      "--accent",
+    ];
+
+    for (const varName of themeVars) {
+      const value = root.style.getPropertyValue(varName);
+      if (value) {
+        container.style.setProperty(varName, value);
+      }
+    }
+
+    // Apply accent shades if available
+    const shades = this.themeService.accentShades();
+    if (shades) {
+      for (const [key, value] of Object.entries(shades)) {
+        container.style.setProperty(`--accent-${key}`, value);
+      }
+    }
+  }
+
   renderGridLayout(container: HTMLElement, layout: Layout): void {
     container.style.display = "grid";
 
@@ -100,6 +151,8 @@ export class LayoutEngineService {
       container.style.gridTemplateRows = layout.gridTemplateRows;
     }
 
+    this.applyThemeVariables(container);
+
     if (layout.style) {
       Object.assign(container.style, layout.style);
     }
@@ -120,6 +173,8 @@ export class LayoutEngineService {
       if (layout.gap) classes.push(`gap-${layout.gap}`);
       container.className = classes.join(" ");
     }
+
+    this.applyThemeVariables(container);
 
     if (layout.style) {
       Object.assign(container.style, layout.style);

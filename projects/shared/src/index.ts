@@ -35,8 +35,7 @@ import "./register-components";
 // Core SDUI services (core/lib/)
 export { BaseDestroyableComponent } from "./core/lib/base-destroyable.component";
 export { SchemaRendererService } from "./core/lib/schema-renderer/schema-renderer.service";
-export { ComponentRegistryService } from "./core/lib/schema-renderer/component-registry";
-export { ComponentRegistryService as ComponentRegistryNgService } from "./core/lib/component-registry.service";
+export { ComponentRegistryService } from "./core/lib/component-registry.service";
 export { DataBindingResolverService } from "./core/lib/schema-renderer/data-binding-resolver";
 export type { DataBinding } from "./core/lib/schema-renderer/data-binding-resolver";
 export { LayoutEngineService } from "./core/lib/schema-renderer/layout-engine";

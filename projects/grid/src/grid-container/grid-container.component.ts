@@ -5,18 +5,8 @@ import { CommonModule } from "@angular/common";
   selector: "app-grid-container",
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div [class]="containerClasses" [style]="containerStyles">
-      <ng-content></ng-content>
-    </div>
-  `,
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-    `,
-  ],
+  templateUrl: "./grid-container.component.html",
+  styleUrl: "./grid-container.component.css",
 })
 export class GridContainerComponent {
   @Input() cols: string = "1fr";

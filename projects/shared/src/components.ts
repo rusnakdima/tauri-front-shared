@@ -1,582 +1,1292 @@
 import type { SharedComponentDef } from "./core/lib/types";
 
+// UI Components
 export const uiComponents: SharedComponentDef[] = [
   {
-    id: "button",
-    name: "Button",
-    selector: "app-button",
-    packageType: "ui",
-    category: "forms",
-    props: [
-      {
-        name: "variant",
-        type: "select",
-        default: "primary",
-        options: ["primary", "secondary", "danger"],
-      },
-      {
-        name: "size",
-        type: "select",
-        default: "md",
-        options: ["sm", "md", "lg"],
-      },
-      { name: "disabled", type: "boolean", default: false },
-    ],
-    template: "<button>Button</button>",
-    css: ":host { display: inline-flex; }",
-  },
+  "id": "avatar",
+  "name": "AppAvatar",
+  "selector": "app-avatar",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "src",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "alt",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "size",
+      "type": "string",
+      "default": "md"
+    }
+  ],
+  "template": "<div class=\"avatar ${sizeClass}\">\n          <img src=\"${this.src}\" alt=\"${this.alt}\" @error=\"${this._handleImageError}\" />\n        </div>",
+  "css": ":host {\n      display: inline-flex;\n    }\n\n    .avatar {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      border-radius: 50%;\n      overflow: hidden;\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n    }\n\n    .avatar-sm {\n      width: 2rem;\n      height: 2rem;\n      font-size: 0.75rem;\n    }\n\n    .avatar-md {\n      width: 2.5rem;\n      height: 2.5rem;\n      font-size: 0.875rem;\n    }\n\n    .avatar-lg {\n      width: 3.5rem;\n      height: 3.5rem;\n      font-size: 1.25rem;\n    }\n\n    img {\n      width: 100%;\n      height: 100%;\n      object-fit: cover;\n    }\n\n    .initials {\n      font-weight: 600;\n      color: var(--text-secondary);\n      text-transform: uppercase;\n    }"
+},
   {
-    id: "badge",
-    name: "Badge",
-    selector: "app-badge",
-    packageType: "ui",
-    category: "display",
-    props: [
-      {
-        name: "variant",
-        type: "select",
-        default: "default",
-        options: ["default", "primary", "success", "warning", "danger"],
-      },
-      {
-        name: "size",
-        type: "select",
-        default: "md",
-        options: ["sm", "md", "lg"],
-      },
-    ],
-    template: "<span>Badge</span>",
-    css: ":host { display: inline-flex; }",
-  },
+  "id": "badge",
+  "name": "AppBadge",
+  "selector": "app-badge",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "variant",
+      "type": "string",
+      "default": "default"
+    },
+    {
+      "name": "size",
+      "type": "string",
+      "default": "md"
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<span class=\"badge badge-${this.variant} badge-${this.size}\">${this.label}</span>",
+  "css": ":host {\n      display: inline-flex;\n    }\n\n    .badge {\n      display: inline-flex;\n      align-items: center;\n      border-radius: 0.25rem;\n      font-weight: 500;\n      line-height: 1;\n    }\n\n    .badge-default {\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      border: 1px solid var(--border-color);\n    }\n\n    .badge-primary {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .badge-success {\n      background-color: var(--success);\n      color: var(--text-on-success);\n    }\n\n    .badge-warning {\n      background-color: var(--warning);\n      color: var(--text-on-warning);\n    }\n\n    .badge-danger {\n      background-color: var(--error);\n      color: var(--text-on-error);\n    }\n\n    .badge-sm {\n      padding: 0.125rem 0.25rem;\n      font-size: 0.625rem;\n    }\n\n    .badge-md {\n      padding: 0.25rem 0.5rem;\n      font-size: 0.75rem;\n    }\n\n    .badge-lg {\n      padding: 0.375rem 0.75rem;\n      font-size: 0.875rem;\n    }"
+},
   {
-    id: "avatar",
-    name: "Avatar",
-    selector: "app-avatar",
-    packageType: "ui",
-    category: "display",
-    props: [
-      { name: "src", type: "string", default: "" },
-      { name: "alt", type: "string", default: "Avatar" },
-      {
-        name: "size",
-        type: "select",
-        default: "md",
-        options: ["sm", "md", "lg"],
-      },
-    ],
-    template: '<img alt="Avatar" />',
-    css: ":host { display: inline-flex; }",
-  },
+  "id": "bottom-panel",
+  "name": "AppBottomPanel",
+  "selector": "app-bottom-panel",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "tabs",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "activeTab",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "position",
+      "type": "string",
+      "default": "bottom"
+    },
+    {
+      "name": "fullWidth",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "floating",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": 0
+    }
+  ],
+  "template": "<div class=\"panel-tabs\">\n        ${tabsList.map(\n          (tab) => html",
+  "css": ":host {\n      display: flex;\n      flex-direction: column;\n      background-color: var(--bg-elevated);\n      border-top: 1px solid var(--border-color);\n      height: 100%;\n    }\n\n    .panel-tabs {\n      display: flex;\n      gap: 0;\n      border-bottom: 1px solid var(--border-color);\n      padding: 0 0.5rem;\n    }\n\n    .panel-tab {\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-secondary);\n      cursor: pointer;\n      border-bottom: 2px solid transparent;\n      margin-bottom: -1px;\n      transition: all 0.15s;\n    }\n\n    .panel-tab:hover {\n      color: var(--text-primary);\n    }\n\n    .panel-tab.active {\n      color: var(--accent);\n      border-bottom-color: var(--accent);\n    }\n\n    .panel-content {\n      flex: 1;\n      overflow: auto;\n      padding: 1rem;\n    }\n\n    .empty-state {\n      color: var(--text-muted);\n      font-size: 0.875rem;\n      text-align: center;\n      padding: 2rem;\n    }"
+},
   {
-    id: "chip",
-    name: "Chip",
-    selector: "app-chip",
-    packageType: "ui",
-    category: "display",
-    props: [
-      { name: "label", type: "string", default: "" },
-      { name: "removable", type: "boolean", default: false },
-    ],
-    template: "<span>Chip</span>",
-    css: ":host { display: inline-flex; }",
-  },
+  "id": "button",
+  "name": "AppButton",
+  "selector": "app-button",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "variant",
+      "type": "string",
+      "default": "primary"
+    },
+    {
+      "name": "size",
+      "type": "string",
+      "default": "md"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "loading",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "fullWidth",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "<button\n        type=\"${this.type}\"\n        class=\"${classes}\"\n        ?disabled=\"${this.disabled || this.loading}\"\n        @click=\"${this._handleClick}\"\n      >\n        ${this.loading\n          ? html`<span class=\"app-btn-spinner\"></span>",
+  "css": ":host {\n      display: inline-flex;\n    }\n\n    button {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      gap: 0.5rem;\n      border-radius: 0.5rem;\n      border: 1px solid;\n      padding: 0.5rem 1rem;\n      text-align: center;\n      font-weight: 500;\n      transition: all 0.15s;\n      cursor: pointer;\n      border-width: 1px;\n    }\n\n    button:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n\n    .app-btn-primary {\n      border-color: var(--accent);\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n    .app-btn-primary:hover {\n      background-color: var(--accent-hover);\n      border-color: var(--accent-hover);\n    }\n\n    .app-btn-secondary {\n      border-color: var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n    }\n    .app-btn-secondary:hover {\n      background-color: var(--bg-hover);\n    }\n\n    .app-btn-danger {\n      border-color: var(--error);\n      background-color: var(--error);\n      color: var(--text-on-error);\n    }\n    .app-btn-danger:hover {\n      opacity: 0.9;\n    }\n\n    .app-btn-warning {\n      border-color: var(--warning);\n      background-color: var(--warning);\n      color: var(--text-on-warning);\n    }\n    .app-btn-warning:hover {\n      opacity: 0.9;\n    }\n\n    .app-btn-success {\n      border-color: var(--success);\n      background-color: var(--success);\n      color: var(--text-on-success);\n    }\n    .app-btn-success:hover {\n      opacity: 0.9;\n    }\n\n    .app-btn-ghost {\n      border-color: transparent;\n      background-color: transparent;\n      color: var(--text-secondary);\n    }\n    .app-btn-ghost:hover {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .app-btn-sm {\n      padding: 0.25rem 0.5rem;\n      font-size: 0.875rem;\n    }\n\n    .app-btn-md {\n      padding: 0.5rem 1rem;\n      font-size: 1rem;\n    }\n\n    .app-btn-lg {\n      padding: 0.75rem 1.5rem;\n      font-size: 1.125rem;\n    }\n\n    .app-btn-full {\n      width: 100%;\n    }\n\n    .app-btn-icon {\n      font-size: 1.25rem;\n    }\n\n    .app-btn-spinner {\n      width: 1rem;\n      height: 1rem;\n      border: 2px solid currentColor;\n      border-top-color: transparent;\n      border-radius: 50%;\n      animation: spin 0.6s linear infinite;\n    }\n\n    @keyframes spin {\n      to {\n        transform: rotate(360deg);\n      }\n    }"
+},
   {
-    id: "input",
-    name: "Input",
-    selector: "app-input",
-    packageType: "ui",
-    category: "forms",
-    props: [
-      {
-        name: "type",
-        type: "select",
-        default: "text",
-        options: ["text", "email", "password", "number"],
-      },
-      { name: "placeholder", type: "string", default: "" },
-      { name: "disabled", type: "boolean", default: false },
-    ],
-    template: '<input type="text" />',
-    css: ":host { display: block; }",
-  },
+  "id": "canvas",
+  "name": "AppCanvas",
+  "selector": "app-canvas",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "gridColumns",
+      "type": "number",
+      "default": 12
+    },
+    {
+      "name": "showGrid",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "<div class=\"canvas-area\" style=\"${gridStyle}\">\n        ${this.showGrid\n          ? html",
+  "css": ":host {\n      display: block;\n      width: 100%;\n      height: 100%;\n      background-color: var(--bg-primary);\n      position: relative;\n      overflow: auto;\n    }\n\n    .canvas-area {\n      min-width: 100%;\n      min-height: 100%;\n      position: relative;\n    }\n\n    .grid {\n      position: absolute;\n      top: 0;\n      left: 0;\n      right: 0;\n      bottom: 0;\n      pointer-events: none;\n      display: grid;\n      grid-template-columns: repeat(var(--grid-cols), 1fr);\n      gap: 0;\n    }\n\n    .grid-cell {\n      border-right: 1px solid var(--border-color);\n      border-bottom: 1px solid var(--border-color);\n      min-height: 4rem;\n    }\n\n    .grid.visible {\n      background-color: rgba(0, 0, 0, 0.02);\n    }\n\n    .canvas-drop-zone {\n      position: absolute;\n      top: 0;\n      left: 0;\n      right: 0;\n      bottom: 0;\n    }\n\n    .canvas-element {\n      position: absolute;\n      border: 2px dashed transparent;\n      border-radius: 0.5rem;\n      padding: 0.5rem;\n      cursor: move;\n      transition: border-color 0.15s;\n    }\n\n    .canvas-element:hover {\n      border-color: var(--accent);\n    }\n\n    .canvas-element.selected {\n      border-color: var(--accent);\n      border-style: solid;\n      box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 99, 102, 241), 0.2);\n    }\n\n    .canvas-placeholder {\n      border: 2px dashed var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-secondary);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      color: var(--text-muted);\n      font-size: 0.875rem;\n    }"
+},
   {
-    id: "checkbox",
-    name: "Checkbox",
-    selector: "app-checkbox",
-    packageType: "ui",
-    category: "forms",
-    props: [
-      { name: "checked", type: "boolean", default: false },
-      { name: "label", type: "string", default: "" },
-    ],
-    template: '<label><input type="checkbox" /> Checkbox</label>',
-    css: ":host { display: block; }",
-  },
+  "id": "card",
+  "name": "AppCard",
+  "selector": "app-card",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "content",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "elevated",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "borderRadius",
+      "type": "number",
+      "default": 8
+    },
+    {
+      "name": "padding",
+      "type": "number",
+      "default": 16
+    }
+  ],
+  "template": "<div class=\"card ${this.elevated ? \"card-elevated\" : \"\"}\">\n        ${this.title\n          ? html",
+  "css": ":host {\n      display: block;\n    }\n\n    .card {\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      overflow: hidden;\n      transition: box-shadow 0.15s;\n    }\n\n    .card-elevated {\n      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),\n        0 2px 4px -1px rgba(0, 0, 0, 0.06);\n    }\n\n    .card-header {\n      padding: 1rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .card-title {\n      margin: 0;\n      font-size: 1rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .card-content {\n      padding: 1rem;\n      color: var(--text-secondary);\n      font-size: 0.875rem;\n      line-height: 1.5;\n    }"
+},
   {
-    id: "radio",
-    name: "Radio",
-    selector: "app-radio",
-    packageType: "ui",
-    category: "forms",
-    props: [
-      { name: "name", type: "string", default: "" },
-      { name: "value", type: "string", default: "" },
-    ],
-    template: '<label><input type="radio" /> Radio</label>',
-    css: ":host { display: block; }",
-  },
+  "id": "checkbox",
+  "name": "AppCheckbox",
+  "selector": "app-checkbox",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "checked",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "<label>\n        <input\n          type=\"checkbox\"\n          .checked=\"${this.checked}\"\n          ?disabled=\"${this.disabled}\"\n          @change=\"${this._handleChange}\"\n        />\n        <span class=\"checkbox-label\">${this.label}</span>\n      </label>",
+  "css": ":host {\n      display: inline-flex;\n      align-items: center;\n    }\n\n    label {\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n      cursor: pointer;\n    }\n\n    input[type=\"checkbox\"] {\n      width: 1rem;\n      height: 1rem;\n      accent-color: var(--accent);\n      cursor: pointer;\n    }\n\n    input[type=\"checkbox\"]:disabled {\n      cursor: not-allowed;\n      opacity: 0.5;\n    }\n\n    .checkbox-label {\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      user-select: none;\n    }\n\n    :host([disabled]) .checkbox-label {\n      color: var(--text-secondary);\n      cursor: not-allowed;\n    }"
+},
   {
-    id: "tabs",
-    name: "Tabs",
-    selector: "app-tabs",
-    packageType: "ui",
-    category: "layout",
-    props: [{ name: "tabs", type: "string", default: '["Tab 1", "Tab 2"]' }],
-    template: "<div><button>Tab 1</button><button>Tab 2</button></div>",
-    css: ":host { display: block; }",
-  },
+  "id": "chip",
+  "name": "AppChip",
+  "selector": "app-chip",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "removable",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "<span class=\"chip\">\n        ${this.icon ? html`<i class=\"material-icons chip-icon\">${this.icon}</i>` : \"\"}\n        <span>${this.label}</span>\n        ${this.removable\n          ? html`<button class=\"remove-btn\" @click=\"${this._handleRemove}\" aria-label=\"Remove\">×</button>",
+  "css": ":host {\n      display: inline-flex;\n    }\n\n    .chip {\n      display: inline-flex;\n      align-items: center;\n      gap: 0.375rem;\n      padding: 0.25rem 0.75rem;\n      border-radius: 1rem;\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      font-weight: 500;\n      transition: background-color 0.15s;\n    }\n\n    .chip:hover {\n      background-color: var(--bg-hover);\n    }\n\n    .chip-icon {\n      font-size: 1rem;\n    }\n\n    .remove-btn {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1rem;\n      height: 1rem;\n      padding: 0;\n      border: none;\n      background: transparent;\n      color: var(--text-secondary);\n      cursor: pointer;\n      border-radius: 50%;\n      transition: background-color 0.15s;\n      margin-left: 0.125rem;\n    }\n\n    .remove-btn:hover {\n      background-color: var(--border-color);\n      color: var(--text-primary);\n    }"
+},
   {
-    id: "empty-state",
-    name: "Empty State",
-    selector: "app-empty-state",
-    packageType: "ui",
-    category: "display",
-    props: [
-      { name: "title", type: "string", default: "No data" },
-      { name: "message", type: "string", default: "" },
-    ],
-    template: "<div><p>No data</p></div>",
-    css: ":host { display: block; }",
-  },
+  "id": "component-palette",
+  "name": "AppComponentPalette",
+  "selector": "app-component-palette",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "categories",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "searchable",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "<div class=\"palette-header\">\n        <div class=\"palette-title\">Components</div>\n        ${this.searchable\n          ? html",
+  "css": ":host {\n      display: block;\n      background-color: var(--bg-elevated);\n      border-right: 1px solid var(--border-color);\n      height: 100%;\n      overflow-y: auto;\n    }\n\n    .palette-header {\n      padding: 1rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .palette-title {\n      font-size: 0.875rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      margin-bottom: 0.75rem;\n    }\n\n    .search-input {\n      width: 100%;\n      padding: 0.5rem 0.75rem;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-primary);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      box-sizing: border-box;\n    }\n\n    .search-input::placeholder {\n      color: var(--text-muted);\n    }\n\n    .search-input:focus {\n      outline: none;\n      border-color: var(--accent);\n    }\n\n    .category {\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .category-header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 0.75rem 1rem;\n      cursor: pointer;\n      color: var(--text-primary);\n      font-weight: 500;\n      font-size: 0.875rem;\n    }\n\n    .category-header:hover {\n      background-color: var(--bg-hover);\n    }\n\n    .category-arrow {\n      transition: transform 0.2s;\n      font-size: 0.75rem;\n    }\n\n    .category-arrow.collapsed {\n      transform: rotate(-90deg);\n    }\n\n    .category-items {\n      padding: 0 1rem 0.75rem;\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .category-items.collapsed {\n      display: none;\n    }\n\n    .component-item {\n      padding: 0.5rem 0.75rem;\n      border-radius: 0.375rem;\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n      cursor: grab;\n    }\n\n    .component-item:hover {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .component-item:active {\n      cursor: grabbing;\n    }"
+},
   {
-    id: "loading",
-    name: "Loading",
-    selector: "app-loading",
-    packageType: "ui",
-    category: "feedback",
-    props: [
-      {
-        name: "size",
-        type: "select",
-        default: "md",
-        options: ["sm", "md", "lg"],
-      },
-    ],
-    template: "<div>Loading...</div>",
-    css: ":host { display: block; }",
-  },
+  "id": "confirm-dialog",
+  "name": "AppConfirmDialog",
+  "selector": "app-confirm-dialog",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "message",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "confirmText",
+      "type": "string",
+      "default": "Confirm"
+    },
+    {
+      "name": "cancelText",
+      "type": "string",
+      "default": "Cancel"
+    }
+  ],
+  "template": "",
+  "css": ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.6);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .dialog {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 1rem;\n      width: 400px;\n      max-width: 90vw;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1.25rem 1.5rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    header h2 {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem;\n      border-radius: 0.25rem;\n      color: var(--text-secondary);\n      font-size: 1.25rem;\n      line-height: 1;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.5rem;\n      color: var(--text-secondary);\n      font-size: 0.9375rem;\n      line-height: 1.5;\n    }\n\n    footer {\n      display: flex;\n      gap: 0.75rem;\n      padding: 1rem 1.5rem;\n      border-top: 1px solid var(--border-color);\n      justify-content: flex-end;\n    }\n\n    button {\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid;\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n    }\n\n    .cancel-btn {\n      background: transparent;\n      border-color: var(--border-color);\n      color: var(--text-secondary);\n    }\n\n    .cancel-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .confirm-btn {\n      background: var(--accent);\n      border-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .confirm-btn:hover {\n      opacity: 0.9;\n    }\n\n    .danger-btn {\n      background: var(--error);\n      border-color: var(--error);\n      color: var(--text-on-error);\n    }\n\n    .danger-btn:hover {\n      opacity: 0.9;\n    }"
+},
   {
-    id: "pagination",
-    name: "Pagination",
-    selector: "app-pagination",
-    packageType: "ui",
-    category: "navigation",
-    props: [
-      { name: "page", type: "number", default: 1 },
-      { name: "total", type: "number", default: 10 },
-    ],
-    template: "<div>Pagination</div>",
-    css: ":host { display: block; }",
-  },
+  "id": "data-table",
+  "name": "AppDataTable",
+  "selector": "app-data-table",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "columns",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "data",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "selectable",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "<table>\n        <thead>\n          <tr>\n            ${this.selectable ? html`<th class=\"radio-cell\"></th>` : \"\"}\n            ${cols.map((col) => html`<th>${col.name}</th>`)}\n          </tr>\n        </thead>\n        <tbody>\n          ${rows.map(\n            (row, index) => html",
+  "css": ":host {\n      display: block;\n      overflow-x: auto;\n    }\n\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      font-size: 0.875rem;\n    }\n\n    th {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      background-color: var(--bg-secondary);\n      color: var(--text-primary);\n      font-weight: 600;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    td {\n      padding: 0.75rem 1rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    tr {\n      cursor: default;\n    }\n\n    tr:hover td {\n      background-color: var(--bg-hover);\n    }\n\n    tr.selected td {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    tr.selectable {\n      cursor: pointer;\n    }\n\n    .radio-cell {\n      width: 2rem;\n    }\n\n    .radio {\n      width: 1rem;\n      height: 1rem;\n      border: 2px solid var(--border-color);\n      border-radius: 50%;\n      display: inline-block;\n    }\n\n    tr.selected .radio {\n      border-color: var(--text-on-accent);\n      background-color: var(--text-on-accent);\n    }"
+},
   {
-    id: "tooltip",
-    name: "Tooltip",
-    selector: "app-tooltip",
-    packageType: "ui",
-    category: "feedback",
-    props: [
-      { name: "text", type: "string", default: "" },
-      {
-        name: "position",
-        type: "select",
-        default: "top",
-        options: ["top", "bottom", "left", "right"],
-      },
-    ],
-    template: "<span>Tooltip</span>",
-    css: ":host { display: inline-flex; }",
-  },
+  "id": "dialog",
+  "name": "AppDialog",
+  "selector": "app-dialog",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "size",
+      "type": "string",
+      "default": "md"
+    },
+    {
+      "name": "showHeader",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "showFooter",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "",
+  "css": ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.6);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .dialog {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 1rem;\n      min-width: 360px;\n      max-height: 90vh;\n      display: flex;\n      flex-direction: column;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);\n    }\n\n    .dialog-sm {\n      width: 360px;\n    }\n\n    .dialog-md {\n      width: 520px;\n    }\n\n    .dialog-lg {\n      width: 720px;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1.25rem 1.5rem;\n      border-bottom: 2px solid var(--border-color);\n      background: var(--bg-elevated);\n      border-radius: 1rem 1rem 0 0;\n    }\n\n    header h2 {\n      margin: 0;\n      font-size: 1.25rem;\n      font-weight: 700;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem 0.5rem;\n      border-radius: 0.375rem;\n      color: var(--text-secondary);\n      font-size: 1.5rem;\n      line-height: 1;\n      font-weight: 300;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.5rem;\n      overflow-y: auto;\n      color: var(--text-primary);\n    }"
+},
   {
-    id: "progress-bar",
-    name: "Progress Bar",
-    selector: "app-progress-bar",
-    packageType: "ui",
-    category: "feedback",
-    props: [
-      { name: "value", type: "number", default: 0 },
-      { name: "max", type: "number", default: 100 },
-    ],
-    template: "<div><div>Progress</div></div>",
-    css: ":host { display: block; }",
-  },
+  "id": "empty-state",
+  "name": "AppEmptyState",
+  "selector": "app-empty-state",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "message",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<div class=\"icon-container ${this.variant}\">\n        ${this.icon\n          ? html`<span class=\"icon\">${this.icon}</span>",
+  "css": ":host {\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      text-align: center;\n      padding: 2rem;\n      gap: 1rem;\n    }\n\n    .icon-container {\n      width: 64px;\n      height: 64px;\n      border-radius: 50%;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      background: var(--bg-elevated);\n      border: 2px solid var(--border-color);\n    }\n\n    .icon-container.danger {\n      background: var(--error);\n      border-color: var(--error);\n    }\n\n    .icon-container.success {\n      background: var(--success);\n      border-color: var(--success);\n    }\n\n    .icon {\n      font-size: 2rem;\n      width: 2rem;\n      height: 2rem;\n    }\n\n    .icon-container.danger .icon,\n    .icon-container.success .icon {\n      color: var(--text-on-error);\n    }\n\n    .title {\n      font-size: 1.5rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      margin: 0;\n    }\n\n    .message {\n      font-size: 1rem;\n      color: var(--text-secondary);\n      margin: 0;\n      max-width: 400px;\n    }\n\n    .action {\n      margin-top: 0.5rem;\n    }\n\n    button {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      gap: 0.5rem;\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--accent);\n      background: var(--accent);\n      color: var(--text-on-accent);\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n    }\n\n    button:hover {\n      background: var(--accent-hover);\n      border-color: var(--accent-hover);\n    }"
+},
   {
-    id: "slider",
-    name: "Slider",
-    selector: "app-slider",
-    packageType: "ui",
-    category: "forms",
-    props: [
-      { name: "min", type: "number", default: 0 },
-      { name: "max", type: "number", default: 100 },
-      { name: "value", type: "number", default: 50 },
-    ],
-    template: '<input type="range" />',
-    css: ":host { display: block; }",
-  },
+  "id": "footer",
+  "name": "AppFooter",
+  "selector": "app-footer",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<footer>\n        <p class=\"footer-text\">${this.text}</p>\n        <slot></slot>\n      </footer>",
+  "css": ":host {\n      display: block;\n    }\n\n    footer {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      padding: 1rem;\n      background: var(--bg-elevated);\n      border-top: 1px solid var(--border-color);\n      min-height: 48px;\n    }\n\n    .footer-text {\n      margin: 0;\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n      text-align: center;\n    }"
+},
   {
-    id: "select",
-    name: "Select",
-    selector: "app-select",
-    packageType: "ui",
-    category: "forms",
-    props: [
-      { name: "options", type: "string", default: "[]" },
-      { name: "placeholder", type: "string", default: "Select..." },
-    ],
-    template: "<select><option>Option</option></select>",
-    css: ":host { display: block; }",
-  },
+  "id": "header",
+  "name": "AppHeader",
+  "selector": "app-header",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "showBack",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "breadcrumbs",
+      "type": "string",
+      "default": "[]"
+    }
+  ],
+  "template": "<header>\n        ${this.showBack\n          ? html",
+  "css": ":host {\n      display: block;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      padding: 1rem 1.5rem;\n      background: var(--bg-header, var(--bg-elevated));\n      border-bottom: 1px solid var(--border-color);\n      min-height: 56px;\n      gap: 1rem;\n    }\n\n    .back-btn {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 36px;\n      height: 36px;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background: var(--bg-elevated);\n      color: var(--text-primary);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n      font-size: 1.25rem;\n    }\n\n    .back-btn:hover {\n      background: var(--bg-hover);\n    }\n\n    .title-area {\n      flex: 1;\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    h1 {\n      margin: 0;\n      font-size: 1.25rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .breadcrumbs {\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n    }\n\n    .breadcrumb-separator {\n      color: var(--text-secondary);\n      opacity: 0.5;\n    }"
+},
   {
-    id: "switch",
-    name: "Switch",
-    selector: "app-switch",
-    packageType: "ui",
-    category: "forms",
-    props: [{ name: "checked", type: "boolean", default: false }],
-    template: '<label><input type="checkbox" /> Switch</label>',
-    css: ":host { display: block; }",
-  },
+  "id": "input",
+  "name": "AppInput",
+  "selector": "app-input",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "type",
+      "type": "string",
+      "default": "text"
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "<div class=\"app-input-wrapper\">\n        ${this.label\n          ? html`<label class=\"app-input-label\">${this.label}</label>",
+  "css": ":host {\n      display: block;\n    }\n\n    .app-input-wrapper {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .app-input-label {\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-primary);\n    }\n\n    .app-input-container {\n      position: relative;\n      display: flex;\n      align-items: center;\n    }\n\n    .app-input {\n      width: 100%;\n      padding: 0.5rem 0.75rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-primary);\n      color: var(--text-primary);\n      box-sizing: border-box;\n      transition: all 0.15s;\n      outline: none;\n    }\n\n    .app-input::placeholder {\n      color: var(--text-muted);\n    }\n\n    .app-input:focus {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    .app-input-default:focus {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    .app-input-error {\n      border-color: var(--error);\n      box-shadow: 0 0 0 1px var(--error);\n    }\n\n    .app-input-with-icon {\n      padding-left: 2.5rem;\n    }\n\n    .app-input-icon {\n      position: absolute;\n      left: 0.75rem;\n      font-size: 1.25rem;\n      color: var(--text-muted);\n    }\n\n    .app-input-focused .app-input-icon {\n      color: var(--accent);\n    }\n\n    .app-input:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n      background-color: var(--bg-tertiary);\n    }\n\n    .app-input-error-text {\n      font-size: 0.75rem;\n      color: var(--error);\n    }"
+},
+  {
+  "id": "json-view",
+  "name": "AppJsonView",
+  "selector": "app-json-view",
+  "packageType": "ui",
+  "category": "layout",
+  "props": [],
+  "template": "<div class=\"json-container\">\n        ${this._syntaxHighlight(formatted)}\n      </div>",
+  "css": ":host {\n      display: block;\n    }\n\n    .json-container {\n      background-color: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      padding: 1rem;\n      font-family: monospace;\n      font-size: 0.875rem;\n      overflow-x: auto;\n      white-space: pre-wrap;\n      word-break: break-word;\n    }\n\n    .json-key {\n      color: var(--accent);\n    }\n\n    .json-string {\n      color: var(--success);\n    }\n\n    .json-number {\n      color: var(--warning);\n    }\n\n    .json-boolean {\n      color: var(--error);\n    }\n\n    .json-null {\n      color: var(--text-muted);\n    }"
+},
+  {
+  "id": "loading",
+  "name": "AppLoading",
+  "selector": "app-loading",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "size",
+      "type": "string",
+      "default": "md"
+    }
+  ],
+  "template": "<div class=\"spinner spinner-${this.size}\"></div>",
+  "css": ":host {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n    }\n\n    .spinner {\n      border: 2px solid var(--border-color);\n      border-top-color: var(--accent);\n      border-radius: 50%;\n      animation: spin 0.7s linear infinite;\n    }\n\n    .spinner-sm {\n      width: 16px;\n      height: 16px;\n      border-width: 2px;\n    }\n\n    .spinner-md {\n      width: 32px;\n      height: 32px;\n      border-width: 3px;\n    }\n\n    .spinner-lg {\n      width: 48px;\n      height: 48px;\n      border-width: 4px;\n    }\n\n    @keyframes spin {\n      to {\n        transform: rotate(360deg);\n      }\n    }"
+},
+  {
+  "id": "modal",
+  "name": "AppModal",
+  "selector": "app-modal",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "size",
+      "type": "string",
+      "default": "md"
+    }
+  ],
+  "template": "",
+  "css": ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.5);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .modal {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.75rem;\n      min-width: 320px;\n      max-height: 90vh;\n      display: flex;\n      flex-direction: column;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);\n    }\n\n    .modal-sm {\n      width: 320px;\n    }\n\n    .modal-md {\n      width: 480px;\n    }\n\n    .modal-lg {\n      width: 640px;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1rem 1.25rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    header h3 {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem;\n      border-radius: 0.25rem;\n      color: var(--text-secondary);\n      font-size: 1.25rem;\n      line-height: 1;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.25rem;\n      overflow-y: auto;\n      color: var(--text-primary);\n    }"
+},
+  {
+  "id": "page-container",
+  "name": "AppPageContainer",
+  "selector": "app-page-container",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "${this.title\n        ? html",
+  "css": ":host {\n      display: flex;\n      flex-direction: column;\n      height: 100%;\n    }\n\n    .page-header {\n      display: flex;\n      align-items: center;\n      padding: 1rem 1.5rem;\n      background: var(--bg-elevated);\n      border-bottom: 1px solid var(--border-color);\n      min-height: 56px;\n      gap: 1rem;\n    }\n\n    .page-title {\n      margin: 0;\n      font-size: 1.25rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .page-header-actions {\n      margin-left: auto;\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n    }\n\n    .page-content {\n      flex: 1;\n      overflow: auto;\n      padding: 1.5rem;\n    }"
+},
+  {
+  "id": "page-toolbar",
+  "name": "AppPageToolbar",
+  "selector": "app-page-toolbar",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "actions",
+      "type": "string",
+      "default": "[]"
+    }
+  ],
+  "template": "<div class=\"toolbar\">\n        <div class=\"toolbar-title-area\">\n          <h2 class=\"toolbar-title\">${this.title}</h2>\n          <slot name=\"subtitle\"></slot>\n        </div>\n        <div class=\"toolbar-actions\">\n          ${parsedActions.map(\n            (action) => html",
+  "css": ":host {\n      display: block;\n    }\n\n    .toolbar {\n      display: flex;\n      align-items: center;\n      padding: 1rem 1.5rem;\n      background: var(--bg-elevated);\n      border-bottom: 1px solid var(--border-color);\n      gap: 1rem;\n      flex-wrap: wrap;\n    }\n\n    .toolbar-title-area {\n      flex: 1;\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n      min-width: 200px;\n    }\n\n    .toolbar-title {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .toolbar-subtitle {\n      margin: 0;\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n    }\n\n    .toolbar-actions {\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n      flex-wrap: wrap;\n    }\n\n    .action-btn {\n      display: inline-flex;\n      align-items: center;\n      gap: 0.5rem;\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background: var(--bg-elevated);\n      color: var(--text-primary);\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n      font-size: 0.875rem;\n    }\n\n    .action-btn:hover {\n      background: var(--bg-hover);\n    }\n\n    .action-btn.primary {\n      border-color: var(--accent);\n      background: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .action-btn.primary:hover {\n      background: var(--accent-hover);\n      border-color: var(--accent-hover);\n    }\n\n    .action-btn.danger {\n      border-color: var(--error);\n      background: var(--error);\n      color: var(--text-on-error);\n    }\n\n    .action-btn.ghost {\n      border-color: transparent;\n      background: transparent;\n      color: var(--text-secondary);\n    }\n\n    .action-btn.ghost:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .action-icon {\n      font-size: 1.125rem;\n    }"
+},
+  {
+  "id": "pagination",
+  "name": "AppPagination",
+  "selector": "app-pagination",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "page",
+      "type": "number",
+      "default": 1
+    },
+    {
+      "name": "total",
+      "type": "number",
+      "default": 1
+    },
+    {
+      "name": "pageSize",
+      "type": "number",
+      "default": 10
+    }
+  ],
+  "template": "",
+  "css": ":host {\n      display: block;\n    }\n\n    .pagination {\n      display: inline-flex;\n      align-items: center;\n      gap: 0.25rem;\n    }\n\n    button {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      min-width: 2rem;\n      height: 2rem;\n      padding: 0 0.5rem;\n      border: 1px solid var(--border-color);\n      border-radius: 0.375rem;\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      cursor: pointer;\n      transition: background-color 0.15s;\n    }\n\n    button:hover:not(:disabled) {\n      background-color: var(--bg-hover);\n    }\n\n    button:disabled {\n      opacity: 0.4;\n      cursor: not-allowed;\n    }\n\n    button.active {\n      background-color: var(--accent);\n      border-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .ellipsis {\n      padding: 0 0.25rem;\n      color: var(--text-secondary);\n    }"
+},
+  {
+  "id": "progress-bar",
+  "name": "AppProgressBar",
+  "selector": "app-progress-bar",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "value",
+      "type": "number",
+      "default": 0
+    },
+    {
+      "name": "max",
+      "type": "number",
+      "default": 100
+    }
+  ],
+  "template": "<div class=\"progress-container\">\n        <div\n          class=\"progress-fill ${this._getFillClass()}\"\n          style=\"width: ${this._percentage}%\"\n        ></div>\n      </div>",
+  "css": ":host {\n      display: block;\n    }\n\n    .progress-container {\n      width: 100%;\n      height: 0.5rem;\n      background-color: var(--bg-elevated);\n      border-radius: 0.25rem;\n      overflow: hidden;\n      border: 1px solid var(--border-color);\n    }\n\n    .progress-fill {\n      height: 100%;\n      border-radius: 0.25rem;\n      transition: width 0.3s ease;\n    }\n\n    .progress-fill.low {\n      background-color: var(--warning);\n    }\n\n    .progress-fill.medium {\n      background-color: var(--accent);\n    }\n\n    .progress-fill.high {\n      background-color: var(--success);\n    }"
+},
+  {
+  "id": "properties-panel",
+  "name": "AppPropertiesPanel",
+  "selector": "app-properties-panel",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "element",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<div class=\"panel-header\">\n        <div class=\"panel-title\">Properties</div>\n        ${this._elementId\n          ? html`<div class=\"element-id\">${this._elementId}</div>",
+  "css": ":host {\n      display: block;\n      background-color: var(--bg-elevated);\n      border-left: 1px solid var(--border-color);\n      height: 100%;\n      overflow-y: auto;\n    }\n\n    .panel-header {\n      padding: 1rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .panel-title {\n      font-size: 0.875rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      margin-bottom: 0.25rem;\n    }\n\n    .element-id {\n      font-size: 0.75rem;\n      color: var(--text-muted);\n      font-family: monospace;\n    }\n\n    .properties-section {\n      padding: 1rem;\n    }\n\n    .section-title {\n      font-size: 0.75rem;\n      font-weight: 600;\n      color: var(--text-secondary);\n      text-transform: uppercase;\n      letter-spacing: 0.05em;\n      margin-bottom: 0.75rem;\n    }\n\n    .property-row {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n      margin-bottom: 0.75rem;\n    }\n\n    .property-label {\n      font-size: 0.875rem;\n      color: var(--text-primary);\n    }\n\n    .property-input {\n      padding: 0.5rem 0.75rem;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-primary);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n    }\n\n    .property-input:focus {\n      outline: none;\n      border-color: var(--accent);\n    }\n\n    .property-input[type=\"checkbox\"] {\n      width: 1rem;\n      height: 1rem;\n    }\n\n    select.property-input {\n      cursor: pointer;\n    }\n\n    .empty-state {\n      padding: 2rem 1rem;\n      text-align: center;\n      color: var(--text-muted);\n      font-size: 0.875rem;\n    }"
+},
+  {
+  "id": "radio",
+  "name": "AppRadio",
+  "selector": "app-radio",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "name",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "checked",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "<label>\n        <input\n          type=\"radio\"\n          name=\"${this.name}\"\n          value=\"${this.value}\"\n          .checked=\"${this.checked}\"\n          ?disabled=\"${this.disabled}\"\n          @change=\"${this._handleChange}\"\n        />\n        <span class=\"radio-label\"><slot></slot></span>\n      </label>",
+  "css": ":host {\n      display: inline-flex;\n      align-items: center;\n    }\n\n    label {\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n      cursor: pointer;\n    }\n\n    input[type=\"radio\"] {\n      width: 1rem;\n      height: 1rem;\n      accent-color: var(--accent);\n      cursor: pointer;\n    }\n\n    input[type=\"radio\"]:disabled {\n      cursor: not-allowed;\n      opacity: 0.5;\n    }\n\n    .radio-label {\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      user-select: none;\n    }\n\n    :host([disabled]) .radio-label {\n      color: var(--text-secondary);\n      cursor: not-allowed;\n    }"
+},
+  {
+  "id": "segment-selector",
+  "name": "AppSegmentSelector",
+  "selector": "app-segment-selector",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "options",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "selected",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<div class=\"segment-container\">\n        ${options.map(\n          (opt) => html",
+  "css": ":host {\n      display: inline-flex;\n    }\n\n    .segment-container {\n      display: inline-flex;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      overflow: hidden;\n      background-color: var(--bg-elevated);\n    }\n\n    .segment {\n      padding: 0.5rem 1rem;\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-secondary);\n      cursor: pointer;\n      transition: background-color 0.15s, color 0.15s;\n      border-right: 1px solid var(--border-color);\n    }\n\n    .segment:last-child {\n      border-right: none;\n    }\n\n    .segment:hover:not(.selected) {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .segment.selected {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n    }"
+},
+  {
+  "id": "select",
+  "name": "AppSelect",
+  "selector": "app-select",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "options",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": "Select an option"
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "<select\n        .value=\"${this.value}\"\n        ?disabled=\"${this.disabled}\"\n        placeholder=\"${this.placeholder}\"\n        @change=\"${this._handleChange}\"\n      >\n        <option value=\"\" disabled selected hidden>${this.placeholder}</option>\n        ${parsedOptions.map(\n          (option) => html`<option value=\"${option}\">${option}</option>`,\n        )}\n      </select>",
+  "css": ":host {\n      display: inline-flex;\n    }\n\n    select {\n      display: inline-flex;\n      align-items: center;\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      font-size: 1rem;\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n      min-width: 150px;\n    }\n\n    select:hover:not(:disabled) {\n      background-color: var(--bg-hover);\n    }\n\n    select:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n\n    select:focus {\n      outline: none;\n      border-color: var(--accent);\n    }"
+},
+  {
+  "id": "sidebar",
+  "name": "AppSidebar",
+  "selector": "app-sidebar",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "collapsed",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "items",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "width",
+      "type": "number",
+      "default": 240
+    },
+    {
+      "name": "collapsedWidth",
+      "type": "number",
+      "default": 64
+    }
+  ],
+  "template": "<li>\n        <div\n          class=\"nav-item ${depth > 0 ? \"nav-item-child\" : \"\"}\"\n          @click=\"${() => this._handleItemClick(item)}\"\n        >\n          ${item.icon\n            ? html`<span class=\"nav-item-icon\">${item.icon}</span>",
+  "css": ":host {\n      display: block;\n    }\n\n    aside {\n      display: flex;\n      flex-direction: column;\n      width: var(--sidebar-width, 240px);\n      min-width: var(--sidebar-width, 240px);\n      height: 100%;\n      background: var(--bg-elevated);\n      border-right: 1px solid var(--border-color);\n      transition: width 0.2s, min-width 0.2s;\n      overflow: hidden;\n    }\n\n    aside.collapsed {\n      width: 64px;\n      min-width: 64px;\n    }\n\n    .sidebar-header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1rem;\n      border-bottom: 1px solid var(--border-color);\n      min-height: 56px;\n    }\n\n    .collapse-btn {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 32px;\n      height: 32px;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background: transparent;\n      color: var(--text-secondary);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n      font-size: 1.25rem;\n    }\n\n    .collapse-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    nav {\n      flex: 1;\n      overflow-y: auto;\n      overflow-x: hidden;\n      padding: 0.5rem;\n    }\n\n    .nav-section {\n      margin-bottom: 0.5rem;\n    }\n\n    .nav-section-title {\n      padding: 0.5rem 0.75rem;\n      font-size: 0.75rem;\n      font-weight: 600;\n      color: var(--text-secondary);\n      text-transform: uppercase;\n      letter-spacing: 0.05em;\n    }\n\n    ul {\n      list-style: none;\n      margin: 0;\n      padding: 0;\n    }\n\n    li {\n      margin: 0;\n    }\n\n    .nav-item {\n      display: flex;\n      align-items: center;\n      gap: 0.75rem;\n      padding: 0.625rem 0.75rem;\n      border-radius: 0.5rem;\n      color: var(--text-secondary);\n      text-decoration: none;\n      cursor: pointer;\n      transition: all 0.15s;\n      white-space: nowrap;\n      overflow: hidden;\n    }\n\n    .nav-item:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .nav-item.active {\n      background: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .nav-item-icon {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 20px;\n      height: 20px;\n      font-size: 1.25rem;\n      flex-shrink: 0;\n    }\n\n    .nav-item-label {\n      flex: 1;\n      overflow: hidden;\n      text-overflow: ellipsis;\n    }\n\n    .nav-item-children {\n      margin-left: 1.25rem;\n      border-left: 1px solid var(--border-color);\n      padding-left: 0.5rem;\n    }"
+},
+  {
+  "id": "slider",
+  "name": "AppSlider",
+  "selector": "app-slider",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "min",
+      "type": "number",
+      "default": 0
+    },
+    {
+      "name": "max",
+      "type": "number",
+      "default": 100
+    },
+    {
+      "name": "value",
+      "type": "number",
+      "default": 50
+    },
+    {
+      "name": "step",
+      "type": "number",
+      "default": 1
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "<div class=\"slider-wrapper\">\n        <input\n          type=\"range\"\n          .value=\"${String(this.value)}\"\n          min=\"${String(this.min)}\"\n          max=\"${String(this.max)}\"\n          step=\"${String(this.step)}\"\n          ?disabled=\"${this.disabled}\"\n          @input=\"${this._handleInput}\"\n        />\n      </div>",
+  "css": ":host {\n      display: block;\n      width: 100%;\n    }\n\n    .slider-wrapper {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .slider-label {\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-primary);\n    }\n\n    input[type=\"range\"] {\n      width: 100%;\n      height: 0.5rem;\n      border-radius: 0.25rem;\n      background-color: var(--border-color);\n      outline: none;\n      cursor: pointer;\n      -webkit-appearance: none;\n      appearance: none;\n    }\n\n    input[type=\"range\"]::-webkit-slider-thumb {\n      -webkit-appearance: none;\n      appearance: none;\n      width: 1.25rem;\n      height: 1.25rem;\n      border-radius: 50%;\n      background-color: var(--accent);\n      cursor: pointer;\n      border: none;\n      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n      transition: transform 0.1s;\n    }\n\n    input[type=\"range\"]::-webkit-slider-thumb:hover {\n      transform: scale(1.1);\n    }\n\n    input[type=\"range\"]::-moz-range-thumb {\n      width: 1.25rem;\n      height: 1.25rem;\n      border-radius: 50%;\n      background-color: var(--accent);\n      cursor: pointer;\n      border: none;\n      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n    }\n\n    input[type=\"range\"]:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n\n    input[type=\"range\"]:focus {\n      outline: none;\n    }\n\n    input[type=\"range\"]:focus::-webkit-slider-thumb {\n      box-shadow: 0 0 0 2px var(--accent);\n    }\n\n    .slider-value {\n      font-size: 0.75rem;\n      color: var(--text-secondary);\n      text-align: right;\n    }"
+},
+  {
+  "id": "split-view",
+  "name": "AppSplitView",
+  "selector": "app-split-view",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "split",
+      "type": "number",
+      "default": 50
+    },
+    {
+      "name": "minFirst",
+      "type": "number",
+      "default": 20
+    },
+    {
+      "name": "minSecond",
+      "type": "number",
+      "default": 20
+    }
+  ],
+  "template": "<div class=\"split-container ${this.direction}\">\n        <div\n          class=\"split-pane first\"\n          style=\"${firstSize}: ${this.split}%; flex-grow: 0;\"\n        >\n          <slot name=\"first\"></slot>\n        </div>\n        <div\n          class=\"split-divider ${this._isDragging ? \"dragging\" : \"\"}\"\n          @mousedown=\"${this._onDividerMouseDown}\"\n        ></div>\n        <div class=\"split-pane second\" style=\"${secondSize}: auto; flex: 1;\">\n          <slot name=\"second\"></slot>\n        </div>\n      </div>",
+  "css": ":host {\n      display: block;\n      height: 100%;\n    }\n\n    .split-container {\n      display: flex;\n      height: 100%;\n      width: 100%;\n      overflow: hidden;\n    }\n\n    .split-container.vertical {\n      flex-direction: column;\n    }\n\n    .split-pane {\n      overflow: auto;\n      min-width: 0;\n      min-height: 0;\n    }\n\n    .split-pane.first {\n      flex-shrink: 0;\n    }\n\n    .split-container.horizontal .split-pane.first {\n      height: 100%;\n    }\n\n    .split-container.vertical .split-pane.first {\n      width: 100%;\n    }\n\n    .split-divider {\n      flex-shrink: 0;\n      background: var(--border-color);\n      transition: background 0.15s;\n      position: relative;\n      z-index: 1;\n    }\n\n    .split-container.horizontal .split-divider {\n      width: 6px;\n      cursor: col-resize;\n    }\n\n    .split-container.vertical .split-divider {\n      height: 6px;\n      cursor: row-resize;\n    }\n\n    .split-divider:hover,\n    .split-divider.dragging {\n      background: var(--accent);\n    }\n\n    .split-divider::after {\n      content: \"\";\n      position: absolute;\n      background: transparent;\n    }\n\n    .horizontal .split-divider::after {\n      top: 0;\n      bottom: 0;\n      left: -4px;\n      right: -4px;\n    }\n\n    .vertical .split-divider::after {\n      left: 0;\n      right: 0;\n      top: -4px;\n      bottom: -4px;\n    }"
+},
+  {
+  "id": "stats-card",
+  "name": "AppStatsCard",
+  "selector": "app-stats-card",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "icon",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<div class=\"stats-card\">\n        ${this.icon\n          ? html`<div class=\"stats-icon\">${this.icon}</div>",
+  "css": ":host {\n      display: block;\n    }\n\n    .stats-card {\n      display: flex;\n      align-items: center;\n      gap: 1rem;\n      padding: 1rem;\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n    }\n\n    .stats-icon {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 3rem;\n      height: 3rem;\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n      border-radius: 0.5rem;\n      font-size: 1.5rem;\n    }\n\n    .stats-info {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .stats-value {\n      font-size: 1.5rem;\n      font-weight: 700;\n      color: var(--text-primary);\n      line-height: 1;\n    }\n\n    .stats-label {\n      font-size: 0.875rem;\n      color: var(--text-muted);\n      font-weight: 500;\n    }"
+},
+  {
+  "id": "switch",
+  "name": "AppSwitch",
+  "selector": "app-switch",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "checked",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "<label class=\"switch-container\">\n        <input\n          type=\"checkbox\"\n          class=\"switch-input\"\n          .checked=\"${this.checked}\"\n          ?disabled=\"${this.disabled}\"\n          @change=\"${this._handleChange}\"\n          role=\"switch\"\n          aria-checked=\"${this.checked}\"\n        />\n        <span class=\"switch-slider\"></span>\n      </label>",
+  "css": ":host {\n      display: inline-flex;\n      align-items: center;\n    }\n\n    .switch-container {\n      position: relative;\n      display: inline-flex;\n      align-items: center;\n      cursor: pointer;\n    }\n\n    .switch-input {\n      position: absolute;\n      opacity: 0;\n      width: 0;\n      height: 0;\n    }\n\n    .switch-slider {\n      position: relative;\n      width: 2.75rem;\n      height: 1.5rem;\n      background-color: var(--border-color);\n      border-radius: 1rem;\n      transition: background-color 0.2s;\n    }\n\n    .switch-slider::before {\n      content: \"\";\n      position: absolute;\n      top: 0.125rem;\n      left: 0.125rem;\n      width: 1.25rem;\n      height: 1.25rem;\n      background-color: white;\n      border-radius: 50%;\n      transition: transform 0.2s;\n      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n    }\n\n    .switch-input:checked + .switch-slider {\n      background-color: var(--accent);\n    }\n\n    .switch-input:checked + .switch-slider::before {\n      transform: translateX(1.25rem);\n    }\n\n    .switch-input:disabled + .switch-slider {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n\n    .switch-input:focus + .switch-slider {\n      outline: 2px solid var(--accent);\n      outline-offset: 2px;\n    }"
+},
+  {
+  "id": "table-view",
+  "name": "AppTableView",
+  "selector": "app-table-view",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "columns",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "data",
+      "type": "string",
+      "default": "[]"
+    }
+  ],
+  "template": "<table>\n        <thead>\n          <tr>\n            ${cols.map((col) => html`<th>${col.name}</th>`)}\n          </tr>\n        </thead>\n        <tbody>\n          ${rows.map(\n            (row) => html",
+  "css": ":host {\n      display: block;\n      overflow-x: auto;\n    }\n\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      font-size: 0.875rem;\n    }\n\n    th {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      background-color: var(--bg-secondary);\n      color: var(--text-primary);\n      font-weight: 600;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    td {\n      padding: 0.75rem 1rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    tr:hover td {\n      background-color: var(--bg-hover);\n    }"
+},
+  {
+  "id": "tabs",
+  "name": "AppTabs",
+  "selector": "app-tabs",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "tabs",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "activeTab",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<div class=\"tabs\">\n        ${tabs.map(\n          (tab) => html",
+  "css": ":host {\n      display: block;\n    }\n\n    .tabs {\n      display: flex;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .tab {\n      padding: 0.75rem 1.25rem;\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-secondary);\n      cursor: pointer;\n      border-bottom: 2px solid transparent;\n      margin-bottom: -1px;\n      transition: color 0.15s, border-color 0.15s;\n    }\n\n    .tab:hover {\n      color: var(--text-primary);\n    }\n\n    .tab.active {\n      color: var(--accent);\n      border-bottom-color: var(--accent);\n    }"
+},
+  {
+  "id": "textarea",
+  "name": "AppTextarea",
+  "selector": "app-textarea",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "value",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "rows",
+      "type": "number",
+      "default": 3
+    },
+    {
+      "name": "disabled",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "<textarea\n        .value=\"${this.value}\"\n        placeholder=\"${this.placeholder}\"\n        rows=\"${this.rows}\"\n        ?disabled=\"${this.disabled}\"\n        @input=\"${this._handleInput}\"\n      ></textarea>",
+  "css": ":host {\n      display: block;\n    }\n\n    .textarea-wrapper {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .textarea-label {\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-primary);\n    }\n\n    textarea {\n      width: 100%;\n      padding: 0.5rem 0.75rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      box-sizing: border-box;\n      transition: all 0.15s;\n      outline: none;\n      resize: vertical;\n      font-family: inherit;\n      font-size: 0.875rem;\n      line-height: 1.5;\n    }\n\n    textarea::placeholder {\n      color: var(--text-muted);\n    }\n\n    textarea:focus {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    textarea:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n      background-color: var(--bg-tertiary);\n    }"
+},
+  {
+  "id": "tooltip",
+  "name": "AppTooltip",
+  "selector": "app-tooltip",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "content",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "position",
+      "type": "string",
+      "default": "top"
+    },
+    {
+      "name": "show",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "<div class=\"app-tooltip-wrapper\">\n        <slot></slot>\n        ${this.show\n          ? html",
+  "css": ":host {\n      display: inline-block;\n    }\n\n    .app-tooltip-wrapper {\n      position: relative;\n      display: inline-block;\n    }\n\n    .app-tooltip {\n      position: absolute;\n      z-index: 50;\n      padding: 0.25rem 0.5rem;\n      font-size: 0.75rem;\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      border-radius: 0.25rem;\n      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);\n      white-space: nowrap;\n    }\n\n    .app-tooltip-top {\n      bottom: 100%;\n      left: 50%;\n      transform: translateX(-50%);\n      margin-bottom: 0.5rem;\n    }\n\n    .app-tooltip-bottom {\n      top: 100%;\n      left: 50%;\n      transform: translateX(-50%);\n      margin-top: 0.5rem;\n    }\n\n    .app-tooltip-left {\n      right: 100%;\n      top: 50%;\n      transform: translateY(-50%);\n      margin-right: 0.5rem;\n    }\n\n    .app-tooltip-right {\n      left: 100%;\n      top: 50%;\n      transform: translateY(-50%);\n      margin-left: 0.5rem;\n    }"
+},
 ];
 
+// Layout Components
 export const layoutComponents: SharedComponentDef[] = [
   {
-    id: "split-view",
-    name: "Split View",
-    selector: "app-split-view",
-    packageType: "layout",
-    category: "layout",
-    props: [
-      {
-        name: "direction",
-        type: "select",
-        default: "horizontal",
-        options: ["horizontal", "vertical"],
-      },
-      { name: "split", type: "number", default: 50 },
-    ],
-    template: "<div><div>Left</div><div>Right</div></div>",
-    css: ":host { display: block; }",
-  },
+  "id": "canvas-toolbar",
+  "name": "CanvasToolbar",
+  "selector": "app-canvas-toolbar",
+  "packageType": "layout",
+  "category": "forms",
+  "props": [
+    {
+      "name": "zoomLevel",
+      "type": "number",
+      "default": 100
+    },
+    {
+      "name": "showGrid",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "canUndo",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "canRedo",
+      "type": "boolean",
+      "default": true
+    }
+  ],
+  "template": "<div class=\"toolbar-group\">\n        <button\n          class=\"toolbar-btn\"\n          @click=\"${() => this._emit(\"undo\")}\"\n          ?disabled=\"${!this.canUndo}\"\n          title=\"Undo\"\n        >\n          <mat-icon>undo</mat-icon>\n        </button>\n        <button\n          class=\"toolbar-btn\"\n          @click=\"${() => this._emit(\"redo\")}\"\n          ?disabled=\"${!this.canRedo}\"\n          title=\"Redo\"\n        >\n          <mat-icon>redo</mat-icon>\n        </button>\n      </div>\n      <div class=\"toolbar-group\">\n        <button\n          class=\"toolbar-btn\"\n          @click=\"${() => this._emit(\"zoom-out\")}\"\n          title=\"Zoom Out\"\n        >\n          <mat-icon>remove</mat-icon>\n        </button>\n        <span class=\"zoom-label\">${this.zoomLevel}%</span>\n        <button\n          class=\"toolbar-btn\"\n          @click=\"${() => this._emit(\"zoom-in\")}\"\n          title=\"Zoom In\"\n        >\n          <mat-icon>add</mat-icon>\n        </button>\n        <button\n          class=\"toolbar-btn\"\n          @click=\"${() => this._emit(\"zoom-reset\")}\"\n          title=\"Reset Zoom\"\n        >\n          <mat-icon>fit_screen</mat-icon>\n        </button>\n      </div>\n      <div class=\"toolbar-group\">\n        <button\n          class=\"toolbar-btn ${this.showGrid ? \"active\" : \"\"}\"\n          @click=\"${() => this._emit(\"toggle-grid\")}\"\n          title=\"Toggle Grid\"\n        >\n          <mat-icon>grid_on</mat-icon>\n        </button>\n      </div>",
+  "css": ":host {\n      display: inline-flex;\n      align-items: center;\n      gap: 4px;\n    }\n    .toolbar-group {\n      display: flex;\n      align-items: center;\n      gap: 2px;\n      padding: 0 4px;\n    }\n    .toolbar-group:not(:last-child) {\n      border-right: 1px solid var(--border-color);\n    }\n    .toolbar-btn {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 32px;\n      height: 32px;\n      border: none;\n      background: transparent;\n      border-radius: 6px;\n      cursor: pointer;\n      color: var(--text-secondary);\n      transition:\n        background-color 0.15s ease,\n        color 0.15s ease;\n    }\n    .toolbar-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n    .toolbar-btn:active {\n      background: var(--bg-tertiary);\n    }\n    .toolbar-btn.active {\n      background: var(--accent);\n      color: white;\n    }\n    .toolbar-btn[disabled] {\n      opacity: 0.4;\n      cursor: not-allowed;\n    }\n    .zoom-label {\n      font-size: 12px;\n      color: var(--text-secondary);\n      min-width: 48px;\n      text-align: center;\n    }\n    mat-icon {\n      font-size: 20px;\n      width: 20px;\n      height: 20px;\n    }"
+},
   {
-    id: "page-container",
-    name: "Page Container",
-    selector: "app-page-container",
-    packageType: "layout",
-    category: "layout",
-    props: [{ name: "title", type: "string", default: "" }],
-    template: "<div><h1>Page</h1><ng-content></ng-content></div>",
-    css: ":host { display: block; }",
-  },
-  {
-    id: "page-toolbar",
-    name: "Page Toolbar",
-    selector: "app-page-toolbar",
-    packageType: "layout",
-    category: "layout",
-    props: [{ name: "title", type: "string", default: "" }],
-    template: "<div><span>Toolbar</span></div>",
-    css: ":host { display: block; }",
-  },
-  {
-    id: "header",
-    name: "Header",
-    selector: "app-header",
-    packageType: "layout",
-    category: "layout",
-    props: [
-      { name: "title", type: "string", default: "" },
-      { name: "breadcrumbs", type: "string", default: "" },
-    ],
-    template: "<header><nav>Header</nav></header>",
-    css: ":host { display: block; }",
-  },
-  {
-    id: "sidebar",
-    name: "Sidebar",
-    selector: "app-sidebar",
-    packageType: "layout",
-    category: "layout",
-    props: [
-      { name: "collapsed", type: "boolean", default: false },
-      { name: "items", type: "string", default: "[]" },
-    ],
-    template: "<nav><ul><li>Item</li></ul></nav>",
-    css: ":host { display: block; }",
-  },
-  {
-    id: "footer",
-    name: "Footer",
-    selector: "app-footer",
-    packageType: "layout",
-    category: "layout",
-    props: [{ name: "text", type: "string", default: "" }],
-    template: "<footer><span>Footer</span></footer>",
-    css: ":host { display: block; }",
-  },
-  {
-    id: "main-editor",
-    name: "Main Editor",
-    selector: "app-main-editor",
-    packageType: "layout",
-    category: "layout",
-    props: [],
-    template: "<div><span>Canvas</span></div>",
-    css: ":host { display: block; }",
-  },
-  {
-    id: "bottom-panel",
-    name: "Bottom Panel",
-    selector: "app-bottom-panel",
-    packageType: "layout",
-    category: "layout",
-    props: [
-      { name: "tabs", type: "string", default: "[]" },
-      { name: "activeTab", type: "string", default: "pages" },
-    ],
-    template: "<div><span>Bottom Panel</span></div>",
-    css: ":host { display: block; }",
-  },
-  {
-    id: "designer-sidebar",
-    name: "Designer Sidebar",
-    selector: "app-designer-sidebar",
-    packageType: "layout",
-    category: "designer",
-    props: [
-      {
-        name: "position",
-        type: "select",
-        default: "left",
-        options: ["left", "right"],
-      },
-      { name: "collapsed", type: "boolean", default: false },
-      { name: "header", type: "string", default: "" },
-    ],
-    template: '<aside><slot name="content"></slot></aside>',
-    css: ":host { display: block; }",
-  },
-  {
-    id: "component-palette",
-    name: "Component Palette",
-    selector: "app-component-palette",
-    packageType: "layout",
-    category: "designer",
-    props: [
-      { name: "selectedCategory", type: "string", default: "all" },
-      { name: "searchable", type: "boolean", default: true },
-    ],
-    template: "<div><span>Palette</span></div>",
-    css: ":host { display: block; }",
-  },
-  {
-    id: "canvas",
-    name: "Canvas",
-    selector: "app-canvas",
-    packageType: "layout",
-    category: "designer",
-    props: [
-      { name: "gridColumns", type: "number", default: 12 },
-      { name: "showGrid", type: "boolean", default: true },
-      { name: "selectedId", type: "string", default: "" },
-    ],
-    template: "<div><span>Canvas</span></div>",
-    css: ":host { display: block; }",
-  },
-  {
-    id: "canvas-toolbar",
-    name: "Canvas Toolbar",
-    selector: "app-canvas-toolbar",
-    packageType: "layout",
-    category: "designer",
-    props: [],
-    template: "<div></div>",
-    css: ":host { display: inline-flex; }",
-  },
+  "id": "designer-sidebar",
+  "name": "DesignerSidebar",
+  "selector": "app-designer-sidebar",
+  "packageType": "layout",
+  "category": "forms",
+  "props": [
+    {
+      "name": "collapsed",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "header",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<div class=\"sidebar-wrapper\">\n        <aside class=\"designer-sidebar ${this.collapsed ? \"collapsed\" : \"\"}\">\n          <div class=\"sidebar-header\">\n            <span class=\"sidebar-header-title\">${this.header}</span>\n          </div>\n          <div class=\"sidebar-content\">\n            <slot name=\"content\"></slot>\n          </div>\n          <div class=\"sidebar-footer\">\n            <slot name=\"footer\"></slot>\n          </div>\n        </aside>\n        <div class=\"sidebar-toggle-container\">\n          <button class=\"sidebar-toggle\" @click=${this._toggleCollapse}>\n            ${this.collapsed\n              ? this.position === \"left\"\n                ? \"▶\"\n                : \"◀\"\n              : this.position === \"left\"\n                ? \"◀\"\n                : \"▶\"}\n          </button>\n        </div>\n      </div>",
+  "css": ":host {\n      display: block;\n      height: 100%;\n    }\n\n    .sidebar-wrapper {\n      position: relative;\n      height: 100%;\n      display: flex;\n    }\n\n    .sidebar-toggle-container {\n      position: absolute;\n      top: 50%;\n      transform: translateY(-50%);\n      z-index: 10;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 24px;\n      height: 48px;\n      background: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 4px;\n      transition: all var(--transition-fast, 150ms);\n    }\n\n    .sidebar-toggle-container:hover {\n      background: var(--bg-hover);\n    }\n\n    :host([position=\"left\"]) .sidebar-toggle-container {\n      right: -12px;\n    }\n\n    :host([position=\"right\"]) .sidebar-toggle-container {\n      left: -12px;\n      right: auto;\n    }\n\n    .sidebar-toggle {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 24px;\n      height: 28px;\n      padding: 0;\n      background: transparent;\n      border: none;\n      border-radius: 4px;\n      color: var(--text-secondary);\n      cursor: pointer;\n      transition: all var(--transition-fast, 150ms);\n    }\n\n    .sidebar-toggle:hover {\n      color: var(--text-primary);\n    }\n\n    .designer-sidebar {\n      display: flex;\n      flex-direction: column;\n      height: 100%;\n      background: var(--bg-secondary);\n      border-right: 1px solid var(--border-color);\n      transition:\n        width var(--transition-normal, 200ms) ease,\n        opacity var(--transition-normal, 200ms) ease;\n      overflow: hidden;\n      flex-shrink: 0;\n    }\n\n    :host([position=\"right\"]) .designer-sidebar {\n      border-right: none;\n      border-left: 1px solid var(--border-color);\n    }\n\n    .designer-sidebar.collapsed {\n      width: 0;\n      visibility: hidden;\n    }\n\n    .sidebar-header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 0.75rem 1rem;\n      border-bottom: 1px solid var(--border-color);\n      min-height: 48px;\n      background: var(--bg-secondary);\n      flex-shrink: 0;\n    }\n\n    :host([position=\"right\"]) .sidebar-header {\n      flex-direction: row-reverse;\n    }\n\n    .sidebar-header-title {\n      font-size: 0.875rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      white-space: nowrap;\n      overflow: hidden;\n      text-overflow: ellipsis;\n    }\n\n    .sidebar-content {\n      flex: 1;\n      overflow: auto;\n      min-height: 0;\n    }\n\n    .sidebar-footer {\n      padding: 0.75rem 1rem;\n      border-top: 1px solid var(--border-color);\n      flex-shrink: 0;\n    }"
+},
 ];
 
+// Feedback Components
 export const feedbackComponents: SharedComponentDef[] = [
   {
-    id: "dialog",
-    name: "Dialog",
-    selector: "app-dialog",
-    packageType: "feedback",
-    category: "feedback",
-    props: [
-      { name: "open", type: "boolean", default: false },
-      { name: "title", type: "string", default: "" },
-      {
-        name: "size",
-        type: "select",
-        default: "md",
-        options: ["sm", "md", "lg"],
-      },
-    ],
-    template: "<div><h2>Dialog</h2><p>Content</p></div>",
-    css: ":host { display: block; }",
-  },
+  "id": "confirm-dialog",
+  "name": "AppConfirmDialog",
+  "selector": "app-confirm-dialog",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "message",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "confirmText",
+      "type": "string",
+      "default": "Confirm"
+    },
+    {
+      "name": "cancelText",
+      "type": "string",
+      "default": "Cancel"
+    }
+  ],
+  "template": "",
+  "css": ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.6);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .dialog {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 1rem;\n      width: 400px;\n      max-width: 90vw;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1.25rem 1.5rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    header h2 {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem;\n      border-radius: 0.25rem;\n      color: var(--text-secondary);\n      font-size: 1.25rem;\n      line-height: 1;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.5rem;\n      color: var(--text-secondary);\n      font-size: 0.9375rem;\n      line-height: 1.5;\n    }\n\n    footer {\n      display: flex;\n      gap: 0.75rem;\n      padding: 1rem 1.5rem;\n      border-top: 1px solid var(--border-color);\n      justify-content: flex-end;\n    }\n\n    button {\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid;\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n    }\n\n    .cancel-btn {\n      background: transparent;\n      border-color: var(--border-color);\n      color: var(--text-secondary);\n    }\n\n    .cancel-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .confirm-btn {\n      background: var(--accent);\n      border-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .confirm-btn:hover {\n      opacity: 0.9;\n    }\n\n    .danger-btn {\n      background: var(--error);\n      border-color: var(--error);\n      color: var(--text-on-error);\n    }\n\n    .danger-btn:hover {\n      opacity: 0.9;\n    }"
+},
   {
-    id: "confirm-dialog",
-    name: "Confirm Dialog",
-    selector: "app-confirm-dialog",
-    packageType: "feedback",
-    category: "feedback",
-    props: [
-      { name: "open", type: "boolean", default: false },
-      { name: "title", type: "string", default: "Confirm" },
-      { name: "message", type: "string", default: "Are you sure?" },
-    ],
-    template: "<div><h2>Confirm</h2><p>Message</p></div>",
-    css: ":host { display: block; }",
-  },
+  "id": "dialog",
+  "name": "AppDialog",
+  "selector": "app-dialog",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "size",
+      "type": "string",
+      "default": "md"
+    },
+    {
+      "name": "showHeader",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "showFooter",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "template": "",
+  "css": ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.6);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .dialog {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 1rem;\n      min-width: 360px;\n      max-height: 90vh;\n      display: flex;\n      flex-direction: column;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);\n    }\n\n    .dialog-sm {\n      width: 360px;\n    }\n\n    .dialog-md {\n      width: 520px;\n    }\n\n    .dialog-lg {\n      width: 720px;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1.25rem 1.5rem;\n      border-bottom: 2px solid var(--border-color);\n      background: var(--bg-elevated);\n      border-radius: 1rem 1rem 0 0;\n    }\n\n    header h2 {\n      margin: 0;\n      font-size: 1.25rem;\n      font-weight: 700;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem 0.5rem;\n      border-radius: 0.375rem;\n      color: var(--text-secondary);\n      font-size: 1.5rem;\n      line-height: 1;\n      font-weight: 300;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.5rem;\n      overflow-y: auto;\n      color: var(--text-primary);\n    }"
+},
   {
-    id: "toast",
-    name: "Toast",
-    selector: "app-toast",
-    packageType: "feedback",
-    category: "feedback",
-    props: [
-      { name: "message", type: "string", default: "" },
-      {
-        name: "type",
-        type: "select",
-        default: "info",
-        options: ["info", "success", "warning", "error"],
-      },
-      { name: "duration", type: "number", default: 3000 },
-    ],
-    template: "<div>Toast</div>",
-    css: ":host { display: block; }",
-  },
+  "id": "modal",
+  "name": "AppModal",
+  "selector": "app-modal",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "size",
+      "type": "string",
+      "default": "md"
+    }
+  ],
+  "template": "",
+  "css": ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.5);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .modal {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.75rem;\n      min-width: 320px;\n      max-height: 90vh;\n      display: flex;\n      flex-direction: column;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);\n    }\n\n    .modal-sm {\n      width: 320px;\n    }\n\n    .modal-md {\n      width: 480px;\n    }\n\n    .modal-lg {\n      width: 640px;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1rem 1.25rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    header h3 {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem;\n      border-radius: 0.25rem;\n      color: var(--text-secondary);\n      font-size: 1.25rem;\n      line-height: 1;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.25rem;\n      overflow-y: auto;\n      color: var(--text-primary);\n    }"
+},
   {
-    id: "snackbar",
-    name: "Snackbar",
-    selector: "app-snackbar",
-    packageType: "feedback",
-    category: "feedback",
-    props: [
-      { name: "message", type: "string", default: "" },
-      { name: "action", type: "string", default: "" },
-    ],
-    template: "<div>Snackbar</div>",
-    css: ":host { display: block; }",
-  },
+  "id": "command-palette",
+  "name": "AppCommandPalette",
+  "selector": "app-command-palette",
+  "packageType": "feedback",
+  "category": "feedback",
+  "props": [
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "commands",
+      "type": "string",
+      "default": "[]"
+    }
+  ],
+  "template": "<div class=\"command-palette\"><input type=\"text\" placeholder=\"Type a command...\" /></div>",
+  "css": ":host { display: block; }"
+},
   {
-    id: "command-palette",
-    name: "Command Palette",
-    selector: "app-command-palette",
-    packageType: "feedback",
-    category: "feedback",
-    props: [
-      { name: "open", type: "boolean", default: false },
-      { name: "commands", type: "string", default: "[]" },
-    ],
-    template: "<div>Command Palette</div>",
-    css: ":host { display: block; }",
-  },
+  "id": "toast",
+  "name": "AppToast",
+  "selector": "app-toast",
+  "packageType": "feedback",
+  "category": "feedback",
+  "props": [
+    {
+      "name": "message",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "type",
+      "type": "string",
+      "default": "info"
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 3000
+    }
+  ],
+  "template": "<div class=\"toast toast-${this.type}\">${this.message}</div>",
+  "css": ":host { display: block; }"
+},
   {
-    id: "modal",
-    name: "Modal",
-    selector: "app-modal",
-    packageType: "feedback",
-    category: "feedback",
-    props: [
-      { name: "open", type: "boolean", default: false },
-      { name: "title", type: "string", default: "" },
-    ],
-    template: "<div><h2>Modal</h2><p>Content</p></div>",
-    css: ":host { display: block; }",
-  },
+  "id": "snackbar",
+  "name": "AppSnackbar",
+  "selector": "app-snackbar",
+  "packageType": "feedback",
+  "category": "feedback",
+  "props": [
+    {
+      "name": "message",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "action",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<div class=\"snackbar\">${this.message}</div>",
+  "css": ":host { display: block; }"
+},
 ];
 
+// Data Components
 export const dataComponents: SharedComponentDef[] = [
   {
-    id: "card",
-    name: "Card",
-    selector: "app-card",
-    packageType: "data",
-    category: "display",
-    props: [
-      { name: "title", type: "string", default: "" },
-      { name: "content", type: "string", default: "" },
-      { name: "elevated", type: "boolean", default: false },
-    ],
-    template: "<div><h3>Card Title</h3><p>Card content</p></div>",
-    css: ":host { display: block; }",
-  },
+  "id": "data-data-table",
+  "name": "data data table",
+  "selector": "data-data-table",
+  "packageType": "data",
+  "category": "forms",
+  "props": [
+    {
+      "name": "columns",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "data",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "selectable",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "selectedKey",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<div class=\"app-data-table\">\n        <table class=\"app-data-table__table\">\n          <thead class=\"app-data-table__head\">\n            <tr>\n              ${this.selectable\n                ? html",
+  "css": ":host {\n      display: block;\n    }\n\n    .app-data-table {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      overflow: hidden;\n    }\n\n    .app-data-table__table {\n      width: 100%;\n      border-collapse: collapse;\n    }\n\n    .app-data-table__head {\n      background: var(--bg-tertiary);\n    }\n\n    th {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .app-data-table__th-check {\n      width: 2.5rem;\n      color: var(--text-muted);\n    }\n\n    td {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-subtle);\n    }\n\n    .app-data-table__body tr:last-child td {\n      border-bottom: none;\n    }\n\n    .app-data-table__body tr {\n      cursor: default;\n      transition: background 150ms ease;\n    }\n\n    .app-data-table__body tr:hover td {\n      background: var(--bg-hover);\n    }\n\n    .app-data-table__row--selected td {\n      background: color-mix(in srgb, var(--accent) 10%, transparent);\n    }\n\n    .app-data-table__row--selected:hover td {\n      background: color-mix(in srgb, var(--accent) 15%, transparent);\n    }\n\n    .app-data-table__td-check {\n      width: 2.5rem;\n      padding-right: 0;\n    }\n\n    .app-data-table__check-icon {\n      font-size: 1.25rem;\n      color: var(--accent);\n      cursor: pointer;\n    }\n\n    .app-data-table__empty {\n      text-align: center;\n      color: var(--text-muted);\n      padding: 2rem;\n    }"
+},
   {
-    id: "stats-card",
-    name: "Stats Card",
-    selector: "app-stats-card",
-    packageType: "data",
-    category: "display",
-    props: [
-      { name: "label", type: "string", default: "" },
-      { name: "value", type: "string", default: "" },
-      { name: "icon", type: "string", default: "" },
-    ],
-    template: "<div><span>0</span><span>Label</span></div>",
-    css: ":host { display: block; }",
-  },
+  "id": "data-json-view",
+  "name": "DataJsonView",
+  "selector": "data-json-view",
+  "packageType": "data",
+  "category": "forms",
+  "props": [
+    {
+      "name": "data",
+      "type": "string",
+      "default": "null"
+    },
+    {
+      "name": "indent",
+      "type": "number",
+      "default": 2
+    }
+  ],
+  "template": "<pre class=\"app-json-view\" .innerHTML=${highlighted}></pre>",
+  "css": ":host {\n      display: block;\n    }\n\n    .app-json-view {\n      background: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      padding: 1rem;\n      margin: 0;\n      font-family: \"Fira Code\", \"Cascadia Code\", \"JetBrains Mono\", monospace;\n      font-size: 0.8125rem;\n      line-height: 1.6;\n      color: var(--text-primary);\n      overflow-x: auto;\n      white-space: pre;\n    }\n\n    .jv-key {\n      color: #9cdcfe;\n    }\n\n    .jv-string {\n      color: #ce9178;\n    }\n\n    .jv-number {\n      color: #b5cea8;\n    }\n\n    .jv-boolean {\n      color: #569cd6;\n    }\n\n    .jv-null {\n      color: #808080;\n    }"
+},
   {
-    id: "table-view",
-    name: "Table View",
-    selector: "app-table-view",
-    packageType: "data",
-    category: "display",
-    props: [
-      { name: "columns", type: "string", default: "[]" },
-      { name: "data", type: "string", default: "[]" },
-    ],
-    template: "<table><thead></thead><tbody></tbody></table>",
-    css: ":host { display: block; }",
-  },
+  "id": "data-segment-selector",
+  "name": "DataSegmentSelector",
+  "selector": "data-segment-selector",
+  "packageType": "data",
+  "category": "forms",
+  "props": [
+    {
+      "name": "segments",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "selected",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<div class=\"app-segment-selector\">\n        ${this.segments.map(\n          (seg) => html",
+  "css": ":host {\n      display: inline-block;\n    }\n\n    .app-segment-selector {\n      display: inline-flex;\n      background: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      padding: 0.25rem;\n      gap: 0.25rem;\n    }\n\n    .app-segment-selector__btn {\n      display: flex;\n      align-items: center;\n      gap: 0.375rem;\n      padding: 0.5rem 1rem;\n      border: none;\n      border-radius: 0.375rem;\n      background: transparent;\n      color: var(--text-secondary);\n      font-size: 0.875rem;\n      font-weight: 500;\n      cursor: pointer;\n      transition:\n        background 150ms ease,\n        color 150ms ease;\n      white-space: nowrap;\n    }\n\n    .app-segment-selector__btn:hover:not(.app-segment-selector__btn--active) {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .app-segment-selector__btn--active {\n      background: var(--accent);\n      color: var(--accent-50);\n    }\n\n    .app-segment-selector__icon {\n      font-size: 1rem;\n    }"
+},
   {
-    id: "data-table",
-    name: "Data Table",
-    selector: "app-data-table",
-    packageType: "data",
-    category: "display",
-    props: [
-      { name: "columns", type: "string", default: "[]" },
-      { name: "data", type: "string", default: "[]" },
-      { name: "selectable", type: "boolean", default: false },
-    ],
-    template: "<table><thead></thead><tbody></tbody></table>",
-    css: ":host { display: block; }",
-  },
+  "id": "data-stats-card",
+  "name": "DataStatsCard",
+  "selector": "data-stats-card",
+  "packageType": "data",
+  "category": "forms",
+  "props": [
+    {
+      "name": "label",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "icon",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "iconBgClass",
+      "type": "string",
+      "default": "bg-accent"
+    }
+  ],
+  "template": "<div class=\"app-stats-card\">\n        <div class=\"app-stats-card__icon-wrap ${this.iconBgClass}\">\n          <span class=\"material-icons app-stats-card__icon\">${this.icon}</span>\n        </div>\n        <div class=\"app-stats-card__content\">\n          <p class=\"app-stats-card__label\">${this.label}</p>\n          <p class=\"app-stats-card__value\">${this.value}</p>\n        </div>\n      </div>",
+  "css": ":host {\n      display: block;\n    }\n\n    .app-stats-card {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      padding: 1rem;\n      display: flex;\n      align-items: center;\n      gap: 1rem;\n    }\n\n    .app-stats-card__icon-wrap {\n      width: 3rem;\n      height: 3rem;\n      border-radius: 0.5rem;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      flex-shrink: 0;\n    }\n\n    .app-stats-card__icon {\n      font-size: 1.5rem;\n      color: var(--accent);\n    }\n\n    .app-stats-card__content {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n      min-width: 0;\n    }\n\n    .app-stats-card__label {\n      margin: 0;\n      font-size: 0.75rem;\n      font-weight: 500;\n      color: var(--text-muted);\n      text-transform: uppercase;\n      letter-spacing: 0.05em;\n    }\n\n    .app-stats-card__value {\n      margin: 0;\n      font-size: 1.5rem;\n      font-weight: 700;\n      color: var(--text-primary);\n      line-height: 1.2;\n    }"
+},
   {
-    id: "json-view",
-    name: "JSON View",
-    selector: "app-json-view",
-    packageType: "data",
-    category: "display",
-    props: [{ name: "data", type: "string", default: "{}" }],
-    template: "<pre>{}</pre>",
-    css: ":host { display: block; }",
-  },
-  {
-    id: "segment-selector",
-    name: "Segment Selector",
-    selector: "app-segment-selector",
-    packageType: "data",
-    category: "forms",
-    props: [
-      { name: "options", type: "string", default: "[]" },
-      { name: "selected", type: "string", default: "" },
-    ],
-    template: "<div><button>Option</button></div>",
-    css: ":host { display: block; }",
-  },
+  "id": "data-table-view",
+  "name": "data table view",
+  "selector": "data-table-view",
+  "packageType": "data",
+  "category": "forms",
+  "props": [
+    {
+      "name": "columns",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "data",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "sortable",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "pageSize",
+      "type": "number",
+      "default": 10
+    },
+    {
+      "name": "total",
+      "type": "number",
+      "default": 0
+    }
+  ],
+  "template": "<div class=\"app-table-view\">\n        <table class=\"app-table-view__table\">\n          <thead class=\"app-table-view__head\">\n            <tr>\n              ${this.columns.map(\n                (col) => html",
+  "css": ":host {\n      display: block;\n    }\n\n    .app-table-view {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      overflow: hidden;\n    }\n\n    .app-table-view__table {\n      width: 100%;\n      border-collapse: collapse;\n    }\n\n    .app-table-view__head {\n      background: var(--bg-tertiary);\n    }\n\n    .app-table-view__head tr {\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    th {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-subtle);\n      font-weight: 600;\n    }\n\n    .app-table-view__th--sortable {\n      cursor: pointer;\n      user-select: none;\n    }\n\n    .app-table-view__th--sortable:hover {\n      background: var(--bg-hover);\n    }\n\n    .app-table-view__th-inner {\n      display: flex;\n      align-items: center;\n      gap: 0.25rem;\n    }\n\n    .app-table-view__sort-icon {\n      font-size: 1rem;\n      color: var(--text-muted);\n    }\n\n    td {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-subtle);\n    }\n\n    .app-table-view__body tr:last-child td {\n      border-bottom: none;\n    }\n\n    .app-table-view__body tr:hover td {\n      background: var(--bg-hover);\n    }\n\n    .app-table-view__empty {\n      text-align: center;\n      color: var(--text-muted);\n      padding: 2rem;\n    }\n\n    .app-table-view__pagination {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      gap: 0.75rem;\n      padding: 0.75rem;\n      border-top: 1px solid var(--border-subtle);\n    }\n\n    .app-table-view__page-btn {\n      background: none;\n      border: 1px solid var(--border-color);\n      border-radius: 0.25rem;\n      width: 2rem;\n      height: 2rem;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      cursor: pointer;\n      color: var(--text-primary);\n      padding: 0;\n    }\n\n    .app-table-view__page-btn:hover:not(:disabled) {\n      background: var(--bg-hover);\n      border-color: var(--accent);\n    }\n\n    .app-table-view__page-btn:disabled {\n      opacity: 0.4;\n      cursor: not-allowed;\n    }\n\n    .app-table-view__page-info {\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n    }"
+},
 ];
 
 export const components = uiComponents;

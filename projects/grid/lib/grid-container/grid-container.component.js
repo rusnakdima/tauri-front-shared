@@ -99,18 +99,8 @@ GridContainerComponent = __decorate([
         selector: "app-grid-container",
         standalone: true,
         imports: [CommonModule],
-        template: `
-    <div [class]="containerClasses" [style]="containerStyles">
-      <ng-content></ng-content>
-    </div>
-  `,
-        styles: [
-            `
-      :host {
-        display: block;
-      }
-    `,
-        ],
+        templateUrl: "./grid-container.component.html",
+        styleUrl: "./grid-container.component.css",
     })
 ], GridContainerComponent);
 export { GridContainerComponent };

@@ -2,7 +2,7 @@ import { Injectable, inject } from "@angular/core";
 import type { DataBinding } from "./types";
 
 @Injectable({ providedIn: "root" })
-export class DataBindingResolver {
+export class DataBindingExpressionResolver {
   private functionRegistry = new Map<string, Function>();
   private dataStore = new Map<string, Record<string, unknown>>();
 
@@ -119,7 +119,7 @@ export class DataBindingResolver {
   callFunction(fnName: string, args: unknown[] = []): unknown {
     const fn = this.functionRegistry.get(fnName);
     if (!fn) {
-      console.warn(`DataBindingResolver: Function "${fnName}" not found`);
+      console.warn(`DataBindingExpressionResolver: Function "${fnName}" not found`);
       return null;
     }
     return fn.apply(null, args);

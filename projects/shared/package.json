@@ -13,7 +13,9 @@
     }
   },
   "scripts": {
-    "build": "ng-packagr -p ng-package.json && bun run ../../scripts/fix-package-json.ts"
+    "build": "ng-packagr -p ng-package.json && bun run ../../scripts/fix-package-json.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "peerDependencies": {
     "@angular/common": ">=17.0.0",
@@ -27,8 +29,10 @@
     "@angular/common": "^20.0.0",
     "@angular/core": "^20.0.0",
     "@tauri-apps/api": "^2.11.1",
+    "jsdom": "^24.0.0",
     "lit": "^3.0.0",
     "ng-packagr": "^20.3.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^1.0.0"
   }
 }

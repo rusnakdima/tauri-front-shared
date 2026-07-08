@@ -1,6 +1,7 @@
 {
   "name": "@tauri-front/shared",
   "version": "0.1.0",
+  "packageManager": "bun@>=1.0",
   "private": true,
   "workspaces": [
     "projects/*"

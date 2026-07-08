@@ -1,7 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import {
-  loadStyleVariant,
   setCurrentStyle,
   getCurrentStyle,
   type StyleVariant,
@@ -28,14 +27,47 @@ export class StyleThemeService {
     this.initializeDarkMode();
   }
 
+  /** No-op for API compatibility; initialization runs in the constructor. */
+  init(): void {}
+
   async loadTheme(variant: StyleVariant): Promise<void> {
-    await loadStyleVariant(variant);
     setCurrentStyle(variant);
-    this.injectThemeStyles(variant);
+    if (this.isDarkMode()) {
+      this.injectDarkModeVariables(variant);
+    }
     this._themeChanged$.next({
       variant,
       isDark: this.isDarkMode(),
     });
+  }
+
+  /** Convenience alias for apps that use simple theme names (e.g. "light", "dark"). */
+  async setTheme(theme: string): Promise<void> {
+    const variant = this.resolveThemeVariant(theme);
+    await this.loadTheme(variant);
+  }
+
+  private resolveThemeVariant(theme: string): StyleVariant {
+    const map: Record<string, StyleVariant> = {
+      "material-design-v3": "material-design-v3",
+      "neumorphism": "neumorphism",
+      "claymorphism": "claymorphism",
+      "glassmorphism": "glassmorphism",
+      "brutalism": "brutalism",
+      "skeuomorphism": "skeuomorphism",
+    };
+    if (map[theme]) return map[theme];
+    return "material-design-v3";
+  }
+
+  /** Alias for toggleDarkMode() — used by ZenithDB. */
+  toggle(): void {
+    this.toggleDarkMode();
+  }
+
+  /** Returns 'dark' or 'light' based on current dark mode state — used by ZenithDB. */
+  effectiveColorMode(): string {
+    return this.isDarkMode() ? "dark" : "light";
   }
 
   toggleDarkMode(): void {
@@ -43,8 +75,10 @@ export class StyleThemeService {
     const isCurrentlyDark = html.classList.contains("dark");
     if (isCurrentlyDark) {
       html.classList.remove("dark");
+      this.removeDarkModeVariables();
     } else {
       html.classList.add("dark");
+      this.injectDarkModeVariables(this.getCurrentTheme());
     }
     this.saveDarkModePreference(!isCurrentlyDark);
     this._themeChanged$.next({
@@ -61,8 +95,10 @@ export class StyleThemeService {
     const html = document.documentElement;
     if (enabled) {
       html.classList.add("dark");
+      this.injectDarkModeVariables(this.getCurrentTheme());
     } else {
       html.classList.remove("dark");
+      this.removeDarkModeVariables();
     }
     this.saveDarkModePreference(enabled);
     this._themeChanged$.next({
@@ -75,16 +111,134 @@ export class StyleThemeService {
     return getCurrentStyle();
   }
 
-  private injectThemeStyles(variant: StyleVariant): void {
-    let existing = document.getElementById("theme-styles");
-    if (existing) {
-      existing.remove();
-    }
-
+  private injectDarkModeVariables(variant: StyleVariant): void {
+    this.removeDarkModeVariables();
     const style = document.createElement("style");
-    style.id = "theme-styles";
-    style.textContent = this.getDarkModeCSS(variant);
+    style.id = "dark-mode-variables";
+    style.textContent = this.getDarkModeVariablesCSS(variant);
     document.head.appendChild(style);
+  }
+
+  private removeDarkModeVariables(): void {
+    const existing = document.getElementById("dark-mode-variables");
+    if (existing) existing.remove();
+  }
+
+  private getDarkModeVariablesCSS(variant: StyleVariant): string {
+    const isDark = document.documentElement.classList.contains("dark");
+    if (!isDark) return "";
+
+    const vars: Record<StyleVariant, string> = {
+      "material-design-v3": `
+:root {
+  --accent: #d0bcff;
+  --accent-hover: #b69df8;
+  --text-on-accent: #381e72;
+  --text-primary: #e6e1e5;
+  --text-secondary: #cac4d0;
+  --text-muted: #938f99;
+  --text-on-error: #f2b8b5;
+  --bg-elevated: #2b2930;
+  --border-color: #49454f;
+  --error: #f2b8b5;
+  --success: #6ee7b7;
+  --bg-primary: #1c1b1f;
+  --bg-hover: rgba(187, 184, 201, 0.08);
+  --bg-header: #1c1b1f;
+  --bg-secondary: #211f26;
+}`,
+      "neumorphism": `
+:root {
+  --accent: #a78bfa;
+  --accent-hover: #8b7cf7;
+  --text-on-accent: #1e1b2e;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-on-error: #1e1b2e;
+  --bg-elevated: #2d3748;
+  --border-color: #4a5568;
+  --error: #fc8181;
+  --success: #68d391;
+  --bg-primary: #1a202c;
+  --bg-tertiary: #171923;
+  --bg-hover: #3d4758;
+  --bg-header: #2d3748;
+  --bg-secondary: #1e2533;
+  --bg-tertiary: #171923;
+}`,
+      "claymorphism": `
+:root {
+  --accent: #a78bfa;
+  --accent-hover: #8b7cf7;
+  --text-on-accent: #1e1b2e;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-on-error: #1e1b2e;
+  --bg-elevated: #2d3748;
+  --border-color: #4a5568;
+  --error: #fc8181;
+  --success: #68d391;
+  --bg-primary: #1a202c;
+  --bg-tertiary: #171923;
+  --bg-hover: #3d4758;
+  --bg-header: #2d3748;
+  --bg-secondary: #1e2533;
+  --bg-tertiary: #171923;
+}`,
+      "glassmorphism": `
+:root {
+  --accent: rgba(167, 139, 250, 0.8);
+  --accent-hover: rgba(187, 159, 250, 0.9);
+  --text-on-accent: #1e1b2e;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-on-error: #fce4ec;
+  --bg-elevated: rgba(30, 30, 50, 0.7);
+  --border-color: rgba(255, 255, 255, 0.15);
+  --error: #ff6b6b;
+  --success: #51cf66;
+  --bg-primary: rgba(15, 15, 30, 0.9);
+  --bg-tertiary: rgba(10, 10, 20, 0.95);
+  --bg-hover: rgba(50, 50, 80, 0.4);
+  --bg-header: rgba(20, 20, 40, 0.8);
+  --bg-secondary: rgba(25, 25, 45, 0.75);
+  --bg-tertiary: rgba(10, 10, 20, 0.95);
+}`,
+      "brutalism": `
+:root {
+  --color-brut-base: #1a1a1a;
+  --color-brut-ink: #f5f5f0;
+  --bg-primary: #1a1a1a;
+  --bg-elevated: #2a2a2a;
+  --bg-hover: #3a3a3a;
+  --bg-tertiary: #404040;
+  --text-primary: #f5f5f0;
+  --text-secondary: #c0c0c0;
+  --text-muted: #909090;
+  --border-color: #f5f5f0;
+}`,
+      "skeuomorphism": `
+:root {
+  --color-skeu-base: #2b1f14;
+  --color-skeu-leather: #3a2a18;
+  --color-skeu-leather-dark: #1a1009;
+  --color-skeu-paper: #3a2e1f;
+  --color-skeu-ink: #f5e6c8;
+  --color-skeu-accent: #d4a017;
+  --bg-primary: #2b1f14;
+  --bg-elevated: #3a2e1f;
+  --bg-hover: #4a3e2f;
+  --bg-tertiary: #5a4e3f;
+  --text-primary: #f5e6c8;
+  --text-secondary: #d4b890;
+  --text-muted: #a8916b;
+  --border-color: #1a1009;
+}`,
+    };
+    return vars[variant] ?? "";
   }
 
   private getDarkModeCSS(variant: StyleVariant): string {
@@ -101,9 +255,54 @@ export class StyleThemeService {
         return this.claymorphismDarkCSS();
       case "glassmorphism":
         return this.glassmorphismDarkCSS();
+      case "brutalism":
+        return this.brutalismDarkCSS();
+      case "skeuomorphism":
+        return this.skeuomorphismDarkCSS();
       default:
         return "";
     }
+  }
+
+  private brutalismDarkCSS(): string {
+    return `
+:root {
+  --color-brut-base: #1a1a1a;
+  --color-brut-ink: #f5f5f0;
+  --bg-primary: #1a1a1a;
+  --bg-elevated: #2a2a2a;
+  --bg-hover: #3a3a3a;
+  --bg-tertiary: #404040;
+  --text-primary: #f5f5f0;
+  --text-secondary: #c0c0c0;
+  --text-muted: #909090;
+  --border-color: #f5f5f0;
+  --border-subtle: #c0c0c0;
+}
+`;
+  }
+
+  private skeuomorphismDarkCSS(): string {
+    return `
+:root {
+  --color-skeu-base: #2b1f14;
+  --color-skeu-leather: #3a2a18;
+  --color-skeu-leather-dark: #1a1009;
+  --color-skeu-paper: #3a2e1f;
+  --color-skeu-ink: #f5e6c8;
+  --color-skeu-accent: #d4a017;
+  --color-skeu-accent-dark: #b8860b;
+  --bg-primary: #2b1f14;
+  --bg-elevated: #3a2e1f;
+  --bg-hover: #4a3e2f;
+  --bg-tertiary: #5a4e3f;
+  --text-primary: #f5e6c8;
+  --text-secondary: #d4b890;
+  --text-muted: #a8916b;
+  --border-color: #1a1009;
+  --border-subtle: #4a2e18;
+}
+`;
   }
 
   private materialDesignV3DarkCSS(): string {

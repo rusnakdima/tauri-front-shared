@@ -13,7 +13,7 @@
     }
   },
   "scripts": {
-    "build": "ng-packagr -p ng-package.json && cd dist && sed -i 's|\"main\": \"./dist/|\"main\": \"./|g; s|\"import\": \"./dist/|\"import\": \"./|g; s|\"types\": \"./dist/|\"types\": \"./|g' package.json"
+    "build": "ng-packagr -p ng-package.json && cd dist && sed -i 's|\"main\": \"./dist/|\"main\": \"./|g; s|\"import\": \"./dist/|\"import\": \"./|g; s|\"types\": \"./dist/|\"types\": \"./|g' package.json && sed -i 's|\"sideEffects\": false|\"sideEffects\": [\"./fesm2022/tauri-front-shared.mjs\", \"./**/*.css\"]|' package.json"
   },
   "peerDependencies": {
     "@angular/common": ">=17.0.0",

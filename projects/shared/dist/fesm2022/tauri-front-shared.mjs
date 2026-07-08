@@ -1,15 +1,14 @@
 import { __decorate } from 'tslib';
 import { LitElement, css, html } from 'lit';
 import { property, customElement, state } from 'lit/decorators.js';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import * as i0 from '@angular/core';
-import { Component, signal, computed, Injectable, effect, inject, Input, CUSTOM_ELEMENTS_SCHEMA, TemplateRef, ViewContainerRef, Directive } from '@angular/core';
-import { Subject, BehaviorSubject } from 'rxjs';
-import * as i1 from '@angular/common';
+import { Component, signal, Injectable, computed, Optional, Input, CUSTOM_ELEMENTS_SCHEMA, effect, HostListener, inject, Directive } from '@angular/core';
+import { Subject, BehaviorSubject, firstValueFrom } from 'rxjs';
+import * as i3 from '@angular/common';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { invoke } from '@tauri-apps/api/core';
-import * as i1$1 from '@angular/forms';
-import { FormsModule } from '@angular/forms';
+import * as i1 from '@angular/common/http';
 import { Router } from '@angular/router';
 
 // UI Components
@@ -988,104 +987,6 @@ const layoutComponents = [
 // Feedback Components
 const feedbackComponents = [
     {
-        "id": "confirm-dialog",
-        "name": "AppConfirmDialog",
-        "selector": "app-confirm-dialog",
-        "packageType": "ui",
-        "category": "forms",
-        "props": [
-            {
-                "name": "open",
-                "type": "boolean",
-                "default": false
-            },
-            {
-                "name": "title",
-                "type": "string",
-                "default": ""
-            },
-            {
-                "name": "message",
-                "type": "string",
-                "default": ""
-            },
-            {
-                "name": "confirmText",
-                "type": "string",
-                "default": "Confirm"
-            },
-            {
-                "name": "cancelText",
-                "type": "string",
-                "default": "Cancel"
-            }
-        ],
-        "template": "",
-        "css": ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.6);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .dialog {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 1rem;\n      width: 400px;\n      max-width: 90vw;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1.25rem 1.5rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    header h2 {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem;\n      border-radius: 0.25rem;\n      color: var(--text-secondary);\n      font-size: 1.25rem;\n      line-height: 1;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.5rem;\n      color: var(--text-secondary);\n      font-size: 0.9375rem;\n      line-height: 1.5;\n    }\n\n    footer {\n      display: flex;\n      gap: 0.75rem;\n      padding: 1rem 1.5rem;\n      border-top: 1px solid var(--border-color);\n      justify-content: flex-end;\n    }\n\n    button {\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid;\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n    }\n\n    .cancel-btn {\n      background: transparent;\n      border-color: var(--border-color);\n      color: var(--text-secondary);\n    }\n\n    .cancel-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .confirm-btn {\n      background: var(--accent);\n      border-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .confirm-btn:hover {\n      opacity: 0.9;\n    }\n\n    .danger-btn {\n      background: var(--error);\n      border-color: var(--error);\n      color: var(--text-on-error);\n    }\n\n    .danger-btn:hover {\n      opacity: 0.9;\n    }"
-    },
-    {
-        "id": "dialog",
-        "name": "AppDialog",
-        "selector": "app-dialog",
-        "packageType": "ui",
-        "category": "forms",
-        "props": [
-            {
-                "name": "open",
-                "type": "boolean",
-                "default": false
-            },
-            {
-                "name": "title",
-                "type": "string",
-                "default": ""
-            },
-            {
-                "name": "size",
-                "type": "string",
-                "default": "md"
-            },
-            {
-                "name": "showHeader",
-                "type": "boolean",
-                "default": true
-            },
-            {
-                "name": "showFooter",
-                "type": "boolean",
-                "default": false
-            }
-        ],
-        "template": "",
-        "css": ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.6);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .dialog {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 1rem;\n      min-width: 360px;\n      max-height: 90vh;\n      display: flex;\n      flex-direction: column;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);\n    }\n\n    .dialog-sm {\n      width: 360px;\n    }\n\n    .dialog-md {\n      width: 520px;\n    }\n\n    .dialog-lg {\n      width: 720px;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1.25rem 1.5rem;\n      border-bottom: 2px solid var(--border-color);\n      background: var(--bg-elevated);\n      border-radius: 1rem 1rem 0 0;\n    }\n\n    header h2 {\n      margin: 0;\n      font-size: 1.25rem;\n      font-weight: 700;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem 0.5rem;\n      border-radius: 0.375rem;\n      color: var(--text-secondary);\n      font-size: 1.5rem;\n      line-height: 1;\n      font-weight: 300;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.5rem;\n      overflow-y: auto;\n      color: var(--text-primary);\n    }"
-    },
-    {
-        "id": "modal",
-        "name": "AppModal",
-        "selector": "app-modal",
-        "packageType": "ui",
-        "category": "forms",
-        "props": [
-            {
-                "name": "open",
-                "type": "boolean",
-                "default": false
-            },
-            {
-                "name": "title",
-                "type": "string",
-                "default": ""
-            },
-            {
-                "name": "size",
-                "type": "string",
-                "default": "md"
-            }
-        ],
-        "template": "",
-        "css": ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.5);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .modal {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.75rem;\n      min-width: 320px;\n      max-height: 90vh;\n      display: flex;\n      flex-direction: column;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);\n    }\n\n    .modal-sm {\n      width: 320px;\n    }\n\n    .modal-md {\n      width: 480px;\n    }\n\n    .modal-lg {\n      width: 640px;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1rem 1.25rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    header h3 {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem;\n      border-radius: 0.25rem;\n      color: var(--text-secondary);\n      font-size: 1.25rem;\n      line-height: 1;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.25rem;\n      overflow-y: auto;\n      color: var(--text-primary);\n    }"
-    },
-    {
         "id": "command-palette",
         "name": "AppCommandPalette",
         "selector": "app-command-palette",
@@ -1296,33 +1197,109 @@ const dataComponents = [
         "template": "<div class=\"app-table-view\">\n        <table class=\"app-table-view__table\">\n          <thead class=\"app-table-view__head\">\n            <tr>\n              ${this.columns.map(\n                (col) => html",
         "css": ":host {\n      display: block;\n    }\n\n    .app-table-view {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      overflow: hidden;\n    }\n\n    .app-table-view__table {\n      width: 100%;\n      border-collapse: collapse;\n    }\n\n    .app-table-view__head {\n      background: var(--bg-tertiary);\n    }\n\n    .app-table-view__head tr {\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    th {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-subtle);\n      font-weight: 600;\n    }\n\n    .app-table-view__th--sortable {\n      cursor: pointer;\n      user-select: none;\n    }\n\n    .app-table-view__th--sortable:hover {\n      background: var(--bg-hover);\n    }\n\n    .app-table-view__th-inner {\n      display: flex;\n      align-items: center;\n      gap: 0.25rem;\n    }\n\n    .app-table-view__sort-icon {\n      font-size: 1rem;\n      color: var(--text-muted);\n    }\n\n    td {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-subtle);\n    }\n\n    .app-table-view__body tr:last-child td {\n      border-bottom: none;\n    }\n\n    .app-table-view__body tr:hover td {\n      background: var(--bg-hover);\n    }\n\n    .app-table-view__empty {\n      text-align: center;\n      color: var(--text-muted);\n      padding: 2rem;\n    }\n\n    .app-table-view__pagination {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      gap: 0.75rem;\n      padding: 0.75rem;\n      border-top: 1px solid var(--border-subtle);\n    }\n\n    .app-table-view__page-btn {\n      background: none;\n      border: 1px solid var(--border-color);\n      border-radius: 0.25rem;\n      width: 2rem;\n      height: 2rem;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      cursor: pointer;\n      color: var(--text-primary);\n      padding: 0;\n    }\n\n    .app-table-view__page-btn:hover:not(:disabled) {\n      background: var(--bg-hover);\n      border-color: var(--accent);\n    }\n\n    .app-table-view__page-btn:disabled {\n      opacity: 0.4;\n      cursor: not-allowed;\n    }\n\n    .app-table-view__page-info {\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n    }"
     },
+    {
+        "id": "tooltip",
+        "name": "AppTooltip",
+        "selector": "app-tooltip",
+        "packageType": "ui",
+        "category": "data",
+        "props": [
+            { "name": "text", "type": "string", "default": "" },
+            { "name": "position", "type": "string", "default": "top" },
+            { "name": "trigger", "type": "string", "default": "hover" },
+            { "name": "delay", "type": "number", "default": 200 },
+            { "name": "visible", "type": "boolean", "default": false }
+        ],
+        "template": "<div class=\"tooltip\"></div>",
+        "css": ":host { display: inline-block; }"
+    },
+    {
+        "id": "snackbar",
+        "name": "AppSnackbar",
+        "selector": "app-snackbar",
+        "packageType": "ui",
+        "category": "data",
+        "props": [
+            { "name": "message", "type": "string", "default": "" },
+            { "name": "action", "type": "string", "default": "" },
+            { "name": "duration", "type": "number", "default": 4000 },
+            { "name": "type", "type": "string", "default": "default" },
+            { "name": "open", "type": "boolean", "default": false }
+        ],
+        "template": "<div class=\"snackbar\"></div>",
+        "css": ":host { display: block; }"
+    },
+    {
+        "id": "spinner",
+        "name": "AppSpinner",
+        "selector": "app-spinner",
+        "packageType": "ui",
+        "category": "feedback",
+        "props": [
+            { "name": "size", "type": "string", "default": "md" },
+            { "name": "color", "type": "string", "default": "" },
+            { "name": "label", "type": "string", "default": "" }
+        ],
+        "template": "<div class=\"spinner\"></div>",
+        "css": ":host { display: inline-block; }"
+    },
+    {
+        "id": "divider",
+        "name": "AppDivider",
+        "selector": "app-divider",
+        "packageType": "ui",
+        "category": "layout",
+        "props": [
+            { "name": "orientation", "type": "string", "default": "horizontal" },
+            { "name": "spacing", "type": "string", "default": "md" },
+            { "name": "color", "type": "string", "default": "" }
+        ],
+        "template": "<hr class=\"divider\" />",
+        "css": ":host { display: block; }"
+    },
+    {
+        "id": "tree",
+        "name": "AppTree",
+        "selector": "app-tree",
+        "packageType": "ui",
+        "category": "data",
+        "props": [
+            { "name": "nodes", "type": "string", "default": "[]" },
+            { "name": "selected", "type": "string", "default": "" },
+            { "name": "expanded", "type": "string", "default": "[]" }
+        ],
+        "template": "<div class=\"tree\"></div>",
+        "css": ":host { display: block; }"
+    },
+    {
+        "id": "form",
+        "name": "AppForm",
+        "selector": "app-form",
+        "packageType": "ui",
+        "category": "forms",
+        "props": [
+            { "name": "heading", "type": "string", "default": "" },
+            { "name": "action", "type": "string", "default": "" },
+            { "name": "method", "type": "string", "default": "POST" },
+            { "name": "showActions", "type": "boolean", "default": true }
+        ],
+        "template": "<form class=\"form\"><slot></slot></form>",
+        "css": ":host { display: block; }"
+    }
 ];
 const components = uiComponents;
 
 let AppButton = class AppButton extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["variant", "buttonStyle", "size", "disabled", "loading", "icon", "iconPosition", "fullWidth", "type", "label"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["variant", "buttonStyle", "size", "disabled", "loading", "icon", "iconPosition", "fullWidth", "type", "label"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    variant = "primary";
+    buttonStyle = "solid";
+    size = "md";
+    disabled = false;
+    loading = false;
+    icon = null;
+    iconPosition = "left";
+    fullWidth = false;
+    type = "button";
+    label = "";
     static styles = css `
     :host {
       display: inline-flex;
@@ -1692,29 +1669,12 @@ AppButton = __decorate([
 ], AppButton);
 
 let AppInput = class AppInput extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["type", "placeholder", "label", "disabled", "error", "icon", "_value", "_focused"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["type", "placeholder", "label", "disabled", "error", "icon", "_value", "_focused"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    type = "text";
+    placeholder = "";
+    label = null;
+    disabled = false;
+    error = null;
+    icon = null;
     _value = "";
     _focused = false;
     static styles = css `
@@ -1882,29 +1842,11 @@ AppInput = __decorate([
 ], AppInput);
 
 let AppEmptyState = class AppEmptyState extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["icon", "title", "message", "actionLabel", "variant"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["icon", "title", "message", "actionLabel", "variant"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    icon = null;
+    title = "";
+    message = "";
+    actionLabel = null;
+    variant = "default";
     static styles = css `
     :host {
       display: flex;
@@ -2030,29 +1972,9 @@ AppEmptyState = __decorate([
 ], AppEmptyState);
 
 let AppModal = class AppModal extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["open", "title", "size"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["open", "title", "size"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    open = false;
+    title = "";
+    size = "md";
     static styles = css `
     :host {
       display: block;
@@ -2169,29 +2091,11 @@ AppModal = __decorate([
 ], AppModal);
 
 let AppDialog = class AppDialog extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["open", "title", "size", "showHeader", "showFooter"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["open", "title", "size", "showHeader", "showFooter"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    open = false;
+    title = "";
+    size = "md";
+    showHeader = true;
+    showFooter = true;
     static styles = css `
     :host {
       display: block;
@@ -2317,29 +2221,11 @@ AppDialog = __decorate([
 ], AppDialog);
 
 let AppConfirmDialog = class AppConfirmDialog extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["open", "title", "message", "confirmText", "cancelText"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["open", "title", "message", "confirmText", "cancelText"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    open = false;
+    title = "";
+    message = "";
+    confirmText = "Confirm";
+    cancelText = "Cancel";
     static styles = css `
     :host {
       display: block;
@@ -2510,29 +2396,7 @@ AppConfirmDialog = __decorate([
 ], AppConfirmDialog);
 
 let AppLoading = class AppLoading extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["size"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["size"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    size = "md";
     static styles = css `
     :host {
       display: inline-flex;
@@ -2583,29 +2447,10 @@ AppLoading = __decorate([
 ], AppLoading);
 
 let AppRadio = class AppRadio extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["name", "value", "checked", "disabled"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["name", "value", "checked", "disabled"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    name = "";
+    value = "";
+    checked = false;
+    disabled = false;
     static styles = css `
     :host {
       display: inline-flex;
@@ -2683,29 +2528,11 @@ AppRadio = __decorate([
 ], AppRadio);
 
 let AppSlider = class AppSlider extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["min", "max", "value", "step", "disabled"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["min", "max", "value", "step", "disabled"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    min = 0;
+    max = 100;
+    value = 0;
+    step = 1;
+    disabled = false;
     static styles = css `
     :host {
       display: block;
@@ -2825,29 +2652,8 @@ AppSlider = __decorate([
 ], AppSlider);
 
 let AppSwitch = class AppSwitch extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["checked", "disabled"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["checked", "disabled"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    checked = false;
+    disabled = false;
     static styles = css `
     :host {
       display: inline-flex;
@@ -2944,29 +2750,10 @@ AppSwitch = __decorate([
 ], AppSwitch);
 
 let AppTextarea = class AppTextarea extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["value", "placeholder", "rows", "disabled"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["value", "placeholder", "rows", "disabled"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    value = "";
+    placeholder = "";
+    rows = 3;
+    disabled = false;
     static styles = css `
     :host {
       display: block;
@@ -3052,29 +2839,9 @@ AppTextarea = __decorate([
 ], AppTextarea);
 
 let AppBadge = class AppBadge extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["variant", "size", "label"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["variant", "size", "label"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    variant = "default";
+    size = "md";
+    label = "";
     static styles = css `
     :host {
       display: inline-flex;
@@ -3149,29 +2916,10 @@ AppBadge = __decorate([
 ], AppBadge);
 
 let AppSelect = class AppSelect extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["options", "value", "placeholder", "disabled"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["options", "value", "placeholder", "disabled"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    options = "";
+    value = "";
+    placeholder = "";
+    disabled = false;
     static styles = css `
     :host {
       display: inline-flex;
@@ -3252,29 +3000,11 @@ AppSelect = __decorate([
 ], AppSelect);
 
 let AppCard = class AppCard extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["title", "content", "elevated", "borderRadius", "padding"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["title", "content", "elevated", "borderRadius", "padding"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    title = "";
+    content = "";
+    elevated = false;
+    borderRadius = 0;
+    padding = 0;
     static styles = css `
     :host {
       display: block;
@@ -3347,29 +3077,10 @@ AppCard = __decorate([
 ], AppCard);
 
 let AppStatsCard = class AppStatsCard extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["label", "value", "icon"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["label", "value", "icon"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    label = "";
+    value = "";
+    icon = "";
+    title = undefined;
     static styles = css `
     :host {
       display: block;
@@ -3424,7 +3135,7 @@ let AppStatsCard = class AppStatsCard extends LitElement {
             : ""}
         <div class="stats-info">
           <span class="stats-value">${this.value}</span>
-          <span class="stats-label">${this.label}</span>
+          <span class="stats-label">${this.label || this.title || ""}</span>
         </div>
       </div>
     `;
@@ -3439,34 +3150,16 @@ __decorate([
 __decorate([
     property()
 ], AppStatsCard.prototype, "icon", void 0);
+__decorate([
+    property({ attribute: "title" })
+], AppStatsCard.prototype, "title", void 0);
 AppStatsCard = __decorate([
     customElement("app-stats-card")
 ], AppStatsCard);
 
 let AppTableView = class AppTableView extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["columns", "data"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["columns", "data"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    columns = "";
+    data = "";
     _getColumns() {
         try {
             return JSON.parse(this.columns);
@@ -3546,29 +3239,9 @@ AppTableView = __decorate([
 ], AppTableView);
 
 let AppDataTable = class AppDataTable extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["columns", "data", "selectable"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["columns", "data", "selectable"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    columns = "";
+    data = "";
+    selectable = false;
     _selectedIndex = null;
     _getColumns() {
         try {
@@ -3702,29 +3375,7 @@ AppDataTable = __decorate([
 ], AppDataTable);
 
 let AppJsonView = class AppJsonView extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["data"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["data"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    data = "";
     _getFormattedJson() {
         try {
             const parsed = typeof this.data === "string" ? JSON.parse(this.data) : this.data;
@@ -3815,33 +3466,10 @@ AppJsonView = __decorate([
 ], AppJsonView);
 
 let AppComponentPalette = class AppComponentPalette extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["categories", "searchable", "_searchQuery", "_collapsedCategories"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-        if (!this._searchQuery)
-            this._searchQuery = "";
-        if (!this._collapsedCategories)
-            this._collapsedCategories = new Set();
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["categories", "searchable"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    categories = "";
+    searchable = false;
+    _searchQuery = "";
+    _collapsedCategories = new Set();
     _getCategories() {
         try {
             return JSON.parse(this.categories);
@@ -4180,33 +3808,9 @@ AppCanvas = __decorate([
 ], AppCanvas);
 
 let AppPropertiesPanel = class AppPropertiesPanel extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["element", "_properties", "_elementId"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-        if (!this._properties)
-            this._properties = [];
-        if (!this._elementId)
-            this._elementId = null;
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["element"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    element = "";
+    _properties = [];
+    _elementId = null;
     _parseElement() {
         try {
             const parsed = JSON.parse(this.element);
@@ -4382,29 +3986,12 @@ AppPropertiesPanel = __decorate([
 ], AppPropertiesPanel);
 
 let AppBottomPanel = class AppBottomPanel extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["tabs", "activeTab", "position", "fullWidth", "floating", "borderRadius"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["tabs", "activeTab", "position", "fullWidth", "floating", "borderRadius"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    tabs = "";
+    activeTab = "";
+    position = "";
+    fullWidth = false;
+    floating = false;
+    borderRadius = 0;
     _getTabs() {
         try {
             return JSON.parse(this.tabs);
@@ -4511,27 +4098,18 @@ AppBottomPanel = __decorate([
 ], AppBottomPanel);
 
 let AppHeader = class AppHeader extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["title", "showBack", "breadcrumbs"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
+    title = "";
+    showBack = false;
+    breadcrumbs = "";
+    _handleBack() {
+        this.dispatchEvent(new CustomEvent("navigate-back", { bubbles: true, composed: true }));
     }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["title", "showBack", "breadcrumbs"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
+    _getBreadcrumbs() {
+        try {
+            return JSON.parse(this.breadcrumbs);
         }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
+        catch {
+            return [];
         }
     }
     static styles = css `
@@ -4596,17 +4174,6 @@ let AppHeader = class AppHeader extends LitElement {
       opacity: 0.5;
     }
   `;
-    _handleBack() {
-        this.dispatchEvent(new CustomEvent("navigate-back", { bubbles: true, composed: true }));
-    }
-    _getBreadcrumbs() {
-        try {
-            return JSON.parse(this.breadcrumbs);
-        }
-        catch {
-            return [];
-        }
-    }
     render() {
         const crumbs = this._getBreadcrumbs();
         return html `
@@ -4652,29 +4219,10 @@ AppHeader = __decorate([
 ], AppHeader);
 
 let AppSidebar = class AppSidebar extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["collapsed", "items", "width", "collapsedWidth"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["collapsed", "items", "width", "collapsedWidth"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    collapsed = false;
+    items = "";
+    width = 240;
+    collapsedWidth = 64;
     static styles = css `
     :host {
       display: block;
@@ -4885,29 +4433,7 @@ AppSidebar = __decorate([
 ], AppSidebar);
 
 let AppFooter = class AppFooter extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["text"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["text"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    text = "";
     static styles = css `
     :host {
       display: block;
@@ -4947,29 +4473,7 @@ AppFooter = __decorate([
 ], AppFooter);
 
 let AppPageContainer = class AppPageContainer extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["title"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["title"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    title = "";
     static styles = css `
     :host {
       display: flex;
@@ -5033,28 +4537,22 @@ AppPageContainer = __decorate([
 ], AppPageContainer);
 
 let AppPageToolbar = class AppPageToolbar extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["title", "actions"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
+    title = "";
+    actions = "";
+    _getActions() {
+        try {
+            return JSON.parse(this.actions);
+        }
+        catch {
+            return [];
         }
     }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["title", "actions"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
+    _handleActionClick(action) {
+        this.dispatchEvent(new CustomEvent("action-click", {
+            detail: action,
+            bubbles: true,
+            composed: true,
+        }));
     }
     static styles = css `
     :host {
@@ -5150,21 +4648,6 @@ let AppPageToolbar = class AppPageToolbar extends LitElement {
       font-size: 1.125rem;
     }
   `;
-    _getActions() {
-        try {
-            return JSON.parse(this.actions);
-        }
-        catch {
-            return [];
-        }
-    }
-    _handleActionClick(action) {
-        this.dispatchEvent(new CustomEvent("action-click", {
-            detail: action,
-            bubbles: true,
-            composed: true,
-        }));
-    }
     render() {
         const parsedActions = this._getActions();
         return html `
@@ -5202,29 +4685,10 @@ AppPageToolbar = __decorate([
 ], AppPageToolbar);
 
 let AppSplitView = class AppSplitView extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["direction", "split", "minFirst", "minSecond", "_isDragging"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["direction", "split", "minFirst", "minSecond", "_isDragging"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    direction = "horizontal";
+    split = 50;
+    minFirst = 20;
+    minSecond = 20;
     _isDragging = false;
     static styles = css `
     :host {
@@ -5375,29 +4839,9 @@ AppSplitView = __decorate([
 ], AppSplitView);
 
 let AppAvatar = class AppAvatar extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["src", "alt", "size"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["src", "alt", "size"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    src = "";
+    alt = "";
+    size = "md";
     static styles = css `
     :host {
       display: inline-flex;
@@ -5485,29 +4929,9 @@ AppAvatar = __decorate([
 ], AppAvatar);
 
 let AppChip = class AppChip extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["label", "removable", "icon"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["label", "removable", "icon"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    label = "";
+    removable = false;
+    icon = null;
     static styles = css `
     :host {
       display: inline-flex;
@@ -5586,29 +5010,9 @@ AppChip = __decorate([
 ], AppChip);
 
 let AppPagination = class AppPagination extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["page", "total", "pageSize"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["page", "total", "pageSize"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    page = 1;
+    total = 0;
+    pageSize = 10;
     static styles = css `
     :host {
       display: block;
@@ -5732,28 +5136,20 @@ AppPagination = __decorate([
 ], AppPagination);
 
 let AppTabs = class AppTabs extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["tabs", "activeTab"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
+    tabs = "";
+    activeTab = "";
+    get _parsedTabs() {
+        try {
+            return JSON.parse(this.tabs);
+        }
+        catch {
+            return [];
         }
     }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["tabs", "activeTab"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
+    _selectTab(tab) {
+        if (tab === this.activeTab)
+            return;
+        this.dispatchEvent(new CustomEvent("tabChange", { detail: { tab }, bubbles: true, composed: true }));
     }
     static styles = css `
     :host {
@@ -5785,19 +5181,6 @@ let AppTabs = class AppTabs extends LitElement {
       border-bottom-color: var(--accent);
     }
   `;
-    get _parsedTabs() {
-        try {
-            return JSON.parse(this.tabs);
-        }
-        catch {
-            return [];
-        }
-    }
-    _selectTab(tab) {
-        if (tab === this.activeTab)
-            return;
-        this.dispatchEvent(new CustomEvent("tabChange", { detail: { tab }, bubbles: true, composed: true }));
-    }
     render() {
         const tabs = this._parsedTabs;
         return html `
@@ -5825,29 +5208,8 @@ AppTabs = __decorate([
 ], AppTabs);
 
 let AppProgressBar = class AppProgressBar extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["value", "max"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["value", "max"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    value = 0;
+    max = 100;
     static styles = css `
     :host {
       display: block;
@@ -5914,28 +5276,20 @@ AppProgressBar = __decorate([
 ], AppProgressBar);
 
 let AppSegmentSelector = class AppSegmentSelector extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["options", "selected"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
+    options = "";
+    selected = "";
+    get _parsedOptions() {
+        try {
+            return JSON.parse(this.options);
+        }
+        catch {
+            return [];
         }
     }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["options", "selected"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
+    _select(option) {
+        if (option === this.selected)
+            return;
+        this.dispatchEvent(new CustomEvent("change", { detail: { selected: option }, bubbles: true, composed: true }));
     }
     static styles = css `
     :host {
@@ -5974,19 +5328,6 @@ let AppSegmentSelector = class AppSegmentSelector extends LitElement {
       color: var(--text-on-accent);
     }
   `;
-    get _parsedOptions() {
-        try {
-            return JSON.parse(this.options);
-        }
-        catch {
-            return [];
-        }
-    }
-    _select(option) {
-        if (option === this.selected)
-            return;
-        this.dispatchEvent(new CustomEvent("change", { detail: { selected: option }, bubbles: true, composed: true }));
-    }
     render() {
         const options = this._parsedOptions;
         return html `
@@ -6074,29 +5415,8 @@ const ICONS = new Map([
     ],
 ]);
 let AppIcon = class AppIcon extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["name", "svgClass"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["name", "svgClass"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    name = "clear";
+    svgClass = "";
     static styles = css `
     :host {
       display: inline-flex;
@@ -6127,7 +5447,7 @@ let AppIcon = class AppIcon extends LitElement {
         if (!svg) {
             return html ``;
         }
-        return html `<div class="${this.svgClass || ""}">${svg}</div>`;
+        return html `<div class="${this.svgClass || ""}">${unsafeHTML(svg)}</div>`;
     }
 };
 __decorate([
@@ -6140,30 +5460,654 @@ AppIcon = __decorate([
     customElement("app-icon")
 ], AppIcon);
 
+let AppTooltip = class AppTooltip extends LitElement {
+    text = "";
+    position = "top";
+    trigger = "hover";
+    delay = 200;
+    visible = false;
+    timer = null;
+    static styles = css `
+    :host {
+      position: relative;
+      display: inline-flex;
+    }
+    .bubble {
+      position: absolute;
+      background: var(--bg-elevated, #1f2937);
+      color: var(--text-on-accent, #ffffff);
+      padding: 0.375rem 0.625rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      line-height: 1.2;
+      white-space: nowrap;
+      z-index: 1000;
+      pointer-events: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .bubble.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .bubble.top { bottom: calc(100% + 6px); left: 50%; transform-origin: bottom center; transform: translateX(-50%) scale(0.95); }
+    .bubble.top.visible { transform: translateX(-50%) scale(1); }
+    .bubble.bottom { top: calc(100% + 6px); left: 50%; transform-origin: top center; transform: translateX(-50%) scale(0.95); }
+    .bubble.bottom.visible { transform: translateX(-50%) scale(1); }
+    .bubble.left { right: calc(100% + 6px); top: 50%; transform-origin: right center; transform: translateY(-50%) scale(0.95); }
+    .bubble.left.visible { transform: translateY(-50%) scale(1); }
+    .bubble.right { left: calc(100% + 6px); top: 50%; transform-origin: left center; transform: translateY(-50%) scale(0.95); }
+    .bubble.right.visible { transform: translateY(-50%) scale(1); }
+  `;
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        if (this.timer !== null)
+            clearTimeout(this.timer);
+    }
+    show = () => {
+        if (this.timer !== null)
+            clearTimeout(this.timer);
+        this.timer = window.setTimeout(() => { this.visible = true; }, this.delay);
+    };
+    hide = () => {
+        if (this.timer !== null)
+            clearTimeout(this.timer);
+        this.timer = null;
+        this.visible = false;
+    };
+    toggle = () => {
+        if (this.visible)
+            this.hide();
+        else
+            this.show();
+    };
+    render() {
+        return html `
+      <div
+        class="trigger-wrapper"
+        @mouseenter=${this.trigger === "hover" ? this.show : undefined}
+        @mouseleave=${this.trigger === "hover" ? this.hide : undefined}
+        @click=${this.trigger === "click" ? this.toggle : undefined}
+        @focus=${this.trigger === "focus" ? this.show : undefined}
+        @blur=${this.trigger === "focus" ? this.hide : undefined}
+      >
+        <slot></slot>
+      </div>
+      <div class="bubble ${this.position} ${this.visible ? "visible" : ""}" role="tooltip">${this.text}</div>
+    `;
+    }
+};
+__decorate([
+    property()
+], AppTooltip.prototype, "text", void 0);
+__decorate([
+    property()
+], AppTooltip.prototype, "position", void 0);
+__decorate([
+    property()
+], AppTooltip.prototype, "trigger", void 0);
+__decorate([
+    property({ type: Number })
+], AppTooltip.prototype, "delay", void 0);
+__decorate([
+    state()
+], AppTooltip.prototype, "visible", void 0);
+AppTooltip = __decorate([
+    customElement("app-tooltip")
+], AppTooltip);
+
+let AppSnackbar = class AppSnackbar extends LitElement {
+    message = "";
+    action = "";
+    duration = 4000;
+    type = "default";
+    open = false;
+    dismissed = false;
+    timer = null;
+    static styles = css `
+    :host {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: block;
+    }
+    .bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      background: var(--bg-elevated, #1f2937);
+      color: var(--text-on-accent, #ffffff);
+      font-size: 0.875rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      min-width: 280px;
+      max-width: 560px;
+      border-left: 4px solid var(--accent, #3b82f6);
+    }
+    .bar.success { border-left-color: var(--success, #10b981); }
+    .bar.error { border-left-color: var(--error, #ef4444); }
+    .bar.warning { border-left-color: var(--warning, #f59e0b); }
+    .bar.info { border-left-color: var(--info, #3b82f6); }
+    .message { flex: 1; }
+    .action-btn {
+      background: transparent;
+      border: none;
+      color: var(--accent, #3b82f6);
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+    .action-btn:hover { background: rgba(255, 255, 255, 0.1); }
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      padding: 0.125rem 0.25rem;
+      opacity: 0.7;
+      font-size: 1.125rem;
+      line-height: 1;
+    }
+    .close-btn:hover { opacity: 1; }
+  `;
+    updated(changed) {
+        if (changed.has("open") && this.open && !this.dismissed) {
+            if (this.timer !== null)
+                clearTimeout(this.timer);
+            this.timer = window.setTimeout(() => this.dismiss(), this.duration);
+        }
+    }
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        if (this.timer !== null)
+            clearTimeout(this.timer);
+    }
+    dismiss = () => {
+        this.dismissed = true;
+        this.open = false;
+        this.dispatchEvent(new CustomEvent("dismiss", { bubbles: true, composed: true }));
+    };
+    handleAction = () => {
+        this.dispatchEvent(new CustomEvent("action", { bubbles: true, composed: true }));
+        this.dismiss();
+    };
+    render() {
+        if (!this.open)
+            return html ``;
+        return html `
+      <div class="bar ${this.type}" role="status">
+        <span class="message">${this.message}</span>
+        ${this.action ? html `<button class="action-btn" @click=${this.handleAction}>${this.action}</button>` : ""}
+        <button class="close-btn" @click=${this.dismiss} aria-label="Dismiss">×</button>
+      </div>
+    `;
+    }
+};
+__decorate([
+    property()
+], AppSnackbar.prototype, "message", void 0);
+__decorate([
+    property()
+], AppSnackbar.prototype, "action", void 0);
+__decorate([
+    property({ type: Number })
+], AppSnackbar.prototype, "duration", void 0);
+__decorate([
+    property()
+], AppSnackbar.prototype, "type", void 0);
+__decorate([
+    property({ type: Boolean })
+], AppSnackbar.prototype, "open", void 0);
+__decorate([
+    state()
+], AppSnackbar.prototype, "dismissed", void 0);
+AppSnackbar = __decorate([
+    customElement("app-snackbar")
+], AppSnackbar);
+
+let AppSpinner = class AppSpinner extends LitElement {
+    size = "md";
+    color = "";
+    label = "";
+    static styles = css `
+    :host {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .ring {
+      display: inline-block;
+      border-style: solid;
+      border-color: var(--border-color, #e5e7eb);
+      border-top-color: var(--accent, #3b82f6);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      box-sizing: border-box;
+    }
+    .ring.sm { width: 16px; height: 16px; border-width: 2px; }
+    .ring.md { width: 28px; height: 28px; border-width: 3px; }
+    .ring.lg { width: 44px; height: 44px; border-width: 4px; }
+    .ring.xl { width: 64px; height: 64px; border-width: 5px; }
+    .label { font-size: 0.875rem; color: var(--text-secondary, #6b7280); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  `;
+    render() {
+        return html `
+      <span class="ring ${this.size}" style=${this.color ? `border-top-color: ${this.color}` : ""} role="status"></span>
+      ${this.label ? html `<span class="label">${this.label}</span>` : ""}
+    `;
+    }
+};
+__decorate([
+    property()
+], AppSpinner.prototype, "size", void 0);
+__decorate([
+    property()
+], AppSpinner.prototype, "color", void 0);
+__decorate([
+    property()
+], AppSpinner.prototype, "label", void 0);
+AppSpinner = __decorate([
+    customElement("app-spinner")
+], AppSpinner);
+
+let AppDivider = class AppDivider extends LitElement {
+    orientation = "horizontal";
+    spacing = "md";
+    color = "";
+    static styles = css `
+    :host {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    :host([orientation="vertical"]) {
+      display: inline-flex;
+      align-items: stretch;
+      height: 100%;
+    }
+    .line {
+      background: var(--divider-color, var(--border-color, #e5e7eb));
+      width: 100%;
+      height: 1px;
+    }
+    :host([orientation="vertical"]) .line {
+      width: 1px;
+      height: 100%;
+    }
+    :host([spacing="none"]) { margin: 0; }
+    :host([spacing="sm"]) { margin: 0.5rem 0; }
+    :host([spacing="md"]) { margin: 1rem 0; }
+    :host([spacing="lg"]) { margin: 1.5rem 0; }
+    :host([spacing="xl"]) { margin: 2.5rem 0; }
+    :host([orientation="vertical"][spacing="none"]) { margin: 0; }
+    :host([orientation="vertical"][spacing="sm"]) { margin: 0 0.5rem; }
+    :host([orientation="vertical"][spacing="md"]) { margin: 0 1rem; }
+    :host([orientation="vertical"][spacing="lg"]) { margin: 0 1.5rem; }
+    :host([orientation="vertical"][spacing="xl"]) { margin: 0 2.5rem; }
+  `;
+    render() {
+        return html `<div class="line" style=${this.color ? `background: ${this.color}` : ""} role="separator"></div>`;
+    }
+};
+__decorate([
+    property()
+], AppDivider.prototype, "orientation", void 0);
+__decorate([
+    property()
+], AppDivider.prototype, "spacing", void 0);
+__decorate([
+    property()
+], AppDivider.prototype, "color", void 0);
+AppDivider = __decorate([
+    customElement("app-divider")
+], AppDivider);
+
+let AppTree = class AppTree extends LitElement {
+    nodes = [];
+    selectable = false;
+    selected = "";
+    expanded = [];
+    selectedId = "";
+    expandedSet = new Set();
+    static styles = css `
+    :host { display: block; font-size: 0.875rem; color: var(--text-primary, #1f2937); }
+    ul { list-style: none; margin: 0; padding: 0; }
+    li { user-select: none; }
+    .row {
+      display: flex; align-items: center; gap: 0.375rem;
+      padding: 0.375rem 0.5rem; border-radius: 0.375rem;
+      cursor: pointer; transition: background-color 0.1s;
+    }
+    .row:hover { background: var(--bg-hover, #f3f4f6); }
+    .row.selected { background: var(--accent, #3b82f6); color: var(--text-on-accent, #ffffff); }
+    .toggle {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1rem; height: 1rem; font-size: 0.75rem;
+      transition: transform 0.15s;
+    }
+    .toggle.expanded { transform: rotate(90deg); }
+    .toggle.empty { visibility: hidden; }
+    .icon { font-size: 1rem; width: 1rem; text-align: center; }
+    .label { flex: 1; }
+    .children { padding-left: 1.25rem; }
+  `;
+    willUpdate(changed) {
+        if (changed.has("nodes")) {
+            try {
+                if (typeof this.nodes === "string")
+                    this.nodes = JSON.parse(this.nodes);
+            }
+            catch { /* ignore */ }
+        }
+        if (changed.has("selected") && this.selected)
+            this.selectedId = this.selected;
+        if (changed.has("expanded") && this.expanded.length)
+            this.expandedSet = new Set(this.expanded);
+    }
+    toggle(node) {
+        if (!node.children || node.children.length === 0) {
+            if (this.selectable) {
+                this.selectedId = node.id;
+                this.dispatchEvent(new CustomEvent("select", { detail: { id: node.id, node }, bubbles: true, composed: true }));
+            }
+            return;
+        }
+        if (this.expandedSet.has(node.id))
+            this.expandedSet.delete(node.id);
+        else
+            this.expandedSet.add(node.id);
+        this.expandedSet = new Set(this.expandedSet);
+    }
+    flatten(list, depth = 0) {
+        const out = [];
+        for (const node of list) {
+            const expanded = this.expandedSet.has(node.id);
+            out.push({ node, depth, expanded });
+            if (expanded && node.children)
+                out.push(...this.flatten(node.children, depth + 1));
+        }
+        return out;
+    }
+    render() {
+        const flat = this.flatten(this.nodes || []);
+        return html `
+      <ul role="tree">
+        ${flat.map(({ node, depth, expanded }) => {
+            const hasChildren = !!(node.children && node.children.length);
+            const isSelected = this.selectable && this.selectedId === node.id;
+            return html `
+            <li role="treeitem" aria-expanded=${hasChildren ? String(expanded) : "false"}>
+              <div class="row ${isSelected ? "selected" : ""}" @click=${() => this.toggle(node)}>
+                <span class="toggle ${hasChildren ? "" : "empty"} ${expanded ? "expanded" : ""}">▶</span>
+                ${node.icon ? html `<span class="icon">${node.icon}</span>` : ""}
+                <span class="label">${node.label}</span>
+              </div>
+            </li>
+          `;
+        })}
+      </ul>
+    `;
+    }
+};
+__decorate([
+    property({ type: Array })
+], AppTree.prototype, "nodes", void 0);
+__decorate([
+    property({ type: Boolean })
+], AppTree.prototype, "selectable", void 0);
+__decorate([
+    property()
+], AppTree.prototype, "selected", void 0);
+__decorate([
+    property({ type: Array })
+], AppTree.prototype, "expanded", void 0);
+__decorate([
+    state()
+], AppTree.prototype, "selectedId", void 0);
+__decorate([
+    state()
+], AppTree.prototype, "expandedSet", void 0);
+AppTree = __decorate([
+    customElement("app-tree")
+], AppTree);
+
+let AppForm = class AppForm extends LitElement {
+    heading = "";
+    submitText = "Submit";
+    cancelText = "Cancel";
+    showActions = true;
+    static styles = css `
+    :host {
+      display: block;
+      background: var(--bg-elevated, #ffffff);
+      border: 1px solid var(--border-color, #e5e7eb);
+      border-radius: 0.5rem;
+      padding: 1.25rem;
+    }
+    .heading {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary, #1f2937);
+      margin: 0 0 1rem;
+    }
+    .fields { display: flex; flex-direction: column; gap: 0.75rem; }
+    .actions {
+      display: flex; justify-content: flex-end; gap: 0.5rem;
+      margin-top: 1.25rem; padding-top: 1rem;
+      border-top: 1px solid var(--border-color, #e5e7eb);
+    }
+    button {
+      padding: 0.5rem 1rem; border-radius: 0.375rem;
+      border: 1px solid var(--border-color, #e5e7eb);
+      background: var(--bg-elevated, #ffffff);
+      color: var(--text-primary, #1f2937);
+      font-size: 0.875rem; font-weight: 500; cursor: pointer;
+      transition: background-color 0.15s;
+    }
+    button:hover { background: var(--bg-hover, #f3f4f6); }
+    button.primary {
+      background: var(--accent, #3b82f6);
+      border-color: var(--accent, #3b82f6);
+      color: var(--text-on-accent, #ffffff);
+    }
+    button.primary:hover { opacity: 0.9; }
+  `;
+    submit = (e) => {
+        e.preventDefault();
+        this.dispatchEvent(new CustomEvent("submit", { bubbles: true, composed: true }));
+    };
+    cancel = (e) => {
+        e.preventDefault();
+        this.dispatchEvent(new CustomEvent("cancel", { bubbles: true, composed: true }));
+    };
+    render() {
+        return html `
+      ${this.heading ? html `<h3 class="heading">${this.heading}</h3>` : ""}
+      <form @submit=${this.submit} novalidate>
+        <div class="fields"><slot></slot></div>
+        ${this.showActions
+            ? html `
+              <div class="actions">
+                <button type="button" @click=${this.cancel}>${this.cancelText}</button>
+                <button type="submit" class="primary">${this.submitText}</button>
+              </div>
+            `
+            : ""}
+      </form>
+    `;
+    }
+};
+__decorate([
+    property()
+], AppForm.prototype, "heading", void 0);
+__decorate([
+    property()
+], AppForm.prototype, "submitText", void 0);
+__decorate([
+    property()
+], AppForm.prototype, "cancelText", void 0);
+__decorate([
+    property({ type: Boolean })
+], AppForm.prototype, "showActions", void 0);
+AppForm = __decorate([
+    customElement("app-form")
+], AppForm);
+
+let AppNavItem = class AppNavItem extends LitElement {
+    label = "";
+    icon = null;
+    active = false;
+    disabled = false;
+    static styles = css `
+    :host {
+      display: block;
+    }
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: none;
+      border-radius: 0.375rem;
+      background: transparent;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      transition: background-color 0.15s, color 0.15s;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    button.active {
+      background: var(--accent);
+      color: var(--text-on-accent);
+    }
+
+    button.active:hover {
+      background: var(--accent-hover);
+    }
+
+    .nav-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.25rem;
+      height: 1.25rem;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .nav-label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  `;
+    _handleClick(e) {
+        if (this.disabled) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+        this.dispatchEvent(new CustomEvent("click", { detail: e, bubbles: true, composed: true }));
+    }
+    render() {
+        return html `
+      <button
+        type="button"
+        class="${this.active ? "active" : ""}"
+        ?disabled="${this.disabled}"
+        @click="${this._handleClick}"
+      >
+        ${this.icon
+            ? html `<i class="material-icons nav-icon">${this.icon}</i>`
+            : ""}
+        <span class="nav-label">${this.label}</span>
+      </button>
+    `;
+    }
+};
+__decorate([
+    property()
+], AppNavItem.prototype, "label", void 0);
+__decorate([
+    property()
+], AppNavItem.prototype, "icon", void 0);
+__decorate([
+    property({ type: Boolean })
+], AppNavItem.prototype, "active", void 0);
+__decorate([
+    property({ type: Boolean })
+], AppNavItem.prototype, "disabled", void 0);
+AppNavItem = __decorate([
+    customElement("app-nav-item")
+], AppNavItem);
+
+let AppNavGroup = class AppNavGroup extends LitElement {
+    title = "";
+    static styles = css `
+    :host {
+      display: block;
+    }
+
+    .nav-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .nav-group-title {
+      margin: 0 0 0.5rem 0;
+      padding: 0 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-variant: small-caps;
+      text-transform: lowercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+  `;
+    render() {
+        return html `
+      <div class="nav-group">
+        ${this.title ? html `<p class="nav-group-title">${this.title}</p>` : ""}
+        <slot></slot>
+      </div>
+    `;
+    }
+};
+__decorate([
+    property()
+], AppNavGroup.prototype, "title", void 0);
+AppNavGroup = __decorate([
+    customElement("app-nav-group")
+], AppNavGroup);
+
 let AppLanguageSelector = class AppLanguageSelector extends LitElement {
-    constructor() {
-        super();
-        for (const key of ["languages", "value", "label", "labelId"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["languages", "value", "label", "labelId"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
+    languages = "";
+    value = "";
+    label = "";
+    labelId = "";
     static styles = css `
     :host {
       display: inline-flex;
@@ -6223,7 +6167,13 @@ let AppLanguageSelector = class AppLanguageSelector extends LitElement {
     }
     _getParsedLanguages() {
         try {
-            return JSON.parse(this.languages || "[]");
+            if (typeof this.languages === "string") {
+                return JSON.parse(this.languages || "[]");
+            }
+            if (Array.isArray(this.languages)) {
+                return this.languages;
+            }
+            return [];
         }
         catch {
             return [];
@@ -6325,30 +6275,13 @@ AppSwapButton = __decorate([
 ], AppSwapButton);
 
 let AppTextInput = class AppTextInput extends LitElement {
+    value = "";
+    placeholder = "";
+    charCount = "";
+    maxChars = 0;
+    id = "";
+    clearable = false;
     _textarea = null;
-    constructor() {
-        super();
-        for (const key of ["value", "placeholder", "charCount", "maxChars", "id", "clearable"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["value", "placeholder", "charCount", "maxChars", "id", "clearable"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
     static styles = css `
     :host {
       display: flex;
@@ -6513,30 +6446,10 @@ AppTextInput = __decorate([
 ], AppTextInput);
 
 let AppTranslationOutput = class AppTranslationOutput extends LitElement {
+    value = "";
+    placeholder = "";
+    id = "";
     _textarea = null;
-    constructor() {
-        super();
-        for (const key of ["value", "placeholder", "id"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["value", "placeholder", "id"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
     static styles = css `
     :host {
       display: flex;
@@ -6660,30 +6573,10 @@ AppTranslationOutput = __decorate([
 ], AppTranslationOutput);
 
 let AppToast = class AppToast extends LitElement {
+    message = "";
+    visible = false;
+    type = "info";
     _timeout = null;
-    constructor() {
-        super();
-        for (const key of ["message", "visible", "type"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const val = this[key];
-                delete this[key];
-                this[key] = val;
-            }
-        }
-    }
-    connectedCallback() {
-        const saved = {};
-        for (const key of ["message", "visible", "type"]) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                saved[key] = this[key];
-                delete this[key];
-            }
-        }
-        super.connectedCallback();
-        for (const [key, value] of Object.entries(saved)) {
-            this[key] = value;
-        }
-    }
     disconnectedCallback() {
         super.disconnectedCallback();
         if (this._timeout) {
@@ -6922,6 +6815,9 @@ let AppThemeToggle = class AppThemeToggle extends LitElement {
             detail: { isDark: this.isDark },
             bubbles: true,
             composed: true,
+        }));
+        window.dispatchEvent(new CustomEvent("toggle-dark", {
+            detail: { isDark: this.isDark },
         }));
     }
     render() {
@@ -7202,1229 +7098,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
                 }]
         }] });
 
-class SignalStoreService {
-    _state = signal({}, ...(ngDevMode ? [{ debugName: "_state" }] : []));
-    state = computed(() => this._state(), ...(ngDevMode ? [{ debugName: "state" }] : []));
-    set(key, value) {
-        this._state.update((state) => ({
-            ...state,
-            [key]: value,
-        }));
-    }
-    get(key) {
-        return this._state()[key];
-    }
-    update(key, fn) {
-        const current = this.get(key);
-        this.set(key, fn(current));
-    }
-    delete(key) {
-        this._state.update((state) => {
-            const { [key]: _, ...rest } = state;
-            return rest;
-        });
-    }
-    keys() {
-        return Object.keys(this._state());
-    }
-    has(key) {
-        return key in this._state();
-    }
-    clear() {
-        this._state.set({});
-    }
-    toJSON() {
-        return this._state();
-    }
-    fromJSON(json) {
-        this._state.set(json);
-    }
-    patch(patch) {
-        this._state.update((state) => ({
-            ...state,
-            ...patch,
-        }));
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-class EventBusService {
-    handlers = new Map();
-    toasts = signal([], ...(ngDevMode ? [{ debugName: "toasts" }] : []));
-    pendingToasts = this.toasts.asReadonly();
-    hasToasts = () => this.toasts().length > 0;
-    emit(event, data) {
-        const eventHandlers = this.handlers.get(event);
-        if (eventHandlers) {
-            eventHandlers.forEach((handler) => handler(data));
-        }
-    }
-    on(event, handler, context) {
-        if (!this.handlers.has(event)) {
-            this.handlers.set(event, new Set());
-        }
-        const eventHandlers = this.handlers.get(event);
-        const wrapped = context ? handler.bind(context) : handler;
-        eventHandlers.add(wrapped);
-        return () => this.off(event, wrapped);
-    }
-    once(event, handler, context) {
-        const wrapped = (...args) => {
-            this.off(event, wrapped);
-            handler.apply(context, args);
-        };
-        return this.on(event, wrapped);
-    }
-    off(event, handler) {
-        if (!handler) {
-            this.handlers.delete(event);
-            return;
-        }
-        const eventHandlers = this.handlers.get(event);
-        if (eventHandlers) {
-            eventHandlers.delete(handler);
-            if (eventHandlers.size === 0) {
-                this.handlers.delete(event);
-            }
-        }
-    }
-    offAll(event) {
-        if (event) {
-            this.handlers.delete(event);
-        }
-        else {
-            this.handlers.clear();
-        }
-    }
-    hasListeners(event) {
-        const handlers = this.handlers.get(event);
-        return handlers !== undefined && handlers.size > 0;
-    }
-    getListenerCount(event) {
-        return this.handlers.get(event)?.size ?? 0;
-    }
-    generateId() {
-        return `toast-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-    }
-    showToast(message, type, duration = 3000) {
-        const notification = {
-            id: this.generateId(),
-            message,
-            type: type ?? "info",
-            duration,
-        };
-        this.toasts.update((t) => [...t, notification]);
-        if (duration > 0) {
-            setTimeout(() => this.dismissToast(notification.id), duration);
-        }
-        return notification.id;
-    }
-    success(message, duration = 3000) {
-        return this.showToast(message, "success", duration);
-    }
-    error(message, duration = 3000) {
-        return this.showToast(message, "error", duration);
-    }
-    warning(message, duration = 3000) {
-        return this.showToast(message, "warning", duration);
-    }
-    info(message, duration = 3000) {
-        return this.showToast(message, "info", duration);
-    }
-    dismissToast(id) {
-        this.toasts.update((t) => t.filter((n) => n.id !== id));
-    }
-    dismissAllToasts() {
-        this.toasts.set([]);
-    }
-    notify(notification) {
-        const id = notification.id ?? this.generateId();
-        this.toasts.update((t) => [...t, { ...notification, id }]);
-        if (notification.duration > 0) {
-            setTimeout(() => this.dismissToast(id), notification.duration);
-        }
-        return id;
-    }
-    getToast(id) {
-        return this.toasts().find((t) => t.id === id);
-    }
-    clearHistory() {
-        this.toasts.set([]);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: EventBusService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: EventBusService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: EventBusService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-let CrudService$1 = class CrudService {
-    storage = signal(null, ...(ngDevMode ? [{ debugName: "storage" }] : []));
-    init(storage) {
-        this.storage.set(storage);
-    }
-    getStorage() {
-        const s = this.storage();
-        if (!s)
-            throw new Error("CrudService not initialized");
-        return s;
-    }
-    getCollection(collection) {
-        const data = this.getStorage().get(collection);
-        return data || [];
-    }
-    saveCollection(collection, data) {
-        this.getStorage().set(collection, data);
-    }
-    create(collection, item) {
-        const data = this.getCollection(collection);
-        const timestamp = Date.now();
-        const entity = {
-            ...item,
-            created_at: timestamp,
-            updated_at: timestamp,
-        };
-        data.push(entity);
-        this.saveCollection(collection, data);
-        this.addPending({
-            _op: "create",
-            _ts: timestamp,
-            id: entity.id,
-        });
-    }
-    read(collection, id) {
-        const data = this.getCollection(collection);
-        return (data.find((item) => item.id === id) || null);
-    }
-    update(collection, id, changes) {
-        const data = this.getCollection(collection);
-        const index = data.findIndex((item) => item.id === id);
-        if (index === -1)
-            return;
-        const timestamp = Date.now();
-        const updated = {
-            ...data[index],
-            ...changes,
-            updated_at: timestamp,
-        };
-        data[index] = updated;
-        this.saveCollection(collection, data);
-        this.addPending({
-            _op: "update",
-            _ts: timestamp,
-            id,
-            data: changes,
-        });
-    }
-    delete(collection, id) {
-        const data = this.getCollection(collection);
-        const filtered = data.filter((item) => item.id !== id);
-        this.saveCollection(collection, filtered);
-        this.addPending({
-            _op: "delete",
-            _ts: Date.now(),
-            id,
-        });
-    }
-    query(collection, q) {
-        let data = this.getCollection(collection);
-        if (q.filters) {
-            for (const filter of q.filters) {
-                data = this.applyFilter(data, filter);
-            }
-        }
-        if (q.sortBy) {
-            data = this.applySort(data, q.sortBy, q.sortAsc ?? true);
-        }
-        if (q.offset) {
-            data = data.slice(q.offset);
-        }
-        if (q.limit) {
-            data = data.slice(0, q.limit);
-        }
-        return data;
-    }
-    applyFilter(data, filter) {
-        return data.filter((item) => {
-            const value = item[filter.field];
-            switch (filter.operator) {
-                case "eq":
-                    return value === filter.value;
-                case "ne":
-                    return value !== filter.value;
-                case "gt":
-                    return value > filter.value;
-                case "gte":
-                    return value >= filter.value;
-                case "lt":
-                    return value < filter.value;
-                case "lte":
-                    return value <= filter.value;
-                case "contains":
-                    return String(value)
-                        .toLowerCase()
-                        .includes(String(filter.value).toLowerCase());
-                case "startsWith":
-                    return String(value)
-                        .toLowerCase()
-                        .startsWith(String(filter.value).toLowerCase());
-                case "endsWith":
-                    return String(value)
-                        .toLowerCase()
-                        .endsWith(String(filter.value).toLowerCase());
-                default:
-                    return true;
-            }
-        });
-    }
-    applySort(data, sortBy, asc) {
-        return [...data].sort((a, b) => {
-            const aVal = a[sortBy];
-            const bVal = b[sortBy];
-            if (aVal == null)
-                return 1;
-            if (bVal == null)
-                return -1;
-            const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-            return asc ? cmp : -cmp;
-        });
-    }
-    addPending(op) {
-        const pending = this.getStorage().get("_pending_ops") || [];
-        pending.push(op);
-        this.getStorage().set("_pending_ops", pending);
-    }
-    batchCreate(collection, items) {
-        const data = this.getCollection(collection);
-        const timestamp = Date.now();
-        for (const item of items) {
-            const entity = {
-                ...item,
-                created_at: timestamp,
-                updated_at: timestamp,
-            };
-            data.push(entity);
-        }
-        this.saveCollection(collection, data);
-    }
-    batchDelete(collection, ids) {
-        const data = this.getCollection(collection);
-        const filtered = data.filter((item) => !ids.includes(item.id));
-        this.saveCollection(collection, filtered);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, providedIn: "root" });
-};
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService$1, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-class ComponentRegistryService {
-    registry = new Map();
-    componentManifest = {};
-    _schemaComponents = new Map();
-    _componentModules = new Map();
-    constructor() {
-        this.registerBuiltInComponents();
-        this.loadComponentManifest();
-    }
-    registerBuiltInComponents() {
-        // Built-in UI components
-        const components = {
-            // Layout
-            header: { selector: "app-header" },
-            footer: { selector: "app-footer" },
-            sidebar: { selector: "app-sidebar" },
-            "page-container": { selector: "app-page-container" },
-            "page-toolbar": { selector: "app-page-toolbar" },
-            "split-view": { selector: "app-split-view" },
-            "main-editor": { selector: "app-main-editor" },
-            // UI
-            button: { selector: "app-button" },
-            input: { selector: "app-input" },
-            textarea: { selector: "app-textarea" },
-            select: { selector: "app-select" },
-            checkbox: { selector: "app-checkbox" },
-            radio: { selector: "app-radio" },
-            switch: { selector: "app-switch" },
-            slider: { selector: "app-slider" },
-            badge: { selector: "app-badge" },
-            avatar: { selector: "app-avatar" },
-            chip: { selector: "app-chip" },
-            tabs: { selector: "app-tabs" },
-            "empty-state": { selector: "app-empty-state" },
-            loading: { selector: "app-loading" },
-            "progress-bar": { selector: "app-progress-bar" },
-            pagination: { selector: "app-pagination" },
-            tooltip: { selector: "app-tooltip" },
-            // Data
-            card: { selector: "app-card" },
-            "stats-card": { selector: "app-stats-card" },
-            "table-view": { selector: "app-table-view" },
-            "data-table": { selector: "app-data-table" },
-            "json-view": { selector: "app-json-view" },
-            "segment-selector": { selector: "app-segment-selector" },
-            // Feedback
-            dialog: { selector: "app-dialog" },
-            "confirm-dialog": { selector: "app-confirm-dialog" },
-            toast: { selector: "app-toast" },
-            snackbar: { selector: "app-snackbar" },
-            modal: { selector: "app-modal" },
-            "command-palette": { selector: "app-command-palette" },
-            // Grid
-            "grid-container": { selector: "app-grid-container" },
-            "grid-item": { selector: "app-grid-item" },
-            "grid-area": { selector: "app-grid-area" },
-            // Designer
-            "designer-sidebar": { selector: "app-designer-sidebar" },
-            "component-palette": { selector: "app-component-palette" },
-            canvas: { selector: "app-canvas" },
-            "canvas-toolbar": { selector: "app-canvas-toolbar" },
-            "properties-panel": { selector: "app-properties-panel" },
-            "bottom-panel": { selector: "app-bottom-panel" },
-        };
-        Object.entries(components).forEach(([id, def]) => {
-            this.register(id, def);
-        });
-    }
-    async loadComponentManifest() {
-        try {
-            const response = await fetch("/assets/component-manifest.json");
-            if (response.ok) {
-                this.componentManifest = await response.json();
-            }
-        }
-        catch {
-            // Manifest not found, use built-in registry only
-        }
-    }
-    register(componentId, definition) {
-        this.registry.set(componentId, definition);
-    }
-    unregister(componentId) {
-        this.registry.delete(componentId);
-    }
-    get(componentId) {
-        return this.registry.get(componentId);
-    }
-    getSelector(componentId) {
-        const def = this.registry.get(componentId);
-        if (!def) {
-            console.warn(`ComponentRegistry: Unknown component "${componentId}", using fallback selector`);
-            return `app-${componentId}`;
-        }
-        return def.selector;
-    }
-    has(componentId) {
-        return this.registry.has(componentId);
-    }
-    resolveBehavior(componentId) {
-        const def = this.registry.get(componentId);
-        return def?.behaviors;
-    }
-    mergeBehavior(componentId, schemaBehavior) {
-        const registered = this.resolveBehavior(componentId) ?? {};
-        if (!schemaBehavior)
-            return registered;
-        return {
-            selfMethods: { ...registered.selfMethods, ...schemaBehavior.selfMethods },
-            classSetters: { ...registered.classSetters, ...schemaBehavior.classSetters },
-            eventHandlers: this.mergeEventHandlers(registered.eventHandlers, schemaBehavior.eventHandlers),
-        };
-    }
-    mergeEventHandlers(base, override) {
-        if (!base && !override)
-            return undefined;
-        if (!base)
-            return override;
-        if (!override)
-            return base;
-        const merged = { ...base };
-        Object.entries(override).forEach(([event, handlers]) => {
-            const existing = merged[event] ?? [];
-            merged[event] = [...existing, ...handlers];
-        });
-        return merged;
-    }
-    getAllComponentIds() {
-        return Array.from(this.registry.keys());
-    }
-    getComponentsByCategory(category) {
-        // Filter components by category from manifest
-        const manifest = this.componentManifest[category];
-        if (!manifest)
-            return [];
-        return Object.keys(manifest);
-    }
-    // Schema-based component registration (delegated from schema-renderer/component-registry.ts)
-    registerComponent(def) {
-        this._schemaComponents.set(def.selector, def);
-    }
-    registerComponents(defs) {
-        for (const def of defs) {
-            this.registerComponent(def);
-        }
-    }
-    getComponent(selector) {
-        return this._schemaComponents.get(selector);
-    }
-    registerComponentModule(selector, module) {
-        const modules = new Map(this._componentModules);
-        modules.set(selector, module);
-        this._componentModules = modules;
-    }
-    async loadComponentModule(selector) {
-        const cached = this._componentModules.get(selector);
-        if (cached) {
-            const constructor = cached["default"];
-            if (constructor)
-                return constructor;
-        }
-        const def = this._schemaComponents.get(selector);
-        if (!def) {
-            throw new Error(`Component not found: ${selector}`);
-        }
-        const module = (await import(/* @vite-ignore */ def.selector));
-        this.registerComponentModule(selector, module);
-        const constructor = module["default"];
-        if (!constructor) {
-            throw new Error(`Module ${selector} does not export a default CustomElementConstructor`);
-        }
-        return constructor;
-    }
-    getComponentModules() {
-        return this._componentModules;
-    }
-    loadComponentsFromSchema(pages) {
-        const registry = new Map();
-        for (const page of pages) {
-            for (const comp of page.components || []) {
-                registry.set(comp.selector, comp);
-            }
-        }
-        this._schemaComponents = registry;
-    }
-    hasComponent(selector) {
-        return this._schemaComponents.has(selector);
-    }
-    getRegisteredSelectors() {
-        return Array.from(this._schemaComponents.keys());
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentRegistryService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentRegistryService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentRegistryService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }], ctorParameters: () => [] });
-
-class DataBindingResolverService {
-    signalStore;
-    crudService;
-    _params = {};
-    _functions = {};
-    constructor(signalStore, crudService) {
-        this.signalStore = signalStore;
-        this.crudService = crudService;
-    }
-    setParams(params) {
-        this._params = params;
-    }
-    registerFunction(name, fn) {
-        this._functions[name] = fn;
-    }
-    registerFunctions(fns) {
-        this._functions = { ...this._functions, ...fns };
-    }
-    resolveDataBinding(binding) {
-        if (typeof binding === "string") {
-            // Resolve {{functions.name(args)}} pattern
-            const fnPattern = /\{\{functions\.([^}]+)\}\}/g;
-            const fnResult = binding.replace(fnPattern, (_, callExpr) => {
-                const value = this.resolveFunctionCall(callExpr);
-                return value !== undefined ? String(value) : binding;
-            });
-            if (fnResult !== binding)
-                return fnResult;
-            // Resolve {{params.*}} pattern
-            const paramsPattern = /\{\{params\.([^}]+)\}\}/g;
-            const paramsResult = binding.replace(paramsPattern, (_, path) => {
-                const value = this.resolveParamsPath(path);
-                return value !== undefined ? String(value) : binding;
-            });
-            if (paramsResult !== binding)
-                return paramsResult;
-            // Resolve {{data.*}} pattern
-            const dataPattern = /\{\{data\.([^}]+)\}\}/g;
-            const dataResult = binding.replace(dataPattern, (_, path) => {
-                const value = this.getDataBindingValue(path);
-                return value !== undefined ? String(value) : binding;
-            });
-            return dataResult;
-        }
-        if (binding && typeof binding === "object" && "entity" in binding) {
-            const db = binding;
-            if (db.operation) {
-                return this.executeCrudOperation(db);
-            }
-            const entityValue = this.signalStore.get(db.entity);
-            if (db.field !== undefined) {
-                return this.getNestedValue(entityValue, db.field);
-            }
-            return entityValue;
-        }
-        return binding;
-    }
-    resolveFunctionCall(callExpr) {
-        // Parse "name(arg1, arg2)" or "name(arg1, 'string', key: value)"
-        const match = callExpr.match(/^(\w+)\((.*)\)$/);
-        if (!match) {
-            // No args — treat as property access on functions registry
-            return this._functions[callExpr];
-        }
-        const [, fnName, argsStr] = match;
-        const fn = this._functions[fnName];
-        if (typeof fn !== "function")
-            return undefined;
-        const args = this.parseCallArgs(argsStr);
-        // Resolve each argument (may contain nested bindings)
-        const resolvedArgs = args.map((arg) => this.resolveDataBinding(arg));
-        return fn(...resolvedArgs);
-    }
-    parseCallArgs(argsStr) {
-        if (!argsStr.trim())
-            return [];
-        const result = [];
-        let current = "";
-        let depth = 0;
-        let inString = false;
-        let stringChar = "";
-        for (const char of argsStr) {
-            if ((char === '"' || char === "'") && !inString) {
-                inString = true;
-                stringChar = char;
-                current += char;
-            }
-            else if (char === stringChar && inString) {
-                inString = false;
-                stringChar = "";
-                current += char;
-            }
-            else if (char === "(" && !inString) {
-                depth++;
-                current += char;
-            }
-            else if (char === ")" && !inString) {
-                depth--;
-                current += char;
-            }
-            else if (char === "," && depth === 0 && !inString) {
-                result.push(current.trim());
-                current = "";
-            }
-            else {
-                current += char;
-            }
-        }
-        if (current.trim())
-            result.push(current.trim());
-        return result;
-    }
-    resolveParamsPath(path) {
-        return this.getNestedValue(this._params, path);
-    }
-    resolveProps(props, _componentId) {
-        const resolved = {};
-        for (const [key, value] of Object.entries(props)) {
-            resolved[key] = this.resolveDataBinding(value);
-        }
-        return resolved;
-    }
-    executeCrudOperation(binding) {
-        const { entity, operation, params } = binding;
-        const resolvedParams = this.resolveParams(params || {});
-        switch (operation) {
-            case "find": {
-                const query = this.buildCrudQuery(resolvedParams);
-                return this.crudService.query(entity, query);
-            }
-            case "create": {
-                const item = resolvedParams;
-                this.crudService.create(entity, item);
-                return;
-            }
-            case "update": {
-                const id = params["id"];
-                this.crudService.update(entity, id, resolvedParams);
-                return;
-            }
-            case "delete": {
-                const id = params["id"];
-                this.crudService.delete(entity, id);
-                return;
-            }
-            default:
-                return this.signalStore.get(entity);
-        }
-    }
-    resolveParams(params) {
-        const resolved = {};
-        for (const [key, value] of Object.entries(params)) {
-            resolved[key] = this.resolveDataBinding(value);
-        }
-        return resolved;
-    }
-    buildCrudQuery(params) {
-        const query = {};
-        if (params["filter"]) {
-            query.filters = this.buildFilters(params["filter"]);
-        }
-        if (params["sortBy"]) {
-            query.sortBy = params["sortBy"];
-            query.sortAsc = params["sortAsc"] !== false;
-        }
-        if (params["limit"]) {
-            query.limit = params["limit"];
-        }
-        if (params["offset"]) {
-            query.offset = params["offset"];
-        }
-        return query;
-    }
-    buildFilters(filterObj) {
-        const filters = [];
-        for (const [field, value] of Object.entries(filterObj)) {
-            filters.push({ field, operator: "eq", value });
-        }
-        return filters;
-    }
-    getDataBindingValue(path) {
-        const parts = this.parseBindingPath(path);
-        let current = this.signalStore.get(parts[0]);
-        for (let i = 1; i < parts.length; i++) {
-            if (current === null || current === undefined)
-                return undefined;
-            const part = parts[i];
-            const arrayMatch = part.match(/^(\w+)\[(\d+)\]$/);
-            if (arrayMatch) {
-                const [, arrayKey, indexStr] = arrayMatch;
-                const arr = this.getNestedValue(current, arrayKey);
-                if (Array.isArray(arr)) {
-                    const index = parseInt(indexStr, 10);
-                    current = arr[index];
-                }
-                else {
-                    current = undefined;
-                }
-            }
-            else {
-                current = this.getNestedValue(current, part);
-            }
-        }
-        return current;
-    }
-    parseBindingPath(path) {
-        const result = [];
-        const regex = /([^\.]+)\[(\d+)\]|([^\.\[\]]+)/g;
-        let match;
-        while ((match = regex.exec(path)) !== null) {
-            if (match[1] && match[2]) {
-                result.push(`${match[1]}[${match[2]}]`);
-            }
-            else if (match[3]) {
-                result.push(match[3]);
-            }
-        }
-        return result;
-    }
-    getNestedValue(obj, key) {
-        if (obj === null || obj === undefined)
-            return undefined;
-        if (typeof obj !== "object")
-            return undefined;
-        return obj[key];
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataBindingResolverService, deps: [{ token: SignalStoreService }, { token: CrudService$1 }], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataBindingResolverService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataBindingResolverService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }], ctorParameters: () => [{ type: SignalStoreService }, { type: CrudService$1 }] });
-
-class ThemeService {
-    _mode = signal("system", ...(ngDevMode ? [{ debugName: "_mode" }] : []));
-    _accentColor = signal("#3b82f6", ...(ngDevMode ? [{ debugName: "_accentColor" }] : []));
-    _accentShades = signal(null, ...(ngDevMode ? [{ debugName: "_accentShades" }] : []));
-    _registeredThemes = new Map();
-    mode = this._mode.asReadonly();
-    accentColor = this._accentColor.asReadonly();
-    accentShades = this._accentShades.asReadonly();
-    effectiveColorMode = computed(() => {
-        const m = this._mode();
-        if (m === "system") {
-            return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-        }
-        return m;
-    }, ...(ngDevMode ? [{ debugName: "effectiveColorMode" }] : []));
-    constructor() {
-        effect(() => {
-            this.applyTheme(this._mode(), this._accentColor());
-        });
-    }
-    setMode(mode) {
-        this._mode.set(mode);
-        localStorage.setItem("theme-mode", mode);
-    }
-    setTheme(theme) {
-        this.setMode(theme);
-    }
-    setAccentColor(color) {
-        this._accentColor.set(color);
-        localStorage.setItem("theme-accent", color);
-        this.applyAccentShades(color);
-    }
-    registerTheme(name, colors) {
-        this._registeredThemes.set(name, colors);
-    }
-    init() {
-        const savedMode = localStorage.getItem("theme-mode");
-        const savedAccent = localStorage.getItem("theme-accent");
-        if (savedMode)
-            this._mode.set(savedMode);
-        if (savedAccent)
-            this._accentColor.set(savedAccent);
-        const shades = this.calculateShades(savedAccent || "#3b82f6");
-        this._accentShades.set(shades);
-        this.applyTheme(this._mode(), savedAccent || "#3b82f6");
-    }
-    toggle() {
-        const current = document.documentElement.classList.contains("dark")
-            ? "dark"
-            : "light";
-        this.setMode(current === "dark" ? "light" : "dark");
-    }
-    applyTheme(mode, accent) {
-        const root = document.documentElement;
-        root.classList.remove("light", "dark");
-        const effectiveMode = mode === "system"
-            ? window.matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light"
-            : mode;
-        root.classList.add(effectiveMode);
-        this.applyThemeVariables(effectiveMode, accent);
-    }
-    applyThemeVariables(mode, accent) {
-        const root = document.documentElement;
-        // Core accent
-        root.style.setProperty("--accent", accent);
-        root.style.setProperty("--accent-hover", this.darkenColor(accent, 0.15));
-        // Semantic text colors
-        root.style.setProperty("--text-on-accent", "#ffffff");
-        root.style.setProperty("--text-primary", mode === "dark" ? "#f8fafc" : "#0f172a");
-        root.style.setProperty("--text-secondary", mode === "dark" ? "#94a3b8" : "#64748b");
-        root.style.setProperty("--text-muted", mode === "dark" ? "#64748b" : "#94a3b8");
-        root.style.setProperty("--text-on-error", "#ffffff");
-        root.style.setProperty("--text-on-warning", "#ffffff");
-        root.style.setProperty("--text-on-success", "#ffffff");
-        root.style.setProperty("--text-on-info", "#ffffff");
-        // Background colors
-        root.style.setProperty("--bg-elevated", mode === "dark" ? "#1e293b" : "#ffffff");
-        root.style.setProperty("--bg-hover", mode === "dark" ? "#334155" : "#f1f5f9");
-        root.style.setProperty("--bg-primary", mode === "dark" ? "#0f172a" : "#ffffff");
-        root.style.setProperty("--bg-tertiary", mode === "dark" ? "#0f172a" : "#f8fafc");
-        // Border colors
-        root.style.setProperty("--border-color", mode === "dark" ? "#334155" : "#e2e8f0");
-        // Status colors
-        root.style.setProperty("--error", "#ef4444");
-        root.style.setProperty("--warning", "#f59e0b");
-        root.style.setProperty("--success", "#22c55e");
-        root.style.setProperty("--info", "#06b6d4");
-        // Accent shades
-        const shades = {
-            50: `color-mix(in srgb, ${accent} 10%, ${mode === "dark" ? "black" : "white"})`,
-            100: `color-mix(in srgb, ${accent} 20%, ${mode === "dark" ? "black" : "white"})`,
-            200: `color-mix(in srgb, ${accent} 40%, ${mode === "dark" ? "black" : "white"})`,
-            300: `color-mix(in srgb, ${accent} 60%, ${mode === "dark" ? "black" : "white"})`,
-            400: `color-mix(in srgb, ${accent} 80%, ${mode === "dark" ? "black" : "white"})`,
-            500: accent,
-            600: this.darkenColor(accent, 0.15),
-            700: this.darkenColor(accent, 0.25),
-            800: this.darkenColor(accent, 0.35),
-            900: this.darkenColor(accent, 0.45),
-        };
-        for (const [key, value] of Object.entries(shades)) {
-            root.style.setProperty(`--accent-${key}`, value);
-        }
-        const computedShades = { ...shades };
-        computedShades[500] = accent;
-        this._accentShades.set(computedShades);
-    }
-    darkenColor(hex, amount) {
-        const rgb = this.hexToRgb(hex);
-        if (!rgb)
-            return hex;
-        const r = Math.round(rgb.r * (1 - amount));
-        const g = Math.round(rgb.g * (1 - amount));
-        const b = Math.round(rgb.b * (1 - amount));
-        return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
-    }
-    applyAccentShades(accent) {
-        const root = document.documentElement;
-        root.style.setProperty("--accent", accent);
-        const shades = {
-            50: `color-mix(in srgb, var(--accent) 10%, white)`,
-            100: `color-mix(in srgb, var(--accent) 20%, white)`,
-            200: `color-mix(in srgb, var(--accent) 40%, white)`,
-            300: `color-mix(in srgb, var(--accent) 60%, white)`,
-            400: `color-mix(in srgb, var(--accent) 80%, white)`,
-            500: accent,
-            600: `color-mix(in srgb, var(--accent) 80%, black)`,
-            700: `color-mix(in srgb, var(--accent) 60%, black)`,
-            800: `color-mix(in srgb, var(--accent) 40%, black)`,
-            900: `color-mix(in srgb, var(--accent) 20%, black)`,
-        };
-        for (const [key, value] of Object.entries(shades)) {
-            root.style.setProperty(`--accent-${key}`, value);
-        }
-        const computedShades = { ...shades };
-        computedShades[500] = accent;
-        this._accentShades.set(computedShades);
-    }
-    calculateShades(hex) {
-        const rgb = this.hexToRgb(hex);
-        if (!rgb) {
-            return {
-                50: "#f0f9ff",
-                100: "#e0f2fe",
-                200: "#bae6fd",
-                300: "#7dd3fc",
-                400: "#38bdf8",
-                500: "#0ea5e9",
-                600: "#0284c7",
-                700: "#0369a1",
-                800: "#075985",
-                900: "#0c4a6e",
-            };
-        }
-        const shades = {
-            50: this.rgbToHex(Math.round(rgb.r * 0.95 + 255 * 0.05), Math.round(rgb.g * 0.95 + 255 * 0.05), Math.round(rgb.b * 0.95 + 255 * 0.05)),
-            100: this.rgbToHex(Math.round(rgb.r * 0.9 + 255 * 0.1), Math.round(rgb.g * 0.9 + 255 * 0.1), Math.round(rgb.b * 0.9 + 255 * 0.1)),
-            200: this.rgbToHex(Math.round(rgb.r * 0.8 + 255 * 0.2), Math.round(rgb.g * 0.8 + 255 * 0.2), Math.round(rgb.b * 0.8 + 255 * 0.2)),
-            300: this.rgbToHex(Math.round(rgb.r * 0.7 + 255 * 0.3), Math.round(rgb.g * 0.7 + 255 * 0.3), Math.round(rgb.b * 0.7 + 255 * 0.3)),
-            400: this.rgbToHex(Math.round(rgb.r * 0.6 + 255 * 0.4), Math.round(rgb.g * 0.6 + 255 * 0.4), Math.round(rgb.b * 0.6 + 255 * 0.4)),
-            500: hex,
-            600: this.rgbToHex(Math.round(rgb.r * 0.8), Math.round(rgb.g * 0.8), Math.round(rgb.b * 0.8)),
-            700: this.rgbToHex(Math.round(rgb.r * 0.6), Math.round(rgb.g * 0.6), Math.round(rgb.b * 0.6)),
-            800: this.rgbToHex(Math.round(rgb.r * 0.4), Math.round(rgb.g * 0.4), Math.round(rgb.b * 0.4)),
-            900: this.rgbToHex(Math.round(rgb.r * 0.2), Math.round(rgb.g * 0.2), Math.round(rgb.b * 0.2)),
-        };
-        return shades;
-    }
-    hexToRgb(hex) {
-        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result
-            ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16),
-            }
-            : null;
-    }
-    rgbToHex(r, g, b) {
-        return ("#" +
-            [r, g, b]
-                .map((x) => {
-                const hex = Math.max(0, Math.min(255, x)).toString(16);
-                return hex.length === 1 ? "0" + hex : hex;
-            })
-                .join(""));
-    }
-    hexToRgba(hex, alpha) {
-        const rgb = this.hexToRgb(hex);
-        if (!rgb)
-            return `rgba(0, 0, 0, ${alpha})`;
-        return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ThemeService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }], ctorParameters: () => [] });
-
-class LayoutEngineService {
-    themeService = inject(ThemeService, { optional: true });
-    resolveClass(layout) {
-        if (layout.class)
-            return layout.class;
-        const classes = [];
-        if (layout.type === "grid") {
-            classes.push("grid");
-            if (layout.direction === "row")
-                classes.push("grid-flow-col");
-            else
-                classes.push("grid-flow-row");
-            if (layout.gap)
-                classes.push(`gap-${layout.gap}`);
-            if (layout.rowGap)
-                classes.push(`gap-y-${layout.rowGap}`);
-            if (layout.colGap)
-                classes.push(`gap-x-${layout.colGap}`);
-            if (layout.alignItems) {
-                const map = {
-                    start: "items-start", center: "items-center", end: "items-end",
-                    stretch: "items-stretch", baseline: "items-baseline",
-                };
-                if (map[layout.alignItems])
-                    classes.push(map[layout.alignItems]);
-            }
-            if (layout.justifyItems) {
-                const map = {
-                    start: "justify-items-start", center: "justify-items-center",
-                    end: "justify-items-end", stretch: "justify-items-stretch",
-                };
-                if (map[layout.justifyItems])
-                    classes.push(map[layout.justifyItems]);
-            }
-        }
-        else if (layout.type === "flex") {
-            classes.push("flex");
-            if (layout.direction === "column")
-                classes.push("flex-col");
-            else
-                classes.push("flex-row");
-            if (layout.gap)
-                classes.push(`gap-${layout.gap}`);
-            if (layout.rowGap)
-                classes.push(`gap-y-${layout.rowGap}`);
-            if (layout.colGap)
-                classes.push(`gap-x-${layout.colGap}`);
-            if (layout.flexWrap === "wrap")
-                classes.push("flex-wrap");
-            else if (layout.flexWrap === "nowrap")
-                classes.push("flex-nowrap");
-            else if (layout.flexWrap === "wrap-reverse")
-                classes.push("flex-wrap-reverse");
-            if (layout.flexGrow === true)
-                classes.push("flex-grow");
-            else if (layout.flexGrow === false)
-                classes.push("flex-grow-0");
-            if (layout.flexShrink === true)
-                classes.push("flex-shrink");
-            else if (layout.flexShrink === false)
-                classes.push("flex-shrink-0");
-            if (layout.alignItems) {
-                const map = {
-                    start: "items-start", center: "items-center", end: "items-end",
-                    stretch: "items-stretch", baseline: "items-baseline",
-                };
-                if (map[layout.alignItems])
-                    classes.push(map[layout.alignItems]);
-            }
-            if (layout.alignContent) {
-                const map = {
-                    start: "content-start", center: "content-center", end: "content-end",
-                    between: "content-between", around: "content-around", evenly: "content-evenly",
-                };
-                if (map[layout.alignContent])
-                    classes.push(map[layout.alignContent]);
-            }
-        }
-        else if (layout.type === "stack") {
-            classes.push("flex");
-            classes.push("flex-col");
-            if (layout.gap)
-                classes.push(`gap-${layout.gap}`);
-            if (layout.rowGap)
-                classes.push(`gap-y-${layout.rowGap}`);
-        }
-        // Common sizing
-        if (layout.width === "full")
-            classes.push("w-full");
-        else if (layout.width === "auto")
-            classes.push("w-auto");
-        if (layout.height === "full")
-            classes.push("h-full");
-        else if (layout.height === "auto")
-            classes.push("h-auto");
-        // Margin X (auto for centering)
-        if (layout.marginX === "auto")
-            classes.push("mx-auto");
-        return classes.join(" ");
-    }
-    /**
-     * Applies theme CSS custom properties to a layout container element.
-     * Uses ThemeService to get the current accent color and computed shades,
-     * then sets them as inline CSS variables on the container.
-     */
-    applyThemeVariables(container) {
-        if (!this.themeService)
-            return;
-        const root = document.documentElement;
-        const accent = this.themeService.accentColor();
-        // Copy theme CSS variables from root to the container
-        // This ensures layout containers have explicit theme values even if
-        // they are inside shadow DOM or have custom styling contexts
-        const themeVars = [
-            "--text-primary",
-            "--text-secondary",
-            "--text-muted",
-            "--bg-primary",
-            "--bg-elevated",
-            "--bg-hover",
-            "--bg-tertiary",
-            "--border-color",
-            "--error",
-            "--warning",
-            "--success",
-            "--info",
-            "--accent",
-        ];
-        for (const varName of themeVars) {
-            const value = root.style.getPropertyValue(varName);
-            if (value) {
-                container.style.setProperty(varName, value);
-            }
-        }
-        // Apply accent shades if available
-        const shades = this.themeService.accentShades();
-        if (shades) {
-            for (const [key, value] of Object.entries(shades)) {
-                container.style.setProperty(`--accent-${key}`, value);
-            }
-        }
-    }
-    renderGridLayout(container, layout) {
-        container.style.display = "grid";
-        const layoutClasses = this.resolveClass(layout);
-        if (layoutClasses) {
-            container.className = layoutClasses;
-        }
-        else {
-            const classes = ["grid"];
-            if (layout.direction === "row")
-                classes.push("grid-flow-col");
-            else
-                classes.push("grid-flow-row");
-            if (layout.gap)
-                classes.push(`gap-${layout.gap}`);
-            container.className = classes.join(" ");
-        }
-        if (layout.gridTemplateColumns) {
-            container.style.gridTemplateColumns = layout.gridTemplateColumns;
-        }
-        if (layout.gridTemplateRows) {
-            container.style.gridTemplateRows = layout.gridTemplateRows;
-        }
-        this.applyThemeVariables(container);
-        if (layout.style) {
-            Object.assign(container.style, layout.style);
-        }
-        container.innerHTML = "";
-    }
-    renderFlexLayout(container, layout) {
-        container.style.display = "flex";
-        const layoutClasses = this.resolveClass(layout);
-        if (layoutClasses) {
-            container.className = layoutClasses;
-        }
-        else {
-            const classes = ["flex"];
-            if (layout.direction === "column")
-                classes.push("flex-col");
-            else
-                classes.push("flex-row");
-            if (layout.gap)
-                classes.push(`gap-${layout.gap}`);
-            container.className = classes.join(" ");
-        }
-        this.applyThemeVariables(container);
-        if (layout.style) {
-            Object.assign(container.style, layout.style);
-        }
-        container.innerHTML = "";
-    }
-    resolveGridPosition(layout, componentId) {
-        if (!layout || !layout.positions)
-            return null;
-        const pos = layout.positions.find((p) => p[componentId] !== undefined);
-        if (!pos)
-            return null;
-        const position = pos;
-        return {
-            column: position.column || 1,
-            row: position.row || 1,
-            colSpan: position.colSpan || 1,
-            rowSpan: position.rowSpan || 1,
-        };
-    }
-    resolveGridPositionFromPositions(positions, componentId) {
-        if (!positions)
-            return null;
-        const pos = positions.find((p) => p[componentId] !== undefined);
-        if (!pos)
-            return null;
-        const position = pos;
-        return {
-            column: position.column || 1,
-            row: position.row || 1,
-            colSpan: position.colSpan || 1,
-            rowSpan: position.rowSpan || 1,
-        };
-    }
-    calculateGridSpan(colSpan, rowSpan) {
-        return {
-            gridColumn: `1 / span ${colSpan || 1}`,
-            gridRow: `1 / span ${rowSpan || 1}`,
-        };
-    }
-    applyLayoutStyles(container, layout, children, getComponentById, resolvePosition) {
-        if (layout.children) {
-            for (const childId of layout.children) {
-                const component = getComponentById(childId);
-                if (component) {
-                    const el = document.createElement(component.selector);
-                    const position = resolvePosition(layout, childId);
-                    if (position) {
-                        el.style.gridColumn = `${position.column} / span ${position.colSpan || 1}`;
-                        el.style.gridRow = `${position.row} / span ${position.rowSpan || 1}`;
-                    }
-                    container.appendChild(el);
-                }
-            }
-        }
-    }
-    createGridTemplateString(columns, rows) {
-        return {
-            gridTemplateColumns: columns.join(" "),
-            gridTemplateRows: rows.join(" "),
-        };
-    }
-    parseGridTemplate(template) {
-        return {
-            gridTemplateColumns: template.columns.join(" "),
-            gridTemplateRows: template.rows.join(" "),
-            gap: template.gap,
-        };
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: LayoutEngineService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: LayoutEngineService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: LayoutEngineService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
 // Flat key-value translation maps for i18n
 // All schema text should use i18nKey referencing these keys
 const EN = {
@@ -8523,12 +7196,286 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
             args: [{ providedIn: 'root' }]
         }] });
 
+// Brutalism CSS - inline for reliable loading
+/* Class prefix: brut- */
+const BRUTALISM_CSS = `
+:root {
+  --color-brut-base: #f5f5f0;
+  --color-brut-ink: #0a0a0a;
+  --color-brut-accent: #ff3b30;
+  --color-brut-accent-2: #ffd60a;
+  --color-brut-success: #00c853;
+  --color-brut-border: #0a0a0a;
+  --radius-brut-sm: 0;
+  --radius-brut-md: 0;
+  --radius-brut-lg: 0;
+  --radius-brut-xl: 0;
+  --shadow-brut-sm: 4px 4px 0 0 var(--color-brut-ink);
+  --shadow-brut-md: 6px 6px 0 0 var(--color-brut-ink);
+  --shadow-brut-lg: 8px 8px 0 0 var(--color-brut-ink);
+  --font-brut-mono: "JetBrains Mono", "Courier New", monospace;
+  --font-brut-sans: "Inter", "Arial Black", sans-serif;
+
+  /* Generic aliases for Lit components */
+  --accent: var(--color-brut-accent);
+  --accent-hover: #d62b22;
+  --text-on-accent: #ffffff;
+  --text-primary: var(--color-brut-ink);
+  --text-secondary: #3d3d3d;
+  --text-muted: #6b6b6b;
+  --bg-primary: var(--color-brut-base);
+  --bg-elevated: #ffffff;
+  --bg-hover: #e8e8e3;
+  --bg-tertiary: #d4d4cf;
+  --border-color: var(--color-brut-border);
+  --border-subtle: var(--color-brut-border);
+  --error: var(--color-brut-accent);
+  --warning: var(--color-brut-accent-2);
+  --success: var(--color-brut-success);
+  --info: #0066ff;
+  --text-on-error: #ffffff;
+  --text-on-warning: #0a0a0a;
+  --text-on-success: #ffffff;
+}
+
+/* Brutalist component classes */
+.brut-card {
+  background: var(--bg-elevated);
+  border: 4px solid var(--color-brut-border);
+  border-radius: 0;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-brut-md);
+  font-family: var(--font-brut-sans);
+}
+.brut-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.625rem 1.25rem; font-family: var(--font-brut-sans);
+  font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;
+  border: 4px solid var(--color-brut-border);
+  border-radius: 0; background: var(--bg-elevated);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-brut-sm);
+  transition: transform 0.05s, box-shadow 0.05s;
+  cursor: pointer; user-select: none;
+}
+.brut-btn:hover { background: var(--color-brut-accent-2); }
+.brut-btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 0 var(--color-brut-ink); }
+.brut-btn-primary { background: var(--accent); color: var(--text-on-accent); }
+.brut-input {
+  width: 100%; padding: 0.625rem 0.875rem;
+  font-family: var(--font-brut-mono); font-size: 0.9375rem;
+  border: 4px solid var(--color-brut-border); border-radius: 0;
+  background: var(--bg-elevated); color: var(--text-primary);
+  box-sizing: border-box;
+}
+.brut-input:focus { outline: none; background: var(--color-brut-accent-2); }
+.brut-modal {
+  background: var(--bg-elevated);
+  border: 4px solid var(--color-brut-border);
+  border-radius: 0; padding: 1.5rem;
+  box-shadow: var(--shadow-brut-lg);
+  font-family: var(--font-brut-sans);
+}
+.brut-chip {
+  display: inline-flex; align-items: center;
+  padding: 0.25rem 0.625rem;
+  border: 3px solid var(--color-brut-border); border-radius: 0;
+  background: var(--color-brut-accent-2); color: var(--text-primary);
+  font-family: var(--font-brut-mono); font-weight: 700;
+  text-transform: uppercase; font-size: 0.75rem;
+}
+.brut-badge {
+  display: inline-flex; align-items: center;
+  padding: 0.125rem 0.5rem; border: 3px solid var(--color-brut-border);
+  border-radius: 0; background: var(--accent); color: var(--text-on-accent);
+  font-family: var(--font-brut-mono); font-weight: 700; font-size: 0.75rem;
+}
+.brut-tabs {
+  display: flex; gap: 0;
+  border-bottom: 4px solid var(--color-brut-border);
+  font-family: var(--font-brut-sans);
+}
+.brut-tab {
+  padding: 0.75rem 1.25rem; font-weight: 900; text-transform: uppercase;
+  border: 4px solid var(--color-brut-border); border-bottom: none;
+  background: var(--bg-elevated); color: var(--text-primary);
+  cursor: pointer; margin-right: 4px;
+}
+.brut-tab.active { background: var(--accent); color: var(--text-on-accent); }
+.brut-divider {
+  height: 4px; background: var(--color-brut-border); width: 100%;
+  margin: 1rem 0;
+}
+.brut-spinner {
+  width: 32px; height: 32px;
+  border: 4px solid var(--color-brut-border);
+  border-top-color: var(--accent);
+  border-radius: 0; animation: brut-spin 0.5s linear infinite;
+}
+@keyframes brut-spin { to { transform: rotate(360deg); } }
+`;
+// Skeuomorphism CSS - inline for reliable loading
+/* Class prefix: skeu- */
+const SKEUOMORPHISM_CSS = `
+:root {
+  --color-skeu-base: #e8dcc4;
+  --color-skeu-leather: #6b4423;
+  --color-skeu-leather-dark: #4a2e18;
+  --color-skeu-paper: #f5e6c8;
+  --color-skeu-ink: #2b1810;
+  --color-skeu-accent: #b8860b;
+  --color-skeu-accent-dark: #8b6508;
+  --color-skeu-cream: #faf3e0;
+  --color-skeu-glass: rgba(255,255,255,0.2);
+  --radius-skeu-sm: 6px;
+  --radius-skeu-md: 12px;
+  --radius-skeu-lg: 18px;
+  --radius-skeu-xl: 24px;
+  --shadow-skeu-outset:
+    inset 0 1px 0 rgba(255,255,255,0.4),
+    inset 0 -1px 0 rgba(0,0,0,0.1),
+    0 2px 4px rgba(0,0,0,0.2),
+    0 4px 8px rgba(0,0,0,0.15);
+  --shadow-skeu-inset:
+    inset 0 2px 4px rgba(0,0,0,0.3),
+    inset 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-skeu-glossy:
+    inset 0 1px 0 rgba(255,255,255,0.5),
+    inset 0 -10px 20px rgba(255,255,255,0.1),
+    0 4px 8px rgba(0,0,0,0.2);
+
+  /* Generic aliases for Lit components */
+  --accent: var(--color-skeu-accent);
+  --accent-hover: var(--color-skeu-accent-dark);
+  --text-on-accent: var(--color-skeu-cream);
+  --text-primary: var(--color-skeu-ink);
+  --text-secondary: #5c3d20;
+  --text-muted: #8a6f50;
+  --bg-primary: var(--color-skeu-base);
+  --bg-elevated: var(--color-skeu-paper);
+  --bg-hover: #dcc99e;
+  --bg-tertiary: #c4b58a;
+  --border-color: var(--color-skeu-leather-dark);
+  --border-subtle: #a8916b;
+  --error: #8b0000;
+  --warning: #c47700;
+  --success: #2d5016;
+  --info: #1e4d6b;
+  --text-on-error: #fff5e6;
+  --text-on-warning: #2b1810;
+  --text-on-success: #f5e6c8;
+}
+
+/* Skeuomorphic component classes */
+.skeu-card {
+  background: linear-gradient(180deg, var(--color-skeu-leather) 0%, var(--color-skeu-leather-dark) 100%);
+  color: var(--color-skeu-cream);
+  border: 1px solid var(--color-skeu-leather-dark);
+  border-radius: var(--radius-skeu-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-skeu-outset);
+  font-family: Georgia, "Times New Roman", serif;
+}
+.skeu-card.paper {
+  background: linear-gradient(180deg, var(--color-skeu-paper) 0%, #e8d9b3 100%);
+  color: var(--color-skeu-ink);
+  border-color: #c4b58a;
+}
+.skeu-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.625rem 1.25rem; font-family: Georgia, serif;
+  font-weight: 600; font-size: 0.9375rem;
+  border: 1px solid var(--color-skeu-leather-dark);
+  border-radius: var(--radius-skeu-md);
+  background: linear-gradient(180deg, var(--color-skeu-leather) 0%, var(--color-skeu-leather-dark) 100%);
+  color: var(--color-skeu-cream);
+  box-shadow: var(--shadow-skeu-outset);
+  cursor: pointer; text-shadow: 0 1px 0 rgba(0,0,0,0.4);
+  transition: filter 0.1s;
+}
+.skeu-btn:hover { filter: brightness(1.1); }
+.skeu-btn:active { box-shadow: var(--shadow-skeu-inset); }
+.skeu-btn-primary {
+  background: linear-gradient(180deg, #d4a017 0%, #8b6508 100%);
+  color: var(--color-skeu-cream);
+  border-color: #5a4406;
+}
+.skeu-input {
+  width: 100%; padding: 0.625rem 0.875rem;
+  font-family: Georgia, serif; font-size: 0.9375rem;
+  background: linear-gradient(180deg, #dcc99e 0%, #c4b58a 100%);
+  color: var(--color-skeu-ink);
+  border: 1px solid var(--color-skeu-leather-dark);
+  border-radius: var(--radius-skeu-md);
+  box-shadow: var(--shadow-skeu-inset);
+  box-sizing: border-box;
+}
+.skeu-input:focus { outline: 2px solid var(--accent); }
+.skeu-modal {
+  background: linear-gradient(180deg, var(--color-skeu-paper) 0%, #e8d9b3 100%);
+  color: var(--color-skeu-ink);
+  border: 1px solid var(--color-skeu-leather-dark);
+  border-radius: var(--radius-skeu-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-skeu-outset);
+  font-family: Georgia, serif;
+}
+.skeu-chip {
+  display: inline-flex; align-items: center;
+  padding: 0.25rem 0.75rem; border-radius: var(--radius-skeu-lg);
+  background: linear-gradient(180deg, var(--color-skeu-leather) 0%, var(--color-skeu-leather-dark) 100%);
+  color: var(--color-skeu-cream);
+  font-family: Georgia, serif; font-size: 0.875rem; font-weight: 500;
+  box-shadow: var(--shadow-skeu-outset);
+  border: 1px solid var(--color-skeu-leather-dark);
+}
+.skeu-badge {
+  display: inline-flex; align-items: center;
+  padding: 0.125rem 0.5rem; border-radius: var(--radius-skeu-md);
+  background: linear-gradient(180deg, #d4a017 0%, #8b6508 100%);
+  color: var(--color-skeu-cream);
+  font-family: Georgia, serif; font-weight: 600; font-size: 0.75rem;
+  box-shadow: var(--shadow-skeu-outset);
+  border: 1px solid #5a4406;
+}
+.skeu-tabs {
+  display: flex; gap: 0.25rem;
+  border-bottom: 1px solid var(--color-skeu-leather-dark);
+  font-family: Georgia, serif;
+}
+.skeu-tab {
+  padding: 0.625rem 1rem; font-weight: 500;
+  background: linear-gradient(180deg, #d4b890 0%, #b89968 100%);
+  color: var(--color-skeu-ink);
+  border: 1px solid var(--color-skeu-leather-dark);
+  border-bottom: none;
+  border-radius: var(--radius-skeu-md) var(--radius-skeu-md) 0 0;
+  cursor: pointer; margin-bottom: -1px;
+}
+.skeu-tab.active {
+  background: linear-gradient(180deg, var(--color-skeu-paper) 0%, #e8d9b3 100%);
+  font-weight: 700;
+}
+.skeu-divider {
+  height: 1px; background: linear-gradient(90deg, transparent 0%, var(--color-skeu-leather-dark) 50%, transparent 100%);
+  margin: 1rem 0;
+}
+.skeu-spinner {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, var(--accent) 360deg);
+  -webkit-mask: radial-gradient(circle, transparent 50%, #000 51%);
+          mask: radial-gradient(circle, transparent 50%, #000 51%);
+  animation: skeu-spin 1s linear infinite;
+}
+@keyframes skeu-spin { to { transform: rotate(360deg); } }
+`;
 // Neumorphism CSS - inline for reliable loading
 const NEUMORPHISM_CSS = `
 /* Neumorphism Style System for TailwindCSS v4 */
 /* Class prefix: neu- */
 
-@theme {
+:root {
   /* Neumorphism color palette - muted base colors */
   --color-neu-base: #e0e5ec;
   --color-neu-base-dark: #c8ccd4;
@@ -8562,6 +7509,19 @@ const NEUMORPHISM_CSS = `
   --shadow-neu-inset-strong:
     inset 8px 8px 16px var(--color-neu-shadow-dark-strong),
     inset -8px -8px 16px var(--color-neu-shadow-light-strong);
+
+  /* Generic variables for Lit components */
+  --accent: #6d5dfc;
+  --accent-hover: #5a4cdb;
+  --text-on-accent: #ffffff;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --text-muted: #a0aec0;
+  --text-on-error: #ffffff;
+  --bg-elevated: #e8ecf4;
+  --border-color: #a3b1c6;
+  --error: #e53e3e;
+  --success: #48bb78;
 }
 
 /* Base neumorphism utility */
@@ -9131,7 +8091,7 @@ const CLAYMORPHISM_CSS = `
 /* Claymorphism Style System for TailwindCSS v4 */
 /* Class prefix: clay- */
 
-@theme {
+:root {
   /* Claymorphism color palette */
   --color-clay-base: #e0e5ec;
   --color-clay-raised: #e0e5ec;
@@ -9147,6 +8107,19 @@ const CLAYMORPHISM_CSS = `
   --radius-clay-md: 20px;
   --radius-clay-lg: 24px;
   --radius-clay-xl: 32px;
+
+  /* Generic variables for Lit components */
+  --accent: #6d5dfc;
+  --accent-hover: #5a4cdb;
+  --text-on-accent: #ffffff;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --text-muted: #a0aec0;
+  --text-on-error: #ffffff;
+  --bg-elevated: #e8ecf4;
+  --border-color: #a3b1c6;
+  --error: #e53e3e;
+  --success: #48bb78;
 }
 
 /* Base claymorphism utility */
@@ -9387,7 +8360,7 @@ const GLASSMORPHISM_CSS = `
 /* Glasmorphism Style System for TailwindCSS v4 */
 /* Class prefix: glass- */
 
-@theme {
+:root {
   /* Glasmorphism color palette */
   --color-glass-bg: rgba(255, 255, 255, 0.1);
   --color-glass-bg-hover: rgba(255, 255, 255, 0.15);
@@ -9411,6 +8384,19 @@ const GLASSMORPHISM_CSS = `
   --blur-glass-light: 10px;
   --blur-glass-medium: 20px;
   --blur-glass-heavy: 40px;
+
+  /* Generic variables for Lit components */
+  --accent: #6d5dfc;
+  --accent-hover: #5a4cdb;
+  --text-on-accent: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-secondary: #718096;
+  --text-muted: #a0aec0;
+  --text-on-error: #ffffff;
+  --bg-elevated: rgba(255, 255, 255, 0.15);
+  --border-color: rgba(255, 255, 255, 0.2);
+  --error: #e53e3e;
+  --success: #48bb78;
 }
 
 /* Base glassmorphism utility */
@@ -9802,7 +8788,7 @@ const MATERIAL_DESIGN_V3_CSS = `
 /* Material Design 3 Style System for TailwindCSS v4 */
 /* Class prefix: m3- */
 
-@theme {
+:root {
   /* Material Design 3 color palette */
   --color-m3-primary: #6750a4;
   --color-m3-primary-container: #eaddff;
@@ -9861,6 +8847,19 @@ const MATERIAL_DESIGN_V3_CSS = `
   --radius-m3-large: 16px;
   --radius-m3-extra-large: 28px;
   --radius-m3-full: 50%;
+
+  /* Generic variables for Lit components */
+  --accent: #6750a4;
+  --accent-hover: #7c4dff;
+  --text-on-accent: #ffffff;
+  --text-primary: #1c1b1f;
+  --text-secondary: #49454f;
+  --text-muted: #79747e;
+  --text-on-error: #ffffff;
+  --bg-elevated: #ece6f0;
+  --border-color: #79747e;
+  --error: #b3261e;
+  --success: #48bb78;
 }
 
 /* M3 State layer mixin utility */
@@ -10772,7 +9771,7 @@ const STYLE_VARIANTS = {
     },
     glassmorphism: {
         id: "glassmorphism",
-        name: "Glasmorphism",
+        name: "Glassmorphism",
         cssString: GLASSMORPHISM_CSS,
         classPrefix: "glass-",
         description: "Frosted glass effect with backdrop blur",
@@ -10873,6 +9872,50 @@ const STYLE_VARIANTS = {
             "app-text-input": { variants: { default: "m3-input" } },
             "app-translation-output": { variants: { default: "m3-output" } },
             "app-shortcuts-overlay": { variants: { default: "m3-overlay" } },
+        },
+    },
+    brutalism: {
+        id: "brutalism",
+        name: "Brutalism",
+        cssString: BRUTALISM_CSS,
+        classPrefix: "brut-",
+        description: "Sharp edges, hard shadows, high-contrast typography",
+        componentStyles: {
+            "app-button": { variants: { default: "brut-btn" }, sizes: { sm: "brut-btn-sm", md: "", lg: "brut-btn-lg" } },
+            "app-card": { variants: { default: "brut-card" } },
+            "app-input": { variants: { default: "brut-input" } },
+            "app-textarea": { variants: { default: "brut-input" } },
+            "app-modal": { variants: { default: "brut-modal" } },
+            "app-dialog": { variants: { default: "brut-modal" } },
+            "app-confirm-dialog": { variants: { default: "brut-modal" } },
+            "app-chip": { variants: { default: "brut-chip" } },
+            "app-badge": { variants: { default: "brut-badge" } },
+            "app-tabs": { variants: { default: "brut-tabs" } },
+            "app-divider": { variants: { default: "brut-divider" } },
+            "app-spinner": { variants: { default: "brut-spinner" } },
+            "app-loading": { variants: { default: "brut-spinner" } },
+        },
+    },
+    skeuomorphism: {
+        id: "skeuomorphism",
+        name: "Skeuomorphism",
+        cssString: SKEUOMORPHISM_CSS,
+        classPrefix: "skeu-",
+        description: "Realistic textures with leather, paper, and glossy highlights",
+        componentStyles: {
+            "app-button": { variants: { default: "skeu-btn" }, sizes: { sm: "skeu-btn-sm", md: "", lg: "skeu-btn-lg" } },
+            "app-card": { variants: { default: "skeu-card", paper: "skeu-card paper" } },
+            "app-input": { variants: { default: "skeu-input" } },
+            "app-textarea": { variants: { default: "skeu-input" } },
+            "app-modal": { variants: { default: "skeu-modal" } },
+            "app-dialog": { variants: { default: "skeu-modal" } },
+            "app-confirm-dialog": { variants: { default: "skeu-modal" } },
+            "app-chip": { variants: { default: "skeu-chip" } },
+            "app-badge": { variants: { default: "skeu-badge" } },
+            "app-tabs": { variants: { default: "skeu-tabs" } },
+            "app-divider": { variants: { default: "skeu-divider" } },
+            "app-spinner": { variants: { default: "skeu-spinner" } },
+            "app-loading": { variants: { default: "skeu-spinner" } },
         },
     },
 };
@@ -11000,26 +10043,1073 @@ function applyStyleToElement(element, variant) {
     element.classList.add(`${prefix}${element.dataset.baseClass || ""}`);
 }
 
+class SignalStoreService {
+    _state = signal({}, ...(ngDevMode ? [{ debugName: "_state" }] : []));
+    state = computed(() => this._state(), ...(ngDevMode ? [{ debugName: "state" }] : []));
+    set(key, value) {
+        this._state.update((state) => ({
+            ...state,
+            [key]: value,
+        }));
+    }
+    get(key) {
+        return this._state()[key];
+    }
+    update(key, fn) {
+        const current = this.get(key);
+        this.set(key, fn(current));
+    }
+    delete(key) {
+        this._state.update((state) => {
+            const { [key]: _, ...rest } = state;
+            return rest;
+        });
+    }
+    keys() {
+        return Object.keys(this._state());
+    }
+    has(key) {
+        return key in this._state();
+    }
+    clear() {
+        this._state.set({});
+    }
+    toJSON() {
+        return this._state();
+    }
+    fromJSON(json) {
+        this._state.set(json);
+    }
+    patch(patch) {
+        this._state.update((state) => ({
+            ...state,
+            ...patch,
+        }));
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalStoreService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }] });
+
+let CrudService$1 = class CrudService {
+    storage = signal(null, ...(ngDevMode ? [{ debugName: "storage" }] : []));
+    init(storage) {
+        this.storage.set(storage);
+    }
+    getStorage() {
+        const s = this.storage();
+        if (!s)
+            throw new Error("CrudService not initialized");
+        return s;
+    }
+    getCollection(collection) {
+        const data = this.getStorage().get(collection);
+        return data || [];
+    }
+    saveCollection(collection, data) {
+        this.getStorage().set(collection, data);
+    }
+    create(collection, item) {
+        const data = this.getCollection(collection);
+        const timestamp = Date.now();
+        const entity = {
+            ...item,
+            created_at: timestamp,
+            updated_at: timestamp,
+        };
+        data.push(entity);
+        this.saveCollection(collection, data);
+        this.addPending({
+            _op: "create",
+            _ts: timestamp,
+            id: entity.id,
+        });
+    }
+    read(collection, id) {
+        const data = this.getCollection(collection);
+        return (data.find((item) => item.id === id) || null);
+    }
+    update(collection, id, changes) {
+        const data = this.getCollection(collection);
+        const index = data.findIndex((item) => item.id === id);
+        if (index === -1)
+            return;
+        const timestamp = Date.now();
+        const updated = {
+            ...data[index],
+            ...changes,
+            updated_at: timestamp,
+        };
+        data[index] = updated;
+        this.saveCollection(collection, data);
+        this.addPending({
+            _op: "update",
+            _ts: timestamp,
+            id,
+            data: changes,
+        });
+    }
+    delete(collection, id) {
+        const data = this.getCollection(collection);
+        const filtered = data.filter((item) => item.id !== id);
+        this.saveCollection(collection, filtered);
+        this.addPending({
+            _op: "delete",
+            _ts: Date.now(),
+            id,
+        });
+    }
+    query(collection, q) {
+        let data = this.getCollection(collection);
+        if (q.filters) {
+            for (const filter of q.filters) {
+                data = this.applyFilter(data, filter);
+            }
+        }
+        if (q.sortBy) {
+            data = this.applySort(data, q.sortBy, q.sortAsc ?? true);
+        }
+        if (q.offset) {
+            data = data.slice(q.offset);
+        }
+        if (q.limit) {
+            data = data.slice(0, q.limit);
+        }
+        return data;
+    }
+    applyFilter(data, filter) {
+        return data.filter((item) => {
+            const value = item[filter.field];
+            switch (filter.operator) {
+                case "eq":
+                    return value === filter.value;
+                case "ne":
+                    return value !== filter.value;
+                case "gt":
+                    return value > filter.value;
+                case "gte":
+                    return value >= filter.value;
+                case "lt":
+                    return value < filter.value;
+                case "lte":
+                    return value <= filter.value;
+                case "contains":
+                    return String(value)
+                        .toLowerCase()
+                        .includes(String(filter.value).toLowerCase());
+                case "startsWith":
+                    return String(value)
+                        .toLowerCase()
+                        .startsWith(String(filter.value).toLowerCase());
+                case "endsWith":
+                    return String(value)
+                        .toLowerCase()
+                        .endsWith(String(filter.value).toLowerCase());
+                default:
+                    return true;
+            }
+        });
+    }
+    applySort(data, sortBy, asc) {
+        return [...data].sort((a, b) => {
+            const aVal = a[sortBy];
+            const bVal = b[sortBy];
+            if (aVal == null)
+                return 1;
+            if (bVal == null)
+                return -1;
+            const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+            return asc ? cmp : -cmp;
+        });
+    }
+    addPending(op) {
+        const pending = this.getStorage().get("_pending_ops") || [];
+        pending.push(op);
+        this.getStorage().set("_pending_ops", pending);
+    }
+    batchCreate(collection, items) {
+        const data = this.getCollection(collection);
+        const timestamp = Date.now();
+        for (const item of items) {
+            const entity = {
+                ...item,
+                created_at: timestamp,
+                updated_at: timestamp,
+            };
+            data.push(entity);
+        }
+        this.saveCollection(collection, data);
+    }
+    batchDelete(collection, ids) {
+        const data = this.getCollection(collection);
+        const filtered = data.filter((item) => !ids.includes(item.id));
+        this.saveCollection(collection, filtered);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, providedIn: "root" });
+};
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService$1, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }] });
+
+class EventBusService {
+    handlers = new Map();
+    toasts = signal([], ...(ngDevMode ? [{ debugName: "toasts" }] : []));
+    pendingToasts = this.toasts.asReadonly();
+    hasToasts = () => this.toasts().length > 0;
+    emit(event, data) {
+        const eventHandlers = this.handlers.get(event);
+        if (eventHandlers) {
+            eventHandlers.forEach((handler) => handler(data));
+        }
+    }
+    on(event, handler, context) {
+        if (!this.handlers.has(event)) {
+            this.handlers.set(event, new Set());
+        }
+        const eventHandlers = this.handlers.get(event);
+        const wrapped = context ? handler.bind(context) : handler;
+        eventHandlers.add(wrapped);
+        return () => this.off(event, wrapped);
+    }
+    once(event, handler, context) {
+        const wrapped = (...args) => {
+            this.off(event, wrapped);
+            handler.apply(context, args);
+        };
+        return this.on(event, wrapped);
+    }
+    off(event, handler) {
+        if (!handler) {
+            this.handlers.delete(event);
+            return;
+        }
+        const eventHandlers = this.handlers.get(event);
+        if (eventHandlers) {
+            eventHandlers.delete(handler);
+            if (eventHandlers.size === 0) {
+                this.handlers.delete(event);
+            }
+        }
+    }
+    offAll(event) {
+        if (event) {
+            this.handlers.delete(event);
+        }
+        else {
+            this.handlers.clear();
+        }
+    }
+    hasListeners(event) {
+        const handlers = this.handlers.get(event);
+        return handlers !== undefined && handlers.size > 0;
+    }
+    getListenerCount(event) {
+        return this.handlers.get(event)?.size ?? 0;
+    }
+    generateId() {
+        return `toast-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    }
+    showToast(message, type, duration = 3000) {
+        const notification = {
+            id: this.generateId(),
+            message,
+            type: type ?? "info",
+            duration,
+        };
+        this.toasts.update((t) => [...t, notification]);
+        if (duration > 0) {
+            setTimeout(() => this.dismissToast(notification.id), duration);
+        }
+        return notification.id;
+    }
+    success(message, duration = 3000) {
+        return this.showToast(message, "success", duration);
+    }
+    error(message, duration = 3000) {
+        return this.showToast(message, "error", duration);
+    }
+    warning(message, duration = 3000) {
+        return this.showToast(message, "warning", duration);
+    }
+    info(message, duration = 3000) {
+        return this.showToast(message, "info", duration);
+    }
+    dismissToast(id) {
+        this.toasts.update((t) => t.filter((n) => n.id !== id));
+    }
+    dismissAllToasts() {
+        this.toasts.set([]);
+    }
+    notify(notification) {
+        const id = notification.id ?? this.generateId();
+        this.toasts.update((t) => [...t, { ...notification, id }]);
+        if (notification.duration > 0) {
+            setTimeout(() => this.dismissToast(id), notification.duration);
+        }
+        return id;
+    }
+    getToast(id) {
+        return this.toasts().find((t) => t.id === id);
+    }
+    clearHistory() {
+        this.toasts.set([]);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: EventBusService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: EventBusService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: EventBusService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }] });
+
+class ComponentRegistryService {
+    registry = new Map();
+    componentManifest = {};
+    _schemaComponents = new Map();
+    _componentModules = new Map();
+    constructor() {
+        this.registerBuiltInComponents();
+        this.loadComponentManifest();
+    }
+    registerBuiltInComponents() {
+        // Built-in UI components
+        const components = {
+            // Layout
+            header: { selector: "app-header" },
+            footer: { selector: "app-footer" },
+            sidebar: { selector: "app-sidebar" },
+            "page-container": { selector: "app-page-container" },
+            "page-toolbar": { selector: "app-page-toolbar" },
+            "split-view": { selector: "app-split-view" },
+            "main-editor": { selector: "app-main-editor" },
+            // UI
+            button: { selector: "app-button" },
+            input: { selector: "app-input" },
+            textarea: { selector: "app-textarea" },
+            select: { selector: "app-select" },
+            checkbox: { selector: "app-checkbox" },
+            radio: { selector: "app-radio" },
+            switch: { selector: "app-switch" },
+            slider: { selector: "app-slider" },
+            badge: { selector: "app-badge" },
+            avatar: { selector: "app-avatar" },
+            chip: { selector: "app-chip" },
+            tabs: { selector: "app-tabs" },
+            "empty-state": { selector: "app-empty-state" },
+            loading: { selector: "app-loading" },
+            "progress-bar": { selector: "app-progress-bar" },
+            pagination: { selector: "app-pagination" },
+            tooltip: { selector: "app-tooltip" },
+            // Data
+            card: { selector: "app-card" },
+            "stats-card": { selector: "app-stats-card" },
+            "table-view": { selector: "app-table-view" },
+            "data-table": { selector: "app-data-table" },
+            "json-view": { selector: "app-json-view" },
+            "segment-selector": { selector: "app-segment-selector" },
+            // Feedback
+            dialog: { selector: "app-dialog" },
+            "confirm-dialog": { selector: "app-confirm-dialog" },
+            toast: { selector: "app-toast" },
+            snackbar: { selector: "app-snackbar" },
+            modal: { selector: "app-modal" },
+            "command-palette": { selector: "app-command-palette" },
+            // Grid
+            "grid-container": { selector: "app-grid-container" },
+            "grid-item": { selector: "app-grid-item" },
+            "grid-area": { selector: "app-grid-area" },
+            // Designer
+            "designer-sidebar": { selector: "app-designer-sidebar" },
+            "component-palette": { selector: "app-component-palette" },
+            canvas: { selector: "app-canvas" },
+            "canvas-toolbar": { selector: "app-canvas-toolbar" },
+            "properties-panel": { selector: "app-properties-panel" },
+            "bottom-panel": { selector: "app-bottom-panel" },
+        };
+        Object.entries(components).forEach(([id, def]) => {
+            this.register(id, def);
+        });
+    }
+    async loadComponentManifest() {
+        try {
+            const response = await fetch("/assets/component-manifest.json");
+            if (response.ok) {
+                this.componentManifest = await response.json();
+            }
+        }
+        catch {
+            // Manifest not found, use built-in registry only
+        }
+    }
+    register(componentId, definition) {
+        this.registry.set(componentId, definition);
+    }
+    unregister(componentId) {
+        this.registry.delete(componentId);
+    }
+    get(componentId) {
+        return this.registry.get(componentId);
+    }
+    getSelector(componentId) {
+        const def = this.registry.get(componentId);
+        if (!def) {
+            console.warn(`ComponentRegistry: Unknown component "${componentId}", using fallback selector`);
+            return `app-${componentId}`;
+        }
+        return def.selector;
+    }
+    has(componentId) {
+        return this.registry.has(componentId);
+    }
+    resolveBehavior(componentId) {
+        const def = this.registry.get(componentId);
+        return def?.behaviors;
+    }
+    mergeBehavior(componentId, schemaBehavior) {
+        const registered = this.resolveBehavior(componentId) ?? {};
+        if (!schemaBehavior)
+            return registered;
+        return {
+            selfMethods: { ...registered.selfMethods, ...schemaBehavior.selfMethods },
+            classSetters: { ...registered.classSetters, ...schemaBehavior.classSetters },
+            eventHandlers: this.mergeEventHandlers(registered.eventHandlers, schemaBehavior.eventHandlers),
+        };
+    }
+    mergeEventHandlers(base, override) {
+        if (!base && !override)
+            return undefined;
+        if (!base)
+            return override;
+        if (!override)
+            return base;
+        const merged = { ...base };
+        Object.entries(override).forEach(([event, handlers]) => {
+            const existing = merged[event] ?? [];
+            merged[event] = [...existing, ...handlers];
+        });
+        return merged;
+    }
+    getAllComponentIds() {
+        return Array.from(this.registry.keys());
+    }
+    getComponentsByCategory(category) {
+        // Filter components by category from manifest
+        const manifest = this.componentManifest[category];
+        if (!manifest)
+            return [];
+        return Object.keys(manifest);
+    }
+    // Schema-based component registration (delegated from schema-renderer/component-registry.ts)
+    registerComponent(def) {
+        this._schemaComponents.set(def.selector, def);
+    }
+    registerComponents(defs) {
+        for (const def of defs) {
+            this.registerComponent(def);
+        }
+    }
+    getComponent(selector) {
+        return this._schemaComponents.get(selector);
+    }
+    registerComponentModule(selector, module) {
+        const modules = new Map(this._componentModules);
+        modules.set(selector, module);
+        this._componentModules = modules;
+    }
+    async loadComponentModule(selector) {
+        const cached = this._componentModules.get(selector);
+        if (cached) {
+            const constructor = cached["default"];
+            if (constructor)
+                return constructor;
+        }
+        const def = this._schemaComponents.get(selector);
+        if (!def) {
+            throw new Error(`Component not found: ${selector}`);
+        }
+        const module = (await import(/* @vite-ignore */ def.selector));
+        this.registerComponentModule(selector, module);
+        const constructor = module["default"];
+        if (!constructor) {
+            throw new Error(`Module ${selector} does not export a default CustomElementConstructor`);
+        }
+        return constructor;
+    }
+    getComponentModules() {
+        return this._componentModules;
+    }
+    loadComponentsFromSchema(pages) {
+        const registry = new Map();
+        for (const page of pages) {
+            for (const comp of page.components || []) {
+                registry.set(comp.selector, comp);
+            }
+        }
+        this._schemaComponents = registry;
+    }
+    hasComponent(selector) {
+        return this._schemaComponents.has(selector);
+    }
+    getRegisteredSelectors() {
+        return Array.from(this._schemaComponents.keys());
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentRegistryService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentRegistryService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ComponentRegistryService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }], ctorParameters: () => [] });
+
+class DataBindingResolverService {
+    signalStore;
+    crudService;
+    _params = {};
+    _functions = {};
+    constructor(signalStore, crudService) {
+        this.signalStore = signalStore;
+        this.crudService = crudService;
+    }
+    setParams(params) {
+        this._params = params;
+    }
+    registerFunction(name, fn) {
+        this._functions[name] = fn;
+    }
+    registerFunctions(fns) {
+        this._functions = { ...this._functions, ...fns };
+    }
+    resolveDataBinding(binding) {
+        if (typeof binding === "string") {
+            // Resolve {{functions.name(args)}} pattern
+            const fnPattern = /\{\{functions\.([^}]+)\}\}/g;
+            const fnResult = binding.replace(fnPattern, (_, callExpr) => {
+                const value = this.resolveFunctionCall(callExpr);
+                return value !== undefined ? String(value) : binding;
+            });
+            if (fnResult !== binding)
+                return fnResult;
+            // Resolve {{params.*}} pattern
+            const paramsPattern = /\{\{params\.([^}]+)\}\}/g;
+            const paramsResult = binding.replace(paramsPattern, (_, path) => {
+                const value = this.resolveParamsPath(path);
+                return value !== undefined ? String(value) : binding;
+            });
+            if (paramsResult !== binding)
+                return paramsResult;
+            // Resolve {{data.*}} pattern
+            const dataPattern = /\{\{data\.([^}]+)\}\}/g;
+            const dataResult = binding.replace(dataPattern, (_, path) => {
+                const value = this.getDataBindingValue(path);
+                return value !== undefined ? String(value) : binding;
+            });
+            return dataResult;
+        }
+        if (binding && typeof binding === "object" && "entity" in binding) {
+            const db = binding;
+            if (db.operation) {
+                return this.executeCrudOperation(db);
+            }
+            const entityValue = this.signalStore.get(db.entity);
+            if (db.field !== undefined) {
+                return this.getNestedValue(entityValue, db.field);
+            }
+            return entityValue;
+        }
+        return binding;
+    }
+    resolveFunctionCall(callExpr) {
+        // Parse "name(arg1, arg2)" or "name(arg1, 'string', key: value)"
+        const match = callExpr.match(/^(\w+)\((.*)\)$/);
+        if (!match) {
+            // No args — treat as property access on functions registry
+            return this._functions[callExpr];
+        }
+        const [, fnName, argsStr] = match;
+        const fn = this._functions[fnName];
+        if (typeof fn !== "function")
+            return undefined;
+        const args = this.parseCallArgs(argsStr);
+        // Resolve each argument (may contain nested bindings)
+        const resolvedArgs = args.map((arg) => this.resolveDataBinding(arg));
+        return fn(...resolvedArgs);
+    }
+    parseCallArgs(argsStr) {
+        if (!argsStr.trim())
+            return [];
+        const result = [];
+        let current = "";
+        let depth = 0;
+        let inString = false;
+        let stringChar = "";
+        for (const char of argsStr) {
+            if ((char === '"' || char === "'") && !inString) {
+                inString = true;
+                stringChar = char;
+                current += char;
+            }
+            else if (char === stringChar && inString) {
+                inString = false;
+                stringChar = "";
+                current += char;
+            }
+            else if (char === "(" && !inString) {
+                depth++;
+                current += char;
+            }
+            else if (char === ")" && !inString) {
+                depth--;
+                current += char;
+            }
+            else if (char === "," && depth === 0 && !inString) {
+                result.push(current.trim());
+                current = "";
+            }
+            else {
+                current += char;
+            }
+        }
+        if (current.trim())
+            result.push(current.trim());
+        return result;
+    }
+    resolveParamsPath(path) {
+        return this.getNestedValue(this._params, path);
+    }
+    resolveProps(props, _componentId) {
+        const resolved = {};
+        for (const [key, value] of Object.entries(props)) {
+            resolved[key] = this.resolveDataBinding(value);
+        }
+        return resolved;
+    }
+    executeCrudOperation(binding) {
+        const { entity, operation, params } = binding;
+        const resolvedParams = this.resolveParams(params || {});
+        switch (operation) {
+            case "find": {
+                const query = this.buildCrudQuery(resolvedParams);
+                return this.crudService.query(entity, query);
+            }
+            case "create": {
+                const item = resolvedParams;
+                this.crudService.create(entity, item);
+                return;
+            }
+            case "update": {
+                const id = params["id"];
+                this.crudService.update(entity, id, resolvedParams);
+                return;
+            }
+            case "delete": {
+                const id = params["id"];
+                this.crudService.delete(entity, id);
+                return;
+            }
+            default:
+                return this.signalStore.get(entity);
+        }
+    }
+    resolveParams(params) {
+        const resolved = {};
+        for (const [key, value] of Object.entries(params)) {
+            resolved[key] = this.resolveDataBinding(value);
+        }
+        return resolved;
+    }
+    buildCrudQuery(params) {
+        const query = {};
+        if (params["filter"]) {
+            query.filters = this.buildFilters(params["filter"]);
+        }
+        if (params["sortBy"]) {
+            query.sortBy = params["sortBy"];
+            query.sortAsc = params["sortAsc"] !== false;
+        }
+        if (params["limit"]) {
+            query.limit = params["limit"];
+        }
+        if (params["offset"]) {
+            query.offset = params["offset"];
+        }
+        return query;
+    }
+    buildFilters(filterObj) {
+        const filters = [];
+        for (const [field, value] of Object.entries(filterObj)) {
+            filters.push({ field, operator: "eq", value });
+        }
+        return filters;
+    }
+    getDataBindingValue(path) {
+        const parts = this.parseBindingPath(path);
+        let current = this.signalStore.get(parts[0]);
+        for (let i = 1; i < parts.length; i++) {
+            if (current === null || current === undefined)
+                return undefined;
+            const part = parts[i];
+            const arrayMatch = part.match(/^(\w+)\[(\d+)\]$/);
+            if (arrayMatch) {
+                const [, arrayKey, indexStr] = arrayMatch;
+                const arr = this.getNestedValue(current, arrayKey);
+                if (Array.isArray(arr)) {
+                    const index = parseInt(indexStr, 10);
+                    current = arr[index];
+                }
+                else {
+                    current = undefined;
+                }
+            }
+            else {
+                current = this.getNestedValue(current, part);
+            }
+        }
+        return current;
+    }
+    parseBindingPath(path) {
+        const result = [];
+        const regex = /([^\.]+)\[(\d+)\]|([^\.\[\]]+)/g;
+        let match;
+        while ((match = regex.exec(path)) !== null) {
+            if (match[1] && match[2]) {
+                result.push(`${match[1]}[${match[2]}]`);
+            }
+            else if (match[3]) {
+                result.push(match[3]);
+            }
+        }
+        return result;
+    }
+    getNestedValue(obj, key) {
+        if (obj === null || obj === undefined)
+            return undefined;
+        if (typeof obj !== "object")
+            return undefined;
+        return obj[key];
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataBindingResolverService, deps: [{ token: SignalStoreService }, { token: CrudService$1 }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataBindingResolverService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataBindingResolverService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }], ctorParameters: () => [{ type: SignalStoreService }, { type: CrudService$1 }] });
+
+class LayoutEngineService {
+    themeService;
+    constructor(themeService) {
+        this.themeService = themeService;
+    }
+    resolveClass(layout) {
+        if (layout.class)
+            return layout.class;
+        const classes = [];
+        if (layout.type === "grid") {
+            classes.push("grid");
+            if (layout.direction === "row")
+                classes.push("grid-flow-col");
+            else
+                classes.push("grid-flow-row");
+            if (layout.gap)
+                classes.push(`gap-${layout.gap}`);
+            if (layout.rowGap)
+                classes.push(`gap-y-${layout.rowGap}`);
+            if (layout.colGap)
+                classes.push(`gap-x-${layout.colGap}`);
+            if (layout.alignItems) {
+                const map = {
+                    start: "items-start", center: "items-center", end: "items-end",
+                    stretch: "items-stretch", baseline: "items-baseline",
+                };
+                if (map[layout.alignItems])
+                    classes.push(map[layout.alignItems]);
+            }
+            if (layout.justifyItems) {
+                const map = {
+                    start: "justify-items-start", center: "justify-items-center",
+                    end: "justify-items-end", stretch: "justify-items-stretch",
+                };
+                if (map[layout.justifyItems])
+                    classes.push(map[layout.justifyItems]);
+            }
+        }
+        else if (layout.type === "flex") {
+            classes.push("flex");
+            if (layout.direction === "column")
+                classes.push("flex-col");
+            else
+                classes.push("flex-row");
+            if (layout.gap)
+                classes.push(`gap-${layout.gap}`);
+            if (layout.rowGap)
+                classes.push(`gap-y-${layout.rowGap}`);
+            if (layout.colGap)
+                classes.push(`gap-x-${layout.colGap}`);
+            if (layout.flexWrap === "wrap")
+                classes.push("flex-wrap");
+            else if (layout.flexWrap === "nowrap")
+                classes.push("flex-nowrap");
+            else if (layout.flexWrap === "wrap-reverse")
+                classes.push("flex-wrap-reverse");
+            if (layout.flexGrow === true)
+                classes.push("flex-grow");
+            else if (layout.flexGrow === false)
+                classes.push("flex-grow-0");
+            if (layout.flexShrink === true)
+                classes.push("flex-shrink");
+            else if (layout.flexShrink === false)
+                classes.push("flex-shrink-0");
+            if (layout.alignItems) {
+                const map = {
+                    start: "items-start", center: "items-center", end: "items-end",
+                    stretch: "items-stretch", baseline: "items-baseline",
+                };
+                if (map[layout.alignItems])
+                    classes.push(map[layout.alignItems]);
+            }
+            if (layout.alignContent) {
+                const map = {
+                    start: "content-start", center: "content-center", end: "content-end",
+                    between: "content-between", around: "content-around", evenly: "content-evenly",
+                };
+                if (map[layout.alignContent])
+                    classes.push(map[layout.alignContent]);
+            }
+        }
+        else if (layout.type === "stack") {
+            classes.push("flex");
+            classes.push("flex-col");
+            if (layout.gap)
+                classes.push(`gap-${layout.gap}`);
+            if (layout.rowGap)
+                classes.push(`gap-y-${layout.rowGap}`);
+        }
+        // Common sizing
+        if (layout.width === "full")
+            classes.push("w-full");
+        else if (layout.width === "auto")
+            classes.push("w-auto");
+        if (layout.height === "full")
+            classes.push("h-full");
+        else if (layout.height === "auto")
+            classes.push("h-auto");
+        // Margin X (auto for centering)
+        if (layout.marginX === "auto")
+            classes.push("mx-auto");
+        return classes.join(" ");
+    }
+    /**
+     * Applies theme CSS custom properties to a layout container element.
+     * Uses ThemeService to get the current accent color and computed shades,
+     * then sets them as inline CSS variables on the container.
+     */
+    applyThemeVariables(container) {
+        if (!this.themeService)
+            return;
+        const root = document.documentElement;
+        const accent = this.themeService.accentColor();
+        // Copy theme CSS variables from root to the container
+        // This ensures layout containers have explicit theme values even if
+        // they are inside shadow DOM or have custom styling contexts
+        const themeVars = [
+            "--text-primary",
+            "--text-secondary",
+            "--text-muted",
+            "--bg-primary",
+            "--bg-elevated",
+            "--bg-hover",
+            "--bg-tertiary",
+            "--border-color",
+            "--error",
+            "--warning",
+            "--success",
+            "--info",
+            "--accent",
+        ];
+        for (const varName of themeVars) {
+            const value = root.style.getPropertyValue(varName);
+            if (value) {
+                container.style.setProperty(varName, value);
+            }
+        }
+        // Apply accent shades if available
+        const shades = this.themeService?.accentShades?.();
+        if (shades) {
+            for (const [key, value] of Object.entries(shades)) {
+                container.style.setProperty(`--accent-${key}`, value);
+            }
+        }
+    }
+    renderGridLayout(container, layout) {
+        container.style.display = "grid";
+        const layoutClasses = this.resolveClass(layout);
+        if (layoutClasses) {
+            container.className = layoutClasses;
+        }
+        else {
+            const classes = ["grid"];
+            if (layout.direction === "row")
+                classes.push("grid-flow-col");
+            else
+                classes.push("grid-flow-row");
+            if (layout.gap)
+                classes.push(`gap-${layout.gap}`);
+            container.className = classes.join(" ");
+        }
+        if (layout.gridTemplateColumns) {
+            container.style.gridTemplateColumns = layout.gridTemplateColumns;
+        }
+        if (layout.gridTemplateRows) {
+            container.style.gridTemplateRows = layout.gridTemplateRows;
+        }
+        this.applyThemeVariables(container);
+        if (layout.style) {
+            Object.assign(container.style, layout.style);
+        }
+        container.innerHTML = "";
+    }
+    renderFlexLayout(container, layout) {
+        container.style.display = "flex";
+        const layoutClasses = this.resolveClass(layout);
+        if (layoutClasses) {
+            container.className = layoutClasses;
+        }
+        else {
+            const classes = ["flex"];
+            if (layout.direction === "column")
+                classes.push("flex-col");
+            else
+                classes.push("flex-row");
+            if (layout.gap)
+                classes.push(`gap-${layout.gap}`);
+            container.className = classes.join(" ");
+        }
+        this.applyThemeVariables(container);
+        if (layout.style) {
+            Object.assign(container.style, layout.style);
+        }
+        container.innerHTML = "";
+    }
+    resolveGridPosition(layout, componentId) {
+        if (!layout || !layout.positions)
+            return null;
+        const pos = layout.positions.find((p) => p[componentId] !== undefined);
+        if (!pos)
+            return null;
+        const position = pos;
+        return {
+            column: position.column || 1,
+            row: position.row || 1,
+            colSpan: position.colSpan || 1,
+            rowSpan: position.rowSpan || 1,
+        };
+    }
+    resolveGridPositionFromPositions(positions, componentId) {
+        if (!positions)
+            return null;
+        const pos = positions.find((p) => p[componentId] !== undefined);
+        if (!pos)
+            return null;
+        const position = pos;
+        return {
+            column: position.column || 1,
+            row: position.row || 1,
+            colSpan: position.colSpan || 1,
+            rowSpan: position.rowSpan || 1,
+        };
+    }
+    calculateGridSpan(colSpan, rowSpan) {
+        return {
+            gridColumn: `1 / span ${colSpan || 1}`,
+            gridRow: `1 / span ${rowSpan || 1}`,
+        };
+    }
+    async applyLayoutStyles(container, layout, children, getComponentById, resolvePosition) {
+        if (layout.children) {
+            for (const childId of layout.children) {
+                const component = getComponentById(childId);
+                if (component) {
+                    const selector = component.selector;
+                    // Wait for custom element to be defined if it's a custom element
+                    if (selector.includes("-")) {
+                        try {
+                            await Promise.race([
+                                customElements.whenDefined(selector),
+                                new Promise((_, reject) => setTimeout(() => reject(new Error(`Timeout: ${selector}`)), 2000)),
+                            ]);
+                        }
+                        catch (e) {
+                            console.warn(`[LayoutEngine] Element not ready: ${selector}`, e);
+                        }
+                    }
+                    const el = document.createElement(selector);
+                    const position = resolvePosition(layout, childId);
+                    if (position) {
+                        el.style.gridColumn = `${position.column} / span ${position.colSpan || 1}`;
+                        el.style.gridRow = `${position.row} / span ${position.rowSpan || 1}`;
+                    }
+                    container.appendChild(el);
+                }
+            }
+        }
+    }
+    createGridTemplateString(columns, rows) {
+        return {
+            gridTemplateColumns: columns.join(" "),
+            gridTemplateRows: rows.join(" "),
+        };
+    }
+    parseGridTemplate(template) {
+        return {
+            gridTemplateColumns: template.columns.join(" "),
+            gridTemplateRows: template.rows.join(" "),
+            gap: template.gap,
+        };
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: LayoutEngineService, deps: "invalid", target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: LayoutEngineService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: LayoutEngineService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }], ctorParameters: () => [{ type: undefined, decorators: [{
+                    type: Optional
+                }] }] });
+
 class SchemaRendererService {
+    dataStore;
+    crudService;
+    eventBus;
+    componentRegistry;
+    dataBindingResolver;
+    layoutEngine;
     _pages = signal([], ...(ngDevMode ? [{ debugName: "_pages" }] : []));
     _currentPageId = signal(null, ...(ngDevMode ? [{ debugName: "_currentPageId" }] : []));
     _navigationStack = signal([], ...(ngDevMode ? [{ debugName: "_navigationStack" }] : []));
     _appConfig = {};
-    dataStore = inject(SignalStoreService);
-    crudService = inject(CrudService$1);
-    eventBus = inject(EventBusService);
-    componentRegistry = inject(ComponentRegistryService);
-    dataBindingResolver = inject(DataBindingResolverService);
-    layoutEngine = new LayoutEngineService();
+    constructor(dataStore, crudService, eventBus, componentRegistry, dataBindingResolver, layoutEngine) {
+        this.dataStore = dataStore;
+        this.crudService = crudService;
+        this.eventBus = eventBus;
+        this.componentRegistry = componentRegistry;
+        this.dataBindingResolver = dataBindingResolver;
+        this.layoutEngine = layoutEngine;
+    }
     componentResolver = null;
     routeResolver = null;
     // Schema-level handlers and stores
     _handlers = {};
     _stores = {};
-    _layoutRegions = [];
+    _layoutRegions = signal([], ...(ngDevMode ? [{ debugName: "_layoutRegions" }] : []));
     _currentRoute = signal("", ...(ngDevMode ? [{ debugName: "_currentRoute" }] : []));
     pages = this._pages.asReadonly();
     currentPageId = this._currentPageId.asReadonly();
+    layoutRegions = this._layoutRegions.asReadonly();
     registerComponent(def) {
         this.componentRegistry.registerComponent(def);
     }
@@ -11042,10 +11132,10 @@ class SchemaRendererService {
         };
         // Extract layout regions (AppSchema only)
         if ('layoutRegions' in schema && Array.isArray(schema.layoutRegions)) {
-            this._layoutRegions = schema.layoutRegions;
+            this._layoutRegions.set(schema.layoutRegions);
         }
         else {
-            this._layoutRegions = [];
+            this._layoutRegions.set([]);
         }
         // Extract handlers (AppSchema only)
         if ('handlers' in schema && schema.handlers) {
@@ -11074,7 +11164,7 @@ class SchemaRendererService {
         this.dataBindingResolver.registerFunctions(fns);
     }
     getLayoutRegions() {
-        return this._layoutRegions;
+        return this._layoutRegions();
     }
     isElementVisible(element) {
         const route = this._currentRoute();
@@ -11135,18 +11225,31 @@ class SchemaRendererService {
     setRouteResolver(resolver) {
         this.routeResolver = resolver;
     }
-    renderGridLayout(container, layout) {
+    async renderGridLayout(container, layout) {
         this.layoutEngine.renderGridLayout(container, layout);
-        this.layoutEngine.applyLayoutStyles(container, layout, layout.children || [], (childId) => this.getCurrentPage()?.components.find((c) => c.id === childId), (l, childId) => this.layoutEngine.resolveGridPosition(l, childId));
+        await this.layoutEngine.applyLayoutStyles(container, layout, layout.children || [], (childId) => this.getCurrentPage()?.components.find((c) => c.id === childId), (l, childId) => this.layoutEngine.resolveGridPosition(l, childId));
     }
-    renderFlexLayout(container, layout) {
+    async renderFlexLayout(container, layout) {
         this.layoutEngine.renderFlexLayout(container, layout);
         container.innerHTML = "";
         if (layout.children) {
             for (const childId of layout.children) {
                 const component = this.getCurrentPage()?.components.find((c) => c.id === childId);
                 if (component) {
-                    const el = document.createElement(component.selector);
+                    const selector = component.selector;
+                    // Wait for custom element to be defined if it's a custom element
+                    if (selector.includes("-")) {
+                        try {
+                            await Promise.race([
+                                customElements.whenDefined(selector),
+                                new Promise((_, reject) => setTimeout(() => reject(new Error(`Timeout: ${selector}`)), 2000)),
+                            ]);
+                        }
+                        catch (e) {
+                            console.warn(`[SchemaRenderer] Element not ready: ${selector}`, e);
+                        }
+                    }
+                    const el = document.createElement(selector);
                     container.appendChild(el);
                 }
             }
@@ -11388,7 +11491,7 @@ class SchemaRendererService {
         if (currentRoute) {
             this.setCurrentRoute(currentRoute);
         }
-        const region = this._layoutRegions.find(r => r.id === regionId);
+        const region = this._layoutRegions().find(r => r.id === regionId);
         if (!region) {
             console.warn(`Layout region not found: ${regionId}`);
             return;
@@ -11485,17 +11588,19 @@ class SchemaRendererService {
             classes.push("flex-row-reverse");
         else if (direction === "col-reverse")
             classes.push("flex-col-reverse");
-        // 4. Gap spacing
+        // 4. Gap spacing (supports both string tokens and numeric values)
         const gap = props["gap"];
-        if (gap === "xs")
+        if (gap === "xs" || gap === 1)
             classes.push("gap-1");
-        else if (gap === "sm")
+        else if (gap === "sm" || gap === 2)
             classes.push("gap-2");
-        else if (gap === "md")
+        else if (gap === "md" || gap === 3)
+            classes.push("gap-3");
+        else if (gap === "lg" || gap === 4)
             classes.push("gap-4");
-        else if (gap === "lg")
+        else if (gap === "xl" || gap === 6)
             classes.push("gap-6");
-        else if (gap === "xl")
+        else if (gap === "2xl" || gap === 8)
             classes.push("gap-8");
         // 5. Align items
         const align = props["align"];
@@ -11566,8 +11671,12 @@ class SchemaRendererService {
             classes.push("max-w-xl");
         else if (maxWidth === "2xl")
             classes.push("max-w-2xl");
+        else if (maxWidth === "3xl")
+            classes.push("max-w-3xl");
         else if (maxWidth === "6xl")
             classes.push("max-w-6xl");
+        else if (maxWidth === "7xl")
+            classes.push("max-w-7xl");
         // 10. MX auto
         const mx = props["mx"];
         if (mx === "auto")
@@ -11867,6 +11976,56 @@ class SchemaRendererService {
                     classes.push("lg:p-6");
             }
         }
+        // 32. Text size
+        const textSize = props["textSize"];
+        if (textSize === "xs")
+            classes.push("text-xs");
+        else if (textSize === "sm")
+            classes.push("text-sm");
+        else if (textSize === "base")
+            classes.push("text-base");
+        else if (textSize === "lg")
+            classes.push("text-lg");
+        else if (textSize === "xl")
+            classes.push("text-xl");
+        else if (textSize === "2xl")
+            classes.push("text-2xl");
+        else if (textSize === "3xl")
+            classes.push("text-3xl");
+        // 33. Font weight
+        const fontWeight = props["fontWeight"];
+        if (fontWeight === "light")
+            classes.push("font-light");
+        else if (fontWeight === "normal")
+            classes.push("font-normal");
+        else if (fontWeight === "medium")
+            classes.push("font-medium");
+        else if (fontWeight === "semibold")
+            classes.push("font-semibold");
+        else if (fontWeight === "bold")
+            classes.push("font-bold");
+        // 34. Position
+        const position = props["position"];
+        if (position === "relative")
+            classes.push("relative");
+        else if (position === "absolute")
+            classes.push("absolute");
+        else if (position === "fixed")
+            classes.push("fixed");
+        else if (position === "sticky")
+            classes.push("sticky");
+        // 35. Z-index
+        const zIndex = props["zIndex"];
+        if (zIndex === 10 || zIndex === "10")
+            classes.push("z-10");
+        else if (zIndex === 20 || zIndex === "20")
+            classes.push("z-20");
+        else if (zIndex === 30 || zIndex === "30")
+            classes.push("z-30");
+        else if (zIndex === 40 || zIndex === "40")
+            classes.push("z-40");
+        else if (zIndex === 50 || zIndex === "50")
+            classes.push("z-50");
         return classes;
     }
     resolveClasses(elementClasses, defaultClasses) {
@@ -11931,13 +12090,13 @@ class SchemaRendererService {
             return undefined;
         return obj[key];
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, deps: [{ token: SignalStoreService }, { token: CrudService$1 }, { token: EventBusService }, { token: ComponentRegistryService }, { token: DataBindingResolverService }, { token: LayoutEngineService }], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, providedIn: "root" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRendererService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
-        }] });
+        }], ctorParameters: () => [{ type: SignalStoreService }, { type: CrudService$1 }, { type: EventBusService }, { type: ComponentRegistryService }, { type: DataBindingResolverService }, { type: LayoutEngineService }] });
 
 /**
  * Context-based permission levels from TaskFlow pattern.
@@ -12231,7 +12390,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
         }] });
 
 class GuardService {
-    permissionService = inject(PermissionService);
+    permissionService;
+    constructor(permissionService) {
+        this.permissionService = permissionService;
+    }
     canActivate() {
         return Promise.resolve(this.permissionService.isAuthenticated());
     }
@@ -12268,16 +12430,19 @@ class GuardService {
             return false;
         return this.permissionService.hasPermission(resource, action);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, deps: [{ token: PermissionService }], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, providedIn: "root" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GuardService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
-        }] });
+        }], ctorParameters: () => [{ type: PermissionService }] });
 
 class SchemaRouterService {
-    guardService = inject(GuardService, { optional: true });
+    guardService;
+    constructor(guardService) {
+        this.guardService = guardService;
+    }
     _schema = signal(null, ...(ngDevMode ? [{ debugName: "_schema" }] : []));
     _currentPage = signal(null, ...(ngDevMode ? [{ debugName: "_currentPage" }] : []));
     _currentLayout = signal(null, ...(ngDevMode ? [{ debugName: "_currentLayout" }] : []));
@@ -12426,19 +12591,25 @@ class SchemaRouterService {
         this._isLoading.set(false);
         this._error.set(null);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, deps: [{ token: GuardService, optional: true }], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, providedIn: "root" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouterService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
-        }] });
+        }], ctorParameters: () => [{ type: GuardService, decorators: [{
+                    type: Optional
+                }] }] });
 
 class SchemaElementComponent {
+    registry;
+    eventBus;
     element;
     elements = [];
-    registry = inject(ComponentRegistryService);
-    eventBus = inject(EventBusService);
+    constructor(registry, eventBus) {
+        this.registry = registry;
+        this.eventBus = eventBus;
+    }
     get tag() {
         const def = this.registry.get(this.element.componentId);
         return def?.selector ?? this.element.componentId;
@@ -12455,13 +12626,13 @@ class SchemaElementComponent {
     get isKnownComponent() {
         return this.registry.has(this.element.componentId);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaElementComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: SchemaElementComponent, isStandalone: true, selector: "app-schema-element", inputs: { element: "element", elements: "elements" }, ngImport: i0, template: "<div [id]=\"element.id\" [class]=\"classes\">\n  @if (tag === 'app-button') {\n    <app-button [label]=\"props['label']\" [buttonStyle]=\"props['buttonStyle']\" [variant]=\"props['variant']\" [size]=\"props['size']\"></app-button>\n  } @else if (tag === 'app-language-selector') {\n    <app-language-selector [labelId]=\"props['labelId']\"></app-language-selector>\n  } @else if (tag === 'app-text-input') {\n    <app-text-input [id]=\"props['id']\" [placeholder]=\"props['placeholder']\" [clearable]=\"props['clearable']\" [maxChars]=\"props['maxChars']\"></app-text-input>\n  } @else if (tag === 'app-translation-output') {\n    <app-translation-output [id]=\"props['id']\" [placeholder]=\"props['placeholder']\"></app-translation-output>\n  } @else if (tag === 'app-swap-button') {\n    <app-swap-button></app-swap-button>\n  } @else if (tag === 'app-theme-toggle') {\n    <app-theme-toggle></app-theme-toggle>\n  } @else if (tag === 'app-shortcuts-overlay') {\n    <app-shortcuts-overlay></app-shortcuts-overlay>\n  } @else if (tag === 'app-loading') {\n    <app-loading></app-loading>\n  } @else if (props['text']) {\n    <!-- Plain element with text content: span, p, h1, h2, footer -->\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props['text'] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props['text'] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props['text'] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props['text'] }}</footer>\n      <span *ngSwitchDefault>{{ props['text'] }}</span>\n    </ng-container>\n  }\n  @for (child of childElements; track child.id) {\n    <app-schema-element [element]=\"child\" [elements]=\"elements\"></app-schema-element>\n  }\n</div>\n", styles: [":host{display:contents}\n"], dependencies: [{ kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgSwitch, selector: "[ngSwitch]", inputs: ["ngSwitch"] }, { kind: "directive", type: i1.NgSwitchCase, selector: "[ngSwitchCase]", inputs: ["ngSwitchCase"] }, { kind: "directive", type: i1.NgSwitchDefault, selector: "[ngSwitchDefault]" }] });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaElementComponent, deps: [{ token: ComponentRegistryService }, { token: EventBusService }], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: SchemaElementComponent, isStandalone: true, selector: "app-schema-element", inputs: { element: "element", elements: "elements" }, ngImport: i0, template: "<div [id]=\"element.id\" [class]=\"classes\">\n  @if (tag === 'app-button') {\n    <app-button [label]=\"props['label']\" [buttonStyle]=\"props['buttonStyle']\" [variant]=\"props['variant']\" [size]=\"props['size']\"></app-button>\n  } @else if (tag === 'app-language-selector') {\n    <app-language-selector [labelId]=\"props['labelId']\"></app-language-selector>\n  } @else if (tag === 'app-text-input') {\n    <app-text-input [id]=\"props['id']\" [placeholder]=\"props['placeholder']\" [clearable]=\"props['clearable']\" [maxChars]=\"props['maxChars']\"></app-text-input>\n  } @else if (tag === 'app-translation-output') {\n    <app-translation-output [id]=\"props['id']\" [placeholder]=\"props['placeholder']\"></app-translation-output>\n  } @else if (tag === 'app-swap-button') {\n    <app-swap-button></app-swap-button>\n  } @else if (tag === 'app-theme-toggle') {\n    <app-theme-toggle></app-theme-toggle>\n  } @else if (tag === 'app-shortcuts-overlay') {\n    <app-shortcuts-overlay></app-shortcuts-overlay>\n  } @else if (tag === 'app-loading') {\n    <app-loading></app-loading>\n  } @else if (props['text']) {\n    <!-- Plain element with text content: span, p, h1, h2, footer -->\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props['text'] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props['text'] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props['text'] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props['text'] }}</footer>\n      <span *ngSwitchDefault>{{ props['text'] }}</span>\n    </ng-container>\n  }\n  @for (child of childElements; track child.id) {\n    <app-schema-element [element]=\"child\" [elements]=\"elements\"></app-schema-element>\n  }\n</div>\n", styles: [":host{display:contents}\n"], dependencies: [{ kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i3.NgSwitch, selector: "[ngSwitch]", inputs: ["ngSwitch"] }, { kind: "directive", type: i3.NgSwitchCase, selector: "[ngSwitchCase]", inputs: ["ngSwitchCase"] }, { kind: "directive", type: i3.NgSwitchDefault, selector: "[ngSwitchDefault]" }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaElementComponent, decorators: [{
             type: Component,
             args: [{ selector: "app-schema-element", standalone: true, imports: [CommonModule], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "<div [id]=\"element.id\" [class]=\"classes\">\n  @if (tag === 'app-button') {\n    <app-button [label]=\"props['label']\" [buttonStyle]=\"props['buttonStyle']\" [variant]=\"props['variant']\" [size]=\"props['size']\"></app-button>\n  } @else if (tag === 'app-language-selector') {\n    <app-language-selector [labelId]=\"props['labelId']\"></app-language-selector>\n  } @else if (tag === 'app-text-input') {\n    <app-text-input [id]=\"props['id']\" [placeholder]=\"props['placeholder']\" [clearable]=\"props['clearable']\" [maxChars]=\"props['maxChars']\"></app-text-input>\n  } @else if (tag === 'app-translation-output') {\n    <app-translation-output [id]=\"props['id']\" [placeholder]=\"props['placeholder']\"></app-translation-output>\n  } @else if (tag === 'app-swap-button') {\n    <app-swap-button></app-swap-button>\n  } @else if (tag === 'app-theme-toggle') {\n    <app-theme-toggle></app-theme-toggle>\n  } @else if (tag === 'app-shortcuts-overlay') {\n    <app-shortcuts-overlay></app-shortcuts-overlay>\n  } @else if (tag === 'app-loading') {\n    <app-loading></app-loading>\n  } @else if (props['text']) {\n    <!-- Plain element with text content: span, p, h1, h2, footer -->\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props['text'] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props['text'] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props['text'] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props['text'] }}</footer>\n      <span *ngSwitchDefault>{{ props['text'] }}</span>\n    </ng-container>\n  }\n  @for (child of childElements; track child.id) {\n    <app-schema-element [element]=\"child\" [elements]=\"elements\"></app-schema-element>\n  }\n</div>\n", styles: [":host{display:contents}\n"] }]
-        }], propDecorators: { element: [{
+        }], ctorParameters: () => [{ type: ComponentRegistryService }, { type: EventBusService }], propDecorators: { element: [{
                 type: Input,
                 args: [{ required: true }]
             }], elements: [{
@@ -12470,11 +12641,13 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
             }] } });
 
 class SchemaRouteViewerComponent {
+    router;
+    renderer;
     route = "";
-    router = inject(SchemaRouterService);
-    renderer = inject(SchemaRendererService);
     page = computed(() => this.router.currentPage(), ...(ngDevMode ? [{ debugName: "page" }] : []));
-    constructor() {
+    constructor(router, renderer) {
+        this.router = router;
+        this.renderer = renderer;
         // Sync router params to the data binding resolver when params change
         effect(() => {
             const params = this.router.params();
@@ -12491,551 +12664,15 @@ class SchemaRouteViewerComponent {
         if (changes["route"])
             this.router.navigate(this.route);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouteViewerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: SchemaRouteViewerComponent, isStandalone: true, selector: "lib-schema-route-viewer", inputs: { route: "route" }, usesOnChanges: true, ngImport: i0, template: "@if (page(); as p) {\n  <div class=\"schema-page\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element [element]=\"element\" [elements]=\"p.canvasElements\"></app-schema-element>\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{display:contents}\n"], dependencies: [{ kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouteViewerComponent, deps: [{ token: SchemaRouterService }, { token: SchemaRendererService }], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: SchemaRouteViewerComponent, isStandalone: true, selector: "lib-schema-route-viewer", inputs: { route: "route" }, usesOnChanges: true, ngImport: i0, template: "@if (page(); as p) {\n  <div class=\"schema-page\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element [element]=\"element\" [elements]=\"p.canvasElements\"></app-schema-element>\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{display:block}\n"], dependencies: [{ kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouteViewerComponent, decorators: [{
             type: Component,
-            args: [{ selector: "lib-schema-route-viewer", standalone: true, imports: [SchemaElementComponent], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (page(); as p) {\n  <div class=\"schema-page\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element [element]=\"element\" [elements]=\"p.canvasElements\"></app-schema-element>\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{display:contents}\n"] }]
-        }], ctorParameters: () => [], propDecorators: { route: [{
+            args: [{ selector: "lib-schema-route-viewer", standalone: true, imports: [SchemaElementComponent], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (page(); as p) {\n  <div class=\"schema-page\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element [element]=\"element\" [elements]=\"p.canvasElements\"></app-schema-element>\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{display:block}\n"] }]
+        }], ctorParameters: () => [{ type: SchemaRouterService }, { type: SchemaRendererService }], propDecorators: { route: [{
                 type: Input
             }] } });
-
-class ShortcutService {
-    _shortcuts = signal([], ...(ngDevMode ? [{ debugName: "_shortcuts" }] : []));
-    eventBus = inject(EventBusService);
-    shortcuts = this._shortcuts.asReadonly();
-    constructor() {
-        window.addEventListener("keydown", (e) => this._handleKeyDown(e));
-    }
-    register(shortcut) {
-        this._shortcuts.update((s) => [...s, shortcut]);
-        return () => this.unregister(shortcut.id);
-    }
-    unregister(id) {
-        this._shortcuts.update((s) => s.filter((s) => s.id !== id));
-    }
-    loadFromSchema(shortcuts) {
-        shortcuts.forEach((s) => this.register(s));
-    }
-    _handleKeyDown(e) {
-        const match = this._shortcuts().find((s) => s.enabled !== false &&
-            s.key.toLowerCase() === e.key.toLowerCase() &&
-            this._checkModifiers(s.modifiers || [], e));
-        if (match) {
-            e.preventDefault();
-            this.eventBus.emit(`shortcut:${match.id}`, { shortcut: match });
-            this.eventBus.emit(match.handler, { shortcut: match });
-        }
-    }
-    _checkModifiers(modifiers, e) {
-        return modifiers.every((m) => {
-            if (m === "ctrl")
-                return e.ctrlKey;
-            if (m === "shift")
-                return e.shiftKey;
-            if (m === "alt")
-                return e.altKey;
-            if (m === "meta")
-                return e.metaKey;
-            return false;
-        });
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ShortcutService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ShortcutService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ShortcutService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }], ctorParameters: () => [] });
-
-/**
- * Window-level global state for Translator app.
- * Exposes source/target language codes as signals so any service
- * (including TranslationService) can read them without prop-drilling.
- */
-class GlobalStateService {
-    static _instance = null;
-    static get instance() {
-        if (!GlobalStateService._instance) {
-            GlobalStateService._instance = new GlobalStateService();
-        }
-        return GlobalStateService._instance;
-    }
-    _sourceLang = signal('en', ...(ngDevMode ? [{ debugName: "_sourceLang" }] : []));
-    _targetLang = signal('ru', ...(ngDevMode ? [{ debugName: "_targetLang" }] : []));
-    _appLocale = signal('en', ...(ngDevMode ? [{ debugName: "_appLocale" }] : []));
-    get sourceLang() { return this._sourceLang.asReadonly(); }
-    get targetLang() { return this._targetLang.asReadonly(); }
-    get appLocale() { return this._appLocale.asReadonly(); }
-    setSourceLang(code) { this._sourceLang.set(code); }
-    setTargetLang(code) { this._targetLang.set(code); }
-    setAppLocale(locale) { this._appLocale.set(locale); }
-    swapLanguages() {
-        const src = this._sourceLang();
-        const tgt = this._targetLang();
-        this._sourceLang.set(tgt);
-        this._targetLang.set(src);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GlobalStateService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GlobalStateService, providedIn: 'root' });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GlobalStateService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: 'root' }]
-        }] });
-
-const DEFAULT_DURATIONS = {
-    success: 3000,
-    error: 5000,
-    warning: 4000,
-    info: 3000,
-};
-class ToastService {
-    toastsSignal = signal([], ...(ngDevMode ? [{ debugName: "toastsSignal" }] : []));
-    counter = 0;
-    autoDismissTimers = new Map();
-    toasts = computed(() => this.toastsSignal(), ...(ngDevMode ? [{ debugName: "toasts" }] : []));
-    generateId() {
-        return `toast-${++this.counter}-${Date.now()}`;
-    }
-    show(options) {
-        const id = options.id ?? this.generateId();
-        const type = options.type;
-        const duration = options.duration ?? DEFAULT_DURATIONS[type];
-        const persistent = options.persistent ?? false;
-        const toast = {
-            ...options,
-            id,
-            type,
-            duration,
-            persistent,
-        };
-        this.toastsSignal.update((toasts) => {
-            const updated = [toast, ...toasts];
-            return updated.slice(0, 20);
-        });
-        if (!persistent && duration > 0) {
-            const timer = setTimeout(() => {
-                this.autoDismissTimers.delete(id);
-                this.dismiss(id);
-            }, duration);
-            this.autoDismissTimers.set(id, timer);
-        }
-        return id;
-    }
-    success(message, options) {
-        return this.show({ ...options, type: "success", message });
-    }
-    error(message, options) {
-        return this.show({ ...options, type: "error", message });
-    }
-    warning(message, options) {
-        return this.show({ ...options, type: "warning", message });
-    }
-    info(message, options) {
-        return this.show({ ...options, type: "info", message });
-    }
-    dismiss(id) {
-        const timer = this.autoDismissTimers.get(id);
-        if (timer !== undefined) {
-            clearTimeout(timer);
-            this.autoDismissTimers.delete(id);
-        }
-        this.toastsSignal.update((toasts) => toasts.filter((t) => t.id !== id));
-    }
-    dismissAll() {
-        this.autoDismissTimers.forEach((timer) => clearTimeout(timer));
-        this.autoDismissTimers.clear();
-        this.toastsSignal.set([]);
-    }
-    update(id, changes) {
-        this.toastsSignal.update((toasts) => toasts.map((t) => (t.id === id ? { ...t, ...changes } : t)));
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ToastService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ToastService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ToastService, decorators: [{
-            type: Injectable,
-            args: [{
-                    providedIn: "root",
-                }]
-        }] });
-
-var ErrorType;
-(function (ErrorType) {
-    ErrorType["NotFound"] = "notFound";
-    ErrorType["ValidationError"] = "validationError";
-    ErrorType["Duplicate"] = "duplicate";
-    ErrorType["Unauthorized"] = "unauthorized";
-    ErrorType["Forbidden"] = "forbidden";
-    ErrorType["Internal"] = "internal";
-    ErrorType["Database"] = "database";
-    ErrorType["Network"] = "network";
-})(ErrorType || (ErrorType = {}));
-function isNotFoundError(error) {
-    return error.type === ErrorType.NotFound;
-}
-function isValidationError(error) {
-    return error.type === ErrorType.ValidationError;
-}
-function isDuplicateError(error) {
-    return error.type === ErrorType.Duplicate;
-}
-function isUnauthorizedError(error) {
-    return error.type === ErrorType.Unauthorized;
-}
-function isForbiddenError(error) {
-    return error.type === ErrorType.Forbidden;
-}
-function isInternalError(error) {
-    return error.type === ErrorType.Internal;
-}
-function isDatabaseError(error) {
-    return error.type === ErrorType.Database;
-}
-function isNetworkError(error) {
-    return error.type === ErrorType.Network;
-}
-function parseError(error) {
-    if (error &&
-        typeof error === "object" &&
-        "type" in error &&
-        "message" in error) {
-        return error;
-    }
-    if (error instanceof Error) {
-        return {
-            type: ErrorType.Internal,
-            message: error.message,
-        };
-    }
-    return {
-        type: ErrorType.Internal,
-        message: String(error),
-    };
-}
-function formatError(error) {
-    switch (error.type) {
-        case ErrorType.NotFound:
-            return error.entity ? `${error.entity} not found` : error.message;
-        case ErrorType.ValidationError:
-            return `Validation error: ${error.message}`;
-        case ErrorType.Duplicate:
-            return error.entity ? `${error.entity} already exists` : error.message;
-        case ErrorType.Unauthorized:
-            return "Unauthorized access";
-        case ErrorType.Forbidden:
-            return "Access forbidden";
-        case ErrorType.Internal:
-            return `Internal error: ${error.message}`;
-        case ErrorType.Database:
-            return `Database error: ${error.message}`;
-        case ErrorType.Network:
-            return `Network error: ${error.message}`;
-        default:
-            return error.message;
-    }
-}
-
-const DEFAULT_RETRY_CONFIG = {
-    maxAttempts: 3,
-    initialDelayMs: 1000,
-    maxDelayMs: 30000,
-};
-const MAX_ERROR_LOG_ENTRIES = 100;
-class ErrorHandlerService {
-    toastService = inject(ToastService);
-    errorLogSignal = signal([], ...(ngDevMode ? [{ debugName: "errorLogSignal" }] : []));
-    onlineSignal = signal(navigator.onLine, ...(ngDevMode ? [{ debugName: "onlineSignal" }] : []));
-    retryCounter = 0;
-    errorLog = computed(() => this.errorLogSignal(), ...(ngDevMode ? [{ debugName: "errorLog" }] : []));
-    isOnline = computed(() => this.onlineSignal(), ...(ngDevMode ? [{ debugName: "isOnline" }] : []));
-    errorCount = computed(() => this.errorLogSignal().filter((e) => !e.dismissed).length, ...(ngDevMode ? [{ debugName: "errorCount" }] : []));
-    constructor() {
-        this.setupOnlineOfflineListeners();
-    }
-    setupOnlineOfflineListeners() {
-        window.addEventListener("online", () => this.onlineSignal.set(true));
-        window.addEventListener("offline", () => this.onlineSignal.set(false));
-    }
-    handleError(error, context) {
-        const appError = this.normalizeError(error);
-        const message = formatError(appError);
-        const fullMessage = context ? `[${context}] ${message}` : message;
-        console.error(`Error${context ? ` [${context}]` : ""}: ${message}`, error);
-        this.addToErrorLog(appError, fullMessage, context);
-        this.showToast(fullMessage, "error");
-        return appError;
-    }
-    normalizeError(error) {
-        if (this.isHttpError(error)) {
-            return this.convertHttpError(error);
-        }
-        return parseError(error);
-    }
-    isHttpError(error) {
-        return (typeof error === "object" &&
-            error !== null &&
-            "status" in error &&
-            typeof error.status === "number");
-    }
-    convertHttpError(httpError) {
-        const status = httpError.status ?? 0;
-        const message = httpError.message || httpError.statusText || "HTTP error";
-        switch (status) {
-            case 400:
-                return { type: ErrorType.ValidationError, message };
-            case 401:
-                return { type: ErrorType.Unauthorized, message };
-            case 403:
-                return { type: ErrorType.Forbidden, message };
-            case 404:
-                return { type: ErrorType.NotFound, message };
-            case 409:
-                return { type: ErrorType.Duplicate, message };
-            case 500:
-            case 502:
-            case 503:
-            case 504:
-                return { type: ErrorType.Internal, message };
-            default:
-                if (status >= 500) {
-                    return { type: ErrorType.Internal, message };
-                }
-                if (status >= 400) {
-                    return { type: ErrorType.ValidationError, message };
-                }
-                return { type: ErrorType.Network, message };
-        }
-    }
-    showToast(message, type = "error") {
-        this.toastService.show({ type, message });
-    }
-    addToErrorLog(error, message, context) {
-        const entry = {
-            id: `error-${++this.retryCounter}-${Date.now()}`,
-            timestamp: new Date(),
-            message,
-            context,
-            error,
-            dismissed: false,
-        };
-        this.errorLogSignal.update((log) => {
-            const updated = [entry, ...log];
-            return updated.slice(0, MAX_ERROR_LOG_ENTRIES);
-        });
-    }
-    dismissError(id) {
-        this.errorLogSignal.update((log) => log.map((entry) => (entry.id === id ? { ...entry, dismissed: true } : entry)));
-    }
-    clearErrorLog() {
-        this.errorLogSignal.set([]);
-    }
-    getActiveErrors() {
-        return this.errorLogSignal().filter((entry) => !entry.dismissed);
-    }
-    async retryWithBackoff(fn, config = {}) {
-        const { maxAttempts, initialDelayMs, maxDelayMs } = { ...DEFAULT_RETRY_CONFIG, ...config };
-        let lastError;
-        for (let attempt = 0; attempt < maxAttempts; attempt++) {
-            try {
-                return await fn();
-            }
-            catch (error) {
-                lastError = error;
-                if (attempt < maxAttempts - 1) {
-                    const delay = Math.min(initialDelayMs * Math.pow(2, attempt), maxDelayMs);
-                    await new Promise((resolve) => setTimeout(resolve, delay));
-                }
-            }
-        }
-        throw lastError;
-    }
-    handleAndRetry(fn, context, retryConfig) {
-        return this.retryWithBackoff(fn, retryConfig).catch((error) => {
-            this.handleError(error, context);
-            throw error;
-        });
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ErrorHandlerService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ErrorHandlerService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ErrorHandlerService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }], ctorParameters: () => [] });
-
-class SignalSyncService {
-    http = inject(HttpClient);
-    _syncStatus = signal("idle", ...(ngDevMode ? [{ debugName: "_syncStatus" }] : []));
-    _lastSyncTime = signal(null, ...(ngDevMode ? [{ debugName: "_lastSyncTime" }] : []));
-    _pendingChanges = signal(0, ...(ngDevMode ? [{ debugName: "_pendingChanges" }] : []));
-    _syncEndpoint = signal("", ...(ngDevMode ? [{ debugName: "_syncEndpoint" }] : []));
-    syncStatus = computed(() => this._syncStatus(), ...(ngDevMode ? [{ debugName: "syncStatus" }] : []));
-    lastSyncTime = computed(() => this._lastSyncTime(), ...(ngDevMode ? [{ debugName: "lastSyncTime" }] : []));
-    pendingChanges = computed(() => this._pendingChanges(), ...(ngDevMode ? [{ debugName: "pendingChanges" }] : []));
-    syncEndpoint = computed(() => this._syncEndpoint(), ...(ngDevMode ? [{ debugName: "syncEndpoint" }] : []));
-    setEndpoint(endpoint) {
-        this._syncEndpoint.set(endpoint);
-    }
-    setStatus(status) {
-        this._syncStatus.set(status);
-    }
-    incrementPending() {
-        this._pendingChanges.update((n) => n + 1);
-    }
-    decrementPending() {
-        this._pendingChanges.update((n) => Math.max(0, n - 1));
-    }
-    markSynced() {
-        this._lastSyncTime.set(new Date());
-        this._pendingChanges.set(0);
-        this._syncStatus.set("idle");
-    }
-    markError() {
-        this._syncStatus.set("error");
-    }
-    markOffline() {
-        this._syncStatus.set("offline");
-    }
-    async syncToCloud() {
-        if (this._syncStatus() === "syncing")
-            return;
-        if (!this._syncEndpoint()) {
-            this.markOffline();
-            return;
-        }
-        this._syncStatus.set("syncing");
-        try {
-            const state = this._pendingChanges();
-            if (state > 0) {
-                await this.performSync();
-            }
-            this.markSynced();
-        }
-        catch (error) {
-            this.markError();
-            throw error;
-        }
-    }
-    async performSync() {
-        const endpoint = this._syncEndpoint();
-        if (!endpoint)
-            return;
-        try {
-            await this.http
-                .post(`${endpoint}/sync`, {
-                timestamp: new Date().toISOString(),
-            })
-                .toPromise();
-        }
-        catch (error) {
-            console.error("Sync failed:", error);
-            throw error;
-        }
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalSyncService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalSyncService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalSyncService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-class DataPatchService {
-    storage = signal(null, ...(ngDevMode ? [{ debugName: "storage" }] : []));
-    init(storage) {
-        this.storage.set(storage);
-    }
-    getStorage() {
-        const s = this.storage();
-        if (!s)
-            throw new Error("DataPatchService not initialized");
-        return s;
-    }
-    getCollection(collection) {
-        const data = this.getStorage().get(collection);
-        return data || [];
-    }
-    saveCollection(collection, data) {
-        this.getStorage().set(collection, data);
-    }
-    create(collection, item) {
-        const data = this.getCollection(collection);
-        const timestamp = Date.now();
-        const entity = {
-            ...item,
-            created_at: timestamp,
-            updated_at: timestamp,
-        };
-        data.push(entity);
-        this.saveCollection(collection, data);
-    }
-    find(collection, id) {
-        const data = this.getCollection(collection);
-        return (data.find((item) => item.id === id) || null);
-    }
-    findAll(collection) {
-        return this.getCollection(collection);
-    }
-    findWhere(collection, predicate) {
-        return this.getCollection(collection).filter(predicate);
-    }
-    update(collection, id, changes) {
-        const data = this.getCollection(collection);
-        const index = data.findIndex((item) => item.id === id);
-        if (index === -1)
-            return;
-        const updated = {
-            ...data[index],
-            ...changes,
-            updated_at: Date.now(),
-        };
-        data[index] = updated;
-        this.saveCollection(collection, data);
-    }
-    delete(collection, id) {
-        const data = this.getCollection(collection);
-        const filtered = data.filter((item) => item.id !== id);
-        this.saveCollection(collection, filtered);
-    }
-    batchUpdate(collection, updates) {
-        const data = this.getCollection(collection);
-        const now = Date.now();
-        for (const { id, changes } of updates) {
-            const index = data.findIndex((item) => item.id === id);
-            if (index !== -1) {
-                data[index] = {
-                    ...data[index],
-                    ...changes,
-                    updated_at: now,
-                };
-            }
-        }
-        this.saveCollection(collection, data);
-    }
-    batchDelete(collection, ids) {
-        const data = this.getCollection(collection);
-        const filtered = data.filter((item) => !ids.includes(item.id));
-        this.saveCollection(collection, filtered);
-    }
-    count(collection) {
-        return this.getCollection(collection).length;
-    }
-    exists(collection, id) {
-        return this.getCollection(collection).some((item) => item.id === id);
-    }
-    clearCollection(collection) {
-        this.saveCollection(collection, []);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataPatchService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataPatchService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataPatchService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
 
 async function invokeWithRetry(fn, options) {
     const { maxAttempts, initialDelayMs, maxDelayMs } = options;
@@ -13056,11 +12693,34 @@ async function invokeWithRetry(fn, options) {
 }
 
 class InvokeWrapperService {
-    async invoke(cmd, args) {
-        return invoke(cmd, args);
+    async invoke(cmd, args, options) {
+        try {
+            return await invoke(cmd, args);
+        }
+        catch (err) {
+            if (options?.suppressError) {
+                return undefined;
+            }
+            throw err;
+        }
     }
-    async invokeWithRetry(cmd, args, options = { maxAttempts: 3, initialDelayMs: 1000, maxDelayMs: 30000 }) {
-        return invokeWithRetry(() => this.invokeWithTimeout(cmd, args, options.maxDelayMs), options);
+    async invokeWithRetry(cmd, args, retryOptions = { maxAttempts: 3, initialDelayMs: 1000, maxDelayMs: 30000 }) {
+        return invokeWithRetry(() => this.invokeWithTimeout(cmd, args, retryOptions.maxDelayMs), retryOptions);
+    }
+    async timeout(ms, cmd, args, options) {
+        const { signal } = options ?? {};
+        const doTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error(`Invoke ${cmd} timed out after ${ms}ms`)), ms));
+        if (signal) {
+            const doAbort = new Promise((_, reject) => {
+                if (signal.aborted) {
+                    reject(signal.reason);
+                    return;
+                }
+                signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+            });
+            return Promise.race([invoke(cmd, args), doTimeout, doAbort]);
+        }
+        return Promise.race([invoke(cmd, args), doTimeout]);
     }
     async invokeWithTimeout(cmd, args, timeoutMs) {
         return Promise.race([
@@ -13076,262 +12736,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
             args: [{ providedIn: "root" }]
         }] });
 
-class CrudService {
-    async find(entity, id) {
-        const result = await this.execute("find", entity, { filter: { id } });
-        return result.data ?? null;
-    }
-    async findAll(entity, filter) {
-        const result = await this.execute("find", entity, {
-            filter: filter,
-        });
-        return result.data ?? [];
-    }
-    async create(entity, data) {
-        const result = await this.execute("create", entity, { data });
-        return result.data;
-    }
-    async update(entity, id, data) {
-        const result = await this.execute("update", entity, { id, data });
-        return result.data;
-    }
-    async patch(entity, id, data) {
-        const result = await this.execute("patch", entity, { id, data });
-        return result.data;
-    }
-    async delete(entity, id) {
-        await this.execute("delete", entity, { id });
-    }
-    async count(entity) {
-        const result = await this.execute("count", entity);
-        return result.count;
-    }
-    async exists(entity, id) {
-        const result = await this.execute("exists", entity, {
-            id,
-        });
-        return result.exists;
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-var ResponseStatus;
-(function (ResponseStatus) {
-    ResponseStatus["Success"] = "success";
-    ResponseStatus["Created"] = "created";
-    ResponseStatus["Updated"] = "updated";
-    ResponseStatus["Deleted"] = "deleted";
-    ResponseStatus["Error"] = "error";
-    ResponseStatus["ValidationError"] = "validationError";
-    ResponseStatus["NotFound"] = "notFound";
-    ResponseStatus["Unauthorized"] = "unauthorized";
-    ResponseStatus["Forbidden"] = "forbidden";
-})(ResponseStatus || (ResponseStatus = {}));
-function isSuccess(response) {
-    return (response.status === ResponseStatus.Success ||
-        response.status === ResponseStatus.Created ||
-        response.status === ResponseStatus.Updated ||
-        response.status === ResponseStatus.Deleted);
-}
-function isError(response) {
-    return (response.status === ResponseStatus.Error ||
-        response.status === ResponseStatus.ValidationError ||
-        response.status === ResponseStatus.NotFound ||
-        response.status === ResponseStatus.Unauthorized ||
-        response.status === ResponseStatus.Forbidden);
-}
-function getErrorMessage(response) {
-    if (isError(response)) {
-        return response.message;
-    }
-    return null;
-}
-function unwrapResponse(response) {
-    if (isError(response)) {
-        throw new Error(response.message || "Unknown error");
-    }
-    if (response.data === null) {
-        throw new Error("No data in response");
-    }
-    return response.data;
-}
-function mapResponse(response, mapper) {
-    return {
-        ...response,
-        data: response.data !== null ? mapper(response.data) : null,
-    };
-}
-
-function parseErrorFromInvoke(error) {
-    if (error && typeof error === "object") {
-        const e = error;
-        if ("type" in e && "message" in e) {
-            return e;
-        }
-        if ("message" in e) {
-            return {
-                type: ErrorType.Internal,
-                message: String(e.message),
-            };
-        }
-    }
-    if (error instanceof Error) {
-        return {
-            type: ErrorType.Internal,
-            message: error.message,
-        };
-    }
-    return {
-        type: ErrorType.Internal,
-        message: String(error),
-    };
-}
-async function invokeCommand(command, args, options) {
-    const { retryCount = 0, retryDelay = 1000 } = options || {};
-    if (retryCount === 0) {
-        try {
-            const result = await invoke(command, args);
-            return {
-                success: true,
-                data: result,
-                error: null,
-            };
-        }
-        catch (error) {
-            return {
-                success: false,
-                data: null,
-                error: parseErrorFromInvoke(error),
-            };
-        }
-    }
-    try {
-        const result = await invokeWithRetry(() => invoke(command, args), { maxAttempts: retryCount + 1, initialDelayMs: retryDelay, maxDelayMs: 60000 });
-        return {
-            success: true,
-            data: result,
-            error: null,
-        };
-    }
-    catch (error) {
-        return {
-            success: false,
-            data: null,
-            error: parseErrorFromInvoke(error),
-        };
-    }
-}
-async function invokeCommandWithResponse(command, args, options) {
-    const { retryCount = 0, retryDelay = 1000 } = options || {};
-    let lastResponse = {
-        status: ResponseStatus.Error,
-        message: "Unknown error",
-        data: null,
-    };
-    for (let attempt = 0; attempt <= retryCount; attempt++) {
-        try {
-            const result = await invoke(command, args);
-            lastResponse = result;
-            if (result.status !== ResponseStatus.Error &&
-                result.status !== ResponseStatus.ValidationError) {
-                return result;
-            }
-            if (attempt < retryCount) {
-                await new Promise((resolve) => setTimeout(resolve, retryDelay * Math.pow(2, attempt)));
-            }
-        }
-        catch (error) {
-            lastResponse = {
-                status: ResponseStatus.Error,
-                message: error instanceof Error ? error.message : String(error),
-                data: null,
-            };
-            if (attempt < retryCount) {
-                await new Promise((resolve) => setTimeout(resolve, retryDelay * Math.pow(2, attempt)));
-            }
-        }
-    }
-    return lastResponse;
-}
-async function invokeVoid(command, args, options) {
-    const result = await invokeCommand(command, args, options);
-    if (!result.success) {
-        throw new Error(result.error?.message || "Command failed");
-    }
-}
-async function invokeWithError(command, args, options) {
-    const result = await invokeCommand(command, args, options);
-    if (!result.success || result.data === null) {
-        const errorMsg = result.error?.message || "Command failed";
-        throw new Error(errorMsg);
-    }
-    return result.data;
-}
-
-/**
- * Sort array of objects by property and order
- * @param arr - Array to sort
- * @param key - Property name to sort by
- * @param order - "asc" or "desc"
- */
-function sortBy(arr, key, order = 'asc') {
-    return [...arr].sort((a, b) => {
-        const aVal = typeof key === 'number' ? a[key] : a[key];
-        const bVal = typeof key === 'number' ? b[key] : b[key];
-        if (aVal < bVal)
-            return order === 'asc' ? -1 : 1;
-        if (aVal > bVal)
-            return order === 'asc' ? 1 : -1;
-        return 0;
-    });
-}
-
-/**
- * Clamp a value between min and max
- * @param value - Value to clamp
- * @param min - Minimum value
- * @param max - Maximum value
- */
-function clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max);
-}
-
-/**
- * Format a date as a human-readable "time ago" string
- * @param date - Date to format
- * @returns String like "5 minutes ago", "2 hours ago", etc.
- */
-function timeAgo(date) {
-    const now = new Date();
-    const past = new Date(date);
-    const diffMs = now.getTime() - past.getTime();
-    const diffSec = Math.floor(diffMs / 1000);
-    const diffMin = Math.floor(diffSec / 60);
-    const diffHour = Math.floor(diffMin / 60);
-    const diffDay = Math.floor(diffHour / 24);
-    const diffWeek = Math.floor(diffDay / 7);
-    const diffMonth = Math.floor(diffDay / 30);
-    const diffYear = Math.floor(diffDay / 365);
-    if (diffSec < 60)
-        return 'just now';
-    if (diffMin < 60)
-        return `${diffMin} minute${diffMin !== 1 ? 's' : ''} ago`;
-    if (diffHour < 24)
-        return `${diffHour} hour${diffHour !== 1 ? 's' : ''} ago`;
-    if (diffDay < 7)
-        return `${diffDay} day${diffDay !== 1 ? 's' : ''} ago`;
-    if (diffWeek < 4)
-        return `${diffWeek} week${diffWeek !== 1 ? 's' : ''} ago`;
-    if (diffMonth < 12)
-        return `${diffMonth} month${diffMonth !== 1 ? 's' : ''} ago`;
-    return `${diffYear} year${diffYear !== 1 ? 's' : ''} ago`;
-}
-
 const DARK_MODE_STORAGE_KEY = "tauri-front-dark-mode";
 class StyleThemeService {
     _themeChanged$ = new BehaviorSubject({
@@ -13342,23 +12746,54 @@ class StyleThemeService {
     constructor() {
         this.initializeDarkMode();
     }
+    /** No-op for API compatibility; initialization runs in the constructor. */
+    init() { }
     async loadTheme(variant) {
-        await loadStyleVariant(variant);
         setCurrentStyle(variant);
-        this.injectThemeStyles(variant);
+        if (this.isDarkMode()) {
+            this.injectDarkModeVariables(variant);
+        }
         this._themeChanged$.next({
             variant,
             isDark: this.isDarkMode(),
         });
+    }
+    /** Convenience alias for apps that use simple theme names (e.g. "light", "dark"). */
+    async setTheme(theme) {
+        const variant = this.resolveThemeVariant(theme);
+        await this.loadTheme(variant);
+    }
+    resolveThemeVariant(theme) {
+        const map = {
+            "material-design-v3": "material-design-v3",
+            "neumorphism": "neumorphism",
+            "claymorphism": "claymorphism",
+            "glassmorphism": "glassmorphism",
+            "brutalism": "brutalism",
+            "skeuomorphism": "skeuomorphism",
+        };
+        if (map[theme])
+            return map[theme];
+        return "material-design-v3";
+    }
+    /** Alias for toggleDarkMode() — used by ZenithDB. */
+    toggle() {
+        this.toggleDarkMode();
+    }
+    /** Returns 'dark' or 'light' based on current dark mode state — used by ZenithDB. */
+    effectiveColorMode() {
+        return this.isDarkMode() ? "dark" : "light";
     }
     toggleDarkMode() {
         const html = document.documentElement;
         const isCurrentlyDark = html.classList.contains("dark");
         if (isCurrentlyDark) {
             html.classList.remove("dark");
+            this.removeDarkModeVariables();
         }
         else {
             html.classList.add("dark");
+            this.injectDarkModeVariables(this.getCurrentTheme());
         }
         this.saveDarkModePreference(!isCurrentlyDark);
         this._themeChanged$.next({
@@ -13373,9 +12808,11 @@ class StyleThemeService {
         const html = document.documentElement;
         if (enabled) {
             html.classList.add("dark");
+            this.injectDarkModeVariables(this.getCurrentTheme());
         }
         else {
             html.classList.remove("dark");
+            this.removeDarkModeVariables();
         }
         this.saveDarkModePreference(enabled);
         this._themeChanged$.next({
@@ -13386,15 +12823,133 @@ class StyleThemeService {
     getCurrentTheme() {
         return getCurrentStyle();
     }
-    injectThemeStyles(variant) {
-        let existing = document.getElementById("theme-styles");
-        if (existing) {
-            existing.remove();
-        }
+    injectDarkModeVariables(variant) {
+        this.removeDarkModeVariables();
         const style = document.createElement("style");
-        style.id = "theme-styles";
-        style.textContent = this.getDarkModeCSS(variant);
+        style.id = "dark-mode-variables";
+        style.textContent = this.getDarkModeVariablesCSS(variant);
         document.head.appendChild(style);
+    }
+    removeDarkModeVariables() {
+        const existing = document.getElementById("dark-mode-variables");
+        if (existing)
+            existing.remove();
+    }
+    getDarkModeVariablesCSS(variant) {
+        const isDark = document.documentElement.classList.contains("dark");
+        if (!isDark)
+            return "";
+        const vars = {
+            "material-design-v3": `
+:root {
+  --accent: #d0bcff;
+  --accent-hover: #b69df8;
+  --text-on-accent: #381e72;
+  --text-primary: #e6e1e5;
+  --text-secondary: #cac4d0;
+  --text-muted: #938f99;
+  --text-on-error: #f2b8b5;
+  --bg-elevated: #2b2930;
+  --border-color: #49454f;
+  --error: #f2b8b5;
+  --success: #6ee7b7;
+  --bg-primary: #1c1b1f;
+  --bg-hover: rgba(187, 184, 201, 0.08);
+  --bg-header: #1c1b1f;
+  --bg-secondary: #211f26;
+}`,
+            "neumorphism": `
+:root {
+  --accent: #a78bfa;
+  --accent-hover: #8b7cf7;
+  --text-on-accent: #1e1b2e;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-on-error: #1e1b2e;
+  --bg-elevated: #2d3748;
+  --border-color: #4a5568;
+  --error: #fc8181;
+  --success: #68d391;
+  --bg-primary: #1a202c;
+  --bg-tertiary: #171923;
+  --bg-hover: #3d4758;
+  --bg-header: #2d3748;
+  --bg-secondary: #1e2533;
+  --bg-tertiary: #171923;
+}`,
+            "claymorphism": `
+:root {
+  --accent: #a78bfa;
+  --accent-hover: #8b7cf7;
+  --text-on-accent: #1e1b2e;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-on-error: #1e1b2e;
+  --bg-elevated: #2d3748;
+  --border-color: #4a5568;
+  --error: #fc8181;
+  --success: #68d391;
+  --bg-primary: #1a202c;
+  --bg-tertiary: #171923;
+  --bg-hover: #3d4758;
+  --bg-header: #2d3748;
+  --bg-secondary: #1e2533;
+  --bg-tertiary: #171923;
+}`,
+            "glassmorphism": `
+:root {
+  --accent: rgba(167, 139, 250, 0.8);
+  --accent-hover: rgba(187, 159, 250, 0.9);
+  --text-on-accent: #1e1b2e;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-on-error: #fce4ec;
+  --bg-elevated: rgba(30, 30, 50, 0.7);
+  --border-color: rgba(255, 255, 255, 0.15);
+  --error: #ff6b6b;
+  --success: #51cf66;
+  --bg-primary: rgba(15, 15, 30, 0.9);
+  --bg-tertiary: rgba(10, 10, 20, 0.95);
+  --bg-hover: rgba(50, 50, 80, 0.4);
+  --bg-header: rgba(20, 20, 40, 0.8);
+  --bg-secondary: rgba(25, 25, 45, 0.75);
+  --bg-tertiary: rgba(10, 10, 20, 0.95);
+}`,
+            "brutalism": `
+:root {
+  --color-brut-base: #1a1a1a;
+  --color-brut-ink: #f5f5f0;
+  --bg-primary: #1a1a1a;
+  --bg-elevated: #2a2a2a;
+  --bg-hover: #3a3a3a;
+  --bg-tertiary: #404040;
+  --text-primary: #f5f5f0;
+  --text-secondary: #c0c0c0;
+  --text-muted: #909090;
+  --border-color: #f5f5f0;
+}`,
+            "skeuomorphism": `
+:root {
+  --color-skeu-base: #2b1f14;
+  --color-skeu-leather: #3a2a18;
+  --color-skeu-leather-dark: #1a1009;
+  --color-skeu-paper: #3a2e1f;
+  --color-skeu-ink: #f5e6c8;
+  --color-skeu-accent: #d4a017;
+  --bg-primary: #2b1f14;
+  --bg-elevated: #3a2e1f;
+  --bg-hover: #4a3e2f;
+  --bg-tertiary: #5a4e3f;
+  --text-primary: #f5e6c8;
+  --text-secondary: #d4b890;
+  --text-muted: #a8916b;
+  --border-color: #1a1009;
+}`,
+        };
+        return vars[variant] ?? "";
     }
     getDarkModeCSS(variant) {
         return this.getDarkModeCSSForVariant(variant);
@@ -13409,9 +12964,52 @@ class StyleThemeService {
                 return this.claymorphismDarkCSS();
             case "glassmorphism":
                 return this.glassmorphismDarkCSS();
+            case "brutalism":
+                return this.brutalismDarkCSS();
+            case "skeuomorphism":
+                return this.skeuomorphismDarkCSS();
             default:
                 return "";
         }
+    }
+    brutalismDarkCSS() {
+        return `
+:root {
+  --color-brut-base: #1a1a1a;
+  --color-brut-ink: #f5f5f0;
+  --bg-primary: #1a1a1a;
+  --bg-elevated: #2a2a2a;
+  --bg-hover: #3a3a3a;
+  --bg-tertiary: #404040;
+  --text-primary: #f5f5f0;
+  --text-secondary: #c0c0c0;
+  --text-muted: #909090;
+  --border-color: #f5f5f0;
+  --border-subtle: #c0c0c0;
+}
+`;
+    }
+    skeuomorphismDarkCSS() {
+        return `
+:root {
+  --color-skeu-base: #2b1f14;
+  --color-skeu-leather: #3a2a18;
+  --color-skeu-leather-dark: #1a1009;
+  --color-skeu-paper: #3a2e1f;
+  --color-skeu-ink: #f5e6c8;
+  --color-skeu-accent: #d4a017;
+  --color-skeu-accent-dark: #b8860b;
+  --bg-primary: #2b1f14;
+  --bg-elevated: #3a2e1f;
+  --bg-hover: #4a3e2f;
+  --bg-tertiary: #5a4e3f;
+  --text-primary: #f5e6c8;
+  --text-secondary: #d4b890;
+  --text-muted: #a8916b;
+  --border-color: #1a1009;
+  --border-subtle: #4a2e18;
+}
+`;
     }
     materialDesignV3DarkCSS() {
         return `
@@ -13960,241 +13558,1779 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
             args: [{ providedIn: "root" }]
         }], ctorParameters: () => [] });
 
-class UiShowcaseComponent {
-    themeService = inject(ThemeService);
-    colorModes = ["light", "dark", "system"];
-    styleVariants = getAllStyleVariants();
-    currentColorMode = signal(this.themeService.effectiveColorMode(), ...(ngDevMode ? [{ debugName: "currentColorMode" }] : []));
-    currentStyleVariant = signal(getCurrentStyle(), ...(ngDevMode ? [{ debugName: "currentStyleVariant" }] : []));
-    searchQuery = signal("", ...(ngDevMode ? [{ debugName: "searchQuery" }] : []));
-    selectedCategory = signal("all", ...(ngDevMode ? [{ debugName: "selectedCategory" }] : []));
-    allComponents = [
-        ...uiComponents,
-        ...layoutComponents,
-        ...feedbackComponents,
-        ...dataComponents,
-    ];
-    categories = computed(() => {
-        const cats = new Set(this.allComponents.map((c) => c.category));
-        return ["all", ...Array.from(cats)];
-    }, ...(ngDevMode ? [{ debugName: "categories" }] : []));
-    filteredComponents = computed(() => {
-        let result = this.allComponents;
-        const cat = this.selectedCategory();
-        const query = this.searchQuery().toLowerCase();
-        if (cat !== "all") {
-            result = result.filter((c) => c.category === cat);
+class SchemaShellComponent {
+    invokeWrapper;
+    schemaRouter;
+    renderer;
+    themeService;
+    appId = "";
+    commandName = "get_ui_schema";
+    defaultTheme = "material-design-v3";
+    initialRoute = "";
+    loading = signal(true, ...(ngDevMode ? [{ debugName: "loading" }] : []));
+    error = signal(null, ...(ngDevMode ? [{ debugName: "error" }] : []));
+    layoutRegions = computed(() => this.renderer.getLayoutRegions(), ...(ngDevMode ? [{ debugName: "layoutRegions" }] : []));
+    constructor(invokeWrapper, schemaRouter, renderer, themeService) {
+        this.invokeWrapper = invokeWrapper;
+        this.schemaRouter = schemaRouter;
+        this.renderer = renderer;
+        this.themeService = themeService;
+    }
+    async ngOnInit() {
+        if (!this.appId)
+            return;
+        this.themeService.loadTheme(this.defaultTheme);
+        await this.loadSchema();
+    }
+    onWindowToggleDark(event) {
+        const e = event;
+        if (e.detail?.isDark !== undefined) {
+            this.themeService.setDarkMode(e.detail.isDark);
         }
-        if (query) {
-            result = result.filter((c) => c.name.toLowerCase().includes(query) ||
-                c.selector.toLowerCase().includes(query));
+    }
+    async loadSchema() {
+        this.loading.set(true);
+        this.error.set(null);
+        try {
+            const response = await this.invokeWrapper.invoke(this.commandName, { id: this.appId });
+            const schema = response?.data;
+            if (!schema?.pages?.length) {
+                this.error.set("Schema not found. Create it in the Designer and sync.");
+                return;
+            }
+            this.schemaRouter.setSchema(schema);
+            this.renderer.loadSchema(schema);
+            this.renderer.registerFunction("toggleThemeDark", () => {
+                this.themeService.toggleDarkMode();
+            });
+            this.themeService.loadTheme(schema.app?.style ?? this.defaultTheme);
+            const route = this.initialRoute || schema.pages[0].route || `/${schema.pages[0].id}`;
+            await this.schemaRouter.navigate(route);
+        }
+        catch (err) {
+            const message = err instanceof Error
+                ? err.message
+                : typeof err === "object" && err
+                    ? String(err["message"] ??
+                        Object.values(err)[0] ??
+                        String(err))
+                    : String(err);
+            this.error.set(`Failed to load schema: ${message}`);
+        }
+        finally {
+            this.loading.set(false);
+        }
+    }
+    retry() {
+        this.loadSchema();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaShellComponent, deps: [{ token: InvokeWrapperService }, { token: SchemaRouterService }, { token: SchemaRendererService }, { token: StyleThemeService }], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: SchemaShellComponent, isStandalone: true, selector: "lib-schema-shell", inputs: { appId: "appId", commandName: "commandName", defaultTheme: "defaultTheme", initialRoute: "initialRoute" }, host: { listeners: { "window:toggle-dark": "onWindowToggleDark($event)" } }, ngImport: i0, template: "@if (loading()) {\n<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; min-height: 100vh;\">\n  <app-loading size=\"lg\"></app-loading>\n  <p style=\"color: var(--text-secondary); font-size: 1.125rem;\">Loading application...</p>\n</div>\n} @else if (error(); as err) {\n<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;\">\n  <app-empty-state\n    variant=\"danger\"\n    title=\"Application Not Available\"\n    [message]=\"err\"\n    actionLabel=\"Retry\"\n    (action)=\"retry()\"\n  ></app-empty-state>\n</div>\n} @else {\n@for (region of layoutRegions(); track region.id) {\n  @if (region.visible !== false) {\n    <div [class]=\"region.classes || ''\" [attr.data-region]=\"region.id\">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]=\"child\" [elements]=\"region.children || []\"></app-schema-element>\n      }\n    </div>\n  }\n}\n<lib-schema-route-viewer />\n}\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaRouteViewerComponent, selector: "lib-schema-route-viewer", inputs: ["route"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaShellComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "lib-schema-shell", standalone: true, imports: [CommonModule, SchemaRouteViewerComponent, SchemaElementComponent], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (loading()) {\n<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; min-height: 100vh;\">\n  <app-loading size=\"lg\"></app-loading>\n  <p style=\"color: var(--text-secondary); font-size: 1.125rem;\">Loading application...</p>\n</div>\n} @else if (error(); as err) {\n<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;\">\n  <app-empty-state\n    variant=\"danger\"\n    title=\"Application Not Available\"\n    [message]=\"err\"\n    actionLabel=\"Retry\"\n    (action)=\"retry()\"\n  ></app-empty-state>\n</div>\n} @else {\n@for (region of layoutRegions(); track region.id) {\n  @if (region.visible !== false) {\n    <div [class]=\"region.classes || ''\" [attr.data-region]=\"region.id\">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]=\"child\" [elements]=\"region.children || []\"></app-schema-element>\n      }\n    </div>\n  }\n}\n<lib-schema-route-viewer />\n}\n" }]
+        }], ctorParameters: () => [{ type: InvokeWrapperService }, { type: SchemaRouterService }, { type: SchemaRendererService }, { type: StyleThemeService }], propDecorators: { appId: [{
+                type: Input
+            }], commandName: [{
+                type: Input
+            }], defaultTheme: [{
+                type: Input
+            }], initialRoute: [{
+                type: Input
+            }], onWindowToggleDark: [{
+                type: HostListener,
+                args: ["window:toggle-dark", ["$event"]]
+            }] } });
+
+class SchemaFetcherService {
+    http;
+    constructor(http) {
+        this.http = http;
+    }
+    async loadSchema(options) {
+        switch (options.mode) {
+            case "embedded":
+                return this.loadEmbedded(options.source);
+            case "http":
+                return this.loadHttp(options.source);
+            case "tauri":
+                return this.loadTauri(options.source);
+            default:
+                throw new Error(`Unknown schema load mode: ${options.mode}`);
+        }
+    }
+    async loadEmbedded(source) {
+        try {
+            const response = await fetch(source);
+            if (!response.ok) {
+                throw new Error(`Failed to load embedded schema: ${response.status}`);
+            }
+            const data = await response.json();
+            return data;
+        }
+        catch (err) {
+            console.error("SchemaFetcher: Error loading embedded schema:", err);
+            throw err;
+        }
+    }
+    async loadHttp(url) {
+        if (!this.http) {
+            throw new Error("HttpClient not available. Import HttpClientModule or provide provideHttpClient().");
+        }
+        return firstValueFrom(this.http.get(url));
+    }
+    async loadTauri(commandName) {
+        try {
+            const { invoke } = await import('@tauri-apps/api/core');
+            const schema = await invoke(commandName);
+            return schema;
+        }
+        catch (err) {
+            console.error("SchemaFetcher: Error loading schema via Tauri:", err);
+            throw err;
+        }
+    }
+    async loadSchemaFromFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target?.result);
+                    resolve(data);
+                }
+                catch (err) {
+                    reject(new Error("Invalid schema JSON file"));
+                }
+            };
+            reader.onerror = () => reject(new Error("Failed to read file"));
+            reader.readAsText(file);
+        });
+    }
+    validateSchema(schema) {
+        if (!schema || typeof schema !== "object")
+            return false;
+        const s = schema;
+        return (typeof s.schemaVersion === "string" &&
+            typeof s.app === "object" &&
+            Array.isArray(s.pages));
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaFetcherService, deps: [{ token: i1.HttpClient, optional: true }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaFetcherService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaFetcherService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }], ctorParameters: () => [{ type: i1.HttpClient, decorators: [{
+                    type: Optional
+                }] }] });
+
+class ShortcutService {
+    eventBus;
+    _shortcuts = signal([], ...(ngDevMode ? [{ debugName: "_shortcuts" }] : []));
+    shortcuts = this._shortcuts.asReadonly();
+    constructor(eventBus) {
+        this.eventBus = eventBus;
+        window.addEventListener("keydown", (e) => this._handleKeyDown(e));
+    }
+    register(shortcut) {
+        this._shortcuts.update((s) => [...s, shortcut]);
+        return () => this.unregister(shortcut.id);
+    }
+    unregister(id) {
+        this._shortcuts.update((s) => s.filter((s) => s.id !== id));
+    }
+    loadFromSchema(shortcuts) {
+        shortcuts.forEach((s) => this.register(s));
+    }
+    _handleKeyDown(e) {
+        const match = this._shortcuts().find((s) => s.enabled !== false &&
+            s.key.toLowerCase() === e.key.toLowerCase() &&
+            this._checkModifiers(s.modifiers || [], e));
+        if (match) {
+            e.preventDefault();
+            this.eventBus.emit(`shortcut:${match.id}`, { shortcut: match });
+            this.eventBus.emit(match.handler, { shortcut: match });
+        }
+    }
+    _checkModifiers(modifiers, e) {
+        return modifiers.every((m) => {
+            if (m === "ctrl")
+                return e.ctrlKey;
+            if (m === "shift")
+                return e.shiftKey;
+            if (m === "alt")
+                return e.altKey;
+            if (m === "meta")
+                return e.metaKey;
+            return false;
+        });
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ShortcutService, deps: [{ token: EventBusService }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ShortcutService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ShortcutService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }], ctorParameters: () => [{ type: EventBusService }] });
+
+/**
+ * Window-level global state for Translator app.
+ * Exposes source/target language codes as signals so any service
+ * (including TranslationService) can read them without prop-drilling.
+ */
+class GlobalStateService {
+    static _instance = null;
+    static get instance() {
+        if (!GlobalStateService._instance) {
+            GlobalStateService._instance = new GlobalStateService();
+        }
+        return GlobalStateService._instance;
+    }
+    _sourceLang = signal('en', ...(ngDevMode ? [{ debugName: "_sourceLang" }] : []));
+    _targetLang = signal('ru', ...(ngDevMode ? [{ debugName: "_targetLang" }] : []));
+    _appLocale = signal('en', ...(ngDevMode ? [{ debugName: "_appLocale" }] : []));
+    get sourceLang() { return this._sourceLang.asReadonly(); }
+    get targetLang() { return this._targetLang.asReadonly(); }
+    get appLocale() { return this._appLocale.asReadonly(); }
+    setSourceLang(code) { this._sourceLang.set(code); }
+    setTargetLang(code) { this._targetLang.set(code); }
+    setAppLocale(locale) { this._appLocale.set(locale); }
+    swapLanguages() {
+        const src = this._sourceLang();
+        const tgt = this._targetLang();
+        this._sourceLang.set(tgt);
+        this._targetLang.set(src);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GlobalStateService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GlobalStateService, providedIn: 'root' });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: GlobalStateService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: 'root' }]
+        }] });
+
+var ErrorType;
+(function (ErrorType) {
+    ErrorType["NotFound"] = "notFound";
+    ErrorType["ValidationError"] = "validationError";
+    ErrorType["Duplicate"] = "duplicate";
+    ErrorType["Unauthorized"] = "unauthorized";
+    ErrorType["Forbidden"] = "forbidden";
+    ErrorType["Internal"] = "internal";
+    ErrorType["Database"] = "database";
+    ErrorType["Network"] = "network";
+})(ErrorType || (ErrorType = {}));
+function isNotFoundError(error) {
+    return error.type === ErrorType.NotFound;
+}
+function isValidationError(error) {
+    return error.type === ErrorType.ValidationError;
+}
+function isDuplicateError(error) {
+    return error.type === ErrorType.Duplicate;
+}
+function isUnauthorizedError(error) {
+    return error.type === ErrorType.Unauthorized;
+}
+function isForbiddenError(error) {
+    return error.type === ErrorType.Forbidden;
+}
+function isInternalError(error) {
+    return error.type === ErrorType.Internal;
+}
+function isDatabaseError(error) {
+    return error.type === ErrorType.Database;
+}
+function isNetworkError(error) {
+    return error.type === ErrorType.Network;
+}
+function parseError(error) {
+    if (error &&
+        typeof error === "object" &&
+        "type" in error &&
+        "message" in error) {
+        return error;
+    }
+    if (error instanceof Error) {
+        return {
+            type: ErrorType.Internal,
+            message: error.message,
+        };
+    }
+    return {
+        type: ErrorType.Internal,
+        message: String(error),
+    };
+}
+function formatError(error) {
+    switch (error.type) {
+        case ErrorType.NotFound:
+            return error.entity ? `${error.entity} not found` : error.message;
+        case ErrorType.ValidationError:
+            return `Validation error: ${error.message}`;
+        case ErrorType.Duplicate:
+            return error.entity ? `${error.entity} already exists` : error.message;
+        case ErrorType.Unauthorized:
+            return "Unauthorized access";
+        case ErrorType.Forbidden:
+            return "Access forbidden";
+        case ErrorType.Internal:
+            return `Internal error: ${error.message}`;
+        case ErrorType.Database:
+            return `Database error: ${error.message}`;
+        case ErrorType.Network:
+            return `Network error: ${error.message}`;
+        default:
+            return error.message;
+    }
+}
+
+const DEFAULT_DURATIONS = {
+    success: 3000,
+    error: 5000,
+    warning: 4000,
+    info: 3000,
+};
+class ToastService {
+    toastsSignal = signal([], ...(ngDevMode ? [{ debugName: "toastsSignal" }] : []));
+    counter = 0;
+    autoDismissTimers = new Map();
+    toasts = computed(() => this.toastsSignal(), ...(ngDevMode ? [{ debugName: "toasts" }] : []));
+    generateId() {
+        return `toast-${++this.counter}-${Date.now()}`;
+    }
+    show(options) {
+        const id = options.id ?? this.generateId();
+        const type = options.type;
+        const duration = options.duration ?? DEFAULT_DURATIONS[type];
+        const persistent = options.persistent ?? false;
+        const toast = {
+            ...options,
+            id,
+            type,
+            duration,
+            persistent,
+        };
+        this.toastsSignal.update((toasts) => {
+            const updated = [toast, ...toasts];
+            return updated.slice(0, 20);
+        });
+        if (!persistent && duration > 0) {
+            const timer = setTimeout(() => {
+                this.autoDismissTimers.delete(id);
+                this.dismiss(id);
+            }, duration);
+            this.autoDismissTimers.set(id, timer);
+        }
+        return id;
+    }
+    success(message, options) {
+        return this.show({ ...options, type: "success", message });
+    }
+    error(message, options) {
+        return this.show({ ...options, type: "error", message });
+    }
+    warning(message, options) {
+        return this.show({ ...options, type: "warning", message });
+    }
+    info(message, options) {
+        return this.show({ ...options, type: "info", message });
+    }
+    dismiss(id) {
+        const timer = this.autoDismissTimers.get(id);
+        if (timer !== undefined) {
+            clearTimeout(timer);
+            this.autoDismissTimers.delete(id);
+        }
+        this.toastsSignal.update((toasts) => toasts.filter((t) => t.id !== id));
+    }
+    dismissAll() {
+        this.autoDismissTimers.forEach((timer) => clearTimeout(timer));
+        this.autoDismissTimers.clear();
+        this.toastsSignal.set([]);
+    }
+    update(id, changes) {
+        this.toastsSignal.update((toasts) => toasts.map((t) => (t.id === id ? { ...t, ...changes } : t)));
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ToastService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ToastService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ToastService, decorators: [{
+            type: Injectable,
+            args: [{
+                    providedIn: "root",
+                }]
+        }] });
+
+const DEFAULT_RETRY_CONFIG = {
+    maxAttempts: 3,
+    initialDelayMs: 1000,
+    maxDelayMs: 30000,
+};
+const MAX_ERROR_LOG_ENTRIES = 100;
+class ErrorHandlerService {
+    toastService;
+    errorLogSignal = signal([], ...(ngDevMode ? [{ debugName: "errorLogSignal" }] : []));
+    onlineSignal = signal(navigator.onLine, ...(ngDevMode ? [{ debugName: "onlineSignal" }] : []));
+    retryCounter = 0;
+    errorLog = computed(() => this.errorLogSignal(), ...(ngDevMode ? [{ debugName: "errorLog" }] : []));
+    isOnline = computed(() => this.onlineSignal(), ...(ngDevMode ? [{ debugName: "isOnline" }] : []));
+    errorCount = computed(() => this.errorLogSignal().filter((e) => !e.dismissed).length, ...(ngDevMode ? [{ debugName: "errorCount" }] : []));
+    constructor(toastService) {
+        this.toastService = toastService;
+        this.setupOnlineOfflineListeners();
+    }
+    setupOnlineOfflineListeners() {
+        window.addEventListener("online", () => this.onlineSignal.set(true));
+        window.addEventListener("offline", () => this.onlineSignal.set(false));
+    }
+    handleError(error, context) {
+        const appError = this.normalizeError(error);
+        const message = formatError(appError);
+        const fullMessage = context ? `[${context}] ${message}` : message;
+        console.error(`Error${context ? ` [${context}]` : ""}: ${message}`, error);
+        this.addToErrorLog(appError, fullMessage, context);
+        this.showToast(fullMessage, "error");
+        return appError;
+    }
+    normalizeError(error) {
+        if (this.isHttpError(error)) {
+            return this.convertHttpError(error);
+        }
+        return parseError(error);
+    }
+    isHttpError(error) {
+        return (typeof error === "object" &&
+            error !== null &&
+            "status" in error &&
+            typeof error.status === "number");
+    }
+    convertHttpError(httpError) {
+        const status = httpError.status ?? 0;
+        const message = httpError.message || httpError.statusText || "HTTP error";
+        switch (status) {
+            case 400:
+                return { type: ErrorType.ValidationError, message };
+            case 401:
+                return { type: ErrorType.Unauthorized, message };
+            case 403:
+                return { type: ErrorType.Forbidden, message };
+            case 404:
+                return { type: ErrorType.NotFound, message };
+            case 409:
+                return { type: ErrorType.Duplicate, message };
+            case 500:
+            case 502:
+            case 503:
+            case 504:
+                return { type: ErrorType.Internal, message };
+            default:
+                if (status >= 500) {
+                    return { type: ErrorType.Internal, message };
+                }
+                if (status >= 400) {
+                    return { type: ErrorType.ValidationError, message };
+                }
+                return { type: ErrorType.Network, message };
+        }
+    }
+    showToast(message, type = "error") {
+        this.toastService.show({ type, message });
+    }
+    addToErrorLog(error, message, context) {
+        const entry = {
+            id: `error-${++this.retryCounter}-${Date.now()}`,
+            timestamp: new Date(),
+            message,
+            context,
+            error,
+            dismissed: false,
+        };
+        this.errorLogSignal.update((log) => {
+            const updated = [entry, ...log];
+            return updated.slice(0, MAX_ERROR_LOG_ENTRIES);
+        });
+    }
+    dismissError(id) {
+        this.errorLogSignal.update((log) => log.map((entry) => (entry.id === id ? { ...entry, dismissed: true } : entry)));
+    }
+    clearErrorLog() {
+        this.errorLogSignal.set([]);
+    }
+    getActiveErrors() {
+        return this.errorLogSignal().filter((entry) => !entry.dismissed);
+    }
+    async retryWithBackoff(fn, config = {}) {
+        const { maxAttempts, initialDelayMs, maxDelayMs } = { ...DEFAULT_RETRY_CONFIG, ...config };
+        let lastError;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            try {
+                return await fn();
+            }
+            catch (error) {
+                lastError = error;
+                if (attempt < maxAttempts - 1) {
+                    const delay = Math.min(initialDelayMs * Math.pow(2, attempt), maxDelayMs);
+                    await new Promise((resolve) => setTimeout(resolve, delay));
+                }
+            }
+        }
+        throw lastError;
+    }
+    handleAndRetry(fn, context, retryConfig) {
+        return this.retryWithBackoff(fn, retryConfig).catch((error) => {
+            this.handleError(error, context);
+            throw error;
+        });
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ErrorHandlerService, deps: [{ token: ToastService }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ErrorHandlerService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: ErrorHandlerService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }], ctorParameters: () => [{ type: ToastService }] });
+
+class SignalSyncService {
+    http;
+    constructor(http) {
+        this.http = http;
+    }
+    _syncStatus = signal("idle", ...(ngDevMode ? [{ debugName: "_syncStatus" }] : []));
+    _lastSyncTime = signal(null, ...(ngDevMode ? [{ debugName: "_lastSyncTime" }] : []));
+    _pendingChanges = signal(0, ...(ngDevMode ? [{ debugName: "_pendingChanges" }] : []));
+    _syncEndpoint = signal("", ...(ngDevMode ? [{ debugName: "_syncEndpoint" }] : []));
+    syncStatus = computed(() => this._syncStatus(), ...(ngDevMode ? [{ debugName: "syncStatus" }] : []));
+    lastSyncTime = computed(() => this._lastSyncTime(), ...(ngDevMode ? [{ debugName: "lastSyncTime" }] : []));
+    pendingChanges = computed(() => this._pendingChanges(), ...(ngDevMode ? [{ debugName: "pendingChanges" }] : []));
+    syncEndpoint = computed(() => this._syncEndpoint(), ...(ngDevMode ? [{ debugName: "syncEndpoint" }] : []));
+    setEndpoint(endpoint) {
+        this._syncEndpoint.set(endpoint);
+    }
+    setStatus(status) {
+        this._syncStatus.set(status);
+    }
+    incrementPending() {
+        this._pendingChanges.update((n) => n + 1);
+    }
+    decrementPending() {
+        this._pendingChanges.update((n) => Math.max(0, n - 1));
+    }
+    markSynced() {
+        this._lastSyncTime.set(new Date());
+        this._pendingChanges.set(0);
+        this._syncStatus.set("idle");
+    }
+    markError() {
+        this._syncStatus.set("error");
+    }
+    markOffline() {
+        this._syncStatus.set("offline");
+    }
+    async syncToCloud() {
+        if (this._syncStatus() === "syncing")
+            return;
+        if (!this._syncEndpoint()) {
+            this.markOffline();
+            return;
+        }
+        this._syncStatus.set("syncing");
+        try {
+            const state = this._pendingChanges();
+            if (state > 0) {
+                await this.performSync();
+            }
+            this.markSynced();
+        }
+        catch (error) {
+            this.markError();
+            throw error;
+        }
+    }
+    async performSync() {
+        const endpoint = this._syncEndpoint();
+        if (!endpoint)
+            return;
+        try {
+            await this.http
+                .post(`${endpoint}/sync`, {
+                timestamp: new Date().toISOString(),
+            })
+                .toPromise();
+        }
+        catch (error) {
+            console.error("Sync failed:", error);
+            throw error;
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalSyncService, deps: [{ token: i1.HttpClient }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalSyncService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SignalSyncService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }], ctorParameters: () => [{ type: i1.HttpClient }] });
+
+class DataPatchService {
+    storage = signal(null, ...(ngDevMode ? [{ debugName: "storage" }] : []));
+    init(storage) {
+        this.storage.set(storage);
+    }
+    getStorage() {
+        const s = this.storage();
+        if (!s)
+            throw new Error("DataPatchService not initialized");
+        return s;
+    }
+    getCollection(collection) {
+        const data = this.getStorage().get(collection);
+        return data || [];
+    }
+    saveCollection(collection, data) {
+        this.getStorage().set(collection, data);
+    }
+    create(collection, item) {
+        const data = this.getCollection(collection);
+        const timestamp = Date.now();
+        const entity = {
+            ...item,
+            created_at: timestamp,
+            updated_at: timestamp,
+        };
+        data.push(entity);
+        this.saveCollection(collection, data);
+    }
+    find(collection, id) {
+        const data = this.getCollection(collection);
+        return (data.find((item) => item.id === id) || null);
+    }
+    findAll(collection) {
+        return this.getCollection(collection);
+    }
+    findWhere(collection, predicate) {
+        return this.getCollection(collection).filter(predicate);
+    }
+    update(collection, id, changes) {
+        const data = this.getCollection(collection);
+        const index = data.findIndex((item) => item.id === id);
+        if (index === -1)
+            return;
+        const updated = {
+            ...data[index],
+            ...changes,
+            updated_at: Date.now(),
+        };
+        data[index] = updated;
+        this.saveCollection(collection, data);
+    }
+    delete(collection, id) {
+        const data = this.getCollection(collection);
+        const filtered = data.filter((item) => item.id !== id);
+        this.saveCollection(collection, filtered);
+    }
+    batchUpdate(collection, updates) {
+        const data = this.getCollection(collection);
+        const now = Date.now();
+        for (const { id, changes } of updates) {
+            const index = data.findIndex((item) => item.id === id);
+            if (index !== -1) {
+                data[index] = {
+                    ...data[index],
+                    ...changes,
+                    updated_at: now,
+                };
+            }
+        }
+        this.saveCollection(collection, data);
+    }
+    batchDelete(collection, ids) {
+        const data = this.getCollection(collection);
+        const filtered = data.filter((item) => !ids.includes(item.id));
+        this.saveCollection(collection, filtered);
+    }
+    count(collection) {
+        return this.getCollection(collection).length;
+    }
+    exists(collection, id) {
+        return this.getCollection(collection).some((item) => item.id === id);
+    }
+    clearCollection(collection) {
+        this.saveCollection(collection, []);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataPatchService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataPatchService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: DataPatchService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }] });
+
+class StorageService {
+}
+
+class SignalStore {
+    store = new Map();
+    subscribers = new Set();
+    set(key, value) {
+        this.store.set(key, value);
+        this.notify(key, value);
+    }
+    get(key) {
+        return this.store.get(key);
+    }
+    update(key, fn) {
+        const current = this.store.get(key);
+        const updated = fn(current);
+        this.store.set(key, updated);
+        this.notify(key, updated);
+    }
+    delete(key) {
+        this.store.delete(key);
+        this.notify(key, undefined);
+    }
+    keys() {
+        return Array.from(this.store.keys());
+    }
+    toJSON() {
+        const result = {};
+        for (const [key, value] of this.store) {
+            result[key] = value;
         }
         return result;
-    }, ...(ngDevMode ? [{ debugName: "filteredComponents" }] : []));
-    setColorMode(mode) {
-        this.themeService.setMode(mode);
-        this.currentColorMode.set(this.themeService.effectiveColorMode());
     }
-    async setStyleVariant(variant) {
-        await loadStyleVariant(variant);
-        setCurrentStyle(variant);
-        this.currentStyleVariant.set(variant);
+    fromJSON(json) {
+        this.store.clear();
+        for (const [key, value] of Object.entries(json)) {
+            this.store.set(key, value);
+        }
+        this.notifyAll();
     }
-    getComponentDemoContent(comp) {
-        switch (comp.id) {
-            case "button":
-                return "Button";
-            case "badge":
-                return "Badge";
-            case "avatar":
-                return "";
-            case "chip":
-                return "Chip";
-            case "input":
-                return "";
-            case "checkbox":
-                return "";
-            case "radio":
-                return "";
-            case "tabs":
-                return "";
-            case "empty-state":
-                return "";
-            case "loading":
-                return "";
-            case "pagination":
-                return "";
-            case "tooltip":
-                return "";
-            case "progress-bar":
-                return "";
-            case "slider":
-                return "";
-            case "select":
-                return "";
-            case "switch":
-                return "";
-            case "card":
-                return "";
-            case "stats-card":
-                return "";
-            case "table-view":
-                return "";
-            case "data-table":
-                return "";
-            case "json-view":
-                return "";
-            case "segment-selector":
-                return "";
-            case "dialog":
-                return "";
-            case "confirm-dialog":
-                return "";
-            case "toast":
-                return "";
-            case "snackbar":
-                return "";
-            case "command-palette":
-                return "";
-            case "modal":
-                return "";
-            case "split-view":
-                return "";
-            case "page-container":
-                return "";
-            case "page-toolbar":
-                return "";
-            case "header":
-                return "";
-            case "sidebar":
-                return "";
-            case "footer":
-                return "";
-            case "main-editor":
-                return "";
-            case "bottom-panel":
-                return "";
-            case "designer-sidebar":
-                return "";
-            case "component-palette":
-                return "";
-            case "canvas":
-                return "";
-            case "canvas-toolbar":
-                return "";
-            default:
-                return "";
+    subscribe(callback) {
+        this.subscribers.add(callback);
+        return () => {
+            this.subscribers.delete(callback);
+        };
+    }
+    notify(key, value) {
+        for (const callback of this.subscribers) {
+            callback(key, value);
         }
     }
-    getComponentProps(comp) {
-        const props = {};
-        for (const p of comp.props) {
-            switch (p.name) {
-                case "variant":
-                    if (p.options && p.options.length > 0) {
-                        props[p.name] = p.options[0];
-                    }
-                    break;
-                case "size":
-                    if (p.options && p.options.length > 0) {
-                        props[p.name] = p.options[0];
-                    }
-                    break;
-                case "checked":
-                    props[p.name] = false;
-                    break;
-                case "disabled":
-                    props[p.name] = false;
-                    break;
-                case "title":
-                    props[p.name] = comp.name;
-                    break;
-                case "label":
-                    props[p.name] = comp.name;
-                    break;
-                case "text":
-                    props[p.name] = comp.name;
-                    break;
-                case "placeholder":
-                    props[p.name] = "Enter text...";
-                    break;
-                case "type":
-                    props[p.name] = "text";
-                    break;
-                case "value":
-                    props[p.name] = 50;
-                    break;
-                case "page":
-                    props[p.name] = 1;
-                    break;
-                case "total":
-                    props[p.name] = 10;
-                    break;
-                case "min":
-                    props[p.name] = 0;
-                    break;
-                case "max":
-                    props[p.name] = 100;
-                    break;
-                case "open":
-                    props[p.name] = false;
-                    break;
-                case "options":
-                    props[p.name] = '["Option 1", "Option 2"]';
-                    break;
-                case "tabs":
-                    props[p.name] = '["Tab 1", "Tab 2"]';
-                    break;
-                case "columns":
-                    props[p.name] = '["Name", "Status"]';
-                    break;
-                case "data":
-                    props[p.name] = '[]';
-                    break;
-                case "src":
-                    props[p.name] = "";
-                    break;
-                case "alt":
-                    props[p.name] = "Avatar";
-                    break;
-                default:
-                    if (p.default !== undefined) {
-                        props[p.name] = p.default;
-                    }
-            }
-        }
-        return props;
-    }
-    setComponentProps(el, props) {
-        for (const [key, value] of Object.entries(props)) {
-            if (value !== undefined) {
-                el[key] = value;
-            }
+    notifyAll() {
+        for (const [key, value] of this.store) {
+            this.notify(key, value);
         }
     }
-    async renderComponent(card, comp) {
-        const container = card.querySelector(".component-preview");
-        if (!container)
-            return;
-        container.innerHTML = "";
-        try {
-            await customElements.whenDefined(comp.selector);
-            const el = document.createElement(comp.selector);
-            const props = this.getComponentProps(comp);
-            this.setComponentProps(el, props);
-            container.appendChild(el);
-        }
-        catch (e) {
-            container.textContent = comp.selector;
-        }
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: UiShowcaseComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: UiShowcaseComponent, isStandalone: true, selector: "app-ui-showcase", ngImport: i0, template: "<div class=\"showcase-container\">\n  <header class=\"showcase-header\">\n    <h1 class=\"showcase-title\">UI Showcase</h1>\n\n    <div class=\"showcase-controls\">\n      <div class=\"control-group\">\n        <span class=\"control-label\">Color Mode</span>\n        <div class=\"button-group\">\n          @for (mode of colorModes; track mode) {\n            <button\n              class=\"mode-btn\"\n              [class.active]=\"currentColorMode() === mode\"\n              (click)=\"setColorMode(mode)\"\n            >\n              {{ mode }}\n            </button>\n          }\n        </div>\n      </div>\n\n      <div class=\"control-group\">\n        <span class=\"control-label\">Style</span>\n        <select\n          class=\"style-select\"\n          [value]=\"currentStyleVariant()\"\n          (change)=\"setStyleVariant($any($event.target).value)\"\n        >\n          @for (v of styleVariants; track v.id) {\n            <option [value]=\"v.id\">{{ v.name }}</option>\n          }\n        </select>\n      </div>\n    </div>\n  </header>\n\n  <div class=\"showcase-filters\">\n    <input\n      type=\"text\"\n      class=\"search-input\"\n      placeholder=\"Search components...\"\n      [value]=\"searchQuery()\"\n      (input)=\"searchQuery.set($any($event.target).value)\"\n    />\n\n    <div class=\"category-tabs\">\n      @for (cat of categories(); track cat) {\n        <button\n          class=\"category-tab\"\n          [class.active]=\"selectedCategory() === cat\"\n          (click)=\"selectedCategory.set(cat)\"\n        >\n          {{ cat }}\n        </button>\n      }\n    </div>\n  </div>\n\n  <div class=\"component-grid\">\n    @for (comp of filteredComponents(); track comp.id) {\n      <div class=\"component-card\">\n        <div class=\"card-header\">\n          <span class=\"component-name\">{{ comp.name }}</span>\n          <code class=\"component-selector\">{{ comp.selector }}</code>\n        </div>\n\n        <div\n          class=\"component-preview\"\n          #card\n          [attr.data-selector]=\"comp.selector\"\n          (mouseenter)=\"renderComponent($any($event.target).closest('.component-card'), comp)\"\n        ></div>\n\n        <div class=\"card-footer\">\n          <span class=\"category-badge\">{{ comp.category }}</span>\n          <span class=\"package-badge\">{{ comp.packageType }}</span>\n        </div>\n      </div>\n    }\n  </div>\n</div>", styles: [".showcase-container{min-height:100vh;background-color:var(--color-bg-primary, #f8fafc);color:var(--color-text-primary, #1e293b)}.showcase-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 2rem;background-color:var(--color-bg-elevated, #ffffff);border-bottom:1px solid var(--color-border, #e2e8f0);position:sticky;top:0;z-index:10;gap:2rem;flex-wrap:wrap}.showcase-title{margin:0;font-size:1.5rem;font-weight:700;color:var(--color-text-primary, #1e293b)}.showcase-controls{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}.control-group{display:flex;align-items:center;gap:.75rem}.control-label{font-size:.875rem;font-weight:500;color:var(--color-text-secondary, #64748b)}.button-group{display:flex;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;overflow:hidden}.mode-btn{padding:.5rem 1rem;border:none;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.mode-btn:not(:last-child){border-right:1px solid var(--color-border, #e2e8f0)}.mode-btn:hover{background-color:var(--color-bg-hover, #f1f5f9)}.mode-btn.active{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.style-select{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.875rem;font-weight:500;cursor:pointer;min-width:160px}.style-select:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.showcase-filters{padding:1.5rem 2rem;display:flex;flex-direction:column;gap:1rem;background-color:var(--color-bg-secondary, #f1f5f9);border-bottom:1px solid var(--color-border, #e2e8f0)}.search-input{padding:.75rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.9375rem;max-width:400px}.search-input::placeholder{color:var(--color-text-muted, #94a3b8)}.search-input:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.category-tabs{display:flex;gap:.5rem;flex-wrap:wrap}.category-tab{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:2rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.category-tab:hover{background-color:var(--color-bg-hover, #f1f5f9)}.category-tab.active{background-color:var(--color-accent, #8b5cf6);border-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.component-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;padding:2rem}.component-card{background-color:var(--color-bg-elevated, #ffffff);border:1px solid var(--color-border, #e2e8f0);border-radius:.75rem;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s}.component-card:hover{box-shadow:0 4px 12px #0000001a}.card-header{display:flex;align-items:center;justify-content:space-between;padding:1rem;border-bottom:1px solid var(--color-border-light, #f1f5f9);gap:.5rem}.component-name{font-size:1rem;font-weight:600;color:var(--color-text-primary, #1e293b)}.component-selector{font-size:.75rem;padding:.25rem .5rem;background-color:var(--color-bg-secondary, #f1f5f9);border-radius:.25rem;color:var(--color-text-secondary, #64748b);font-family:monospace}.component-preview{padding:2rem 1rem;min-height:100px;display:flex;align-items:center;justify-content:center;background-color:var(--color-bg-primary, #f8fafc);flex-wrap:wrap;gap:.5rem}.card-footer{display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;border-top:1px solid var(--color-border-light, #f1f5f9)}.category-badge,.package-badge{font-size:.75rem;padding:.25rem .5rem;border-radius:.25rem;font-weight:500;text-transform:capitalize}.category-badge{background-color:var(--color-bg-secondary, #f1f5f9);color:var(--color-text-secondary, #64748b)}.package-badge{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff);opacity:.8}@media(max-width:768px){.showcase-header{flex-direction:column;align-items:flex-start}.component-grid{grid-template-columns:1fr;padding:1rem}}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i1$1.NgSelectOption, selector: "option", inputs: ["ngValue", "value"] }, { kind: "directive", type: i1$1.ɵNgSelectMultipleOption, selector: "option", inputs: ["ngValue", "value"] }] });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: UiShowcaseComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-ui-showcase", standalone: true, imports: [CommonModule, FormsModule], template: "<div class=\"showcase-container\">\n  <header class=\"showcase-header\">\n    <h1 class=\"showcase-title\">UI Showcase</h1>\n\n    <div class=\"showcase-controls\">\n      <div class=\"control-group\">\n        <span class=\"control-label\">Color Mode</span>\n        <div class=\"button-group\">\n          @for (mode of colorModes; track mode) {\n            <button\n              class=\"mode-btn\"\n              [class.active]=\"currentColorMode() === mode\"\n              (click)=\"setColorMode(mode)\"\n            >\n              {{ mode }}\n            </button>\n          }\n        </div>\n      </div>\n\n      <div class=\"control-group\">\n        <span class=\"control-label\">Style</span>\n        <select\n          class=\"style-select\"\n          [value]=\"currentStyleVariant()\"\n          (change)=\"setStyleVariant($any($event.target).value)\"\n        >\n          @for (v of styleVariants; track v.id) {\n            <option [value]=\"v.id\">{{ v.name }}</option>\n          }\n        </select>\n      </div>\n    </div>\n  </header>\n\n  <div class=\"showcase-filters\">\n    <input\n      type=\"text\"\n      class=\"search-input\"\n      placeholder=\"Search components...\"\n      [value]=\"searchQuery()\"\n      (input)=\"searchQuery.set($any($event.target).value)\"\n    />\n\n    <div class=\"category-tabs\">\n      @for (cat of categories(); track cat) {\n        <button\n          class=\"category-tab\"\n          [class.active]=\"selectedCategory() === cat\"\n          (click)=\"selectedCategory.set(cat)\"\n        >\n          {{ cat }}\n        </button>\n      }\n    </div>\n  </div>\n\n  <div class=\"component-grid\">\n    @for (comp of filteredComponents(); track comp.id) {\n      <div class=\"component-card\">\n        <div class=\"card-header\">\n          <span class=\"component-name\">{{ comp.name }}</span>\n          <code class=\"component-selector\">{{ comp.selector }}</code>\n        </div>\n\n        <div\n          class=\"component-preview\"\n          #card\n          [attr.data-selector]=\"comp.selector\"\n          (mouseenter)=\"renderComponent($any($event.target).closest('.component-card'), comp)\"\n        ></div>\n\n        <div class=\"card-footer\">\n          <span class=\"category-badge\">{{ comp.category }}</span>\n          <span class=\"package-badge\">{{ comp.packageType }}</span>\n        </div>\n      </div>\n    }\n  </div>\n</div>", styles: [".showcase-container{min-height:100vh;background-color:var(--color-bg-primary, #f8fafc);color:var(--color-text-primary, #1e293b)}.showcase-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 2rem;background-color:var(--color-bg-elevated, #ffffff);border-bottom:1px solid var(--color-border, #e2e8f0);position:sticky;top:0;z-index:10;gap:2rem;flex-wrap:wrap}.showcase-title{margin:0;font-size:1.5rem;font-weight:700;color:var(--color-text-primary, #1e293b)}.showcase-controls{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}.control-group{display:flex;align-items:center;gap:.75rem}.control-label{font-size:.875rem;font-weight:500;color:var(--color-text-secondary, #64748b)}.button-group{display:flex;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;overflow:hidden}.mode-btn{padding:.5rem 1rem;border:none;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.mode-btn:not(:last-child){border-right:1px solid var(--color-border, #e2e8f0)}.mode-btn:hover{background-color:var(--color-bg-hover, #f1f5f9)}.mode-btn.active{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.style-select{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.875rem;font-weight:500;cursor:pointer;min-width:160px}.style-select:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.showcase-filters{padding:1.5rem 2rem;display:flex;flex-direction:column;gap:1rem;background-color:var(--color-bg-secondary, #f1f5f9);border-bottom:1px solid var(--color-border, #e2e8f0)}.search-input{padding:.75rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:.5rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-primary, #1e293b);font-size:.9375rem;max-width:400px}.search-input::placeholder{color:var(--color-text-muted, #94a3b8)}.search-input:focus{outline:none;border-color:var(--color-accent, #8b5cf6)}.category-tabs{display:flex;gap:.5rem;flex-wrap:wrap}.category-tab{padding:.5rem 1rem;border:1px solid var(--color-border, #e2e8f0);border-radius:2rem;background-color:var(--color-bg-elevated, #ffffff);color:var(--color-text-secondary, #64748b);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .15s;text-transform:capitalize}.category-tab:hover{background-color:var(--color-bg-hover, #f1f5f9)}.category-tab.active{background-color:var(--color-accent, #8b5cf6);border-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff)}.component-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;padding:2rem}.component-card{background-color:var(--color-bg-elevated, #ffffff);border:1px solid var(--color-border, #e2e8f0);border-radius:.75rem;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s}.component-card:hover{box-shadow:0 4px 12px #0000001a}.card-header{display:flex;align-items:center;justify-content:space-between;padding:1rem;border-bottom:1px solid var(--color-border-light, #f1f5f9);gap:.5rem}.component-name{font-size:1rem;font-weight:600;color:var(--color-text-primary, #1e293b)}.component-selector{font-size:.75rem;padding:.25rem .5rem;background-color:var(--color-bg-secondary, #f1f5f9);border-radius:.25rem;color:var(--color-text-secondary, #64748b);font-family:monospace}.component-preview{padding:2rem 1rem;min-height:100px;display:flex;align-items:center;justify-content:center;background-color:var(--color-bg-primary, #f8fafc);flex-wrap:wrap;gap:.5rem}.card-footer{display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;border-top:1px solid var(--color-border-light, #f1f5f9)}.category-badge,.package-badge{font-size:.75rem;padding:.25rem .5rem;border-radius:.25rem;font-weight:500;text-transform:capitalize}.category-badge{background-color:var(--color-bg-secondary, #f1f5f9);color:var(--color-text-secondary, #64748b)}.package-badge{background-color:var(--color-accent, #8b5cf6);color:var(--color-text-on-accent, #ffffff);opacity:.8}@media(max-width:768px){.showcase-header{flex-direction:column;align-items:flex-start}.component-grid{grid-template-columns:1fr;padding:1rem}}\n"] }]
+function createSignalStore() {
+    return new SignalStore();
+}
+
+class StorageCacheService {
+    cache = new Map();
+    get(key) {
+        const entry = this.cache.get(key);
+        if (!entry)
+            return null;
+        if (entry.ttl && Date.now() - entry.timestamp > entry.ttl) {
+            this.cache.delete(key);
+            return null;
+        }
+        return entry.value;
+    }
+    set(key, value, ttl) {
+        this.cache.set(key, {
+            value,
+            timestamp: Date.now(),
+            ttl,
+        });
+    }
+    invalidate(key) {
+        this.cache.delete(key);
+    }
+    invalidateAll() {
+        this.cache.clear();
+    }
+    has(key) {
+        const entry = this.cache.get(key);
+        if (!entry)
+            return false;
+        if (entry.ttl && Date.now() - entry.timestamp > entry.ttl) {
+            this.cache.delete(key);
+            return false;
+        }
+        return true;
+    }
+}
+
+class StorageQueryService {
+    query(items, filter) {
+        return items.filter((item) => {
+            return filter.every((f) => {
+                const value = item[f.field];
+                switch (f.operator) {
+                    case "eq":
+                        return value === f.value;
+                    case "ne":
+                        return value !== f.value;
+                    case "gt":
+                        return value > f.value;
+                    case "gte":
+                        return value >= f.value;
+                    case "lt":
+                        return value < f.value;
+                    case "lte":
+                        return value <= f.value;
+                    case "contains":
+                        return String(value).includes(String(f.value));
+                    case "in":
+                        return f.value.includes(value);
+                    default:
+                        return true;
+                }
+            });
+        });
+    }
+    sortBy(items, field, direction = "asc") {
+        return [...items].sort((a, b) => {
+            const aVal = a[field];
+            const bVal = b[field];
+            const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+            return direction === "asc" ? cmp : -cmp;
+        });
+    }
+    paginate(items, page, pageSize) {
+        const start = (page - 1) * pageSize;
+        return items.slice(start, start + pageSize);
+    }
+}
+
+class UnifiedStorageService {
+    signalStore;
+    cache;
+    query;
+    constructor() {
+        this.signalStore = new SignalStore();
+        this.cache = new StorageCacheService();
+        this.query = new StorageQueryService();
+    }
+    async get(key) {
+        const cached = this.cache.get(key);
+        if (cached !== null)
+            return cached;
+        const value = this.signalStore.get(key);
+        if (value !== null) {
+            this.cache.set(key, value);
+        }
+        return value;
+    }
+    async set(key, value) {
+        this.signalStore.set(key, value);
+        this.cache.set(key, value);
+    }
+    async find(filter) {
+        const all = this.signalStore
+            .keys()
+            .map((k) => this.signalStore.get(k));
+        return this.query.query(all, filter);
+    }
+    async remove(key) {
+        this.signalStore.delete(key);
+        this.cache.invalidate(key);
+    }
+}
+
+class CrudService {
+    async find(entity, id) {
+        const result = await this.execute("find", entity, { filter: { id } });
+        return result.data ?? null;
+    }
+    async findAll(entity, filter) {
+        const result = await this.execute("find", entity, {
+            filter: filter,
+        });
+        return result.data ?? [];
+    }
+    async create(entity, data) {
+        const result = await this.execute("create", entity, { data });
+        return result.data;
+    }
+    async update(entity, id, data) {
+        const result = await this.execute("update", entity, { id, data });
+        return result.data;
+    }
+    async patch(entity, id, data) {
+        const result = await this.execute("patch", entity, { id, data });
+        return result.data;
+    }
+    async delete(entity, id) {
+        await this.execute("delete", entity, { id });
+    }
+    async count(entity) {
+        const result = await this.execute("count", entity);
+        return result.count;
+    }
+    async exists(entity, id) {
+        const result = await this.execute("exists", entity, {
+            id,
+        });
+        return result.exists;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: CrudService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
         }] });
+
+var ResponseStatus;
+(function (ResponseStatus) {
+    ResponseStatus["Success"] = "success";
+    ResponseStatus["Created"] = "created";
+    ResponseStatus["Updated"] = "updated";
+    ResponseStatus["Deleted"] = "deleted";
+    ResponseStatus["Error"] = "error";
+    ResponseStatus["ValidationError"] = "validationError";
+    ResponseStatus["NotFound"] = "notFound";
+    ResponseStatus["Unauthorized"] = "unauthorized";
+    ResponseStatus["Forbidden"] = "forbidden";
+})(ResponseStatus || (ResponseStatus = {}));
+function isSuccess(response) {
+    return (response.status === ResponseStatus.Success ||
+        response.status === ResponseStatus.Created ||
+        response.status === ResponseStatus.Updated ||
+        response.status === ResponseStatus.Deleted);
+}
+function isError(response) {
+    return (response.status === ResponseStatus.Error ||
+        response.status === ResponseStatus.ValidationError ||
+        response.status === ResponseStatus.NotFound ||
+        response.status === ResponseStatus.Unauthorized ||
+        response.status === ResponseStatus.Forbidden);
+}
+function getErrorMessage(response) {
+    if (isError(response)) {
+        return response.message;
+    }
+    return null;
+}
+function unwrapResponse(response) {
+    if (isError(response)) {
+        throw new Error(response.message || "Unknown error");
+    }
+    if (response.data === null) {
+        throw new Error("No data in response");
+    }
+    return response.data;
+}
+function mapResponse(response, mapper) {
+    return {
+        ...response,
+        data: response.data !== null ? mapper(response.data) : null,
+    };
+}
+
+function parseErrorFromInvoke(error) {
+    if (error && typeof error === "object") {
+        const e = error;
+        if ("type" in e && "message" in e) {
+            return e;
+        }
+        if ("message" in e) {
+            return {
+                type: ErrorType.Internal,
+                message: String(e.message),
+            };
+        }
+    }
+    if (error instanceof Error) {
+        return {
+            type: ErrorType.Internal,
+            message: error.message,
+        };
+    }
+    return {
+        type: ErrorType.Internal,
+        message: String(error),
+    };
+}
+async function invokeCommand(command, args, options) {
+    const { retryCount = 0, retryDelay = 1000 } = options || {};
+    if (retryCount === 0) {
+        try {
+            const result = await invoke(command, args);
+            return {
+                success: true,
+                data: result,
+                error: null,
+            };
+        }
+        catch (error) {
+            return {
+                success: false,
+                data: null,
+                error: parseErrorFromInvoke(error),
+            };
+        }
+    }
+    try {
+        const result = await invokeWithRetry(() => invoke(command, args), { maxAttempts: retryCount + 1, initialDelayMs: retryDelay, maxDelayMs: 60000 });
+        return {
+            success: true,
+            data: result,
+            error: null,
+        };
+    }
+    catch (error) {
+        return {
+            success: false,
+            data: null,
+            error: parseErrorFromInvoke(error),
+        };
+    }
+}
+async function invokeCommandWithResponse(command, args, options) {
+    const { retryCount = 0, retryDelay = 1000 } = options || {};
+    let lastResponse = {
+        status: ResponseStatus.Error,
+        message: "Unknown error",
+        data: null,
+    };
+    for (let attempt = 0; attempt <= retryCount; attempt++) {
+        try {
+            const result = await invoke(command, args);
+            lastResponse = result;
+            if (result.status !== ResponseStatus.Error &&
+                result.status !== ResponseStatus.ValidationError) {
+                return result;
+            }
+            if (attempt < retryCount) {
+                await new Promise((resolve) => setTimeout(resolve, retryDelay * Math.pow(2, attempt)));
+            }
+        }
+        catch (error) {
+            lastResponse = {
+                status: ResponseStatus.Error,
+                message: error instanceof Error ? error.message : String(error),
+                data: null,
+            };
+            if (attempt < retryCount) {
+                await new Promise((resolve) => setTimeout(resolve, retryDelay * Math.pow(2, attempt)));
+            }
+        }
+    }
+    return lastResponse;
+}
+async function invokeVoid(command, args, options) {
+    const result = await invokeCommand(command, args, options);
+    if (!result.success) {
+        throw new Error(result.error?.message || "Command failed");
+    }
+}
+async function invokeWithError(command, args, options) {
+    const result = await invokeCommand(command, args, options);
+    if (!result.success || result.data === null) {
+        const errorMsg = result.error?.message || "Command failed";
+        throw new Error(errorMsg);
+    }
+    return result.data;
+}
+
+/**
+ * Sort array of objects by property and order
+ * @param arr - Array to sort
+ * @param key - Property name to sort by
+ * @param order - "asc" or "desc"
+ */
+function sortBy(arr, key, order = 'asc') {
+    return [...arr].sort((a, b) => {
+        const aVal = typeof key === 'number' ? a[key] : a[key];
+        const bVal = typeof key === 'number' ? b[key] : b[key];
+        if (aVal < bVal)
+            return order === 'asc' ? -1 : 1;
+        if (aVal > bVal)
+            return order === 'asc' ? 1 : -1;
+        return 0;
+    });
+}
+
+/**
+ * Clamp a value between min and max
+ * @param value - Value to clamp
+ * @param min - Minimum value
+ * @param max - Maximum value
+ */
+function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+}
+
+/**
+ * Format a date as a human-readable "time ago" string
+ * @param date - Date to format
+ * @returns String like "5 minutes ago", "2 hours ago", etc.
+ */
+function timeAgo(date) {
+    const now = new Date();
+    const past = new Date(date);
+    const diffMs = now.getTime() - past.getTime();
+    const diffSec = Math.floor(diffMs / 1000);
+    const diffMin = Math.floor(diffSec / 60);
+    const diffHour = Math.floor(diffMin / 60);
+    const diffDay = Math.floor(diffHour / 24);
+    const diffWeek = Math.floor(diffDay / 7);
+    const diffMonth = Math.floor(diffDay / 30);
+    const diffYear = Math.floor(diffDay / 365);
+    if (diffSec < 60)
+        return 'just now';
+    if (diffMin < 60)
+        return `${diffMin} minute${diffMin !== 1 ? 's' : ''} ago`;
+    if (diffHour < 24)
+        return `${diffHour} hour${diffHour !== 1 ? 's' : ''} ago`;
+    if (diffDay < 7)
+        return `${diffDay} day${diffDay !== 1 ? 's' : ''} ago`;
+    if (diffWeek < 4)
+        return `${diffWeek} week${diffWeek !== 1 ? 's' : ''} ago`;
+    if (diffMonth < 12)
+        return `${diffMonth} month${diffMonth !== 1 ? 's' : ''} ago`;
+    return `${diffYear} year${diffYear !== 1 ? 's' : ''} ago`;
+}
+
+/**
+ * Searching algorithms.
+ */
+/** Linear search. Returns the index of the first match for `predicate`, or -1. O(n). */
+function linearSearch(arr, predicate) {
+    for (let i = 0; i < arr.length; i++) {
+        if (predicate(arr[i]))
+            return i;
+    }
+    return -1;
+}
+/** Binary search on a sorted array using natural ordering. O(log n). */
+function binarySearch(arr, target, compare) {
+    const cmp = compare ?? ((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+    let lo = 0;
+    let hi = arr.length - 1;
+    while (lo <= hi) {
+        const mid = (lo + hi) >>> 1;
+        const c = cmp(arr[mid], target);
+        if (c === 0)
+            return mid;
+        if (c < 0)
+            lo = mid + 1;
+        else
+            hi = mid - 1;
+    }
+    return -1;
+}
+/** Binary search by a key function. */
+function binarySearchBy(arr, key, keyFn) {
+    let lo = 0;
+    let hi = arr.length - 1;
+    while (lo <= hi) {
+        const mid = (lo + hi) >>> 1;
+        const mk = keyFn(arr[mid]);
+        if (mk === key)
+            return mid;
+        if (mk < key)
+            lo = mid + 1;
+        else
+            hi = mid - 1;
+    }
+    return -1;
+}
+/** First index where `arr[i] >= target` (sorted array). */
+function lowerBound(arr, target, compare) {
+    const cmp = compare ?? ((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+    let lo = 0;
+    let hi = arr.length;
+    while (lo < hi) {
+        const mid = (lo + hi) >>> 1;
+        if (cmp(arr[mid], target) < 0)
+            lo = mid + 1;
+        else
+            hi = mid;
+    }
+    return lo;
+}
+/** First index where `arr[i] > target` (sorted array). */
+function upperBound(arr, target, compare) {
+    const cmp = compare ?? ((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+    let lo = 0;
+    let hi = arr.length;
+    while (lo < hi) {
+        const mid = (lo + hi) >>> 1;
+        if (cmp(arr[mid], target) <= 0)
+            lo = mid + 1;
+        else
+            hi = mid;
+    }
+    return lo;
+}
+/** Jump search on a sorted array. O(√n). */
+function jumpSearch(arr, target) {
+    const n = arr.length;
+    if (n === 0)
+        return -1;
+    const step = Math.max(1, Math.floor(Math.sqrt(n)));
+    let prev = 0;
+    while (prev < n && arr[Math.min(step, n) - 1] < target) {
+        prev += step;
+        if (prev >= n)
+            return -1;
+    }
+    for (let i = prev; i < Math.min(prev + step, n); i++) {
+        if (arr[i] === target)
+            return i;
+    }
+    return -1;
+}
+
+/**
+ * String algorithms.
+ */
+/** Levenshtein edit distance. O(m*n) time, O(min(m,n)) space. */
+function levenshtein(a, b) {
+    if (a === b)
+        return 0;
+    if (a.length === 0)
+        return b.length;
+    if (b.length === 0)
+        return a.length;
+    const prev = new Array(b.length + 1);
+    const curr = new Array(b.length + 1);
+    for (let j = 0; j <= b.length; j++)
+        prev[j] = j;
+    for (let i = 1; i <= a.length; i++) {
+        curr[0] = i;
+        for (let j = 1; j <= b.length; j++) {
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+            curr[j] = Math.min(curr[j - 1] + 1, prev[j] + 1, prev[j - 1] + cost);
+        }
+        for (let j = 0; j <= b.length; j++)
+            prev[j] = curr[j];
+    }
+    return prev[b.length];
+}
+/** Hamming distance. Throws if strings have different lengths. */
+function hamming(a, b) {
+    if (a.length !== b.length)
+        throw new Error("Hamming distance requires equal length strings");
+    let d = 0;
+    for (let i = 0; i < a.length; i++)
+        if (a[i] !== b[i])
+            d++;
+    return d;
+}
+/** Jaro-Winkler similarity. Returns 0..1. */
+function jaroWinkler(a, b) {
+    if (a === b)
+        return 1;
+    const m = jaroMatches(a, b);
+    if (m === 0)
+        return 0;
+    const t = jaroTranspositions(a, b);
+    const jaro = (m / a.length + m / b.length + (m - t) / m) / 3;
+    let prefix = 0;
+    for (let i = 0; i < Math.min(4, a.length); i++) {
+        if (a[i] === b[i])
+            prefix++;
+        else
+            break;
+    }
+    return jaro + prefix * 0.1 * (1 - jaro);
+}
+function jaroMatches(a, b) {
+    if (!a.length || !b.length)
+        return 0;
+    const matchDistance = Math.max(0, Math.floor(Math.max(a.length, b.length) / 2) - 1);
+    const aMatches = new Array(a.length).fill(false);
+    const bMatches = new Array(b.length).fill(false);
+    let matches = 0;
+    for (let i = 0; i < a.length; i++) {
+        const start = Math.max(0, i - matchDistance);
+        const end = Math.min(i + matchDistance + 1, b.length);
+        for (let j = start; j < end; j++) {
+            if (bMatches[j])
+                continue;
+            if (a[i] !== b[j])
+                continue;
+            aMatches[i] = true;
+            bMatches[j] = true;
+            matches++;
+            break;
+        }
+    }
+    return matches;
+}
+function jaroTranspositions(a, b) {
+    const matchDistance = Math.max(0, Math.floor(Math.max(a.length, b.length) / 2) - 1);
+    const aMatches = new Array(a.length).fill(false);
+    const bMatches = new Array(b.length).fill(false);
+    for (let i = 0; i < a.length; i++) {
+        const start = Math.max(0, i - matchDistance);
+        const end = Math.min(i + matchDistance + 1, b.length);
+        for (let j = start; j < end; j++) {
+            if (bMatches[j])
+                continue;
+            if (a[i] !== b[j])
+                continue;
+            aMatches[i] = true;
+            bMatches[j] = true;
+            break;
+        }
+    }
+    let k = 0;
+    let transpositions = 0;
+    for (let i = 0; i < a.length; i++) {
+        if (!aMatches[i])
+            continue;
+        while (!bMatches[k])
+            k++;
+        if (a[i] !== b[k])
+            transpositions++;
+        k++;
+    }
+    return Math.floor(transpositions / 2);
+}
+/** Longest common subsequence length. */
+function lcsLength(a, b) {
+    const m = a.length;
+    const n = b.length;
+    const dp = new Array(n + 1).fill(0);
+    for (let i = 1; i <= m; i++) {
+        let prev = 0;
+        for (let j = 1; j <= n; j++) {
+            const tmp = dp[j];
+            if (a[i - 1] === b[j - 1])
+                dp[j] = prev + 1;
+            else
+                dp[j] = Math.max(dp[j], dp[j - 1]);
+            prev = tmp;
+        }
+    }
+    return dp[n];
+}
+/** Longest common substring length. */
+function lcsSubstringLength(a, b) {
+    const m = a.length;
+    const n = b.length;
+    if (m === 0 || n === 0)
+        return 0;
+    let best = 0;
+    const prev = new Array(n + 1).fill(0);
+    const curr = new Array(n + 1).fill(0);
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (a[i - 1] === b[j - 1]) {
+                curr[j] = prev[j - 1] + 1;
+                if (curr[j] > best)
+                    best = curr[j];
+            }
+            else {
+                curr[j] = 0;
+            }
+        }
+        for (let j = 0; j <= n; j++)
+            prev[j] = curr[j];
+    }
+    return best;
+}
+function isPalindrome(s) {
+    const n = s.length;
+    for (let i = 0; i < n / 2; i++) {
+        if (s[i] !== s[n - 1 - i])
+            return false;
+    }
+    return true;
+}
+function kebabToCamel(s) {
+    return s.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+}
+function camelToKebab(s) {
+    return s.replace(/[A-Z]/g, (c) => "-" + c.toLowerCase());
+}
+function truncate(s, max, suffix = "…") {
+    return s.length <= max ? s : s.slice(0, max - suffix.length) + suffix;
+}
+
+/**
+ * Math algorithms and statistics.
+ */
+function gcd(a, b) {
+    a = Math.abs(Math.trunc(a));
+    b = Math.abs(Math.trunc(b));
+    while (b) {
+        [a, b] = [b, a % b];
+    }
+    return a;
+}
+function lcm(a, b) {
+    if (a === 0 || b === 0)
+        return 0;
+    return Math.abs(a * b) / gcd(a, b);
+}
+function factorial(n) {
+    if (n < 0)
+        throw new Error("factorial undefined for negative numbers");
+    if (n > 20)
+        throw new Error("factorial overflow for n > 20 in number mode");
+    let r = 1;
+    for (let i = 2; i <= n; i++)
+        r *= i;
+    return r;
+}
+function isPrime(n) {
+    if (n < 2)
+        return false;
+    if (n < 4)
+        return true;
+    if (n % 2 === 0)
+        return false;
+    for (let i = 3; i * i <= n; i += 2) {
+        if (n % i === 0)
+            return false;
+    }
+    return true;
+}
+/** Sieve of Eratosthenes. Returns all primes <= n. */
+function primesUpTo(n) {
+    if (n < 2)
+        return [];
+    const sieve = new Uint8Array(n + 1);
+    const primes = [];
+    for (let i = 2; i <= n; i++) {
+        if (sieve[i])
+            continue;
+        primes.push(i);
+        for (let j = i * i; j <= n; j += i)
+            sieve[j] = 1;
+    }
+    return primes;
+}
+function fibonacci(n) {
+    if (n < 0)
+        throw new Error("fibonacci undefined for negative numbers");
+    if (n === 0)
+        return 0;
+    let a = 0, b = 1;
+    for (let i = 2; i <= n; i++) {
+        const t = a + b;
+        a = b;
+        b = t;
+    }
+    return b;
+}
+/** Fast exponentiation. O(log exp). */
+function power(base, exp) {
+    if (exp < 0)
+        throw new Error("negative exponent not supported");
+    let result = 1;
+    let b = base;
+    let e = exp;
+    while (e > 0) {
+        if (e & 1)
+            result *= b;
+        b *= b;
+        e >>= 1;
+    }
+    return result;
+}
+function isPowerOfTwo(n) {
+    return n > 0 && (n & (n - 1)) === 0;
+}
+function nextPowerOfTwo(n) {
+    if (n <= 1)
+        return 1;
+    let p = 1;
+    while (p < n)
+        p <<= 1;
+    return p;
+}
+function mean(nums) {
+    if (nums.length === 0)
+        return 0;
+    let s = 0;
+    for (const n of nums)
+        s += n;
+    return s / nums.length;
+}
+function median(nums) {
+    if (nums.length === 0)
+        return 0;
+    const sorted = [...nums].sort((a, b) => a - b);
+    const mid = sorted.length >> 1;
+    return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+}
+function stddev(nums) {
+    if (nums.length < 2)
+        return 0;
+    const m = mean(nums);
+    let s = 0;
+    for (const n of nums)
+        s += (n - m) ** 2;
+    return Math.sqrt(s / (nums.length - 1));
+}
+
+/**
+ * Array algorithms.
+ */
+function dedupe(arr, keyFn) {
+    if (!keyFn)
+        return Array.from(new Set(arr));
+    const seen = new Set();
+    const out = [];
+    for (const item of arr) {
+        const k = keyFn(item);
+        if (!seen.has(k)) {
+            seen.add(k);
+            out.push(item);
+        }
+    }
+    return out;
+}
+function groupBy(arr, keyFn) {
+    const out = new Map();
+    for (const item of arr) {
+        const k = keyFn(item);
+        const bucket = out.get(k);
+        if (bucket)
+            bucket.push(item);
+        else
+            out.set(k, [item]);
+    }
+    return out;
+}
+function chunk(arr, size) {
+    if (size <= 0)
+        throw new Error("chunk size must be positive");
+    const out = [];
+    for (let i = 0; i < arr.length; i += size)
+        out.push(arr.slice(i, i + size));
+    return out;
+}
+function partition(arr, predicate) {
+    const yes = [];
+    const no = [];
+    for (const item of arr) {
+        if (predicate(item))
+            yes.push(item);
+        else
+            no.push(item);
+    }
+    return [yes, no];
+}
+function flatten(arr, depth = 1) {
+    const out = [];
+    for (const item of arr) {
+        if (Array.isArray(item) && depth > 0)
+            out.push(...flatten(item, depth - 1));
+        else
+            out.push(item);
+    }
+    return out;
+}
+function zip(a, b) {
+    const n = Math.min(a.length, b.length);
+    const out = new Array(n);
+    for (let i = 0; i < n; i++)
+        out[i] = [a[i], b[i]];
+    return out;
+}
+function intersection(...arrs) {
+    if (arrs.length === 0)
+        return [];
+    const [first, ...rest] = arrs;
+    return first.filter((x) => rest.every((a) => a.includes(x)));
+}
+function union(...arrs) {
+    const out = [];
+    const seen = new Set();
+    for (const a of arrs)
+        for (const x of a) {
+            if (!seen.has(x)) {
+                seen.add(x);
+                out.push(x);
+            }
+        }
+    return out;
+}
+function difference(a, b) {
+    const set = new Set(b);
+    return a.filter((x) => !set.has(x));
+}
+
+/**
+ * Graph algorithms.
+ */
+function createGraph() {
+    return { nodes: new Map(), adjacency: new Map() };
+}
+function addNode(g, node) {
+    g.nodes.set(node.id, node);
+    if (!g.adjacency.has(node.id))
+        g.adjacency.set(node.id, []);
+}
+function addEdge(g, edge, directed = false) {
+    const weight = edge.weight ?? 1;
+    g.adjacency.get(edge.from)?.push({ to: edge.to, weight });
+    if (!directed) {
+        if (!g.adjacency.has(edge.to))
+            g.adjacency.set(edge.to, []);
+        g.adjacency.get(edge.to).push({ to: edge.from, weight });
+    }
+}
+function bfs(g, start) {
+    const visited = new Set([start]);
+    const order = [];
+    const queue = [start];
+    while (queue.length) {
+        const node = queue.shift();
+        order.push(node);
+        for (const { to } of g.adjacency.get(node) ?? []) {
+            if (!visited.has(to)) {
+                visited.add(to);
+                queue.push(to);
+            }
+        }
+    }
+    return order;
+}
+function dfs(g, start) {
+    const visited = new Set();
+    const order = [];
+    const visit = (n) => {
+        visited.add(n);
+        order.push(n);
+        for (const { to } of g.adjacency.get(n) ?? []) {
+            if (!visited.has(to))
+                visit(to);
+        }
+    };
+    visit(start);
+    return order;
+}
+/** Dijkstra's shortest path. Returns map of node id → distance from start. */
+function dijkstra(g, start) {
+    const dist = new Map();
+    for (const id of g.nodes.keys())
+        dist.set(id, Infinity);
+    dist.set(start, 0);
+    const visited = new Set();
+    while (visited.size < g.nodes.size) {
+        let u = null;
+        let min = Infinity;
+        for (const [id, d] of dist) {
+            if (!visited.has(id) && d < min) {
+                min = d;
+                u = id;
+            }
+        }
+        if (u === null)
+            break;
+        visited.add(u);
+        for (const { to, weight } of g.adjacency.get(u) ?? []) {
+            const alt = min + weight;
+            if (alt < (dist.get(to) ?? Infinity))
+                dist.set(to, alt);
+        }
+    }
+    return dist;
+}
+/** Topological sort via Kahn's algorithm. Returns null if the graph has a cycle. */
+function topologicalSort(g) {
+    const inDegree = new Map();
+    for (const id of g.nodes.keys())
+        inDegree.set(id, 0);
+    for (const [, edges] of g.adjacency) {
+        for (const { to } of edges)
+            inDegree.set(to, (inDegree.get(to) ?? 0) + 1);
+    }
+    const queue = [];
+    for (const [id, d] of inDegree)
+        if (d === 0)
+            queue.push(id);
+    const order = [];
+    while (queue.length) {
+        const n = queue.shift();
+        order.push(n);
+        for (const { to } of g.adjacency.get(n) ?? []) {
+            const d = (inDegree.get(to) ?? 0) - 1;
+            inDegree.set(to, d);
+            if (d === 0)
+                queue.push(to);
+        }
+    }
+    return order.length === g.nodes.size ? order : null;
+}
+function hasCycle(g) {
+    return topologicalSort(g) === null;
+}
+
+/**
+ * Tree algorithms.
+ */
+function walkPreorder(node, fn) {
+    fn(node);
+    for (const child of node.children ?? [])
+        walkPreorder(child, fn);
+}
+function walkInorder(node, fn) {
+    const children = node.children ?? [];
+    const mid = children.length >> 1;
+    for (let i = 0; i < mid; i++)
+        walkInorder(children[i], fn);
+    fn(node);
+    for (let i = mid; i < children.length; i++)
+        walkInorder(children[i], fn);
+}
+function walkPostorder(node, fn) {
+    for (const child of node.children ?? [])
+        walkPostorder(child, fn);
+    fn(node);
+}
+function walkLevelOrder(node, fn) {
+    const queue = [{ node, level: 0 }];
+    while (queue.length) {
+        const { node: n, level } = queue.shift();
+        fn(n, level);
+        for (const c of n.children ?? [])
+            queue.push({ node: c, level: level + 1 });
+    }
+}
+function findNode(node, id) {
+    if (node.id === id)
+        return node;
+    for (const child of node.children ?? []) {
+        const found = findNode(child, id);
+        if (found)
+            return found;
+    }
+    return null;
+}
+function treeDepth(node) {
+    if (!node.children || node.children.length === 0)
+        return 0;
+    let max = 0;
+    for (const c of node.children) {
+        const d = treeDepth(c);
+        if (d > max)
+            max = d;
+    }
+    return max + 1;
+}
+function flattenTree(node) {
+    const out = [];
+    walkPreorder(node, (n) => out.push(n));
+    return out;
+}
+
+/**
+ * Algorithm suite for @tauri-front/shared.
+ * All algorithms are pure functions with no side effects.
+ */
 
 /**
  * Route guard that checks resource-action permissions.
@@ -14280,10 +15416,15 @@ const rbacRoleGuard = (route, _state) => {
  * <button *rbacHasPermission="['users.write', 'users.admin']">Admin Action</button>
  */
 class RbacHasPermissionDirective {
-    permissionService = inject(PermissionService);
-    templateRef = inject((TemplateRef));
-    viewContainer = inject(ViewContainerRef);
+    permissionService;
+    templateRef;
+    viewContainer;
     permission = "";
+    constructor(permissionService, templateRef, viewContainer) {
+        this.permissionService = permissionService;
+        this.templateRef = templateRef;
+        this.viewContainer = viewContainer;
+    }
     ngOnInit() {
         this.updateView();
     }
@@ -14304,7 +15445,7 @@ class RbacHasPermissionDirective {
         const [resource, action] = this.permission.split(".");
         return resource && action ? this.permissionService.hasPermission(resource, action) : false;
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: RbacHasPermissionDirective, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: RbacHasPermissionDirective, deps: [{ token: PermissionService }, { token: i0.TemplateRef }, { token: i0.ViewContainerRef }], target: i0.ɵɵFactoryTarget.Directive });
     static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.3.25", type: RbacHasPermissionDirective, isStandalone: true, selector: "[rbacHasPermission]", inputs: { permission: ["rbacHasPermission", "permission"] }, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: RbacHasPermissionDirective, decorators: [{
@@ -14313,7 +15454,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
                     selector: "[rbacHasPermission]",
                     standalone: true,
                 }]
-        }], propDecorators: { permission: [{
+        }], ctorParameters: () => [{ type: PermissionService }, { type: i0.TemplateRef }, { type: i0.ViewContainerRef }], propDecorators: { permission: [{
                 type: Input,
                 args: ["rbacHasPermission"]
             }] } });
@@ -14325,10 +15466,15 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
  * <div *rbacHasRole="['editor', 'moderator']">Can Edit</div>
  */
 class RbacHasRoleDirective {
-    permissionService = inject(PermissionService);
-    templateRef = inject((TemplateRef));
-    viewContainer = inject(ViewContainerRef);
+    permissionService;
+    templateRef;
+    viewContainer;
     role = "";
+    constructor(permissionService, templateRef, viewContainer) {
+        this.permissionService = permissionService;
+        this.templateRef = templateRef;
+        this.viewContainer = viewContainer;
+    }
     ngOnInit() {
         this.updateView();
     }
@@ -14345,7 +15491,7 @@ class RbacHasRoleDirective {
         }
         return this.permissionService.hasRole(this.role);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: RbacHasRoleDirective, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: RbacHasRoleDirective, deps: [{ token: PermissionService }, { token: i0.TemplateRef }, { token: i0.ViewContainerRef }], target: i0.ɵɵFactoryTarget.Directive });
     static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.3.25", type: RbacHasRoleDirective, isStandalone: true, selector: "[rbacHasRole]", inputs: { role: ["rbacHasRole", "role"] }, ngImport: i0 });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: RbacHasRoleDirective, decorators: [{
@@ -14354,7 +15500,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImpo
                     selector: "[rbacHasRole]",
                     standalone: true,
                 }]
-        }], propDecorators: { role: [{
+        }], ctorParameters: () => [{ type: PermissionService }, { type: i0.TemplateRef }, { type: i0.ViewContainerRef }], propDecorators: { role: [{
                 type: Input,
                 args: ["rbacHasRole"]
             }] } });
@@ -14383,5 +15529,5 @@ if (typeof window !== 'undefined') {
  * Generated bundle index. Do not edit.
  */
 
-export { BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, DataPatchService, ErrorHandlerService, ErrorType, EventBusService, GlobalStateService, GuardService, I18nService, InvokeWrapperService, LayoutEngineService, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, CrudService as RemoteCrudService, ResponseStatus, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, ShortcutService, SignalStoreService, SignalSyncService, StyleThemeService, ThemeService, ToastService, TodoPermission, UiShowcaseComponent, clamp, components, dataComponents, feedbackComponents, formatError, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage, getStyleClassPrefix, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isError, isSuccess, layoutComponents, loadStyleVariant, mapResponse, parseError, rbacGuard, rbacRoleGuard, setCurrentStyle, sortBy, timeAgo, uiComponents, unwrapResponse };
+export { BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, DataPatchService, ErrorHandlerService, ErrorType, EventBusService, GlobalStateService, GuardService, I18nService, InvokeWrapperService, LayoutEngineService, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, CrudService as RemoteCrudService, ResponseStatus, SchemaElementComponent, SchemaFetcherService, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaShellComponent, ShortcutService, SignalStoreService, SignalSyncService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ToastService, TodoPermission, UnifiedStorageService, addEdge, addNode, bfs, binarySearch, binarySearchBy, camelToKebab, chunk, clamp, components, createGraph, dataComponents, dedupe, dfs, difference, dijkstra, factorial, feedbackComponents, fibonacci, findNode, flatten, flattenTree, formatError, gcd, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage, getStyleClassPrefix, groupBy, hamming, hasCycle, intersection, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isError, isPalindrome, isPowerOfTwo, isPrime, isSuccess, jaroWinkler, jumpSearch, kebabToCamel, layoutComponents, lcm, lcsLength, lcsSubstringLength, levenshtein, linearSearch, loadStyleVariant, lowerBound, mapResponse, mean, median, nextPowerOfTwo, parseError, partition, power, primesUpTo, rbacGuard, rbacRoleGuard, setCurrentStyle, sortBy, stddev, timeAgo, topologicalSort, treeDepth, truncate, uiComponents, union, unwrapResponse, upperBound, walkInorder, walkLevelOrder, walkPostorder, walkPreorder, zip };
 //# sourceMappingURL=tauri-front-shared.mjs.map

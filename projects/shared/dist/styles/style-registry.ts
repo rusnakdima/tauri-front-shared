@@ -1,5 +1,5 @@
 export type StyleVariant =
-  "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3";
+  "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3" | "brutalism" | "skeuomorphism";
 
 export interface ComponentStyleMap {
   [componentId: string]: {
@@ -27,12 +27,288 @@ export interface StyleVariantConfig {
   componentStyles: ComponentStyleMap;
 }
 
+// Brutalism CSS - inline for reliable loading
+/* Class prefix: brut- */
+const BRUTALISM_CSS = `
+:root {
+  --color-brut-base: #f5f5f0;
+  --color-brut-ink: #0a0a0a;
+  --color-brut-accent: #ff3b30;
+  --color-brut-accent-2: #ffd60a;
+  --color-brut-success: #00c853;
+  --color-brut-border: #0a0a0a;
+  --radius-brut-sm: 0;
+  --radius-brut-md: 0;
+  --radius-brut-lg: 0;
+  --radius-brut-xl: 0;
+  --shadow-brut-sm: 4px 4px 0 0 var(--color-brut-ink);
+  --shadow-brut-md: 6px 6px 0 0 var(--color-brut-ink);
+  --shadow-brut-lg: 8px 8px 0 0 var(--color-brut-ink);
+  --font-brut-mono: "JetBrains Mono", "Courier New", monospace;
+  --font-brut-sans: "Inter", "Arial Black", sans-serif;
+
+  /* Generic aliases for Lit components */
+  --accent: var(--color-brut-accent);
+  --accent-hover: #d62b22;
+  --text-on-accent: #ffffff;
+  --text-primary: var(--color-brut-ink);
+  --text-secondary: #3d3d3d;
+  --text-muted: #6b6b6b;
+  --bg-primary: var(--color-brut-base);
+  --bg-elevated: #ffffff;
+  --bg-hover: #e8e8e3;
+  --bg-tertiary: #d4d4cf;
+  --border-color: var(--color-brut-border);
+  --border-subtle: var(--color-brut-border);
+  --error: var(--color-brut-accent);
+  --warning: var(--color-brut-accent-2);
+  --success: var(--color-brut-success);
+  --info: #0066ff;
+  --text-on-error: #ffffff;
+  --text-on-warning: #0a0a0a;
+  --text-on-success: #ffffff;
+}
+
+/* Brutalist component classes */
+.brut-card {
+  background: var(--bg-elevated);
+  border: 4px solid var(--color-brut-border);
+  border-radius: 0;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-brut-md);
+  font-family: var(--font-brut-sans);
+}
+.brut-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.625rem 1.25rem; font-family: var(--font-brut-sans);
+  font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;
+  border: 4px solid var(--color-brut-border);
+  border-radius: 0; background: var(--bg-elevated);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-brut-sm);
+  transition: transform 0.05s, box-shadow 0.05s;
+  cursor: pointer; user-select: none;
+}
+.brut-btn:hover { background: var(--color-brut-accent-2); }
+.brut-btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 0 var(--color-brut-ink); }
+.brut-btn-primary { background: var(--accent); color: var(--text-on-accent); }
+.brut-input {
+  width: 100%; padding: 0.625rem 0.875rem;
+  font-family: var(--font-brut-mono); font-size: 0.9375rem;
+  border: 4px solid var(--color-brut-border); border-radius: 0;
+  background: var(--bg-elevated); color: var(--text-primary);
+  box-sizing: border-box;
+}
+.brut-input:focus { outline: none; background: var(--color-brut-accent-2); }
+.brut-modal {
+  background: var(--bg-elevated);
+  border: 4px solid var(--color-brut-border);
+  border-radius: 0; padding: 1.5rem;
+  box-shadow: var(--shadow-brut-lg);
+  font-family: var(--font-brut-sans);
+}
+.brut-chip {
+  display: inline-flex; align-items: center;
+  padding: 0.25rem 0.625rem;
+  border: 3px solid var(--color-brut-border); border-radius: 0;
+  background: var(--color-brut-accent-2); color: var(--text-primary);
+  font-family: var(--font-brut-mono); font-weight: 700;
+  text-transform: uppercase; font-size: 0.75rem;
+}
+.brut-badge {
+  display: inline-flex; align-items: center;
+  padding: 0.125rem 0.5rem; border: 3px solid var(--color-brut-border);
+  border-radius: 0; background: var(--accent); color: var(--text-on-accent);
+  font-family: var(--font-brut-mono); font-weight: 700; font-size: 0.75rem;
+}
+.brut-tabs {
+  display: flex; gap: 0;
+  border-bottom: 4px solid var(--color-brut-border);
+  font-family: var(--font-brut-sans);
+}
+.brut-tab {
+  padding: 0.75rem 1.25rem; font-weight: 900; text-transform: uppercase;
+  border: 4px solid var(--color-brut-border); border-bottom: none;
+  background: var(--bg-elevated); color: var(--text-primary);
+  cursor: pointer; margin-right: 4px;
+}
+.brut-tab.active { background: var(--accent); color: var(--text-on-accent); }
+.brut-divider {
+  height: 4px; background: var(--color-brut-border); width: 100%;
+  margin: 1rem 0;
+}
+.brut-spinner {
+  width: 32px; height: 32px;
+  border: 4px solid var(--color-brut-border);
+  border-top-color: var(--accent);
+  border-radius: 0; animation: brut-spin 0.5s linear infinite;
+}
+@keyframes brut-spin { to { transform: rotate(360deg); } }
+`;
+
+// Skeuomorphism CSS - inline for reliable loading
+/* Class prefix: skeu- */
+const SKEUOMORPHISM_CSS = `
+:root {
+  --color-skeu-base: #e8dcc4;
+  --color-skeu-leather: #6b4423;
+  --color-skeu-leather-dark: #4a2e18;
+  --color-skeu-paper: #f5e6c8;
+  --color-skeu-ink: #2b1810;
+  --color-skeu-accent: #b8860b;
+  --color-skeu-accent-dark: #8b6508;
+  --color-skeu-cream: #faf3e0;
+  --color-skeu-glass: rgba(255,255,255,0.2);
+  --radius-skeu-sm: 6px;
+  --radius-skeu-md: 12px;
+  --radius-skeu-lg: 18px;
+  --radius-skeu-xl: 24px;
+  --shadow-skeu-outset:
+    inset 0 1px 0 rgba(255,255,255,0.4),
+    inset 0 -1px 0 rgba(0,0,0,0.1),
+    0 2px 4px rgba(0,0,0,0.2),
+    0 4px 8px rgba(0,0,0,0.15);
+  --shadow-skeu-inset:
+    inset 0 2px 4px rgba(0,0,0,0.3),
+    inset 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-skeu-glossy:
+    inset 0 1px 0 rgba(255,255,255,0.5),
+    inset 0 -10px 20px rgba(255,255,255,0.1),
+    0 4px 8px rgba(0,0,0,0.2);
+
+  /* Generic aliases for Lit components */
+  --accent: var(--color-skeu-accent);
+  --accent-hover: var(--color-skeu-accent-dark);
+  --text-on-accent: var(--color-skeu-cream);
+  --text-primary: var(--color-skeu-ink);
+  --text-secondary: #5c3d20;
+  --text-muted: #8a6f50;
+  --bg-primary: var(--color-skeu-base);
+  --bg-elevated: var(--color-skeu-paper);
+  --bg-hover: #dcc99e;
+  --bg-tertiary: #c4b58a;
+  --border-color: var(--color-skeu-leather-dark);
+  --border-subtle: #a8916b;
+  --error: #8b0000;
+  --warning: #c47700;
+  --success: #2d5016;
+  --info: #1e4d6b;
+  --text-on-error: #fff5e6;
+  --text-on-warning: #2b1810;
+  --text-on-success: #f5e6c8;
+}
+
+/* Skeuomorphic component classes */
+.skeu-card {
+  background: linear-gradient(180deg, var(--color-skeu-leather) 0%, var(--color-skeu-leather-dark) 100%);
+  color: var(--color-skeu-cream);
+  border: 1px solid var(--color-skeu-leather-dark);
+  border-radius: var(--radius-skeu-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-skeu-outset);
+  font-family: Georgia, "Times New Roman", serif;
+}
+.skeu-card.paper {
+  background: linear-gradient(180deg, var(--color-skeu-paper) 0%, #e8d9b3 100%);
+  color: var(--color-skeu-ink);
+  border-color: #c4b58a;
+}
+.skeu-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.625rem 1.25rem; font-family: Georgia, serif;
+  font-weight: 600; font-size: 0.9375rem;
+  border: 1px solid var(--color-skeu-leather-dark);
+  border-radius: var(--radius-skeu-md);
+  background: linear-gradient(180deg, var(--color-skeu-leather) 0%, var(--color-skeu-leather-dark) 100%);
+  color: var(--color-skeu-cream);
+  box-shadow: var(--shadow-skeu-outset);
+  cursor: pointer; text-shadow: 0 1px 0 rgba(0,0,0,0.4);
+  transition: filter 0.1s;
+}
+.skeu-btn:hover { filter: brightness(1.1); }
+.skeu-btn:active { box-shadow: var(--shadow-skeu-inset); }
+.skeu-btn-primary {
+  background: linear-gradient(180deg, #d4a017 0%, #8b6508 100%);
+  color: var(--color-skeu-cream);
+  border-color: #5a4406;
+}
+.skeu-input {
+  width: 100%; padding: 0.625rem 0.875rem;
+  font-family: Georgia, serif; font-size: 0.9375rem;
+  background: linear-gradient(180deg, #dcc99e 0%, #c4b58a 100%);
+  color: var(--color-skeu-ink);
+  border: 1px solid var(--color-skeu-leather-dark);
+  border-radius: var(--radius-skeu-md);
+  box-shadow: var(--shadow-skeu-inset);
+  box-sizing: border-box;
+}
+.skeu-input:focus { outline: 2px solid var(--accent); }
+.skeu-modal {
+  background: linear-gradient(180deg, var(--color-skeu-paper) 0%, #e8d9b3 100%);
+  color: var(--color-skeu-ink);
+  border: 1px solid var(--color-skeu-leather-dark);
+  border-radius: var(--radius-skeu-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-skeu-outset);
+  font-family: Georgia, serif;
+}
+.skeu-chip {
+  display: inline-flex; align-items: center;
+  padding: 0.25rem 0.75rem; border-radius: var(--radius-skeu-lg);
+  background: linear-gradient(180deg, var(--color-skeu-leather) 0%, var(--color-skeu-leather-dark) 100%);
+  color: var(--color-skeu-cream);
+  font-family: Georgia, serif; font-size: 0.875rem; font-weight: 500;
+  box-shadow: var(--shadow-skeu-outset);
+  border: 1px solid var(--color-skeu-leather-dark);
+}
+.skeu-badge {
+  display: inline-flex; align-items: center;
+  padding: 0.125rem 0.5rem; border-radius: var(--radius-skeu-md);
+  background: linear-gradient(180deg, #d4a017 0%, #8b6508 100%);
+  color: var(--color-skeu-cream);
+  font-family: Georgia, serif; font-weight: 600; font-size: 0.75rem;
+  box-shadow: var(--shadow-skeu-outset);
+  border: 1px solid #5a4406;
+}
+.skeu-tabs {
+  display: flex; gap: 0.25rem;
+  border-bottom: 1px solid var(--color-skeu-leather-dark);
+  font-family: Georgia, serif;
+}
+.skeu-tab {
+  padding: 0.625rem 1rem; font-weight: 500;
+  background: linear-gradient(180deg, #d4b890 0%, #b89968 100%);
+  color: var(--color-skeu-ink);
+  border: 1px solid var(--color-skeu-leather-dark);
+  border-bottom: none;
+  border-radius: var(--radius-skeu-md) var(--radius-skeu-md) 0 0;
+  cursor: pointer; margin-bottom: -1px;
+}
+.skeu-tab.active {
+  background: linear-gradient(180deg, var(--color-skeu-paper) 0%, #e8d9b3 100%);
+  font-weight: 700;
+}
+.skeu-divider {
+  height: 1px; background: linear-gradient(90deg, transparent 0%, var(--color-skeu-leather-dark) 50%, transparent 100%);
+  margin: 1rem 0;
+}
+.skeu-spinner {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, var(--accent) 360deg);
+  -webkit-mask: radial-gradient(circle, transparent 50%, #000 51%);
+          mask: radial-gradient(circle, transparent 50%, #000 51%);
+  animation: skeu-spin 1s linear infinite;
+}
+@keyframes skeu-spin { to { transform: rotate(360deg); } }
+`;
+
 // Neumorphism CSS - inline for reliable loading
 const NEUMORPHISM_CSS = `
 /* Neumorphism Style System for TailwindCSS v4 */
 /* Class prefix: neu- */
 
-@theme {
+:root {
   /* Neumorphism color palette - muted base colors */
   --color-neu-base: #e0e5ec;
   --color-neu-base-dark: #c8ccd4;
@@ -66,6 +342,19 @@ const NEUMORPHISM_CSS = `
   --shadow-neu-inset-strong:
     inset 8px 8px 16px var(--color-neu-shadow-dark-strong),
     inset -8px -8px 16px var(--color-neu-shadow-light-strong);
+
+  /* Generic variables for Lit components */
+  --accent: #6d5dfc;
+  --accent-hover: #5a4cdb;
+  --text-on-accent: #ffffff;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --text-muted: #a0aec0;
+  --text-on-error: #ffffff;
+  --bg-elevated: #e8ecf4;
+  --border-color: #a3b1c6;
+  --error: #e53e3e;
+  --success: #48bb78;
 }
 
 /* Base neumorphism utility */
@@ -636,7 +925,7 @@ const CLAYMORPHISM_CSS = `
 /* Claymorphism Style System for TailwindCSS v4 */
 /* Class prefix: clay- */
 
-@theme {
+:root {
   /* Claymorphism color palette */
   --color-clay-base: #e0e5ec;
   --color-clay-raised: #e0e5ec;
@@ -652,6 +941,19 @@ const CLAYMORPHISM_CSS = `
   --radius-clay-md: 20px;
   --radius-clay-lg: 24px;
   --radius-clay-xl: 32px;
+
+  /* Generic variables for Lit components */
+  --accent: #6d5dfc;
+  --accent-hover: #5a4cdb;
+  --text-on-accent: #ffffff;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --text-muted: #a0aec0;
+  --text-on-error: #ffffff;
+  --bg-elevated: #e8ecf4;
+  --border-color: #a3b1c6;
+  --error: #e53e3e;
+  --success: #48bb78;
 }
 
 /* Base claymorphism utility */
@@ -893,7 +1195,7 @@ const GLASSMORPHISM_CSS = `
 /* Glasmorphism Style System for TailwindCSS v4 */
 /* Class prefix: glass- */
 
-@theme {
+:root {
   /* Glasmorphism color palette */
   --color-glass-bg: rgba(255, 255, 255, 0.1);
   --color-glass-bg-hover: rgba(255, 255, 255, 0.15);
@@ -917,6 +1219,19 @@ const GLASSMORPHISM_CSS = `
   --blur-glass-light: 10px;
   --blur-glass-medium: 20px;
   --blur-glass-heavy: 40px;
+
+  /* Generic variables for Lit components */
+  --accent: #6d5dfc;
+  --accent-hover: #5a4cdb;
+  --text-on-accent: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-secondary: #718096;
+  --text-muted: #a0aec0;
+  --text-on-error: #ffffff;
+  --bg-elevated: rgba(255, 255, 255, 0.15);
+  --border-color: rgba(255, 255, 255, 0.2);
+  --error: #e53e3e;
+  --success: #48bb78;
 }
 
 /* Base glassmorphism utility */
@@ -1309,7 +1624,7 @@ const MATERIAL_DESIGN_V3_CSS = `
 /* Material Design 3 Style System for TailwindCSS v4 */
 /* Class prefix: m3- */
 
-@theme {
+:root {
   /* Material Design 3 color palette */
   --color-m3-primary: #6750a4;
   --color-m3-primary-container: #eaddff;
@@ -1368,6 +1683,19 @@ const MATERIAL_DESIGN_V3_CSS = `
   --radius-m3-large: 16px;
   --radius-m3-extra-large: 28px;
   --radius-m3-full: 50%;
+
+  /* Generic variables for Lit components */
+  --accent: #6750a4;
+  --accent-hover: #7c4dff;
+  --text-on-accent: #ffffff;
+  --text-primary: #1c1b1f;
+  --text-secondary: #49454f;
+  --text-muted: #79747e;
+  --text-on-error: #ffffff;
+  --bg-elevated: #ece6f0;
+  --border-color: #79747e;
+  --error: #b3261e;
+  --success: #48bb78;
 }
 
 /* M3 State layer mixin utility */
@@ -2280,7 +2608,7 @@ export const STYLE_VARIANTS: Record<StyleVariant, StyleVariantConfig> = {
   },
   glassmorphism: {
     id: "glassmorphism",
-    name: "Glasmorphism",
+    name: "Glassmorphism",
     cssString: GLASSMORPHISM_CSS,
     classPrefix: "glass-",
     description: "Frosted glass effect with backdrop blur",
@@ -2381,6 +2709,50 @@ export const STYLE_VARIANTS: Record<StyleVariant, StyleVariantConfig> = {
       "app-text-input": { variants: { default: "m3-input" } },
       "app-translation-output": { variants: { default: "m3-output" } },
       "app-shortcuts-overlay": { variants: { default: "m3-overlay" } },
+    },
+  },
+  brutalism: {
+    id: "brutalism",
+    name: "Brutalism",
+    cssString: BRUTALISM_CSS,
+    classPrefix: "brut-",
+    description: "Sharp edges, hard shadows, high-contrast typography",
+    componentStyles: {
+      "app-button": { variants: { default: "brut-btn" }, sizes: { sm: "brut-btn-sm", md: "", lg: "brut-btn-lg" } },
+      "app-card": { variants: { default: "brut-card" } },
+      "app-input": { variants: { default: "brut-input" } },
+      "app-textarea": { variants: { default: "brut-input" } },
+      "app-modal": { variants: { default: "brut-modal" } },
+      "app-dialog": { variants: { default: "brut-modal" } },
+      "app-confirm-dialog": { variants: { default: "brut-modal" } },
+      "app-chip": { variants: { default: "brut-chip" } },
+      "app-badge": { variants: { default: "brut-badge" } },
+      "app-tabs": { variants: { default: "brut-tabs" } },
+      "app-divider": { variants: { default: "brut-divider" } },
+      "app-spinner": { variants: { default: "brut-spinner" } },
+      "app-loading": { variants: { default: "brut-spinner" } },
+    },
+  },
+  skeuomorphism: {
+    id: "skeuomorphism",
+    name: "Skeuomorphism",
+    cssString: SKEUOMORPHISM_CSS,
+    classPrefix: "skeu-",
+    description: "Realistic textures with leather, paper, and glossy highlights",
+    componentStyles: {
+      "app-button": { variants: { default: "skeu-btn" }, sizes: { sm: "skeu-btn-sm", md: "", lg: "skeu-btn-lg" } },
+      "app-card": { variants: { default: "skeu-card", paper: "skeu-card paper" } },
+      "app-input": { variants: { default: "skeu-input" } },
+      "app-textarea": { variants: { default: "skeu-input" } },
+      "app-modal": { variants: { default: "skeu-modal" } },
+      "app-dialog": { variants: { default: "skeu-modal" } },
+      "app-confirm-dialog": { variants: { default: "skeu-modal" } },
+      "app-chip": { variants: { default: "skeu-chip" } },
+      "app-badge": { variants: { default: "skeu-badge" } },
+      "app-tabs": { variants: { default: "skeu-tabs" } },
+      "app-divider": { variants: { default: "skeu-divider" } },
+      "app-spinner": { variants: { default: "skeu-spinner" } },
+      "app-loading": { variants: { default: "skeu-spinner" } },
     },
   },
 };

@@ -24,39 +24,18 @@ export class FallbackService {
 
   getFallbackSchema(errorMessage?: string): UiSchema {
     return {
-      schemaVersion: "1.0.0",
-      app: {
-        id: "fallback",
-        name: "Fallback",
-        version: "1.0.0",
-        description: errorMessage || "Fallback schema",
-        identifier: "com.fallback.app",
-        settings: {
-          defaultLocale: "en",
-          supportedLocales: ["en"],
-          tailwindPreset: "default",
-          theme: "default",
-          themes: [],
-          colorMode: "system",
-        },
-      },
+      version: "1.0.0",
       pages: [
         {
           id: "error-page",
-          name: "Error",
-          route: "/error",
-          layout: null,
-          meta: { title: "Error", icon: null, breadcrumb: [] },
-          sections: {},
+          name: "Schema Error",
+          route: "/schema-error",
+          meta: { title: "Schema Error", icon: null },
+          layouts: [],
           canvasElements: [],
         },
       ],
       layouts: [],
-      components: [],
-      sharedComponents: [],
-      services: [],
-      modules: [],
-      i18N: { locales: {} },
     };
   }
 }

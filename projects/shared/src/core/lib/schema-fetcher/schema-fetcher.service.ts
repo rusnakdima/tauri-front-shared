@@ -1,4 +1,4 @@
-import { Injectable, inject } from "@angular/core";
+import { Injectable, Optional } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { firstValueFrom } from "rxjs";
 import type { UiSchema } from "../types";
@@ -8,22 +8,37 @@ export type SchemaLoadMode = "embedded" | "http" | "tauri";
 export interface SchemaLoadOptions {
   mode: SchemaLoadMode;
   source: string;
+  fallbackOptions?: SchemaLoadOptions;
 }
 
 @Injectable({ providedIn: "root" })
 export class SchemaFetcherService {
-  private http = inject(HttpClient, { optional: true });
+  constructor(@Optional() private http: HttpClient | null) {}
 
   async loadSchema(options: SchemaLoadOptions): Promise<UiSchema> {
-    switch (options.mode) {
-      case "embedded":
-        return this.loadEmbedded(options.source);
-      case "http":
-        return this.loadHttp(options.source);
-      case "tauri":
-        return this.loadTauri(options.source);
-      default:
-        throw new Error(`Unknown schema load mode: ${options.mode}`);
+    try {
+      switch (options.mode) {
+        case "embedded":
+          return this.loadEmbedded(options.source);
+        case "http":
+          return this.loadHttp(options.source);
+        case "tauri":
+          return this.loadTauri(options.source);
+        default:
+          throw new Error(`Unknown schema load mode: ${options.mode}`);
+      }
+    } catch (primaryError) {
+      console.error("SchemaFetcher: Primary schema load failed:", primaryError);
+      if (options.fallbackOptions) {
+        console.warn("SchemaFetcher: Attempting fallback schema...");
+        try {
+          return await this.loadSchema(options.fallbackOptions);
+        } catch (fallbackError) {
+          console.error("SchemaFetcher: Fallback schema also failed:", fallbackError);
+          throw primaryError;
+        }
+      }
+      throw primaryError;
     }
   }
 

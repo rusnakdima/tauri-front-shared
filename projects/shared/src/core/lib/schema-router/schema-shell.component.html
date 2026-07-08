@@ -1,0 +1,27 @@
+@if (loading()) {
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; min-height: 100vh;">
+  <app-loading size="lg"></app-loading>
+  <p style="color: var(--text-secondary); font-size: 1.125rem;">Loading application...</p>
+</div>
+} @else if (error(); as err) {
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
+  <app-empty-state
+    variant="danger"
+    title="Application Not Available"
+    [message]="err"
+    actionLabel="Retry"
+    (action)="retry()"
+  ></app-empty-state>
+</div>
+} @else {
+@for (region of layoutRegions(); track region.id) {
+  @if (region.visible !== false) {
+    <div [class]="region.classes || ''" [attr.data-region]="region.id">
+      @for (child of region.children || []; track child.id) {
+        <app-schema-element [element]="child" [elements]="region.children || []"></app-schema-element>
+      }
+    </div>
+  }
+}
+<lib-schema-route-viewer />
+}

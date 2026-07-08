@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, inject } from "@angular/core";
+import { Injectable, signal, computed, inject, Optional } from "@angular/core";
 import type { UiSchema, Page, Layout } from "../types";
 import { GuardService } from "./guard.service";
 
@@ -15,7 +15,7 @@ export interface NavigationOptions {
 
 @Injectable({ providedIn: "root" })
 export class SchemaRouterService {
-  private guardService = inject(GuardService, { optional: true });
+  constructor(@Optional() private guardService: GuardService | null) {}
 
   private readonly _schema = signal<UiSchema | null>(null);
   private readonly _currentPage = signal<Page | null>(null);
@@ -60,7 +60,14 @@ export class SchemaRouterService {
     this._error.set(null);
 
     try {
-      const matched = this.resolveRoute(route);
+      let matched = this.resolveRoute(route);
+      if (!matched) {
+        // Fall back to /404 page if route not found
+        const notFoundPage = this.findReservedRoute("/404");
+        if (notFoundPage) {
+          matched = { page: notFoundPage, layout: null, params: {} };
+        }
+      }
       if (!matched) {
         this._error.set(`Route not found: ${route}`);
         return false;
@@ -159,6 +166,12 @@ export class SchemaRouterService {
     }
 
     return { match: true, params };
+  }
+
+  private findReservedRoute(route: string): Page | null {
+    const schema = this._schema();
+    if (!schema) return null;
+    return schema.pages.find((p) => p.route === route) ?? null;
   }
 
   getPage(pageId: string): Page | null {

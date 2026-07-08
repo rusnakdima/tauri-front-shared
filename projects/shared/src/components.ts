@@ -64,7 +64,7 @@ export const uiComponents: SharedComponentDef[] = [
     {
       "name": "tabs",
       "type": "string",
-      "default": "[]"
+      "default": ""
     },
     {
       "name": "activeTab",
@@ -108,6 +108,11 @@ export const uiComponents: SharedComponentDef[] = [
       "default": "primary"
     },
     {
+      "name": "buttonStyle",
+      "type": "string",
+      "default": "solid"
+    },
+    {
       "name": "size",
       "type": "string",
       "default": "md"
@@ -126,6 +131,11 @@ export const uiComponents: SharedComponentDef[] = [
       "name": "fullWidth",
       "type": "boolean",
       "default": false
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": ""
     }
   ],
   "template": "<button\n        type=\"${this.type}\"\n        class=\"${classes}\"\n        ?disabled=\"${this.disabled || this.loading}\"\n        @click=\"${this._handleClick}\"\n      >\n        ${this.loading\n          ? html`<span class=\"app-btn-spinner\"></span>",
@@ -729,7 +739,7 @@ export const uiComponents: SharedComponentDef[] = [
     {
       "name": "value",
       "type": "number",
-      "default": 50
+      "default": 0
     },
     {
       "name": "step",
@@ -770,6 +780,32 @@ export const uiComponents: SharedComponentDef[] = [
   ],
   "template": "<div class=\"split-container ${this.direction}\">\n        <div\n          class=\"split-pane first\"\n          style=\"${firstSize}: ${this.split}%; flex-grow: 0;\"\n        >\n          <slot name=\"first\"></slot>\n        </div>\n        <div\n          class=\"split-divider ${this._isDragging ? \"dragging\" : \"\"}\"\n          @mousedown=\"${this._onDividerMouseDown}\"\n        ></div>\n        <div class=\"split-pane second\" style=\"${secondSize}: auto; flex: 1;\">\n          <slot name=\"second\"></slot>\n        </div>\n      </div>",
   "css": ":host {\n      display: block;\n      height: 100%;\n    }\n\n    .split-container {\n      display: flex;\n      height: 100%;\n      width: 100%;\n      overflow: hidden;\n    }\n\n    .split-container.vertical {\n      flex-direction: column;\n    }\n\n    .split-pane {\n      overflow: auto;\n      min-width: 0;\n      min-height: 0;\n    }\n\n    .split-pane.first {\n      flex-shrink: 0;\n    }\n\n    .split-container.horizontal .split-pane.first {\n      height: 100%;\n    }\n\n    .split-container.vertical .split-pane.first {\n      width: 100%;\n    }\n\n    .split-divider {\n      flex-shrink: 0;\n      background: var(--border-color);\n      transition: background 0.15s;\n      position: relative;\n      z-index: 1;\n    }\n\n    .split-container.horizontal .split-divider {\n      width: 6px;\n      cursor: col-resize;\n    }\n\n    .split-container.vertical .split-divider {\n      height: 6px;\n      cursor: row-resize;\n    }\n\n    .split-divider:hover,\n    .split-divider.dragging {\n      background: var(--accent);\n    }\n\n    .split-divider::after {\n      content: \"\";\n      position: absolute;\n      background: transparent;\n    }\n\n    .horizontal .split-divider::after {\n      top: 0;\n      bottom: 0;\n      left: -4px;\n      right: -4px;\n    }\n\n    .vertical .split-divider::after {\n      left: 0;\n      right: 0;\n      top: -4px;\n      bottom: -4px;\n    }"
+},
+  {
+  "id": "spinner",
+  "name": "AppSpinner",
+  "selector": "app-spinner",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "size",
+      "type": "string",
+      "default": "md"
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<span class=\"ring ${this.size}\" style=${this.color ? `border-top-color: ${this.color}` : \"\"} role=\"status\"></span>\n      ${this.label ? html`<span class=\"label\">${this.label}</span>` : \"\"}",
+  "css": ":host {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      gap: 0.5rem;\n    }\n    .ring {\n      display: inline-block;\n      border-style: solid;\n      border-color: var(--border-color, #e5e7eb);\n      border-top-color: var(--accent, #3b82f6);\n      border-radius: 50%;\n      animation: spin 0.7s linear infinite;\n      box-sizing: border-box;\n    }\n    .ring.sm { width: 16px; height: 16px; border-width: 2px; }\n    .ring.md { width: 28px; height: 28px; border-width: 3px; }\n    .ring.lg { width: 44px; height: 44px; border-width: 4px; }\n    .ring.xl { width: 64px; height: 64px; border-width: 5px; }\n    .label { font-size: 0.875rem; color: var(--text-secondary, #6b7280); }\n    @keyframes spin { to { transform: rotate(360deg); } }"
 },
   {
   "id": "stats-card",
@@ -899,7 +935,7 @@ export const uiComponents: SharedComponentDef[] = [
   "category": "forms",
   "props": [
     {
-      "name": "content",
+      "name": "text",
       "type": "string",
       "default": ""
     },
@@ -909,14 +945,246 @@ export const uiComponents: SharedComponentDef[] = [
       "default": "top"
     },
     {
-      "name": "show",
+      "name": "trigger",
+      "type": "string",
+      "default": "hover"
+    },
+    {
+      "name": "delay",
+      "type": "number",
+      "default": 200
+    }
+  ],
+  "template": "<div\n        class=\"trigger-wrapper\"\n        @mouseenter=${this.trigger === \"hover\" ? this.show : undefined}\n        @mouseleave=${this.trigger === \"hover\" ? this.hide : undefined}\n        @click=${this.trigger === \"click\" ? this.toggle : undefined}\n        @focus=${this.trigger === \"focus\" ? this.show : undefined}\n        @blur=${this.trigger === \"focus\" ? this.hide : undefined}\n      >\n        <slot></slot>\n      </div>\n      <div class=\"bubble ${this.position} ${this.visible ? \"visible\" : \"\"}\" role=\"tooltip\">${this.text}</div>",
+  "css": ":host {\n      position: relative;\n      display: inline-flex;\n    }\n    .bubble {\n      position: absolute;\n      background: var(--bg-elevated, #1f2937);\n      color: var(--text-on-accent, #ffffff);\n      padding: 0.375rem 0.625rem;\n      border-radius: 0.375rem;\n      font-size: 0.75rem;\n      line-height: 1.2;\n      white-space: nowrap;\n      z-index: 1000;\n      pointer-events: none;\n      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);\n      opacity: 0;\n      transform: scale(0.95);\n      transition: opacity 0.15s, transform 0.15s;\n    }\n    .bubble.visible {\n      opacity: 1;\n      transform: scale(1);\n    }\n    .bubble.top { bottom: calc(100% + 6px); left: 50%; transform-origin: bottom center; transform: translateX(-50%) scale(0.95); }\n    .bubble.top.visible { transform: translateX(-50%) scale(1); }\n    .bubble.bottom { top: calc(100% + 6px); left: 50%; transform-origin: top center; transform: translateX(-50%) scale(0.95); }\n    .bubble.bottom.visible { transform: translateX(-50%) scale(1); }\n    .bubble.left { right: calc(100% + 6px); top: 50%; transform-origin: right center; transform: translateY(-50%) scale(0.95); }\n    .bubble.left.visible { transform: translateY(-50%) scale(1); }\n    .bubble.right { left: calc(100% + 6px); top: 50%; transform-origin: left center; transform: translateY(-50%) scale(0.95); }\n    .bubble.right.visible { transform: translateY(-50%) scale(1); }"
+},
+  {
+  "id": "theme-toggle",
+  "name": "AppThemeToggle",
+  "selector": "app-theme-toggle",
+  "packageType": "ui",
+  "category": "layout",
+  "props": [],
+  "template": "<button\n        type=\"button\"\n        @click=\"${this._handleToggle}\"\n        title=\"${this.isDark ? \"Switch to light\" : \"Switch to dark\"}\"\n      >\n        ${this.isDark\n          ? html`<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n          <circle cx=\"12\" cy=\"12\" r=\"5\"></circle>\n          <line x1=\"12\" y1=\"1\" x2=\"12\" y2=\"3\"></line>\n          <line x1=\"12\" y1=\"21\" x2=\"12\" y2=\"23\"></line>\n          <line x1=\"4.22\" y1=\"4.22\" x2=\"5.64\" y2=\"5.64\"></line>\n          <line x1=\"18.36\" y1=\"18.36\" x2=\"19.78\" y2=\"19.78\"></line>\n          <line x1=\"1\" y1=\"12\" x2=\"3\" y2=\"12\"></line>\n          <line x1=\"21\" y1=\"12\" x2=\"23\" y2=\"12\"></line>\n          <line x1=\"4.22\" y1=\"19.78\" x2=\"5.64\" y2=\"18.36\"></line>\n          <line x1=\"18.36\" y1=\"5.64\" x2=\"19.78\" y2=\"4.22\"></line>\n        </svg>`\n          : html`<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n          <path d=\"M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z\"></path>\n        </svg>`}\n      </button>",
+  "css": ":host {\n      display: inline-flex;\n    }\n\n    button {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 2.5rem;\n      height: 2.5rem;\n      border-radius: 50%;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n    }\n\n    button:hover {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n      border-color: var(--accent);\n    }\n\n    svg {\n      width: 1.25rem;\n      height: 1.25rem;\n    }"
+},
+  {
+  "id": "icon",
+  "name": "AppIcon",
+  "selector": "app-icon",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "name",
+      "type": "string",
+      "default": "clear"
+    },
+    {
+      "name": "svgClass",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "",
+  "css": ":host {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1.25em;\n      height: 1.25em;\n    }\n\n    svg {\n      width: 100%;\n      height: 100%;\n      color: inherit;\n    }\n\n    .icon-spinner {\n      animation: icon-spin 1s linear infinite;\n    }\n\n    @keyframes icon-spin {\n      to {\n        transform: rotate(360deg);\n      }\n    }"
+},
+  {
+  "id": "text-input",
+  "name": "AppTextInput",
+  "selector": "app-text-input",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "value",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "charCount",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "maxChars",
+      "type": "number",
+      "default": 0
+    },
+    {
+      "name": "id",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "clearable",
       "type": "boolean",
       "default": false
     }
   ],
-  "template": "<div class=\"app-tooltip-wrapper\">\n        <slot></slot>\n        ${this.show\n          ? html",
-  "css": ":host {\n      display: inline-block;\n    }\n\n    .app-tooltip-wrapper {\n      position: relative;\n      display: inline-block;\n    }\n\n    .app-tooltip {\n      position: absolute;\n      z-index: 50;\n      padding: 0.25rem 0.5rem;\n      font-size: 0.75rem;\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      border-radius: 0.25rem;\n      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);\n      white-space: nowrap;\n    }\n\n    .app-tooltip-top {\n      bottom: 100%;\n      left: 50%;\n      transform: translateX(-50%);\n      margin-bottom: 0.5rem;\n    }\n\n    .app-tooltip-bottom {\n      top: 100%;\n      left: 50%;\n      transform: translateX(-50%);\n      margin-top: 0.5rem;\n    }\n\n    .app-tooltip-left {\n      right: 100%;\n      top: 50%;\n      transform: translateY(-50%);\n      margin-right: 0.5rem;\n    }\n\n    .app-tooltip-right {\n      left: 100%;\n      top: 50%;\n      transform: translateY(-50%);\n      margin-left: 0.5rem;\n    }"
+  "template": "<div class=\"input-container\">\n        <textarea\n          id=\"${this.id || \"\"}\"\n          .value=\"${this.value || \"\"}\"\n          placeholder=\"${this.placeholder || \"\"}\"\n          @input=\"${this._handleInput}\"\n          @textarea=\"${(e: Event) => this._autoResize(e.target as HTMLTextAreaElement)}\"\n        ></textarea>\n        <div class=\"footer\">\n          <span class=\"char-count\">${displayCount}</span>\n          ${this.clearable\n            ? html`<button class=\"clear-btn\" type=\"button\" @click=\"${this._handleClear}\">\n                <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\n                  <line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"></line>\n                  <line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"></line>\n                </svg>\n              </button>`\n            : \"\"}\n        </div>\n      </div>",
+  "css": ":host {\n      display: flex;\n      flex-direction: column;\n      width: 100%;\n    }\n\n    .input-container {\n      display: flex;\n      flex-direction: column;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-elevated);\n      transition: border-color 0.15s;\n    }\n\n    .input-container:focus-within {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    textarea {\n      width: 100%;\n      min-height: 2.5rem;\n      padding: 0.5rem 0.75rem;\n      border: none;\n      background: transparent;\n      color: var(--text-primary);\n      font-family: inherit;\n      font-size: 0.875rem;\n      line-height: 1.5;\n      resize: none;\n      outline: none;\n      overflow: hidden;\n    }\n\n    textarea::placeholder {\n      color: var(--text-muted);\n    }\n\n    .footer {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 0.25rem 0.75rem 0.375rem;\n      border-top: 1px solid var(--border-color);\n    }\n\n    .char-count {\n      font-size: 0.75rem;\n      color: var(--text-muted);\n    }\n\n    .clear-btn {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1.5rem;\n      height: 1.5rem;\n      border-radius: 50%;\n      border: none;\n      background: transparent;\n      color: var(--text-muted);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n    }\n\n    .clear-btn:hover {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .clear-btn svg {\n      width: 0.875rem;\n      height: 0.875rem;\n    }"
 },
+  {
+  "id": "language-selector",
+  "name": "AppLanguageSelector",
+  "selector": "app-language-selector",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "languages",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "labelId",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "${this.label\n        ? html`<span class=\"selector-label\" id=\"${this.labelId || \"\"}\">${this.label}</span>`\n        : \"\"}\n      <div class=\"select-wrapper\">\n        <select\n          .value=\"${this.value || \"\"}\"\n          @change=\"${this._handleChange}\"\n        >\n          ${parsedLanguages.map(\n            (lang) => html`<option value=\"${lang}\">${lang}</option>`\n          )}\n        </select>\n        <span class=\"chevron-icon\">\n          <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\n            <polyline points=\"6 9 12 15 18 9\"></polyline>\n          </svg>\n        </span>\n      </div>",
+  "css": ":host {\n      display: inline-flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .selector-label {\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-primary);\n    }\n\n    .select-wrapper {\n      position: relative;\n      display: inline-flex;\n      align-items: center;\n    }\n\n    select {\n      appearance: none;\n      -webkit-appearance: none;\n      padding: 0.5rem 2rem 0.5rem 0.75rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      font-family: inherit;\n      cursor: pointer;\n      outline: none;\n      transition: border-color 0.15s;\n    }\n\n    select:focus {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    .chevron-icon {\n      position: absolute;\n      right: 0.5rem;\n      pointer-events: none;\n      width: 1rem;\n      height: 1rem;\n      color: var(--text-muted);\n    }"
+},
+  {
+  "id": "shortcuts-overlay",
+  "name": "AppShortcutsOverlay",
+  "selector": "app-shortcuts-overlay",
+  "packageType": "ui",
+  "category": "layout",
+  "props": [],
+  "template": "<div class=\"overlay ${this.open ? \"\" : \"hidden\"}\" @click=\"${this._handleBackdropClick}\">\n        <div class=\"modal\">\n          <div class=\"modal-header\">\n            <h2 class=\"modal-title\">Keyboard Shortcuts</h2>\n            <button class=\"close-btn\" type=\"button\" @click=\"${this._close}\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n                <line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"></line>\n                <line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"></line>\n              </svg>\n            </button>\n          </div>\n          <ul class=\"shortcut-list\">\n            ${shortcuts.map(\n              (s) => html`<li class=\"shortcut-item\">\n                <span class=\"shortcut-desc\">${s.description}</span>\n                <kbd>${s.keys.join(\" \")}</kbd>\n              </li>`\n            )}\n          </ul>\n        </div>\n      </div>",
+  "css": ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      z-index: 10000;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      background-color: rgba(0, 0, 0, 0.5);\n      opacity: 1;\n      transition: opacity 0.2s ease;\n    }\n\n    .overlay.hidden {\n      opacity: 0;\n      pointer-events: none;\n    }\n\n    .modal {\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.75rem;\n      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);\n      width: 100%;\n      max-width: 28rem;\n      max-height: 80vh;\n      overflow-y: auto;\n      padding: 1.5rem;\n    }\n\n    .modal-header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      margin-bottom: 1rem;\n    }\n\n    .modal-title {\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      margin: 0;\n    }\n\n    .close-btn {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 2rem;\n      height: 2rem;\n      border-radius: 0.375rem;\n      border: none;\n      background: transparent;\n      color: var(--text-muted);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n    }\n\n    .close-btn:hover {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .close-btn svg {\n      width: 1rem;\n      height: 1rem;\n    }\n\n    .shortcut-list {\n      display: flex;\n      flex-direction: column;\n      gap: 0.75rem;\n      list-style: none;\n      margin: 0;\n      padding: 0;\n    }\n\n    .shortcut-item {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      gap: 1rem;\n    }\n\n    .shortcut-desc {\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n    }\n\n    kbd {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      padding: 0.25rem 0.5rem;\n      background-color: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 0.375rem;\n      font-family: monospace;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n    }"
+},
+  {
+  "id": "translation-output",
+  "name": "AppTranslationOutput",
+  "selector": "app-translation-output",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "value",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "placeholder",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "id",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<div class=\"output-container\">\n        <textarea\n          id=\"${this.id || \"\"}\"\n          .value=\"${this.value || \"\"}\"\n          placeholder=\"${this.placeholder || \"\"}\"\n          readonly\n        ></textarea>\n        <button class=\"copy-btn\" type=\"button\" @click=\"${this._handleCopy}\" title=\"Copy to clipboard\">\n          <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n            <rect x=\"9\" y=\"9\" width=\"13\" height=\"13\" rx=\"2\" ry=\"2\"></rect>\n            <path d=\"M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1\"></path>\n          </svg>\n        </button>\n      </div>",
+  "css": ":host {\n      display: flex;\n      flex-direction: column;\n      width: 100%;\n    }\n\n    .output-container {\n      position: relative;\n      display: flex;\n      flex-direction: column;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-elevated);\n    }\n\n    textarea {\n      width: 100%;\n      min-height: 2.5rem;\n      padding: 0.5rem 0.75rem;\n      padding-right: 2.5rem;\n      border: none;\n      background: transparent;\n      color: var(--text-primary);\n      font-family: inherit;\n      font-size: 0.875rem;\n      line-height: 1.5;\n      resize: none;\n      outline: none;\n      overflow: hidden;\n    }\n\n    textarea::placeholder {\n      color: var(--text-muted);\n    }\n\n    .copy-btn {\n      position: absolute;\n      top: 0.5rem;\n      right: 0.5rem;\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1.75rem;\n      height: 1.75rem;\n      border-radius: 0.375rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-muted);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n    }\n\n    .copy-btn:hover {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n      border-color: var(--accent);\n    }\n\n    .copy-btn svg {\n      width: 0.875rem;\n      height: 0.875rem;\n    }"
+},
+  {
+  "id": "tree",
+  "name": "AppTree",
+  "selector": "app-tree",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "nodes",
+      "type": "string",
+      "default": "[]"
+    },
+    {
+      "name": "selectable",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "selected",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "expanded",
+      "type": "string",
+      "default": "[]"
+    }
+  ],
+  "template": "<ul role=\"tree\">\n        ${flat.map(({ node, depth, expanded }) => {\n          const hasChildren = !!(node.children && node.children.length);\n          const isSelected = this.selectable && this.selectedId === node.id;\n          return html`<li role=\"treeitem\" aria-expanded=\"${hasChildren ? expanded : undefined}\">\n            <div\n              class=\"row ${isSelected ? \"selected\" : \"\"}\"\n              style=\"padding-left: ${depth * 1.5}rem\"\n              @click=\"${() => this._handleNodeClick(node)}\"\n            >\n              <span class=\"toggle ${hasChildren ? (expanded ? \"expanded\" : \"\") : \"empty\"}\">${hasChildren ? (expanded ? \"▼\" : \"▶\") : \"\"}</span>\n              ${node.icon ? html`<span class=\"icon\">${node.icon}</span>` : \"\"}\n              <span class=\"label\">${node.label}</span>\n            </div>\n            ${hasChildren && expanded ? html`<li class=\"children\">${this._renderNodes(node.children, depth + 1)}</li>` : \"\"}\n          </li>`;\n        })}\n      </ul>",
+  "css": ":host {\n      display: block;\n      font-size: 0.875rem;\n      color: var(--text-primary, #1f2937);\n    }\n\n    ul {\n      list-style: none;\n      margin: 0;\n      padding: 0;\n    }\n\n    li {\n      user-select: none;\n    }\n\n    .row {\n      display: flex;\n      align-items: center;\n      gap: 0.375rem;\n      padding: 0.375rem 0.5rem;\n      border-radius: 0.375rem;\n      cursor: pointer;\n      transition: background-color 0.1s;\n    }\n\n    .row:hover {\n      background: var(--bg-hover, #f3f4f6);\n    }\n\n    .row.selected {\n      background: var(--accent, #3b82f6);\n      color: var(--text-on-accent, #ffffff);\n    }\n\n    .toggle {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1rem;\n      height: 1rem;\n      font-size: 0.75rem;\n      transition: transform 0.15s;\n    }\n\n    .toggle.expanded {\n      transform: rotate(90deg);\n    }\n\n    .toggle.empty {\n      visibility: hidden;\n    }\n\n    .icon {\n      font-size: 1rem;\n      width: 1rem;\n      text-align: center;\n    }\n\n    .label {\n      flex: 1;\n    }\n\n    .children {\n      padding-left: 1.25rem;\n    }"
+},
+  {
+  "id": "divider",
+  "name": "AppDivider",
+  "selector": "app-divider",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "orientation",
+      "type": "string",
+      "default": "horizontal"
+    },
+    {
+      "name": "spacing",
+      "type": "string",
+      "default": "md"
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "template": "<div class=\"line\" style=${this.color ? `background: ${this.color}` : \"\"} role=\"separator\"></div>",
+  "css": ":host {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n    }\n\n    :host([orientation=\"vertical\"]) {\n      display: inline-flex;\n      align-items: stretch;\n      height: 100%;\n    }\n\n    .line {\n      background: var(--divider-color, var(--border-color, #e5e7eb));\n      width: 100%;\n      height: 1px;\n    }\n\n    :host([orientation=\"vertical\"]) .line {\n      width: 1px;\n      height: 100%;\n    }\n\n    :host([spacing=\"none\"]) {\n      margin: 0;\n    }\n\n    :host([spacing=\"sm\"]) {\n      margin: 0.5rem 0;\n    }\n\n    :host([spacing=\"md\"]) {\n      margin: 1rem 0;\n    }\n\n    :host([spacing=\"lg\"]) {\n      margin: 1.5rem 0;\n    }\n\n    :host([spacing=\"xl\"]) {\n      margin: 2.5rem 0;\n    }\n\n    :host([orientation=\"vertical\"][spacing=\"none\"]) {\n      margin: 0;\n    }\n\n    :host([orientation=\"vertical\"][spacing=\"sm\"]) {\n      margin: 0 0.5rem;\n    }\n\n    :host([orientation=\"vertical\"][spacing=\"md\"]) {\n      margin: 0 1rem;\n    }\n\n    :host([orientation=\"vertical\"][spacing=\"lg\"]) {\n      margin: 0 1.5rem;\n    }\n\n    :host([orientation=\"vertical\"][spacing=\"xl\"]) {\n      margin: 0 2.5rem;\n    }"
+},
+  {
+  "id": "form",
+  "name": "AppForm",
+  "selector": "app-form",
+  "packageType": "ui",
+  "category": "forms",
+  "props": [
+    {
+      "name": "heading",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "submitText",
+      "type": "string",
+      "default": "Submit"
+    },
+    {
+      "name": "cancelText",
+      "type": "string",
+      "default": "Cancel"
+    },
+    {
+      "name": "showActions",
+      "type": "boolean",
+      "default": true
+    }
+  ],
+  "template": "${this.heading ? html`<h3 class=\"heading\">${this.heading}</h3>` : \"\"}\n      <form @submit=${this.submit} novalidate>\n        <div class=\"fields\"><slot></slot></div>\n        ${this.showActions\n          ? html`<div class=\"actions\">\n              <button type=\"button\" class=\"cancel-btn\" @click=\"${this._handleCancel}\">${this.cancelText}</button>\n              <button type=\"submit\" class=\"submit-btn\">${this.submitText}</button>\n            </div>`\n          : \"\"}\n      </form>",
+  "css": ":host {\n      display: block;\n      background: var(--bg-elevated, #ffffff);\n      border: 1px solid var(--border-color, #e5e7eb);\n      border-radius: 0.5rem;\n      padding: 1.25rem;\n    }\n\n    .heading {\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary, #1f2937);\n      margin: 0 0 1rem;\n    }\n\n    .fields {\n      display: flex;\n      flex-direction: column;\n      gap: 0.75rem;\n    }\n\n    .actions {\n      display: flex;\n      justify-content: flex-end;\n      gap: 0.5rem;\n      margin-top: 1.25rem;\n      padding-top: 1rem;\n      border-top: 1px solid var(--border-color, #e5e7eb);\n    }\n\n    button {\n      padding: 0.5rem 1rem;\n      border-radius: 0.375rem;\n      border: 1px solid var(--border-color, #e5e7eb);\n      background: var(--bg-elevated, #ffffff);\n      color: var(--text-primary, #1f2937);\n      font-size: 0.875rem;\n      font-weight: 500;\n      cursor: pointer;\n      transition: background-color 0.15s;\n    }\n\n    button:hover {\n      background: var(--bg-hover, #f3f4f6);\n    }\n\n    button.primary,\n    button.submit-btn {\n      background: var(--accent, #3b82f6);\n      border-color: var(--accent, #3b82f6);\n      color: var(--text-on-accent, #ffffff);\n    }\n\n    button.primary:hover,\n    button.submit-btn:hover {\n      opacity: 0.9;\n    }"
+}
 ];
 
 // Layout Components
@@ -978,104 +1246,6 @@ export const layoutComponents: SharedComponentDef[] = [
 // Feedback Components
 export const feedbackComponents: SharedComponentDef[] = [
   {
-  "id": "confirm-dialog",
-  "name": "AppConfirmDialog",
-  "selector": "app-confirm-dialog",
-  "packageType": "ui",
-  "category": "forms",
-  "props": [
-    {
-      "name": "open",
-      "type": "boolean",
-      "default": false
-    },
-    {
-      "name": "title",
-      "type": "string",
-      "default": ""
-    },
-    {
-      "name": "message",
-      "type": "string",
-      "default": ""
-    },
-    {
-      "name": "confirmText",
-      "type": "string",
-      "default": "Confirm"
-    },
-    {
-      "name": "cancelText",
-      "type": "string",
-      "default": "Cancel"
-    }
-  ],
-  "template": "",
-  "css": ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.6);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .dialog {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 1rem;\n      width: 400px;\n      max-width: 90vw;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1.25rem 1.5rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    header h2 {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem;\n      border-radius: 0.25rem;\n      color: var(--text-secondary);\n      font-size: 1.25rem;\n      line-height: 1;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.5rem;\n      color: var(--text-secondary);\n      font-size: 0.9375rem;\n      line-height: 1.5;\n    }\n\n    footer {\n      display: flex;\n      gap: 0.75rem;\n      padding: 1rem 1.5rem;\n      border-top: 1px solid var(--border-color);\n      justify-content: flex-end;\n    }\n\n    button {\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid;\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n    }\n\n    .cancel-btn {\n      background: transparent;\n      border-color: var(--border-color);\n      color: var(--text-secondary);\n    }\n\n    .cancel-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .confirm-btn {\n      background: var(--accent);\n      border-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .confirm-btn:hover {\n      opacity: 0.9;\n    }\n\n    .danger-btn {\n      background: var(--error);\n      border-color: var(--error);\n      color: var(--text-on-error);\n    }\n\n    .danger-btn:hover {\n      opacity: 0.9;\n    }"
-},
-  {
-  "id": "dialog",
-  "name": "AppDialog",
-  "selector": "app-dialog",
-  "packageType": "ui",
-  "category": "forms",
-  "props": [
-    {
-      "name": "open",
-      "type": "boolean",
-      "default": false
-    },
-    {
-      "name": "title",
-      "type": "string",
-      "default": ""
-    },
-    {
-      "name": "size",
-      "type": "string",
-      "default": "md"
-    },
-    {
-      "name": "showHeader",
-      "type": "boolean",
-      "default": true
-    },
-    {
-      "name": "showFooter",
-      "type": "boolean",
-      "default": false
-    }
-  ],
-  "template": "",
-  "css": ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.6);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .dialog {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 1rem;\n      min-width: 360px;\n      max-height: 90vh;\n      display: flex;\n      flex-direction: column;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);\n    }\n\n    .dialog-sm {\n      width: 360px;\n    }\n\n    .dialog-md {\n      width: 520px;\n    }\n\n    .dialog-lg {\n      width: 720px;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1.25rem 1.5rem;\n      border-bottom: 2px solid var(--border-color);\n      background: var(--bg-elevated);\n      border-radius: 1rem 1rem 0 0;\n    }\n\n    header h2 {\n      margin: 0;\n      font-size: 1.25rem;\n      font-weight: 700;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem 0.5rem;\n      border-radius: 0.375rem;\n      color: var(--text-secondary);\n      font-size: 1.5rem;\n      line-height: 1;\n      font-weight: 300;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.5rem;\n      overflow-y: auto;\n      color: var(--text-primary);\n    }"
-},
-  {
-  "id": "modal",
-  "name": "AppModal",
-  "selector": "app-modal",
-  "packageType": "ui",
-  "category": "forms",
-  "props": [
-    {
-      "name": "open",
-      "type": "boolean",
-      "default": false
-    },
-    {
-      "name": "title",
-      "type": "string",
-      "default": ""
-    },
-    {
-      "name": "size",
-      "type": "string",
-      "default": "md"
-    }
-  ],
-  "template": "",
-  "css": ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.5);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .modal {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.75rem;\n      min-width: 320px;\n      max-height: 90vh;\n      display: flex;\n      flex-direction: column;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);\n    }\n\n    .modal-sm {\n      width: 320px;\n    }\n\n    .modal-md {\n      width: 480px;\n    }\n\n    .modal-lg {\n      width: 640px;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1rem 1.25rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    header h3 {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem;\n      border-radius: 0.25rem;\n      color: var(--text-secondary);\n      font-size: 1.25rem;\n      line-height: 1;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.25rem;\n      overflow-y: auto;\n      color: var(--text-primary);\n    }"
-},
-  {
   "id": "command-palette",
   "name": "AppCommandPalette",
   "selector": "app-command-palette",
@@ -1126,8 +1296,8 @@ export const feedbackComponents: SharedComponentDef[] = [
   "id": "snackbar",
   "name": "AppSnackbar",
   "selector": "app-snackbar",
-  "packageType": "feedback",
-  "category": "feedback",
+  "packageType": "ui",
+  "category": "forms",
   "props": [
     {
       "name": "message",
@@ -1138,10 +1308,25 @@ export const feedbackComponents: SharedComponentDef[] = [
       "name": "action",
       "type": "string",
       "default": ""
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 4000
+    },
+    {
+      "name": "type",
+      "type": "string",
+      "default": "default"
+    },
+    {
+      "name": "open",
+      "type": "boolean",
+      "default": false
     }
   ],
-  "template": "<div class=\"snackbar\">${this.message}</div>",
-  "css": ":host { display: block; }"
+  "template": "",
+  "css": ":host {\n      position: fixed;\n      bottom: 1.5rem;\n      left: 50%;\n      transform: translateX(-50%);\n      z-index: 9999;\n      display: block;\n    }\n    .bar {\n      display: inline-flex;\n      align-items: center;\n      gap: 0.75rem;\n      padding: 0.75rem 1rem;\n      border-radius: 0.5rem;\n      background: var(--bg-elevated, #1f2937);\n      color: var(--text-on-accent, #ffffff);\n      font-size: 0.875rem;\n      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);\n      min-width: 280px;\n      max-width: 560px;\n      border-left: 4px solid var(--accent, #3b82f6);\n    }\n    .bar.success { border-left-color: var(--success, #10b981); }\n    .bar.error { border-left-color: var(--error, #ef4444); }\n    .bar.warning { border-left-color: var(--warning, #f59e0b); }\n    .bar.info { border-left-color: var(--info, #3b82f6); }\n    .message { flex: 1; }\n    .action-btn {\n      background: transparent;\n      border: none;\n      color: var(--accent, #3b82f6);\n      font-weight: 600;\n      cursor: pointer;\n      padding: 0.25rem 0.5rem;\n      border-radius: 0.25rem;\n      text-transform: uppercase;\n      font-size: 0.75rem;\n    }\n    .action-btn:hover { background: rgba(255, 255, 255, 0.1); }\n    .close-btn {\n      background: transparent;\n      border: none;\n      color: inherit;\n      cursor: pointer;\n      padding: 0.125rem 0.25rem;\n      opacity: 0.7;\n      font-size: 1.125rem;\n      line-height: 1;\n    }\n    .close-btn:hover { opacity: 1; }"
 },
 ];
 

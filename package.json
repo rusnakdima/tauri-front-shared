@@ -6,7 +6,7 @@
     "projects/*"
   ],
   "scripts": {
-    "build": "npm run build:shared && npm run build:core && npm run build:core-api && npm run build:core-crud && npm run build:core-i18n && npm run build:core-logger && npm run build:core-storage && npm run build:data && npm run build:feedback && npm run build:grid && npm run build:layout && npm run build:storage && npm run build:ui",
+    "build": "npm run build:shared && npm run build:storage && npm run build:core && npm run build:core-api && npm run build:core-crud && npm run build:core-i18n && npm run build:core-logger && npm run build:core-storage && npm run build:data && npm run build:feedback && npm run build:grid && npm run build:layout && npm run build:ui",
     "build:shared": "cd projects/shared && npm run build && cd dist && sed -i '/\"sideEffects\": false,/d' package.json",
     "build:core": "cd projects/core && npm run build",
     "build:core-api": "cd projects/core-api && npm run build",
@@ -21,7 +21,8 @@
     "build:feedback": "cd projects/feedback && npm run build",
     "build:layout": "cd projects/layout && npm run build",
     "dev": "npm run build && npm run build:watch",
-    "build:watch": "npm run build:watch --workspaces"
+    "build:watch": "npm run build:watch --workspaces",
+    "generate-component-manifest": "bun run scripts/generate-component-manifest.ts"
   },
   "devDependencies": {
     "@angular/cdk": "^20.0.0",

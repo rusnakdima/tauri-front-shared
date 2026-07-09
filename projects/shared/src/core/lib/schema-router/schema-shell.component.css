@@ -8,18 +8,7 @@
   min-height: 100vh;
 }
 
-[data-region="header"] {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-[data-region="content"] {
-  overflow: auto;
-  min-height: 0;
-}
-
+[data-region="content"],
 [data-region="sidebar-left"],
 [data-region="sidebar-right"] {
   overflow: auto;

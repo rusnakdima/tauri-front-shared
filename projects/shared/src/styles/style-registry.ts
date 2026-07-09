@@ -1205,8 +1205,8 @@ const GLASSMORPHISM_CSS = `
   --color-glass-bg: rgba(255, 255, 255, 0.1);
   --color-glass-bg-hover: rgba(255, 255, 255, 0.15);
   --color-glass-bg-active: rgba(255, 255, 255, 0.2);
-  --color-glass-border: rgba(255, 255, 255, 0.2);
-  --color-glass-border-strong: rgba(255, 255, 255, 0.3);
+  --color-glass-border: rgba(255, 255, 255, 0.45);
+  --color-glass-border-strong: rgba(255, 255, 255, 0.6);
   --color-glass-white: rgba(255, 255, 255, 0.8);
   --color-glass-blur: rgba(255, 255, 255, 0.05);
   --color-glass-accent: #6d5dfc;
@@ -1234,7 +1234,7 @@ const GLASSMORPHISM_CSS = `
   --text-muted: #a0aec0;
   --text-on-error: #ffffff;
   --bg-elevated: rgba(255, 255, 255, 0.15);
-  --border-color: rgba(255, 255, 255, 0.2);
+  --border-color: rgba(255, 255, 255, 0.45);
   --error: #e53e3e;
   --success: #48bb78;
 }

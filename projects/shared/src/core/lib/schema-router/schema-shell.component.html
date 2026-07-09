@@ -41,7 +41,11 @@
     [style.grid-template-areas]="gridAreas()"
   >
     @if (headerRegion(); as region) {
-      <div data-region="header" style="grid-area: header">
+      <div
+        data-region="header"
+        [class]="getRegionClasses(region)"
+        style="grid-area: header"
+      >
         @for (child of region.children || []; track child.id) {
           <app-schema-element
             [element]="child"
@@ -52,7 +56,11 @@
     }
 
     @if (sidebarLeftRegion(); as region) {
-      <div data-region="sidebar-left" style="grid-area: sidebar-left">
+      <div
+        data-region="sidebar-left"
+        [class]="getRegionClasses(region)"
+        style="grid-area: sidebar-left"
+      >
         @for (child of region.children || []; track child.id) {
           <app-schema-element
             [element]="child"
@@ -67,7 +75,11 @@
     </div>
 
     @if (sidebarRightRegion(); as region) {
-      <div data-region="sidebar-right" style="grid-area: sidebar-right">
+      <div
+        data-region="sidebar-right"
+        [class]="getRegionClasses(region)"
+        style="grid-area: sidebar-right"
+      >
         @for (child of region.children || []; track child.id) {
           <app-schema-element
             [element]="child"
@@ -78,7 +90,11 @@
     }
 
     @if (footerRegion(); as region) {
-      <div data-region="footer" style="grid-area: footer">
+      <div
+        data-region="footer"
+        [class]="getRegionClasses(region)"
+        style="grid-area: footer"
+      >
         @for (child of region.children || []; track child.id) {
           <app-schema-element
             [element]="child"
@@ -89,7 +105,11 @@
     }
 
     @if (bottomNavRegion(); as region) {
-      <div data-region="bottom-nav" style="grid-area: bottom-nav">
+      <div
+        data-region="bottom-nav"
+        [class]="getRegionClasses(region)"
+        style="grid-area: bottom-nav"
+      >
         @for (child of region.children || []; track child.id) {
           <app-schema-element
             [element]="child"
@@ -100,7 +120,11 @@
     }
 
     @for (region of otherRegions(); track region.id) {
-      <div data-region="other" style="grid-area: other">
+      <div
+        data-region="other"
+        [class]="getRegionClasses(region)"
+        style="grid-area: other"
+      >
         @for (child of region.children || []; track child.id) {
           <app-schema-element
             [element]="child"

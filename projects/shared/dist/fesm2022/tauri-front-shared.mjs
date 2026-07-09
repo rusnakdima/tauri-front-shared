@@ -1,14 +1,14 @@
 import * as i0 from "@angular/core";
 import {
+  signal,
+  Injectable,
+  inject,
   EventEmitter,
   Output,
   Input,
   Component,
   HostListener,
   ViewChild,
-  signal,
-  Injectable,
-  inject,
   computed,
   Injector,
   Optional,
@@ -18,12 +18,12 @@ import {
 } from "@angular/core";
 import * as i1 from "@angular/material/icon";
 import { MatIconModule } from "@angular/material/icon";
-import * as i1$1 from "@angular/platform-browser";
-import * as i1$2 from "@angular/common";
+import { DomSanitizer } from "@angular/platform-browser";
+import * as i1$1 from "@angular/common";
 import { CommonModule } from "@angular/common";
 import { BehaviorSubject, Subject, firstValueFrom } from "rxjs";
 import { invoke } from "@tauri-apps/api/core";
-import * as i1$3 from "@angular/common/http";
+import * as i1$2 from "@angular/common/http";
 import { Router } from "@angular/router";
 
 const SCHEMA_COMPONENT_MAP = new Map();
@@ -31,7 +31,116 @@ function registerSchemaComponent(selector, component) {
   SCHEMA_COMPONENT_MAP.set(selector, component);
 }
 
+// Flat key-value translation maps for i18n
+// All schema text should use i18nKey referencing these keys
+const EN = {
+  // App-level
+  "app.title": "Translator",
+  "app.subtitle": "Translate text between 15 languages instantly",
+  // Header
+  "header.shortcuts": "Shortcuts",
+  "header.theme": "Theme",
+  // Labels
+  "label.from": "From",
+  "label.to": "To",
+  // Buttons
+  "button.translate": "Translate",
+  "button.clear": "Clear",
+  // Footer
+  "footer.text": "Translator - Translate text between 15 languages instantly",
+  // Shortcuts overlay
+  "shortcuts.title": "Keyboard Shortcuts",
+  "shortcuts.description": "Press the following keys to trigger actions",
+  // App language selector
+  "lang.selector.label": "Language",
+  // Input placeholders
+  "input.placeholder": "Enter text to translate...",
+  "output.placeholder": "Translation will appear here as you type...",
+};
+const RU = {
+  // App-level
+  "app.title": "Переводчик",
+  "app.subtitle": "Переводите текст между 15 языками мгновенно",
+  // Header
+  "header.shortcuts": "Ярлыки",
+  "header.theme": "Тема",
+  // Labels
+  "label.from": "С",
+  "label.to": "На",
+  // Buttons
+  "button.translate": "Перевести",
+  "button.clear": "Очистить",
+  // Footer
+  "footer.text": "Переводчик — переводите текст между 15 языками мгновенно",
+  // Shortcuts overlay
+  "shortcuts.title": "Горячие клавиши",
+  "shortcuts.description": "Нажмите следующие клавиши для выполнения действий",
+  // App language selector
+  "lang.selector.label": "Язык",
+  // Input placeholders
+  "input.placeholder": "Введите текст для перевода...",
+  "output.placeholder": "Перевод появится здесь по мере ввода...",
+};
+
+const TRANSLATIONS = {
+  en: EN,
+  ru: RU,
+};
+class I18nService {
+  _locale = signal("en", ...(ngDevMode ? [{ debugName: "_locale" }] : []));
+  get locale() {
+    return this._locale.asReadonly();
+  }
+  get translations() {
+    return TRANSLATIONS[this._locale()];
+  }
+  setLocale(locale) {
+    this._locale.set(locale);
+  }
+  /**
+   * Translate a key. Falls back to English, then to the key itself.
+   */
+  t(key) {
+    const locale = this._locale();
+    return TRANSLATIONS[locale]?.[key] ?? TRANSLATIONS["en"]?.[key] ?? key;
+  }
+  /**
+   * Get all available locales.
+   */
+  getAvailableLocales() {
+    return ["en", "ru"];
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: I18nService,
+    deps: [],
+    target: i0.ɵɵFactoryTarget.Injectable,
+  });
+  static ɵprov = i0.ɵɵngDeclareInjectable({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: I18nService,
+    providedIn: "root",
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: I18nService,
+  decorators: [
+    {
+      type: Injectable,
+      args: [{ providedIn: "root" }],
+    },
+  ],
+});
+
 class ButtonComponent {
+  i18n = inject(I18nService);
   variant = "primary";
   buttonStyle = "solid";
   size = "md";
@@ -42,6 +151,11 @@ class ButtonComponent {
   fullWidth = false;
   type = "button";
   label = "";
+  set i18nKey(value) {
+    if (value !== undefined && value !== null) {
+      this.label = this.i18n.t(value);
+    }
+  }
   classes = "";
   ariaLabel = "";
   align = "";
@@ -101,6 +215,7 @@ class ButtonComponent {
       fullWidth: "fullWidth",
       type: "type",
       label: "label",
+      i18nKey: "i18nKey",
       classes: "classes",
       ariaLabel: "ariaLabel",
       align: "align",
@@ -122,7 +237,7 @@ class ButtonComponent {
       @if (loading) {
         <span class="app-btn-spinner"></span>
       } @else {
-        @if (icon && iconPosition === 'left') {
+        @if (icon && iconPosition === "left") {
           <mat-icon class="app-btn-icon" [fontIcon]="icon" />
         }
         @if (label) {
@@ -130,7 +245,7 @@ class ButtonComponent {
         } @else {
           <ng-content></ng-content>
         }
-        @if (icon && iconPosition === 'right') {
+        @if (icon && iconPosition === "right") {
           <mat-icon class="app-btn-icon" [fontIcon]="icon" />
         }
       }
@@ -175,7 +290,7 @@ i0.ɵɵngDeclareClassMetadata({
       @if (loading) {
         <span class="app-btn-spinner"></span>
       } @else {
-        @if (icon && iconPosition === 'left') {
+        @if (icon && iconPosition === "left") {
           <mat-icon class="app-btn-icon" [fontIcon]="icon" />
         }
         @if (label) {
@@ -183,7 +298,7 @@ i0.ɵɵngDeclareClassMetadata({
         } @else {
           <ng-content></ng-content>
         }
-        @if (icon && iconPosition === 'right') {
+        @if (icon && iconPosition === "right") {
           <mat-icon class="app-btn-icon" [fontIcon]="icon" />
         }
       }
@@ -243,6 +358,11 @@ i0.ɵɵngDeclareClassMetadata({
       },
     ],
     label: [
+      {
+        type: Input,
+      },
+    ],
+    i18nKey: [
       {
         type: Input,
       },
@@ -338,9 +458,13 @@ class InputComponent {
     ngImport: i0,
     template: `
     <div class="app-input-wrapper">
-      @if (label) { <label class="app-input-label">{{ label }}</label> }
+      @if (label) {
+        <label class="app-input-label">{{ label }}</label>
+      }
       <div class="app-input-container" [class.app-input-focused]="focused">
-        @if (icon) { <mat-icon class="app-input-icon" [fontIcon]="icon" /> }
+        @if (icon) {
+          <mat-icon class="app-input-icon" [fontIcon]="icon" />
+        }
         <input
           #inputEl
           [attr.type]="type"
@@ -355,7 +479,9 @@ class InputComponent {
           (blur)="focused = false"
         />
       </div>
-      @if (error) { <span class="app-input-error-text">{{ error }}</span> }
+      @if (error) {
+        <span class="app-input-error-text">{{ error }}</span>
+      }
     </div>
   `,
     isInline: true,
@@ -389,9 +515,13 @@ i0.ɵɵngDeclareClassMetadata({
           imports: [MatIconModule],
           template: `
     <div class="app-input-wrapper">
-      @if (label) { <label class="app-input-label">{{ label }}</label> }
+      @if (label) {
+        <label class="app-input-label">{{ label }}</label>
+      }
       <div class="app-input-container" [class.app-input-focused]="focused">
-        @if (icon) { <mat-icon class="app-input-icon" [fontIcon]="icon" /> }
+        @if (icon) {
+          <mat-icon class="app-input-icon" [fontIcon]="icon" />
+        }
         <input
           #inputEl
           [attr.type]="type"
@@ -406,7 +536,9 @@ i0.ɵɵngDeclareClassMetadata({
           (blur)="focused = false"
         />
       </div>
-      @if (error) { <span class="app-input-error-text">{{ error }}</span> }
+      @if (error) {
+        <span class="app-input-error-text">{{ error }}</span>
+      }
     </div>
   `,
           styles: [
@@ -498,10 +630,16 @@ class EmptyStateComponent {
     ngImport: i0,
     template: `
     <div class="icon-container" [class]="variant">
-      @if (icon) { <span class="icon">{{ icon }}</span> }
+      @if (icon) {
+        <span class="icon">{{ icon }}</span>
+      }
     </div>
-    @if (title) { <h3 class="title">{{ title }}</h3> }
-    @if (message) { <p class="message">{{ message }}</p> }
+    @if (title) {
+      <h3 class="title">{{ title }}</h3>
+    }
+    @if (message) {
+      <p class="message">{{ message }}</p>
+    }
     @if (action) {
       <div class="action">
         <button (click)="actionClicked.emit($event)">{{ action }}</button>
@@ -528,10 +666,16 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <div class="icon-container" [class]="variant">
-      @if (icon) { <span class="icon">{{ icon }}</span> }
+      @if (icon) {
+        <span class="icon">{{ icon }}</span>
+      }
     </div>
-    @if (title) { <h3 class="title">{{ title }}</h3> }
-    @if (message) { <p class="message">{{ message }}</p> }
+    @if (title) {
+      <h3 class="title">{{ title }}</h3>
+    }
+    @if (message) {
+      <p class="message">{{ message }}</p>
+    }
     @if (action) {
       <div class="action">
         <button (click)="actionClicked.emit($event)">{{ action }}</button>
@@ -621,7 +765,9 @@ class ModalComponent {
         <div [class]="'modal modal-' + size">
           <header>
             <h3>{{ title }}</h3>
-            <button class="close-btn" (click)="close()" aria-label="Close">&times;</button>
+            <button class="close-btn" (click)="close()" aria-label="Close">
+              &times;
+            </button>
           </header>
           <div class="content">
             <ng-content></ng-content>
@@ -654,7 +800,9 @@ i0.ɵɵngDeclareClassMetadata({
         <div [class]="'modal modal-' + size">
           <header>
             <h3>{{ title }}</h3>
-            <button class="close-btn" (click)="close()" aria-label="Close">&times;</button>
+            <button class="close-btn" (click)="close()" aria-label="Close">
+              &times;
+            </button>
           </header>
           <div class="content">
             <ng-content></ng-content>
@@ -750,7 +898,9 @@ class DialogComponent {
         <div [class]="'dialog dialog-' + size">
           <header>
             <h2>{{ title }}</h2>
-            <button class="close-btn" (click)="close()" aria-label="Close">&times;</button>
+            <button class="close-btn" (click)="close()" aria-label="Close">
+              &times;
+            </button>
           </header>
           <div class="content">
             <ng-content></ng-content>
@@ -783,7 +933,9 @@ i0.ɵɵngDeclareClassMetadata({
         <div [class]="'dialog dialog-' + size">
           <header>
             <h2>{{ title }}</h2>
-            <button class="close-btn" (click)="close()" aria-label="Close">&times;</button>
+            <button class="close-btn" (click)="close()" aria-label="Close">
+              &times;
+            </button>
           </header>
           <div class="content">
             <ng-content></ng-content>
@@ -888,13 +1040,19 @@ class ConfirmDialogComponent {
       <div class="overlay" (click)="cancel()">
         <div class="dialog" (click)="$event.stopPropagation()">
           <header>
-            <h2>{{ title || 'Confirm' }}</h2>
-            <button class="close-btn" (click)="cancel()" aria-label="Close">&times;</button>
+            <h2>{{ title || "Confirm" }}</h2>
+            <button class="close-btn" (click)="cancel()" aria-label="Close">
+              &times;
+            </button>
           </header>
           <div class="content">{{ message }}</div>
           <footer>
-            <button class="cancel-btn" (click)="cancel()">{{ cancelText || 'Cancel' }}</button>
-            <button class="confirm-btn" (click)="confirm()">{{ confirmText || 'Confirm' }}</button>
+            <button class="cancel-btn" (click)="cancel()">
+              {{ cancelText || "Cancel" }}
+            </button>
+            <button class="confirm-btn" (click)="confirm()">
+              {{ confirmText || "Confirm" }}
+            </button>
           </footer>
         </div>
       </div>
@@ -923,13 +1081,19 @@ i0.ɵɵngDeclareClassMetadata({
       <div class="overlay" (click)="cancel()">
         <div class="dialog" (click)="$event.stopPropagation()">
           <header>
-            <h2>{{ title || 'Confirm' }}</h2>
-            <button class="close-btn" (click)="cancel()" aria-label="Close">&times;</button>
+            <h2>{{ title || "Confirm" }}</h2>
+            <button class="close-btn" (click)="cancel()" aria-label="Close">
+              &times;
+            </button>
           </header>
           <div class="content">{{ message }}</div>
           <footer>
-            <button class="cancel-btn" (click)="cancel()">{{ cancelText || 'Cancel' }}</button>
-            <button class="confirm-btn" (click)="confirm()">{{ confirmText || 'Confirm' }}</button>
+            <button class="cancel-btn" (click)="cancel()">
+              {{ cancelText || "Cancel" }}
+            </button>
+            <button class="confirm-btn" (click)="confirm()">
+              {{ confirmText || "Confirm" }}
+            </button>
           </footer>
         </div>
       </div>
@@ -1079,7 +1243,14 @@ class RadioComponent {
     ngImport: i0,
     template: `
     <label>
-      <input type="radio" [name]="name" [value]="value" [checked]="checked" [disabled]="disabled" (change)="handleChange($event)" />
+      <input
+        type="radio"
+        [name]="name"
+        [value]="value"
+        [checked]="checked"
+        [disabled]="disabled"
+        (change)="handleChange($event)"
+      />
       <span class="radio-label"><ng-content></ng-content></span>
     </label>
   `,
@@ -1103,7 +1274,14 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <label>
-      <input type="radio" [name]="name" [value]="value" [checked]="checked" [disabled]="disabled" (change)="handleChange($event)" />
+      <input
+        type="radio"
+        [name]="name"
+        [value]="value"
+        [checked]="checked"
+        [disabled]="disabled"
+        (change)="handleChange($event)"
+      />
       <span class="radio-label"><ng-content></ng-content></span>
     </label>
   `,
@@ -1185,7 +1363,15 @@ class SliderComponent {
     ngImport: i0,
     template: `
     <div class="slider-wrapper">
-      <input type="range" [value]="value" [min]="min" [max]="max" [step]="step" [disabled]="disabled" (input)="handleInput($event)" />
+      <input
+        type="range"
+        [value]="value"
+        [min]="min"
+        [max]="max"
+        [step]="step"
+        [disabled]="disabled"
+        (input)="handleInput($event)"
+      />
     </div>
   `,
     isInline: true,
@@ -1208,7 +1394,15 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <div class="slider-wrapper">
-      <input type="range" [value]="value" [min]="min" [max]="max" [step]="step" [disabled]="disabled" (input)="handleInput($event)" />
+      <input
+        type="range"
+        [value]="value"
+        [min]="min"
+        [max]="max"
+        [step]="step"
+        [disabled]="disabled"
+        (input)="handleInput($event)"
+      />
     </div>
   `,
           styles: [
@@ -1280,9 +1474,16 @@ class SwitchComponent {
     ngImport: i0,
     template: `
     <label class="switch" [class.switch-checked]="checked">
-      <input type="checkbox" [checked]="checked" [disabled]="disabled" (change)="handleChange($event)" />
+      <input
+        type="checkbox"
+        [checked]="checked"
+        [disabled]="disabled"
+        (change)="handleChange($event)"
+      />
       <span class="slider"></span>
-      @if (label) { <span class="switch-label">{{ label }}</span> }
+      @if (label) {
+        <span class="switch-label">{{ label }}</span>
+      }
     </label>
   `,
     isInline: true,
@@ -1305,9 +1506,16 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <label class="switch" [class.switch-checked]="checked">
-      <input type="checkbox" [checked]="checked" [disabled]="disabled" (change)="handleChange($event)" />
+      <input
+        type="checkbox"
+        [checked]="checked"
+        [disabled]="disabled"
+        (change)="handleChange($event)"
+      />
       <span class="slider"></span>
-      @if (label) { <span class="switch-label">{{ label }}</span> }
+      @if (label) {
+        <span class="switch-label">{{ label }}</span>
+      }
     </label>
   `,
           styles: [
@@ -1375,8 +1583,14 @@ class TextareaComponent {
     outputs: { input: "input" },
     ngImport: i0,
     template: `
-    @if (label) { <label class="textarea-label">{{ label }}</label> }
-    <textarea [placeholder]="placeholder" [disabled]="disabled" (input)="handleInput($event)"></textarea>
+    @if (label) {
+      <label class="textarea-label">{{ label }}</label>
+    }
+    <textarea
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      (input)="handleInput($event)"
+    ></textarea>
   `,
     isInline: true,
     styles: [
@@ -1397,8 +1611,14 @@ i0.ɵɵngDeclareClassMetadata({
           selector: "app-textarea",
           standalone: true,
           template: `
-    @if (label) { <label class="textarea-label">{{ label }}</label> }
-    <textarea [placeholder]="placeholder" [disabled]="disabled" (input)="handleInput($event)"></textarea>
+    @if (label) {
+      <label class="textarea-label">{{ label }}</label>
+    }
+    <textarea
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      (input)="handleInput($event)"
+    ></textarea>
   `,
           styles: [
             ":host{display:block}.textarea-label{display:block;font-size:.875rem;font-weight:500;color:var(--text-primary);margin-bottom:.25rem}textarea{width:100%;padding:.5rem .75rem;border-radius:.5rem;border:1px solid var(--border-color);background-color:var(--bg-primary);color:var(--text-primary);box-sizing:border-box;outline:none;font-family:inherit;resize:vertical;min-height:80px}textarea:focus{border-color:var(--accent)}textarea::placeholder{color:var(--text-muted)}textarea:disabled{opacity:.5;cursor:not-allowed}\n",
@@ -1457,7 +1677,9 @@ class BadgeComponent {
     selector: "app-badge",
     inputs: { variant: "variant", size: "size", label: "label" },
     ngImport: i0,
-    template: `<span [class]="'badge badge-' + variant + ' badge-' + size">{{ label }}</span>`,
+    template: `<span [class]="'badge badge-' + variant + ' badge-' + size">{{
+    label
+  }}</span>`,
     isInline: true,
     styles: [
       ":host{display:inline-flex}.badge{display:inline-flex;align-items:center;border-radius:.25rem;font-weight:500;line-height:1}.badge-default{background-color:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border-color)}.badge-primary{background-color:var(--accent);color:var(--text-on-accent)}.badge-success{background-color:var(--success);color:var(--text-on-success)}.badge-warning{background-color:var(--warning);color:var(--text-on-warning)}.badge-danger{background-color:var(--error);color:var(--text-on-error)}.badge-sm{padding:.125rem .25rem;font-size:.625rem}.badge-md{padding:.25rem .5rem;font-size:.75rem}.badge-lg{padding:.375rem .75rem;font-size:.875rem}\n",
@@ -1476,7 +1698,9 @@ i0.ɵɵngDeclareClassMetadata({
         {
           selector: "app-badge",
           standalone: true,
-          template: `<span [class]="'badge badge-' + variant + ' badge-' + size">{{ label }}</span>`,
+          template: `<span [class]="'badge badge-' + variant + ' badge-' + size">{{
+    label
+  }}</span>`,
           styles: [
             ":host{display:inline-flex}.badge{display:inline-flex;align-items:center;border-radius:.25rem;font-weight:500;line-height:1}.badge-default{background-color:var(--bg-elevated);color:var(--text-primary);border:1px solid var(--border-color)}.badge-primary{background-color:var(--accent);color:var(--text-on-accent)}.badge-success{background-color:var(--success);color:var(--text-on-success)}.badge-warning{background-color:var(--warning);color:var(--text-on-warning)}.badge-danger{background-color:var(--error);color:var(--text-on-error)}.badge-sm{padding:.125rem .25rem;font-size:.625rem}.badge-md{padding:.25rem .5rem;font-size:.75rem}.badge-lg{padding:.375rem .75rem;font-size:.875rem}\n",
           ],
@@ -1545,7 +1769,11 @@ class SelectComponent {
     outputs: { changed: "changed" },
     ngImport: i0,
     template: `
-    <select [value]="value" [disabled]="disabled" (change)="handleChange($event)">
+    <select
+      [value]="value"
+      [disabled]="disabled"
+      (change)="handleChange($event)"
+    >
       <option value="" disabled selected hidden>{{ placeholder }}</option>
       @for (opt of parsedOptions; track opt) {
         <option [value]="opt" [selected]="opt === value">{{ opt }}</option>
@@ -1571,7 +1799,11 @@ i0.ɵɵngDeclareClassMetadata({
           selector: "app-select",
           standalone: true,
           template: `
-    <select [value]="value" [disabled]="disabled" (change)="handleChange($event)">
+    <select
+      [value]="value"
+      [disabled]="disabled"
+      (change)="handleChange($event)"
+    >
       <option value="" disabled selected hidden>{{ placeholder }}</option>
       @for (opt of parsedOptions; track opt) {
         <option [value]="opt" [selected]="opt === value">{{ opt }}</option>
@@ -1644,7 +1876,11 @@ class CardComponent {
     },
     ngImport: i0,
     template: `
-    <div class="card" [class.card-elevated]="elevated" [style.borderRadius.px]="borderRadius">
+    <div
+      class="card"
+      [class.card-elevated]="elevated"
+      [style.borderRadius.px]="borderRadius"
+    >
       @if (title) {
         <div class="card-header">
           <h3 class="card-title">{{ title }}</h3>
@@ -1677,7 +1913,11 @@ i0.ɵɵngDeclareClassMetadata({
           selector: "app-card",
           standalone: true,
           template: `
-    <div class="card" [class.card-elevated]="elevated" [style.borderRadius.px]="borderRadius">
+    <div
+      class="card"
+      [class.card-elevated]="elevated"
+      [style.borderRadius.px]="borderRadius"
+    >
       @if (title) {
         <div class="card-header">
           <h3 class="card-title">{{ title }}</h3>
@@ -1751,9 +1991,13 @@ class StatsCardComponent {
     ngImport: i0,
     template: `
     <div class="stats-card">
-      @if (icon) { <div class="stats-icon">{{ icon }}</div> }
+      @if (icon) {
+        <div class="stats-icon">{{ icon }}</div>
+      }
       <div class="stats-value">{{ value }}{{ unit }}</div>
-      @if (label) { <div class="stats-label">{{ label }}</div> }
+      @if (label) {
+        <div class="stats-label">{{ label }}</div>
+      }
     </div>
   `,
     isInline: true,
@@ -1776,9 +2020,13 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <div class="stats-card">
-      @if (icon) { <div class="stats-icon">{{ icon }}</div> }
+      @if (icon) {
+        <div class="stats-icon">{{ icon }}</div>
+      }
       <div class="stats-value">{{ value }}{{ unit }}</div>
-      @if (label) { <div class="stats-label">{{ label }}</div> }
+      @if (label) {
+        <div class="stats-label">{{ label }}</div>
+      }
     </div>
   `,
           styles: [
@@ -1976,7 +2224,9 @@ class DataTableComponent {
     <table>
       <thead>
         <tr>
-          @if (selectable) { <th class="radio-cell"></th> }
+          @if (selectable) {
+            <th class="radio-cell"></th>
+          }
           @for (col of parsedColumns; track col.key) {
             <th>{{ col.name }}</th>
           }
@@ -1984,9 +2234,18 @@ class DataTableComponent {
       </thead>
       <tbody>
         @for (row of parsedData; track row; let idx = $index) {
-          <tr [class.selectable]="selectable" [class.selected]="selectedIndex === idx" (click)="selectRow(idx)">
+          <tr
+            [class.selectable]="selectable"
+            [class.selected]="selectedIndex === idx"
+            (click)="selectRow(idx)"
+          >
             @if (selectable) {
-              <td><span class="radio" [class.checked]="selectedIndex === idx"></span></td>
+              <td>
+                <span
+                  class="radio"
+                  [class.checked]="selectedIndex === idx"
+                ></span>
+              </td>
             }
             @for (col of parsedColumns; track col.key) {
               <td>{{ row[col.key] }}</td>
@@ -2018,7 +2277,9 @@ i0.ɵɵngDeclareClassMetadata({
     <table>
       <thead>
         <tr>
-          @if (selectable) { <th class="radio-cell"></th> }
+          @if (selectable) {
+            <th class="radio-cell"></th>
+          }
           @for (col of parsedColumns; track col.key) {
             <th>{{ col.name }}</th>
           }
@@ -2026,9 +2287,18 @@ i0.ɵɵngDeclareClassMetadata({
       </thead>
       <tbody>
         @for (row of parsedData; track row; let idx = $index) {
-          <tr [class.selectable]="selectable" [class.selected]="selectedIndex === idx" (click)="selectRow(idx)">
+          <tr
+            [class.selectable]="selectable"
+            [class.selected]="selectedIndex === idx"
+            (click)="selectRow(idx)"
+          >
             @if (selectable) {
-              <td><span class="radio" [class.checked]="selectedIndex === idx"></span></td>
+              <td>
+                <span
+                  class="radio"
+                  [class.checked]="selectedIndex === idx"
+                ></span>
+              </td>
             }
             @for (col of parsedColumns; track col.key) {
               <td>{{ row[col.key] }}</td>
@@ -2071,11 +2341,8 @@ i0.ɵɵngDeclareClassMetadata({
 registerSchemaComponent("app-data-table", DataTableComponent);
 
 class JsonViewComponent {
-  sanitizer;
   data = {};
-  constructor(sanitizer) {
-    this.sanitizer = sanitizer;
-  }
+  sanitizer = inject(DomSanitizer);
   get safeHtml() {
     return this.sanitizer.bypassSecurityTrustHtml(this.formattedHtml);
   }
@@ -2099,7 +2366,7 @@ class JsonViewComponent {
     version: "20.3.25",
     ngImport: i0,
     type: JsonViewComponent,
-    deps: [{ token: i1$1.DomSanitizer }],
+    deps: [],
     target: i0.ɵɵFactoryTarget.Component,
   });
   static ɵcmp = i0.ɵɵngDeclareComponent({
@@ -2137,7 +2404,6 @@ i0.ɵɵngDeclareClassMetadata({
       ],
     },
   ],
-  ctorParameters: () => [{ type: i1$1.DomSanitizer }],
   propDecorators: {
     data: [
       {
@@ -2205,7 +2471,13 @@ class ComponentPaletteComponent {
     <div class="palette-header">
       <div class="palette-title">Components</div>
       @if (searchable) {
-        <input type="text" class="search-input" placeholder="Search components..." [value]="searchQuery" (input)="onSearch($event)" />
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search components..."
+          [value]="searchQuery"
+          (input)="onSearch($event)"
+        />
       }
     </div>
     <div class="palette-content">
@@ -2213,7 +2485,11 @@ class ComponentPaletteComponent {
         <div class="category">
           <div class="category-header" (click)="toggleCategory(cat.name)">
             <span>{{ cat.name }}</span>
-            <span class="category-arrow" [class.collapsed]="isCollapsed(cat.name)">▼</span>
+            <span
+              class="category-arrow"
+              [class.collapsed]="isCollapsed(cat.name)"
+              >▼</span
+            >
           </div>
           <div class="category-items" [class.collapsed]="isCollapsed(cat.name)">
             @for (comp of cat.components; track comp) {
@@ -2246,7 +2522,13 @@ i0.ɵɵngDeclareClassMetadata({
     <div class="palette-header">
       <div class="palette-title">Components</div>
       @if (searchable) {
-        <input type="text" class="search-input" placeholder="Search components..." [value]="searchQuery" (input)="onSearch($event)" />
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search components..."
+          [value]="searchQuery"
+          (input)="onSearch($event)"
+        />
       }
     </div>
     <div class="palette-content">
@@ -2254,7 +2536,11 @@ i0.ɵɵngDeclareClassMetadata({
         <div class="category">
           <div class="category-header" (click)="toggleCategory(cat.name)">
             <span>{{ cat.name }}</span>
-            <span class="category-arrow" [class.collapsed]="isCollapsed(cat.name)">▼</span>
+            <span
+              class="category-arrow"
+              [class.collapsed]="isCollapsed(cat.name)"
+              >▼</span
+            >
           </div>
           <div class="category-items" [class.collapsed]="isCollapsed(cat.name)">
             @for (comp of cat.components; track comp) {
@@ -2339,11 +2625,19 @@ class CanvasComponent {
           <div
             class="canvas-element"
             [class.selected]="selectedId === el.id"
-            [style.gridColumn]="(el.gridPosition?.column || 1) + ' / span ' + (el.gridPosition?.colSpan || 1)"
-            [style.gridRow]="(el.gridPosition?.row || 1) + ' / span ' + (el.gridPosition?.rowSpan || 1)"
+            [style.gridColumn]="
+              (el.gridPosition?.column || 1) +
+              ' / span ' +
+              (el.gridPosition?.colSpan || 1)
+            "
+            [style.gridRow]="
+              (el.gridPosition?.row || 1) +
+              ' / span ' +
+              (el.gridPosition?.rowSpan || 1)
+            "
             (click)="selectElement(el.id)"
           >
-            <span>{{ el.icon || '⊡' }}</span>
+            <span>{{ el.icon || "⊡" }}</span>
             <span>{{ el.name || el.componentId }}</span>
           </div>
         }
@@ -2356,7 +2650,7 @@ class CanvasComponent {
   `,
     isInline: true,
     styles: [
-      ":host{display:block;width:100%;height:100%;background-color:var(--bg-primary);position:relative;overflow:auto}.canvas-area{min-width:100%;min-height:100%;position:relative;display:grid;grid-template-columns:repeat(var(--grid-cols, 12),1fr)}.grid{position:absolute;inset:0;pointer-events:none;display:grid;grid-template-columns:repeat(var(--grid-cols),1fr);gap:0}.grid-cell{border-right:1px solid var(--border-color);border-bottom:1px solid var(--border-color);min-height:4rem}.canvas-element{border:2px dashed transparent;border-radius:.5rem;padding:.5rem;cursor:move;transition:border-color .15s;display:flex;align-items:center;gap:.5rem}.canvas-element:hover{border-color:var(--accent)}.canvas-element.selected{border-color:var(--accent);border-style:solid;box-shadow:0 0 0 2px rgba(var(--accent-rgb, 99,102,241),.2)}.canvas-placeholder{border:2px dashed var(--border-color);border-radius:.5rem;background-color:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:.875rem;min-height:200px}\n",
+      ":host{display:block;width:100%;height:100%;background-color:var(--bg-primary);position:relative;overflow:auto}.canvas-area{min-width:100%;min-height:100%;position:relative;display:grid;grid-template-columns:repeat(var(--grid-cols, 12),1fr)}.grid{position:absolute;inset:0;pointer-events:none;display:grid;grid-template-columns:repeat(var(--grid-cols),1fr);gap:0}.grid-cell{border-right:1px solid var(--border-color);border-bottom:1px solid var(--border-color);min-height:4rem}.canvas-element{border:2px dashed transparent;border-radius:.5rem;padding:.5rem;cursor:move;transition:border-color .15s;display:flex;align-items:center;gap:.5rem}.canvas-element:hover{border-color:var(--accent)}.canvas-element.selected{border-color:var(--accent);border-style:solid;box-shadow:0 0 0 2px rgba(var(--accent-rgb, 99, 102, 241),.2)}.canvas-placeholder{border:2px dashed var(--border-color);border-radius:.5rem;background-color:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:.875rem;min-height:200px}\n",
     ],
   });
 }
@@ -2386,11 +2680,19 @@ i0.ɵɵngDeclareClassMetadata({
           <div
             class="canvas-element"
             [class.selected]="selectedId === el.id"
-            [style.gridColumn]="(el.gridPosition?.column || 1) + ' / span ' + (el.gridPosition?.colSpan || 1)"
-            [style.gridRow]="(el.gridPosition?.row || 1) + ' / span ' + (el.gridPosition?.rowSpan || 1)"
+            [style.gridColumn]="
+              (el.gridPosition?.column || 1) +
+              ' / span ' +
+              (el.gridPosition?.colSpan || 1)
+            "
+            [style.gridRow]="
+              (el.gridPosition?.row || 1) +
+              ' / span ' +
+              (el.gridPosition?.rowSpan || 1)
+            "
             (click)="selectElement(el.id)"
           >
-            <span>{{ el.icon || '⊡' }}</span>
+            <span>{{ el.icon || "⊡" }}</span>
             <span>{{ el.name || el.componentId }}</span>
           </div>
         }
@@ -2402,7 +2704,7 @@ i0.ɵɵngDeclareClassMetadata({
     </div>
   `,
           styles: [
-            ":host{display:block;width:100%;height:100%;background-color:var(--bg-primary);position:relative;overflow:auto}.canvas-area{min-width:100%;min-height:100%;position:relative;display:grid;grid-template-columns:repeat(var(--grid-cols, 12),1fr)}.grid{position:absolute;inset:0;pointer-events:none;display:grid;grid-template-columns:repeat(var(--grid-cols),1fr);gap:0}.grid-cell{border-right:1px solid var(--border-color);border-bottom:1px solid var(--border-color);min-height:4rem}.canvas-element{border:2px dashed transparent;border-radius:.5rem;padding:.5rem;cursor:move;transition:border-color .15s;display:flex;align-items:center;gap:.5rem}.canvas-element:hover{border-color:var(--accent)}.canvas-element.selected{border-color:var(--accent);border-style:solid;box-shadow:0 0 0 2px rgba(var(--accent-rgb, 99,102,241),.2)}.canvas-placeholder{border:2px dashed var(--border-color);border-radius:.5rem;background-color:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:.875rem;min-height:200px}\n",
+            ":host{display:block;width:100%;height:100%;background-color:var(--bg-primary);position:relative;overflow:auto}.canvas-area{min-width:100%;min-height:100%;position:relative;display:grid;grid-template-columns:repeat(var(--grid-cols, 12),1fr)}.grid{position:absolute;inset:0;pointer-events:none;display:grid;grid-template-columns:repeat(var(--grid-cols),1fr);gap:0}.grid-cell{border-right:1px solid var(--border-color);border-bottom:1px solid var(--border-color);min-height:4rem}.canvas-element{border:2px dashed transparent;border-radius:.5rem;padding:.5rem;cursor:move;transition:border-color .15s;display:flex;align-items:center;gap:.5rem}.canvas-element:hover{border-color:var(--accent)}.canvas-element.selected{border-color:var(--accent);border-style:solid;box-shadow:0 0 0 2px rgba(var(--accent-rgb, 99, 102, 241),.2)}.canvas-placeholder{border:2px dashed var(--border-color);border-radius:.5rem;background-color:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:.875rem;min-height:200px}\n",
           ],
         },
       ],
@@ -2490,7 +2792,9 @@ class PropertiesPanelComponent {
     template: `
     <div class="panel-header">
       <div class="panel-title">Properties</div>
-      @if (elementId) { <div class="element-id">{{ elementId }}</div> }
+      @if (elementId) {
+        <div class="element-id">{{ elementId }}</div>
+      }
     </div>
     @if (properties.length > 0) {
       <div class="properties-section">
@@ -2498,12 +2802,23 @@ class PropertiesPanelComponent {
         @for (prop of properties; track prop.key) {
           <div class="property-row">
             <label class="property-label">{{ prop.label }}</label>
-            @if (prop.type === 'boolean') {
-              <input type="checkbox" class="property-input" [checked]="prop.value" (change)="handleChange(prop.key, $event)" />
-            } @else if (prop.type === 'select') {
-              <select class="property-input" [value]="prop.value" (change)="handleChange(prop.key, $event)">
-                @for (opt of (prop.options || []); track opt) {
-                  <option [value]="opt" [selected]="opt === prop.value">{{ opt }}</option>
+            @if (prop.type === "boolean") {
+              <input
+                type="checkbox"
+                class="property-input"
+                [checked]="prop.value"
+                (change)="handleChange(prop.key, $event)"
+              />
+            } @else if (prop.type === "select") {
+              <select
+                class="property-input"
+                [value]="prop.value"
+                (change)="handleChange(prop.key, $event)"
+              >
+                @for (opt of prop.options || []; track opt) {
+                  <option [value]="opt" [selected]="opt === prop.value">
+                    {{ opt }}
+                  </option>
                 }
               </select>
             } @else {
@@ -2542,7 +2857,9 @@ i0.ɵɵngDeclareClassMetadata({
           template: `
     <div class="panel-header">
       <div class="panel-title">Properties</div>
-      @if (elementId) { <div class="element-id">{{ elementId }}</div> }
+      @if (elementId) {
+        <div class="element-id">{{ elementId }}</div>
+      }
     </div>
     @if (properties.length > 0) {
       <div class="properties-section">
@@ -2550,12 +2867,23 @@ i0.ɵɵngDeclareClassMetadata({
         @for (prop of properties; track prop.key) {
           <div class="property-row">
             <label class="property-label">{{ prop.label }}</label>
-            @if (prop.type === 'boolean') {
-              <input type="checkbox" class="property-input" [checked]="prop.value" (change)="handleChange(prop.key, $event)" />
-            } @else if (prop.type === 'select') {
-              <select class="property-input" [value]="prop.value" (change)="handleChange(prop.key, $event)">
-                @for (opt of (prop.options || []); track opt) {
-                  <option [value]="opt" [selected]="opt === prop.value">{{ opt }}</option>
+            @if (prop.type === "boolean") {
+              <input
+                type="checkbox"
+                class="property-input"
+                [checked]="prop.value"
+                (change)="handleChange(prop.key, $event)"
+              />
+            } @else if (prop.type === "select") {
+              <select
+                class="property-input"
+                [value]="prop.value"
+                (change)="handleChange(prop.key, $event)"
+              >
+                @for (opt of prop.options || []; track opt) {
+                  <option [value]="opt" [selected]="opt === prop.value">
+                    {{ opt }}
+                  </option>
                 }
               </select>
             } @else {
@@ -2642,7 +2970,13 @@ class BottomPanelComponent {
     template: `
     <div class="panel-tabs">
       @for (tab of parsedTabs; track tab.id) {
-        <div class="panel-tab" [class.active]="activeTab === tab.id" (click)="handleTabClick(tab.id)">{{ tab.label }}</div>
+        <div
+          class="panel-tab"
+          [class.active]="activeTab === tab.id"
+          (click)="handleTabClick(tab.id)"
+        >
+          {{ tab.label }}
+        </div>
       }
     </div>
     <div class="panel-content">
@@ -2673,7 +3007,13 @@ i0.ɵɵngDeclareClassMetadata({
           template: `
     <div class="panel-tabs">
       @for (tab of parsedTabs; track tab.id) {
-        <div class="panel-tab" [class.active]="activeTab === tab.id" (click)="handleTabClick(tab.id)">{{ tab.label }}</div>
+        <div
+          class="panel-tab"
+          [class.active]="activeTab === tab.id"
+          (click)="handleTabClick(tab.id)"
+        >
+          {{ tab.label }}
+        </div>
       }
     </div>
     <div class="panel-content">
@@ -2771,19 +3111,31 @@ class HeaderComponent {
     template: `
     <header>
       @if (showBack) {
-        <button class="back-btn" (click)="navigateBack.emit()" aria-label="Back">&larr;</button>
+        <button
+          class="back-btn"
+          (click)="navigateBack.emit()"
+          aria-label="Back"
+        >
+          &larr;
+        </button>
       }
       <div class="title-area">
         <h1>{{ title }}</h1>
         @if (parsedBreadcrumbs.length) {
           <div class="breadcrumbs">
-            @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {
+            @for (
+              crumb of parsedBreadcrumbs;
+              track crumb.label;
+              let last = $last
+            ) {
               @if (!last && crumb.href) {
                 <a [href]="crumb.href">{{ crumb.label }}</a>
               } @else {
                 <span>{{ crumb.label }}</span>
               }
-              @if (!last) { <span class="breadcrumb-separator">/</span> }
+              @if (!last) {
+                <span class="breadcrumb-separator">/</span>
+              }
             }
           </div>
         }
@@ -2812,19 +3164,31 @@ i0.ɵɵngDeclareClassMetadata({
           template: `
     <header>
       @if (showBack) {
-        <button class="back-btn" (click)="navigateBack.emit()" aria-label="Back">&larr;</button>
+        <button
+          class="back-btn"
+          (click)="navigateBack.emit()"
+          aria-label="Back"
+        >
+          &larr;
+        </button>
       }
       <div class="title-area">
         <h1>{{ title }}</h1>
         @if (parsedBreadcrumbs.length) {
           <div class="breadcrumbs">
-            @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {
+            @for (
+              crumb of parsedBreadcrumbs;
+              track crumb.label;
+              let last = $last
+            ) {
               @if (!last && crumb.href) {
                 <a [href]="crumb.href">{{ crumb.label }}</a>
               } @else {
                 <span>{{ crumb.label }}</span>
               }
-              @if (!last) { <span class="breadcrumb-separator">/</span> }
+              @if (!last) {
+                <span class="breadcrumb-separator">/</span>
+              }
             }
           </div>
         }
@@ -2921,8 +3285,12 @@ class SidebarComponent {
     template: `
     <aside [class.collapsed]="collapsed" [style.--sidebar-width.px]="width">
       <div class="sidebar-header">
-        <button class="collapse-btn" (click)="toggleCollapse()" aria-label="Toggle sidebar">
-          {{ collapsed ? '→' : '←' }}
+        <button
+          class="collapse-btn"
+          (click)="toggleCollapse()"
+          aria-label="Toggle sidebar"
+        >
+          {{ collapsed ? "→" : "←" }}
         </button>
       </div>
       <nav>
@@ -2930,15 +3298,22 @@ class SidebarComponent {
           @for (item of parsedItems; track item.label) {
             <li>
               <div class="nav-item" (click)="handleItemClick(item)">
-                @if (item.icon) { <span class="nav-item-icon">{{ item.icon }}</span> }
+                @if (item.icon) {
+                  <span class="nav-item-icon">{{ item.icon }}</span>
+                }
                 <span class="nav-item-label">{{ item.label }}</span>
               </div>
               @if (item.children?.length) {
                 <ul class="nav-item-children">
                   @for (child of item.children; track child.label) {
                     <li>
-                      <div class="nav-item nav-item-child" (click)="handleItemClick(child)">
-                        @if (child.icon) { <span class="nav-item-icon">{{ child.icon }}</span> }
+                      <div
+                        class="nav-item nav-item-child"
+                        (click)="handleItemClick(child)"
+                      >
+                        @if (child.icon) {
+                          <span class="nav-item-icon">{{ child.icon }}</span>
+                        }
                         <span class="nav-item-label">{{ child.label }}</span>
                       </div>
                     </li>
@@ -2973,8 +3348,12 @@ i0.ɵɵngDeclareClassMetadata({
           template: `
     <aside [class.collapsed]="collapsed" [style.--sidebar-width.px]="width">
       <div class="sidebar-header">
-        <button class="collapse-btn" (click)="toggleCollapse()" aria-label="Toggle sidebar">
-          {{ collapsed ? '→' : '←' }}
+        <button
+          class="collapse-btn"
+          (click)="toggleCollapse()"
+          aria-label="Toggle sidebar"
+        >
+          {{ collapsed ? "→" : "←" }}
         </button>
       </div>
       <nav>
@@ -2982,15 +3361,22 @@ i0.ɵɵngDeclareClassMetadata({
           @for (item of parsedItems; track item.label) {
             <li>
               <div class="nav-item" (click)="handleItemClick(item)">
-                @if (item.icon) { <span class="nav-item-icon">{{ item.icon }}</span> }
+                @if (item.icon) {
+                  <span class="nav-item-icon">{{ item.icon }}</span>
+                }
                 <span class="nav-item-label">{{ item.label }}</span>
               </div>
               @if (item.children?.length) {
                 <ul class="nav-item-children">
                   @for (child of item.children; track child.label) {
                     <li>
-                      <div class="nav-item nav-item-child" (click)="handleItemClick(child)">
-                        @if (child.icon) { <span class="nav-item-icon">{{ child.icon }}</span> }
+                      <div
+                        class="nav-item nav-item-child"
+                        (click)="handleItemClick(child)"
+                      >
+                        @if (child.icon) {
+                          <span class="nav-item-icon">{{ child.icon }}</span>
+                        }
                         <span class="nav-item-label">{{ child.label }}</span>
                       </div>
                     </li>
@@ -3066,7 +3452,9 @@ class FooterComponent {
     ngImport: i0,
     template: `
     <footer>
-      @if (text) { <p class="footer-text">{{ text }}</p> }
+      @if (text) {
+        <p class="footer-text">{{ text }}</p>
+      }
       <ng-content></ng-content>
     </footer>
   `,
@@ -3090,7 +3478,9 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <footer>
-      @if (text) { <p class="footer-text">{{ text }}</p> }
+      @if (text) {
+        <p class="footer-text">{{ text }}</p>
+      }
       <ng-content></ng-content>
     </footer>
   `,
@@ -3144,7 +3534,11 @@ class PageContainerComponent {
         <ng-content select="[slot=header-actions]"></ng-content>
       </div>
     }
-    <div class="page-content" [style.padding.px]="padding" [style.maxWidth]="maxWidth ? maxWidth + 'px' : null">
+    <div
+      class="page-content"
+      [style.padding.px]="padding"
+      [style.maxWidth]="maxWidth ? maxWidth + 'px' : null"
+    >
       <ng-content></ng-content>
     </div>
   `,
@@ -3173,7 +3567,11 @@ i0.ɵɵngDeclareClassMetadata({
         <ng-content select="[slot=header-actions]"></ng-content>
       </div>
     }
-    <div class="page-content" [style.padding.px]="padding" [style.maxWidth]="maxWidth ? maxWidth + 'px' : null">
+    <div
+      class="page-content"
+      [style.padding.px]="padding"
+      [style.maxWidth]="maxWidth ? maxWidth + 'px' : null"
+    >
       <ng-content></ng-content>
     </div>
   `,
@@ -3249,8 +3647,13 @@ class PageToolbarComponent {
       </div>
       <div class="toolbar-actions">
         @for (action of parsedActions; track action.label) {
-          <button [class]="'action-btn ' + (action.variant || '')" (click)="handleAction(action)">
-            @if (action.icon) { <mat-icon class="action-icon" [fontIcon]="action.icon" /> }
+          <button
+            [class]="'action-btn ' + (action.variant || '')"
+            (click)="handleAction(action)"
+          >
+            @if (action.icon) {
+              <mat-icon class="action-icon" [fontIcon]="action.icon" />
+            }
             {{ action.label }}
           </button>
         }
@@ -3294,8 +3697,13 @@ i0.ɵɵngDeclareClassMetadata({
       </div>
       <div class="toolbar-actions">
         @for (action of parsedActions; track action.label) {
-          <button [class]="'action-btn ' + (action.variant || '')" (click)="handleAction(action)">
-            @if (action.icon) { <mat-icon class="action-icon" [fontIcon]="action.icon" /> }
+          <button
+            [class]="'action-btn ' + (action.variant || '')"
+            (click)="handleAction(action)"
+          >
+            @if (action.icon) {
+              <mat-icon class="action-icon" [fontIcon]="action.icon" />
+            }
             {{ action.label }}
           </button>
         }
@@ -3406,11 +3814,29 @@ class SplitViewComponent {
     ngImport: i0,
     template: `
     <div #container [class]="'split-container ' + direction">
-      <div class="split-pane first" [style]="direction === 'horizontal' ? 'width: ' + split + '%; flex-grow: 0' : 'height: ' + split + '%; flex-grow: 0'">
+      <div
+        class="split-pane first"
+        [style]="
+          direction === 'horizontal'
+            ? 'width: ' + split + '%; flex-grow: 0'
+            : 'height: ' + split + '%; flex-grow: 0'
+        "
+      >
         <ng-content select="[slot=first]"></ng-content>
       </div>
-      <div class="split-divider" [class.dragging]="isDragging" (mousedown)="onDividerMouseDown($event)"></div>
-      <div class="split-pane second" [style]="direction === 'horizontal' ? 'width: auto; flex: 1' : 'height: auto; flex: 1'">
+      <div
+        class="split-divider"
+        [class.dragging]="isDragging"
+        (mousedown)="onDividerMouseDown($event)"
+      ></div>
+      <div
+        class="split-pane second"
+        [style]="
+          direction === 'horizontal'
+            ? 'width: auto; flex: 1'
+            : 'height: auto; flex: 1'
+        "
+      >
         <ng-content select="[slot=second]"></ng-content>
       </div>
     </div>
@@ -3435,11 +3861,29 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <div #container [class]="'split-container ' + direction">
-      <div class="split-pane first" [style]="direction === 'horizontal' ? 'width: ' + split + '%; flex-grow: 0' : 'height: ' + split + '%; flex-grow: 0'">
+      <div
+        class="split-pane first"
+        [style]="
+          direction === 'horizontal'
+            ? 'width: ' + split + '%; flex-grow: 0'
+            : 'height: ' + split + '%; flex-grow: 0'
+        "
+      >
         <ng-content select="[slot=first]"></ng-content>
       </div>
-      <div class="split-divider" [class.dragging]="isDragging" (mousedown)="onDividerMouseDown($event)"></div>
-      <div class="split-pane second" [style]="direction === 'horizontal' ? 'width: auto; flex: 1' : 'height: auto; flex: 1'">
+      <div
+        class="split-divider"
+        [class.dragging]="isDragging"
+        (mousedown)="onDividerMouseDown($event)"
+      ></div>
+      <div
+        class="split-pane second"
+        [style]="
+          direction === 'horizontal'
+            ? 'width: auto; flex: 1'
+            : 'height: auto; flex: 1'
+        "
+      >
         <ng-content select="[slot=second]"></ng-content>
       </div>
     </div>
@@ -3598,10 +4042,18 @@ class ChipComponent {
     ngImport: i0,
     template: `
     <span class="chip">
-      @if (icon) { <mat-icon class="chip-icon" [fontIcon]="icon" /> }
+      @if (icon) {
+        <mat-icon class="chip-icon" [fontIcon]="icon" />
+      }
       <span>{{ label }}</span>
       @if (removable) {
-        <button class="remove-btn" (click)="handleRemove($event)" aria-label="Remove">&times;</button>
+        <button
+          class="remove-btn"
+          (click)="handleRemove($event)"
+          aria-label="Remove"
+        >
+          &times;
+        </button>
       }
     </span>
   `,
@@ -3636,10 +4088,18 @@ i0.ɵɵngDeclareClassMetadata({
           imports: [MatIconModule],
           template: `
     <span class="chip">
-      @if (icon) { <mat-icon class="chip-icon" [fontIcon]="icon" /> }
+      @if (icon) {
+        <mat-icon class="chip-icon" [fontIcon]="icon" />
+      }
       <span>{{ label }}</span>
       @if (removable) {
-        <button class="remove-btn" (click)="handleRemove($event)" aria-label="Remove">&times;</button>
+        <button
+          class="remove-btn"
+          (click)="handleRemove($event)"
+          aria-label="Remove"
+        >
+          &times;
+        </button>
       }
     </span>
   `,
@@ -3726,13 +4186,17 @@ class PaginationComponent {
     <div class="pagination">
       <button [disabled]="page <= 1" (click)="goTo(page - 1)">&laquo;</button>
       @for (p of visiblePages; track p) {
-        @if (p === '...') {
+        @if (p === "...") {
           <span class="ellipsis">&hellip;</span>
         } @else {
-          <button [class.active]="p === page" (click)="goTo(+p)">{{ p }}</button>
+          <button [class.active]="p === page" (click)="goTo(+p)">
+            {{ p }}
+          </button>
         }
       }
-      <button [disabled]="page >= totalPages" (click)="goTo(page + 1)">&raquo;</button>
+      <button [disabled]="page >= totalPages" (click)="goTo(page + 1)">
+        &raquo;
+      </button>
     </div>
   `,
     isInline: true,
@@ -3757,13 +4221,17 @@ i0.ɵɵngDeclareClassMetadata({
     <div class="pagination">
       <button [disabled]="page <= 1" (click)="goTo(page - 1)">&laquo;</button>
       @for (p of visiblePages; track p) {
-        @if (p === '...') {
+        @if (p === "...") {
           <span class="ellipsis">&hellip;</span>
         } @else {
-          <button [class.active]="p === page" (click)="goTo(+p)">{{ p }}</button>
+          <button [class.active]="p === page" (click)="goTo(+p)">
+            {{ p }}
+          </button>
         }
       }
-      <button [disabled]="page >= totalPages" (click)="goTo(page + 1)">&raquo;</button>
+      <button [disabled]="page >= totalPages" (click)="goTo(page + 1)">
+        &raquo;
+      </button>
     </div>
   `,
           styles: [
@@ -3834,7 +4302,13 @@ class TabsComponent {
     template: `
     <div class="tabs">
       @for (tab of parsedTabs; track tab) {
-        <div class="tab" [class.active]="tab === activeTab" (click)="selectTab(tab)">{{ tab }}</div>
+        <div
+          class="tab"
+          [class.active]="tab === activeTab"
+          (click)="selectTab(tab)"
+        >
+          {{ tab }}
+        </div>
       }
     </div>
   `,
@@ -3859,7 +4333,13 @@ i0.ɵɵngDeclareClassMetadata({
           template: `
     <div class="tabs">
       @for (tab of parsedTabs; track tab) {
-        <div class="tab" [class.active]="tab === activeTab" (click)="selectTab(tab)">{{ tab }}</div>
+        <div
+          class="tab"
+          [class.active]="tab === activeTab"
+          (click)="selectTab(tab)"
+        >
+          {{ tab }}
+        </div>
       }
     </div>
   `,
@@ -3920,7 +4400,10 @@ class ProgressBarComponent {
     ngImport: i0,
     template: `
     <div class="progress-container">
-      <div [class]="'progress-fill ' + fillClass" [style.width.%]="percentage"></div>
+      <div
+        [class]="'progress-fill ' + fillClass"
+        [style.width.%]="percentage"
+      ></div>
     </div>
   `,
     isInline: true,
@@ -3943,7 +4426,10 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <div class="progress-container">
-      <div [class]="'progress-fill ' + fillClass" [style.width.%]="percentage"></div>
+      <div
+        [class]="'progress-fill ' + fillClass"
+        [style.width.%]="percentage"
+      ></div>
     </div>
   `,
           styles: [
@@ -4004,7 +4490,13 @@ class SegmentSelectorComponent {
     template: `
     <div class="segment-container">
       @for (opt of parsedOptions; track opt) {
-        <div class="segment" [class.selected]="opt === selected" (click)="selectOption(opt)">{{ opt }}</div>
+        <div
+          class="segment"
+          [class.selected]="opt === selected"
+          (click)="selectOption(opt)"
+        >
+          {{ opt }}
+        </div>
       }
     </div>
   `,
@@ -4029,7 +4521,13 @@ i0.ɵɵngDeclareClassMetadata({
           template: `
     <div class="segment-container">
       @for (opt of parsedOptions; track opt) {
-        <div class="segment" [class.selected]="opt === selected" (click)="selectOption(opt)">{{ opt }}</div>
+        <div
+          class="segment"
+          [class.selected]="opt === selected"
+          (click)="selectOption(opt)"
+        >
+          {{ opt }}
+        </div>
       }
     </div>
   `,
@@ -4080,7 +4578,9 @@ class IconComponent {
     selector: "app-icon",
     inputs: { icon: "icon", size: "size", textSize: "textSize" },
     ngImport: i0,
-    template: `<span class="icon-wrapper"><mat-icon [fontIcon]="icon" [style.fontSize.px]="size" /></span>`,
+    template: `<span class="icon-wrapper"
+    ><mat-icon [fontIcon]="icon" [style.fontSize.px]="size"
+  /></span>`,
     isInline: true,
     styles: [
       ":host{display:inline-flex;align-items:center;justify-content:center}.icon-wrapper{display:inline-flex;align-items:center;justify-content:center;color:var(--text-secondary)}\n",
@@ -4110,7 +4610,9 @@ i0.ɵɵngDeclareClassMetadata({
           selector: "app-icon",
           standalone: true,
           imports: [MatIconModule],
-          template: `<span class="icon-wrapper"><mat-icon [fontIcon]="icon" [style.fontSize.px]="size" /></span>`,
+          template: `<span class="icon-wrapper"
+    ><mat-icon [fontIcon]="icon" [style.fontSize.px]="size"
+  /></span>`,
           styles: [
             ":host{display:inline-flex;align-items:center;justify-content:center}.icon-wrapper{display:inline-flex;align-items:center;justify-content:center;color:var(--text-secondary)}\n",
           ],
@@ -4160,7 +4662,14 @@ class TooltipComponent {
     inputs: { text: "text", position: "position", delay: "delay" },
     ngImport: i0,
     template: `
-    <div class="tooltip-trigger" (mouseenter)="show = true" (mouseleave)="show = false" (focus)="show = true" (blur)="show = false" tabindex="0">
+    <div
+      class="tooltip-trigger"
+      (mouseenter)="show = true"
+      (mouseleave)="show = false"
+      (focus)="show = true"
+      (blur)="show = false"
+      tabindex="0"
+    >
       <ng-content></ng-content>
       @if (show) {
         <div class="tooltip-bubble" [class]="position || 'top'">{{ text }}</div>
@@ -4186,7 +4695,14 @@ i0.ɵɵngDeclareClassMetadata({
           selector: "app-tooltip",
           standalone: true,
           template: `
-    <div class="tooltip-trigger" (mouseenter)="show = true" (mouseleave)="show = false" (focus)="show = true" (blur)="show = false" tabindex="0">
+    <div
+      class="tooltip-trigger"
+      (mouseenter)="show = true"
+      (mouseleave)="show = false"
+      (focus)="show = true"
+      (blur)="show = false"
+      tabindex="0"
+    >
       <ng-content></ng-content>
       @if (show) {
         <div class="tooltip-bubble" [class]="position || 'top'">{{ text }}</div>
@@ -4285,9 +4801,13 @@ class SnackbarComponent {
       <div [class]="'bar ' + type" role="status">
         <span class="message">{{ message }}</span>
         @if (action) {
-          <button class="action-btn" (click)="handleAction()">{{ action }}</button>
+          <button class="action-btn" (click)="handleAction()">
+            {{ action }}
+          </button>
         }
-        <button class="close-btn" (click)="dismiss()" aria-label="Dismiss">&times;</button>
+        <button class="close-btn" (click)="dismiss()" aria-label="Dismiss">
+          &times;
+        </button>
       </div>
     }
   `,
@@ -4314,9 +4834,13 @@ i0.ɵɵngDeclareClassMetadata({
       <div [class]="'bar ' + type" role="status">
         <span class="message">{{ message }}</span>
         @if (action) {
-          <button class="action-btn" (click)="handleAction()">{{ action }}</button>
+          <button class="action-btn" (click)="handleAction()">
+            {{ action }}
+          </button>
         }
-        <button class="close-btn" (click)="dismiss()" aria-label="Dismiss">&times;</button>
+        <button class="close-btn" (click)="dismiss()" aria-label="Dismiss">
+          &times;
+        </button>
       </div>
     }
   `,
@@ -4387,7 +4911,13 @@ class SpinnerComponent {
     selector: "app-spinner",
     inputs: { size: "size", color: "color", label: "label" },
     ngImport: i0,
-    template: `<div [class]="'spinner spinner-' + size" [style.borderTopColor]="color || null"></div>@if (label) { <span class="spinner-label">{{ label }}</span> }`,
+    template: `<div
+      [class]="'spinner spinner-' + size"
+      [style.borderTopColor]="color || null"
+    ></div>
+    @if (label) {
+      <span class="spinner-label">{{ label }}</span>
+    }`,
     isInline: true,
     styles: [
       ":host{display:inline-flex;align-items:center;gap:.5rem}.spinner{border:2px solid var(--border-color);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}.spinner-sm{width:16px;height:16px;border-width:2px}.spinner-md{width:32px;height:32px;border-width:3px}.spinner-lg{width:48px;height:48px;border-width:4px}.spinner-xl{width:64px;height:64px;border-width:5px}.spinner-label{font-size:.875rem;color:var(--text-secondary)}@keyframes spin{to{transform:rotate(360deg)}}\n",
@@ -4406,7 +4936,13 @@ i0.ɵɵngDeclareClassMetadata({
         {
           selector: "app-spinner",
           standalone: true,
-          template: `<div [class]="'spinner spinner-' + size" [style.borderTopColor]="color || null"></div>@if (label) { <span class="spinner-label">{{ label }}</span> }`,
+          template: `<div
+      [class]="'spinner spinner-' + size"
+      [style.borderTopColor]="color || null"
+    ></div>
+    @if (label) {
+      <span class="spinner-label">{{ label }}</span>
+    }`,
           styles: [
             ":host{display:inline-flex;align-items:center;gap:.5rem}.spinner{border:2px solid var(--border-color);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}.spinner-sm{width:16px;height:16px;border-width:2px}.spinner-md{width:32px;height:32px;border-width:3px}.spinner-lg{width:48px;height:48px;border-width:4px}.spinner-xl{width:64px;height:64px;border-width:5px}.spinner-label{font-size:.875rem;color:var(--text-secondary)}@keyframes spin{to{transform:rotate(360deg)}}\n",
           ],
@@ -4454,7 +4990,11 @@ class DividerComponent {
     selector: "app-divider",
     inputs: { orientation: "orientation", spacing: "spacing", color: "color" },
     ngImport: i0,
-    template: `<div class="line" [style.background]="color || null" role="separator"></div>`,
+    template: `<div
+    class="line"
+    [style.background]="color || null"
+    role="separator"
+  ></div>`,
     isInline: true,
     styles: [
       ':host{display:flex;align-items:center;justify-content:center}:host([orientation="vertical"]){display:inline-flex;align-items:stretch;height:100%}.line{background:var(--divider-color, var(--border-color, #e5e7eb));width:100%;height:1px}:host([orientation="vertical"]) .line{width:1px;height:100%}:host([spacing="none"]){margin:0}:host([spacing="sm"]){margin:.5rem 0}:host([spacing="md"]){margin:1rem 0}:host([spacing="lg"]){margin:1.5rem 0}:host([spacing="xl"]){margin:2.5rem 0}:host([orientation="vertical"][spacing="none"]){margin:0}:host([orientation="vertical"][spacing="sm"]){margin:0 .5rem}:host([orientation="vertical"][spacing="md"]){margin:0 1rem}:host([orientation="vertical"][spacing="lg"]){margin:0 1.5rem}:host([orientation="vertical"][spacing="xl"]){margin:0 2.5rem}\n',
@@ -4473,7 +5013,11 @@ i0.ɵɵngDeclareClassMetadata({
         {
           selector: "app-divider",
           standalone: true,
-          template: `<div class="line" [style.background]="color || null" role="separator"></div>`,
+          template: `<div
+    class="line"
+    [style.background]="color || null"
+    role="separator"
+  ></div>`,
           styles: [
             ':host{display:flex;align-items:center;justify-content:center}:host([orientation="vertical"]){display:inline-flex;align-items:stretch;height:100%}.line{background:var(--divider-color, var(--border-color, #e5e7eb));width:100%;height:1px}:host([orientation="vertical"]) .line{width:1px;height:100%}:host([spacing="none"]){margin:0}:host([spacing="sm"]){margin:.5rem 0}:host([spacing="md"]){margin:1rem 0}:host([spacing="lg"]){margin:1.5rem 0}:host([spacing="xl"]){margin:2.5rem 0}:host([orientation="vertical"][spacing="none"]){margin:0}:host([orientation="vertical"][spacing="sm"]){margin:0 .5rem}:host([orientation="vertical"][spacing="md"]){margin:0 1rem}:host([orientation="vertical"][spacing="lg"]){margin:0 1.5rem}:host([orientation="vertical"][spacing="xl"]){margin:0 2.5rem}\n',
           ],
@@ -4536,18 +5080,31 @@ class TreeNodeComponent {
     outputs: { selected: "selected" },
     ngImport: i0,
     template: `
-    <div class="tree-node" [style.paddingLeft.px]="depth * 20" [class.selected]="node.selected" (click)="handleClick()">
+    <div
+      class="tree-node"
+      [style.paddingLeft.px]="depth * 20"
+      [class.selected]="node.selected"
+      (click)="handleClick()"
+    >
       @if (node.children?.length) {
-        <span class="toggle" (click)="toggleExpand($event)">{{ node.expanded ? '▼' : '▶' }}</span>
+        <span class="toggle" (click)="toggleExpand($event)">{{
+          node.expanded ? "▼" : "▶"
+        }}</span>
       } @else {
         <span class="toggle-placeholder"></span>
       }
-      @if (node.icon) { <span class="node-icon">{{ node.icon }}</span> }
+      @if (node.icon) {
+        <span class="node-icon">{{ node.icon }}</span>
+      }
       <span class="node-label">{{ node.label }}</span>
     </div>
     @if (node.expanded && node.children?.length) {
       @for (child of node.children; track child.id) {
-        <app-tree-node [node]="child" [depth]="depth + 1" (selected)="onChildSelected($event)"></app-tree-node>
+        <app-tree-node
+          [node]="child"
+          [depth]="depth + 1"
+          (selected)="onChildSelected($event)"
+        ></app-tree-node>
       }
     }
   `,
@@ -4581,18 +5138,31 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [CommonModule],
           template: `
-    <div class="tree-node" [style.paddingLeft.px]="depth * 20" [class.selected]="node.selected" (click)="handleClick()">
+    <div
+      class="tree-node"
+      [style.paddingLeft.px]="depth * 20"
+      [class.selected]="node.selected"
+      (click)="handleClick()"
+    >
       @if (node.children?.length) {
-        <span class="toggle" (click)="toggleExpand($event)">{{ node.expanded ? '▼' : '▶' }}</span>
+        <span class="toggle" (click)="toggleExpand($event)">{{
+          node.expanded ? "▼" : "▶"
+        }}</span>
       } @else {
         <span class="toggle-placeholder"></span>
       }
-      @if (node.icon) { <span class="node-icon">{{ node.icon }}</span> }
+      @if (node.icon) {
+        <span class="node-icon">{{ node.icon }}</span>
+      }
       <span class="node-label">{{ node.label }}</span>
     </div>
     @if (node.expanded && node.children?.length) {
       @for (child of node.children; track child.id) {
-        <app-tree-node [node]="child" [depth]="depth + 1" (selected)="onChildSelected($event)"></app-tree-node>
+        <app-tree-node
+          [node]="child"
+          [depth]="depth + 1"
+          (selected)="onChildSelected($event)"
+        ></app-tree-node>
       }
     }
   `,
@@ -4656,7 +5226,11 @@ class TreeComponent {
     template: `
     <div class="tree-container">
       @for (node of parsedNodes; track node.id) {
-        <app-tree-node [node]="node" [depth]="0" (selected)="onNodeSelected($event)"></app-tree-node>
+        <app-tree-node
+          [node]="node"
+          [depth]="0"
+          (selected)="onNodeSelected($event)"
+        ></app-tree-node>
       }
     </div>
   `,
@@ -4690,7 +5264,11 @@ i0.ɵɵngDeclareClassMetadata({
           template: `
     <div class="tree-container">
       @for (node of parsedNodes; track node.id) {
-        <app-tree-node [node]="node" [depth]="0" (selected)="onNodeSelected($event)"></app-tree-node>
+        <app-tree-node
+          [node]="node"
+          [depth]="0"
+          (selected)="onNodeSelected($event)"
+        ></app-tree-node>
       }
     </div>
   `,
@@ -4757,12 +5335,16 @@ class FormComponent {
     ngImport: i0,
     template: `
     <form (submit)="handleSubmit($event)">
-      @if (heading) { <h3 class="form-heading">{{ heading }}</h3> }
+      @if (heading) {
+        <h3 class="form-heading">{{ heading }}</h3>
+      }
       <ng-content></ng-content>
       @if (showActions) {
         <div class="form-actions">
           <button type="submit" class="btn-submit">{{ submitText }}</button>
-          <button type="button" class="btn-cancel" (click)="handleCancel()">{{ cancelText }}</button>
+          <button type="button" class="btn-cancel" (click)="handleCancel()">
+            {{ cancelText }}
+          </button>
         </div>
       }
     </form>
@@ -4787,12 +5369,16 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <form (submit)="handleSubmit($event)">
-      @if (heading) { <h3 class="form-heading">{{ heading }}</h3> }
+      @if (heading) {
+        <h3 class="form-heading">{{ heading }}</h3>
+      }
       <ng-content></ng-content>
       @if (showActions) {
         <div class="form-actions">
           <button type="submit" class="btn-submit">{{ submitText }}</button>
-          <button type="button" class="btn-cancel" (click)="handleCancel()">{{ cancelText }}</button>
+          <button type="button" class="btn-cancel" (click)="handleCancel()">
+            {{ cancelText }}
+          </button>
         </div>
       }
     </form>
@@ -4866,8 +5452,15 @@ class CheckboxComponent {
     ngImport: i0,
     template: `
     <label>
-      <input type="checkbox" [checked]="checked" [disabled]="disabled" (change)="handleChange($event)" />
-      @if (label) { <span class="checkbox-label">{{ label }}</span> }
+      <input
+        type="checkbox"
+        [checked]="checked"
+        [disabled]="disabled"
+        (change)="handleChange($event)"
+      />
+      @if (label) {
+        <span class="checkbox-label">{{ label }}</span>
+      }
     </label>
   `,
     isInline: true,
@@ -4890,8 +5483,15 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <label>
-      <input type="checkbox" [checked]="checked" [disabled]="disabled" (change)="handleChange($event)" />
-      @if (label) { <span class="checkbox-label">{{ label }}</span> }
+      <input
+        type="checkbox"
+        [checked]="checked"
+        [disabled]="disabled"
+        (change)="handleChange($event)"
+      />
+      @if (label) {
+        <span class="checkbox-label">{{ label }}</span>
+      }
     </label>
   `,
           styles: [
@@ -4972,18 +5572,76 @@ class ToastComponent {
     ngImport: i0,
     template: `
     <div [class]="'toast toast-' + (type || 'info')" [class.hidden]="!visible">
-      @if (type === 'success') {
-        <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-      } @else if (type === 'error') {
-        <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-      } @else if (type === 'warning') {
-        <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      @if (type === "success") {
+        <svg
+          class="toast-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      } @else if (type === "error") {
+        <svg
+          class="toast-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="15" y1="9" x2="9" y2="15"></line>
+          <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+      } @else if (type === "warning") {
+        <svg
+          class="toast-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+          ></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
       } @else {
-        <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <svg
+          class="toast-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
       }
       <span class="toast-message">{{ message }}</span>
       <button class="close-btn" type="button" (click)="handleClose()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
       </button>
     </div>
   `,
@@ -5007,18 +5665,76 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <div [class]="'toast toast-' + (type || 'info')" [class.hidden]="!visible">
-      @if (type === 'success') {
-        <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-      } @else if (type === 'error') {
-        <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-      } @else if (type === 'warning') {
-        <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      @if (type === "success") {
+        <svg
+          class="toast-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      } @else if (type === "error") {
+        <svg
+          class="toast-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="15" y1="9" x2="9" y2="15"></line>
+          <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+      } @else if (type === "warning") {
+        <svg
+          class="toast-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+          ></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
       } @else {
-        <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <svg
+          class="toast-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
       }
       <span class="toast-message">{{ message }}</span>
       <button class="close-btn" type="button" (click)="handleClose()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
       </button>
     </div>
   `,
@@ -5089,8 +5805,15 @@ class NavItemComponent {
     outputs: { clicked: "clicked" },
     ngImport: i0,
     template: `
-    <a class="nav-item" [class.active]="active" [class.disabled]="disabled" (click)="handleClick()">
-      @if (icon) { <span class="nav-icon">{{ icon }}</span> }
+    <a
+      class="nav-item"
+      [class.active]="active"
+      [class.disabled]="disabled"
+      (click)="handleClick()"
+    >
+      @if (icon) {
+        <span class="nav-icon">{{ icon }}</span>
+      }
       <span class="nav-label"><ng-content></ng-content></span>
     </a>
   `,
@@ -5113,8 +5836,15 @@ i0.ɵɵngDeclareClassMetadata({
           selector: "app-nav-item",
           standalone: true,
           template: `
-    <a class="nav-item" [class.active]="active" [class.disabled]="disabled" (click)="handleClick()">
-      @if (icon) { <span class="nav-icon">{{ icon }}</span> }
+    <a
+      class="nav-item"
+      [class.active]="active"
+      [class.disabled]="disabled"
+      (click)="handleClick()"
+    >
+      @if (icon) {
+        <span class="nav-icon">{{ icon }}</span>
+      }
       <span class="nav-label"><ng-content></ng-content></span>
     </a>
   `,
@@ -5175,7 +5905,9 @@ class NavGroupComponent {
     ngImport: i0,
     template: `
     <div class="nav-group">
-      @if (label) { <div class="nav-group-title">{{ label }}</div> }
+      @if (label) {
+        <div class="nav-group-title">{{ label }}</div>
+      }
       <ng-content></ng-content>
     </div>
   `,
@@ -5199,7 +5931,9 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <div class="nav-group">
-      @if (label) { <div class="nav-group-title">{{ label }}</div> }
+      @if (label) {
+        <div class="nav-group-title">{{ label }}</div>
+      }
       <ng-content></ng-content>
     </div>
   `,
@@ -5253,10 +5987,20 @@ class CanvasToolbarComponent {
     ngImport: i0,
     template: `
     <div class="toolbar-group">
-      <button class="toolbar-btn" [disabled]="!canUndo" (click)="emit('undo')" title="Undo">
+      <button
+        class="toolbar-btn"
+        [disabled]="!canUndo"
+        (click)="emit('undo')"
+        title="Undo"
+      >
         <span class="tb-icon">↩</span>
       </button>
-      <button class="toolbar-btn" [disabled]="!canRedo" (click)="emit('redo')" title="Redo">
+      <button
+        class="toolbar-btn"
+        [disabled]="!canRedo"
+        (click)="emit('redo')"
+        title="Redo"
+      >
         <span class="tb-icon">↪</span>
       </button>
     </div>
@@ -5268,12 +6012,21 @@ class CanvasToolbarComponent {
       <button class="toolbar-btn" (click)="emit('zoom-in')" title="Zoom In">
         <span class="tb-icon">+</span>
       </button>
-      <button class="toolbar-btn" (click)="emit('zoom-reset')" title="Reset Zoom">
+      <button
+        class="toolbar-btn"
+        (click)="emit('zoom-reset')"
+        title="Reset Zoom"
+      >
         <span class="tb-icon">⊡</span>
       </button>
     </div>
     <div class="toolbar-group">
-      <button class="toolbar-btn" [class.active]="showGrid" (click)="emit('toggle-grid')" title="Toggle Grid">
+      <button
+        class="toolbar-btn"
+        [class.active]="showGrid"
+        (click)="emit('toggle-grid')"
+        title="Toggle Grid"
+      >
         <span class="tb-icon">▦</span>
       </button>
     </div>
@@ -5298,10 +6051,20 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <div class="toolbar-group">
-      <button class="toolbar-btn" [disabled]="!canUndo" (click)="emit('undo')" title="Undo">
+      <button
+        class="toolbar-btn"
+        [disabled]="!canUndo"
+        (click)="emit('undo')"
+        title="Undo"
+      >
         <span class="tb-icon">↩</span>
       </button>
-      <button class="toolbar-btn" [disabled]="!canRedo" (click)="emit('redo')" title="Redo">
+      <button
+        class="toolbar-btn"
+        [disabled]="!canRedo"
+        (click)="emit('redo')"
+        title="Redo"
+      >
         <span class="tb-icon">↪</span>
       </button>
     </div>
@@ -5313,12 +6076,21 @@ i0.ɵɵngDeclareClassMetadata({
       <button class="toolbar-btn" (click)="emit('zoom-in')" title="Zoom In">
         <span class="tb-icon">+</span>
       </button>
-      <button class="toolbar-btn" (click)="emit('zoom-reset')" title="Reset Zoom">
+      <button
+        class="toolbar-btn"
+        (click)="emit('zoom-reset')"
+        title="Reset Zoom"
+      >
         <span class="tb-icon">⊡</span>
       </button>
     </div>
     <div class="toolbar-group">
-      <button class="toolbar-btn" [class.active]="showGrid" (click)="emit('toggle-grid')" title="Toggle Grid">
+      <button
+        class="toolbar-btn"
+        [class.active]="showGrid"
+        (click)="emit('toggle-grid')"
+        title="Toggle Grid"
+      >
         <span class="tb-icon">▦</span>
       </button>
     </div>
@@ -5388,8 +6160,20 @@ class DesignerSidebarComponent {
     ngImport: i0,
     template: `
     <div class="sidebar-wrapper">
-      <aside class="designer-sidebar" [class.collapsed]="collapsed" [style.borderRight]="position === 'left' ? '1px solid var(--border-color)' : 'none'" [style.borderLeft]="position === 'right' ? '1px solid var(--border-color)' : 'none'">
-        <div class="sidebar-header" [style.flexDirection]="position === 'right' ? 'row-reverse' : 'row'">
+      <aside
+        class="designer-sidebar"
+        [class.collapsed]="collapsed"
+        [style.borderRight]="
+          position === 'left' ? '1px solid var(--border-color)' : 'none'
+        "
+        [style.borderLeft]="
+          position === 'right' ? '1px solid var(--border-color)' : 'none'
+        "
+      >
+        <div
+          class="sidebar-header"
+          [style.flexDirection]="position === 'right' ? 'row-reverse' : 'row'"
+        >
           <span class="sidebar-header-title">{{ header }}</span>
         </div>
         <div class="sidebar-content">
@@ -5399,9 +6183,21 @@ class DesignerSidebarComponent {
           <ng-content select="[slot=footer]"></ng-content>
         </div>
       </aside>
-      <div class="sidebar-toggle-container" [style.right]="position === 'left' ? '-12px' : 'auto'" [style.left]="position === 'right' ? '-12px' : 'auto'">
+      <div
+        class="sidebar-toggle-container"
+        [style.right]="position === 'left' ? '-12px' : 'auto'"
+        [style.left]="position === 'right' ? '-12px' : 'auto'"
+      >
         <button class="sidebar-toggle" (click)="toggleCollapse()">
-          {{ collapsed ? (position === 'left' ? '▶' : '◀') : (position === 'left' ? '◀' : '▶') }}
+          {{
+            collapsed
+              ? position === "left"
+                ? "▶"
+                : "◀"
+              : position === "left"
+                ? "◀"
+                : "▶"
+          }}
         </button>
       </div>
     </div>
@@ -5426,8 +6222,20 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <div class="sidebar-wrapper">
-      <aside class="designer-sidebar" [class.collapsed]="collapsed" [style.borderRight]="position === 'left' ? '1px solid var(--border-color)' : 'none'" [style.borderLeft]="position === 'right' ? '1px solid var(--border-color)' : 'none'">
-        <div class="sidebar-header" [style.flexDirection]="position === 'right' ? 'row-reverse' : 'row'">
+      <aside
+        class="designer-sidebar"
+        [class.collapsed]="collapsed"
+        [style.borderRight]="
+          position === 'left' ? '1px solid var(--border-color)' : 'none'
+        "
+        [style.borderLeft]="
+          position === 'right' ? '1px solid var(--border-color)' : 'none'
+        "
+      >
+        <div
+          class="sidebar-header"
+          [style.flexDirection]="position === 'right' ? 'row-reverse' : 'row'"
+        >
           <span class="sidebar-header-title">{{ header }}</span>
         </div>
         <div class="sidebar-content">
@@ -5437,9 +6245,21 @@ i0.ɵɵngDeclareClassMetadata({
           <ng-content select="[slot=footer]"></ng-content>
         </div>
       </aside>
-      <div class="sidebar-toggle-container" [style.right]="position === 'left' ? '-12px' : 'auto'" [style.left]="position === 'right' ? '-12px' : 'auto'">
+      <div
+        class="sidebar-toggle-container"
+        [style.right]="position === 'left' ? '-12px' : 'auto'"
+        [style.left]="position === 'right' ? '-12px' : 'auto'"
+      >
         <button class="sidebar-toggle" (click)="toggleCollapse()">
-          {{ collapsed ? (position === 'left' ? '▶' : '◀') : (position === 'left' ? '◀' : '▶') }}
+          {{
+            collapsed
+              ? position === "left"
+                ? "▶"
+                : "◀"
+              : position === "left"
+                ? "◀"
+                : "▶"
+          }}
         </button>
       </div>
     </div>
@@ -5666,11 +6486,23 @@ class CommandPaletteComponent {
     template: `
     @if (isOpen()) {
       <div class="app-command-palette-backdrop" (click)="close()">
-        <div class="app-command-palette-container" (click)="$event.stopPropagation()">
+        <div
+          class="app-command-palette-container"
+          (click)="$event.stopPropagation()"
+        >
           <div class="app-command-palette-header">
-            <mat-icon class="app-command-palette-search-icon" fontIcon="search" />
-            <input type="text" class="app-command-palette-input" [placeholder]="placeholder"
-              [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)" autofocus />
+            <mat-icon
+              class="app-command-palette-search-icon"
+              fontIcon="search"
+            />
+            <input
+              type="text"
+              class="app-command-palette-input"
+              [placeholder]="placeholder"
+              [value]="searchQuery()"
+              (input)="onSearchChange($any($event.target).value)"
+              autofocus
+            />
             <kbd class="app-command-palette-kbd">Esc</kbd>
           </div>
           <div class="app-command-palette-results">
@@ -5682,18 +6514,35 @@ class CommandPaletteComponent {
             } @else {
               @for (group of groupedCommands(); track group.key) {
                 <div class="app-command-palette-group">
-                  <div class="app-command-palette-group-label">{{ group.key }}</div>
+                  <div class="app-command-palette-group-label">
+                    {{ group.key }}
+                  </div>
                   @for (command of group.value; track command.id) {
-                    <button type="button" class="app-command-palette-item"
-                      [class.app-command-palette-item-selected]="isSelected(command)"
-                      [class.app-command-palette-item-disabled]="command.disabled"
-                      [disabled]="command.disabled" (click)="selectCommand(command)">
+                    <button
+                      type="button"
+                      class="app-command-palette-item"
+                      [class.app-command-palette-item-selected]="
+                        isSelected(command)
+                      "
+                      [class.app-command-palette-item-disabled]="
+                        command.disabled
+                      "
+                      [disabled]="command.disabled"
+                      (click)="selectCommand(command)"
+                    >
                       @if (command.icon) {
-                        <mat-icon class="app-command-palette-item-icon" [fontIcon]="command.icon" />
+                        <mat-icon
+                          class="app-command-palette-item-icon"
+                          [fontIcon]="command.icon"
+                        />
                       }
-                      <span class="app-command-palette-item-label">{{ command.label }}</span>
+                      <span class="app-command-palette-item-label">{{
+                        command.label
+                      }}</span>
                       @if (command.shortcut) {
-                        <kbd class="app-command-palette-item-shortcut">{{ command.shortcut }}</kbd>
+                        <kbd class="app-command-palette-item-shortcut">{{
+                          command.shortcut
+                        }}</kbd>
                       }
                     </button>
                   }
@@ -5742,11 +6591,23 @@ i0.ɵɵngDeclareClassMetadata({
           template: `
     @if (isOpen()) {
       <div class="app-command-palette-backdrop" (click)="close()">
-        <div class="app-command-palette-container" (click)="$event.stopPropagation()">
+        <div
+          class="app-command-palette-container"
+          (click)="$event.stopPropagation()"
+        >
           <div class="app-command-palette-header">
-            <mat-icon class="app-command-palette-search-icon" fontIcon="search" />
-            <input type="text" class="app-command-palette-input" [placeholder]="placeholder"
-              [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)" autofocus />
+            <mat-icon
+              class="app-command-palette-search-icon"
+              fontIcon="search"
+            />
+            <input
+              type="text"
+              class="app-command-palette-input"
+              [placeholder]="placeholder"
+              [value]="searchQuery()"
+              (input)="onSearchChange($any($event.target).value)"
+              autofocus
+            />
             <kbd class="app-command-palette-kbd">Esc</kbd>
           </div>
           <div class="app-command-palette-results">
@@ -5758,18 +6619,35 @@ i0.ɵɵngDeclareClassMetadata({
             } @else {
               @for (group of groupedCommands(); track group.key) {
                 <div class="app-command-palette-group">
-                  <div class="app-command-palette-group-label">{{ group.key }}</div>
+                  <div class="app-command-palette-group-label">
+                    {{ group.key }}
+                  </div>
                   @for (command of group.value; track command.id) {
-                    <button type="button" class="app-command-palette-item"
-                      [class.app-command-palette-item-selected]="isSelected(command)"
-                      [class.app-command-palette-item-disabled]="command.disabled"
-                      [disabled]="command.disabled" (click)="selectCommand(command)">
+                    <button
+                      type="button"
+                      class="app-command-palette-item"
+                      [class.app-command-palette-item-selected]="
+                        isSelected(command)
+                      "
+                      [class.app-command-palette-item-disabled]="
+                        command.disabled
+                      "
+                      [disabled]="command.disabled"
+                      (click)="selectCommand(command)"
+                    >
                       @if (command.icon) {
-                        <mat-icon class="app-command-palette-item-icon" [fontIcon]="command.icon" />
+                        <mat-icon
+                          class="app-command-palette-item-icon"
+                          [fontIcon]="command.icon"
+                        />
                       }
-                      <span class="app-command-palette-item-label">{{ command.label }}</span>
+                      <span class="app-command-palette-item-label">{{
+                        command.label
+                      }}</span>
                       @if (command.shortcut) {
-                        <kbd class="app-command-palette-item-shortcut">{{ command.shortcut }}</kbd>
+                        <kbd class="app-command-palette-item-shortcut">{{
+                          command.shortcut
+                        }}</kbd>
                       }
                     </button>
                   }
@@ -5881,13 +6759,33 @@ class LanguageSelectorComponent {
     ngImport: i0,
     template: `
     <div class="lang-selector">
-      @if (label) { <label [attr.id]="labelId" class="lang-label">{{ label }}</label> }
-      <select [value]="value" (change)="handleChange($event)" [attr.aria-labelledby]="labelId || null">
+      @if (label) {
+        <label [attr.id]="labelId" class="lang-label">{{ label }}</label>
+      }
+      <select
+        [value]="value"
+        (change)="handleChange($event)"
+        [attr.aria-labelledby]="labelId || null"
+      >
         @for (lang of parsedLanguages; track lang.value) {
-          <option [value]="lang.value" [selected]="lang.value === value">{{ lang.label }}</option>
+          <option [value]="lang.value" [selected]="lang.value === value">
+            {{ lang.label }}
+          </option>
         }
       </select>
-      <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      <svg
+        class="chevron"
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
     </div>
   `,
     isInline: true,
@@ -5910,13 +6808,33 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           template: `
     <div class="lang-selector">
-      @if (label) { <label [attr.id]="labelId" class="lang-label">{{ label }}</label> }
-      <select [value]="value" (change)="handleChange($event)" [attr.aria-labelledby]="labelId || null">
+      @if (label) {
+        <label [attr.id]="labelId" class="lang-label">{{ label }}</label>
+      }
+      <select
+        [value]="value"
+        (change)="handleChange($event)"
+        [attr.aria-labelledby]="labelId || null"
+      >
         @for (lang of parsedLanguages; track lang.value) {
-          <option [value]="lang.value" [selected]="lang.value === value">{{ lang.label }}</option>
+          <option [value]="lang.value" [selected]="lang.value === value">
+            {{ lang.label }}
+          </option>
         }
       </select>
-      <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      <svg
+        class="chevron"
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
     </div>
   `,
           styles: [
@@ -6000,8 +6918,21 @@ class SwapButtonComponent {
     },
     outputs: { clicked: "clicked" },
     ngImport: i0,
-    template: `<button class="swap-btn" (click)="clicked.emit($event)" aria-label="Swap">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    template: `<button
+    class="swap-btn"
+    (click)="clicked.emit($event)"
+    aria-label="Swap"
+  >
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
       <polyline points="17 1 21 5 17 9"></polyline>
       <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
       <polyline points="7 23 3 19 7 15"></polyline>
@@ -6026,8 +6957,21 @@ i0.ɵɵngDeclareClassMetadata({
         {
           selector: "app-swap-button",
           standalone: true,
-          template: `<button class="swap-btn" (click)="clicked.emit($event)" aria-label="Swap">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          template: `<button
+    class="swap-btn"
+    (click)="clicked.emit($event)"
+    aria-label="Swap"
+  >
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
       <polyline points="17 1 21 5 17 9"></polyline>
       <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
       <polyline points="7 23 3 19 7 15"></polyline>
@@ -6174,7 +7118,9 @@ class TextInputComponent {
         [class.focused]="focused"
       ></textarea>
       @if (clearable && value) {
-        <button class="clear-btn" (click)="clear()" aria-label="Clear">&times;</button>
+        <button class="clear-btn" (click)="clear()" aria-label="Clear">
+          &times;
+        </button>
       }
       @if (maxChars) {
         <span class="char-count">{{ value.length }}/{{ maxChars }}</span>
@@ -6213,7 +7159,9 @@ i0.ɵɵngDeclareClassMetadata({
         [class.focused]="focused"
       ></textarea>
       @if (clearable && value) {
-        <button class="clear-btn" (click)="clear()" aria-label="Clear">&times;</button>
+        <button class="clear-btn" (click)="clear()" aria-label="Clear">
+          &times;
+        </button>
       }
       @if (maxChars) {
         <span class="char-count">{{ value.length }}/{{ maxChars }}</span>
@@ -6354,7 +7302,21 @@ class TranslationOutputComponent {
           @if (isCopied) {
             <span class="copied-text">Copied!</span>
           } @else {
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path
+                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+              ></path>
+            </svg>
           }
         </button>
       }
@@ -6392,7 +7354,21 @@ i0.ɵɵngDeclareClassMetadata({
           @if (isCopied) {
             <span class="copied-text">Copied!</span>
           } @else {
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path
+                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+              ></path>
+            </svg>
           }
         </button>
       }
@@ -7624,8 +8600,8 @@ const GLASSMORPHISM_CSS = `
   --color-glass-bg: rgba(255, 255, 255, 0.1);
   --color-glass-bg-hover: rgba(255, 255, 255, 0.15);
   --color-glass-bg-active: rgba(255, 255, 255, 0.2);
-  --color-glass-border: rgba(255, 255, 255, 0.2);
-  --color-glass-border-strong: rgba(255, 255, 255, 0.3);
+  --color-glass-border: rgba(255, 255, 255, 0.45);
+  --color-glass-border-strong: rgba(255, 255, 255, 0.6);
   --color-glass-white: rgba(255, 255, 255, 0.8);
   --color-glass-blur: rgba(255, 255, 255, 0.05);
   --color-glass-accent: #6d5dfc;
@@ -7653,7 +8629,7 @@ const GLASSMORPHISM_CSS = `
   --text-muted: #a0aec0;
   --text-on-error: #ffffff;
   --bg-elevated: rgba(255, 255, 255, 0.15);
-  --border-color: rgba(255, 255, 255, 0.2);
+  --border-color: rgba(255, 255, 255, 0.45);
   --error: #e53e3e;
   --success: #48bb78;
 }
@@ -9407,7 +10383,10 @@ class StyleThemeService {
     this.removeDarkModeVariables();
     const style = document.createElement("style");
     style.id = "dark-mode-variables";
-    style.textContent = this.getDarkModeVariablesCSS(variant);
+    // Both mechanisms are needed: :root {} variables AND .dark .{prefix}* class selectors
+    style.textContent =
+      this.getDarkModeVariablesCSS(variant) +
+      this.getDarkModeCSSForVariant(variant);
     document.head.appendChild(style);
   }
   removeDarkModeVariables() {
@@ -9565,6 +10544,35 @@ class StyleThemeService {
   --border-color: #f5f5f0;
   --border-subtle: #c0c0c0;
 }
+
+.dark .brut-card {
+  background: #2a2a2a;
+  border-color: #f5f5f0;
+}
+.dark .brut-btn {
+  background: #2a2a2a;
+  border-color: #f5f5f0;
+  color: #f5f5f0;
+}
+.dark .brut-btn:hover { background: #3a3a3a; }
+.dark .brut-btn-primary { background: #ff3b30; color: #ffffff; }
+.dark .brut-input {
+  background: #2a2a2a;
+  border-color: #f5f5f0;
+  color: #f5f5f0;
+}
+.dark .brut-input:focus { background: #3a3a3a; outline: none; }
+.dark .brut-modal {
+  background: #2a2a2a;
+  border-color: #f5f5f0;
+}
+.dark .brut-chip { background: #ffd60a; color: #0a0a0a; border-color: #f5f5f0; }
+.dark .brut-badge { background: #ff3b30; color: #ffffff; border-color: #f5f5f0; }
+.dark .brut-tabs { border-bottom-color: #f5f5f0; }
+.dark .brut-tab { background: #2a2a2a; border-color: #f5f5f0; color: #f5f5f0; }
+.dark .brut-tab.active { background: #ff3b30; color: #ffffff; }
+.dark .brut-divider { background: #f5f5f0; }
+.dark .brut-spinner { border-color: #f5f5f0; border-top-color: #ff3b30; }
 `;
   }
   skeuomorphismDarkCSS() {
@@ -9587,6 +10595,49 @@ class StyleThemeService {
   --border-color: #1a1009;
   --border-subtle: #4a2e18;
 }
+
+.dark .skeu-card {
+  background: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%);
+  border-color: #1a1009;
+  color: #f5e6c8;
+}
+.dark .skeu-card.paper {
+  background: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%);
+  color: #f5e6c8;
+  border-color: #5a4e3f;
+}
+.dark .skeu-btn {
+  background: linear-gradient(180deg, #4a3a28 0%, #1a1009 100%);
+  border-color: #1a1009;
+  color: #f5e6c8;
+}
+.dark .skeu-btn:hover { filter: brightness(1.15); }
+.dark .skeu-btn-primary {
+  background: linear-gradient(180deg, #d4a017 0%, #8b6508 100%);
+  color: #f5e6c8;
+}
+.dark .skeu-input {
+  background: linear-gradient(180deg, #4a3e2f 0%, #3a3025 100%);
+  border-color: #1a1009;
+  color: #f5e6c8;
+}
+.dark .skeu-modal {
+  background: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%);
+  border-color: #1a1009;
+  color: #f5e6c8;
+}
+.dark .skeu-chip {
+  background: linear-gradient(180deg, #4a3a28 0%, #1a1009 100%);
+  border-color: #1a1009;
+  color: #f5e6c8;
+}
+.dark .skeu-badge {
+  background: linear-gradient(180deg, #d4a017 0%, #8b6508 100%);
+  color: #f5e6c8;
+}
+.dark .skeu-tabs {}
+.dark .skeu-divider { background: #1a1009; }
+.dark .skeu-spinner { border-color: #1a1009; border-top-color: #d4a017; }
 `;
   }
   materialDesignV3DarkCSS() {
@@ -10190,9 +11241,39 @@ class ThemeToggleComponent {
     template: `
     <button class="theme-toggle" (click)="toggle()" aria-label="Toggle theme">
       @if (isDark) {
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
       } @else {
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
       }
     </button>
   `,
@@ -10217,9 +11298,39 @@ i0.ɵɵngDeclareClassMetadata({
           template: `
     <button class="theme-toggle" (click)="toggle()" aria-label="Toggle theme">
       @if (isDark) {
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
       } @else {
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
       }
     </button>
   `,
@@ -10285,8 +11396,10 @@ class ShortcutsOverlayComponent {
       <div class="overlay" (click)="close()">
         <div class="shortcuts-panel" (click)="$event.stopPropagation()">
           <div class="panel-header">
-            <h3>{{ title || 'Keyboard Shortcuts' }}</h3>
-            <button class="close-btn" (click)="close()" aria-label="Close">&times;</button>
+            <h3>{{ title || "Keyboard Shortcuts" }}</h3>
+            <button class="close-btn" (click)="close()" aria-label="Close">
+              &times;
+            </button>
           </div>
           <div class="shortcuts-list">
             @for (shortcut of parsedShortcuts; track shortcut.key) {
@@ -10323,8 +11436,10 @@ i0.ɵɵngDeclareClassMetadata({
       <div class="overlay" (click)="close()">
         <div class="shortcuts-panel" (click)="$event.stopPropagation()">
           <div class="panel-header">
-            <h3>{{ title || 'Keyboard Shortcuts' }}</h3>
-            <button class="close-btn" (click)="close()" aria-label="Close">&times;</button>
+            <h3>{{ title || "Keyboard Shortcuts" }}</h3>
+            <button class="close-btn" (click)="close()" aria-label="Close">
+              &times;
+            </button>
           </div>
           <div class="shortcuts-list">
             @for (shortcut of parsedShortcuts; track shortcut.key) {
@@ -10387,6 +11502,1523 @@ registerSchemaComponent("app-shortcuts-overlay", ShortcutsOverlayComponent);
 // This file MUST be imported before any schema rendering.
 // UI Components
 
+// UI Components
+const uiComponents = [
+  {
+    id: "avatar",
+    name: "AppAvatar",
+    selector: "app-avatar",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "src",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "alt",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "size",
+        type: "string",
+        default: "md",
+      },
+    ],
+    template:
+      '<div class="avatar ${sizeClass}">\n          <img src="${this.src}" alt="${this.alt}" @error="${this._handleImageError}" />\n        </div>',
+    css: ":host {\n      display: inline-flex;\n    }\n\n    .avatar {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      border-radius: 50%;\n      overflow: hidden;\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n    }\n\n    .avatar-sm {\n      width: 2rem;\n      height: 2rem;\n      font-size: 0.75rem;\n    }\n\n    .avatar-md {\n      width: 2.5rem;\n      height: 2.5rem;\n      font-size: 0.875rem;\n    }\n\n    .avatar-lg {\n      width: 3.5rem;\n      height: 3.5rem;\n      font-size: 1.25rem;\n    }\n\n    img {\n      width: 100%;\n      height: 100%;\n      object-fit: cover;\n    }\n\n    .initials {\n      font-weight: 600;\n      color: var(--text-secondary);\n      text-transform: uppercase;\n    }",
+  },
+  {
+    id: "badge",
+    name: "AppBadge",
+    selector: "app-badge",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "variant",
+        type: "string",
+        default: "default",
+      },
+      {
+        name: "size",
+        type: "string",
+        default: "md",
+      },
+      {
+        name: "label",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<span class="badge badge-${this.variant} badge-${this.size}">${this.label}</span>',
+    css: ":host {\n      display: inline-flex;\n    }\n\n    .badge {\n      display: inline-flex;\n      align-items: center;\n      border-radius: 0.25rem;\n      font-weight: 500;\n      line-height: 1;\n    }\n\n    .badge-default {\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      border: 1px solid var(--border-color);\n    }\n\n    .badge-primary {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .badge-success {\n      background-color: var(--success);\n      color: var(--text-on-success);\n    }\n\n    .badge-warning {\n      background-color: var(--warning);\n      color: var(--text-on-warning);\n    }\n\n    .badge-danger {\n      background-color: var(--error);\n      color: var(--text-on-error);\n    }\n\n    .badge-sm {\n      padding: 0.125rem 0.25rem;\n      font-size: 0.625rem;\n    }\n\n    .badge-md {\n      padding: 0.25rem 0.5rem;\n      font-size: 0.75rem;\n    }\n\n    .badge-lg {\n      padding: 0.375rem 0.75rem;\n      font-size: 0.875rem;\n    }",
+  },
+  {
+    id: "bottom-panel",
+    name: "AppBottomPanel",
+    selector: "app-bottom-panel",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "tabs",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "activeTab",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "position",
+        type: "string",
+        default: "bottom",
+      },
+      {
+        name: "fullWidth",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "floating",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "borderRadius",
+        type: "number",
+        default: 0,
+      },
+    ],
+    template:
+      '<div class="panel-tabs">\n        ${tabsList.map(\n          (tab) => html',
+    css: ":host {\n      display: flex;\n      flex-direction: column;\n      background-color: var(--bg-elevated);\n      border-top: 1px solid var(--border-color);\n      height: 100%;\n    }\n\n    .panel-tabs {\n      display: flex;\n      gap: 0;\n      border-bottom: 1px solid var(--border-color);\n      padding: 0 0.5rem;\n    }\n\n    .panel-tab {\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-secondary);\n      cursor: pointer;\n      border-bottom: 2px solid transparent;\n      margin-bottom: -1px;\n      transition: all 0.15s;\n    }\n\n    .panel-tab:hover {\n      color: var(--text-primary);\n    }\n\n    .panel-tab.active {\n      color: var(--accent);\n      border-bottom-color: var(--accent);\n    }\n\n    .panel-content {\n      flex: 1;\n      overflow: auto;\n      padding: 1rem;\n    }\n\n    .empty-state {\n      color: var(--text-muted);\n      font-size: 0.875rem;\n      text-align: center;\n      padding: 2rem;\n    }",
+  },
+  {
+    id: "button",
+    name: "AppButton",
+    selector: "app-button",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "variant",
+        type: "string",
+        default: "primary",
+      },
+      {
+        name: "buttonStyle",
+        type: "string",
+        default: "solid",
+      },
+      {
+        name: "size",
+        type: "string",
+        default: "md",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "loading",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "fullWidth",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "label",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<button\n        type="${this.type}"\n        class="${classes}"\n        ?disabled="${this.disabled || this.loading}"\n        @click="${this._handleClick}"\n      >\n        ${this.loading\n          ? html`<span class="app-btn-spinner"></span>',
+    css: ":host {\n      display: inline-flex;\n    }\n\n    button {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      gap: 0.5rem;\n      border-radius: 0.5rem;\n      border: 1px solid;\n      padding: 0.5rem 1rem;\n      text-align: center;\n      font-weight: 500;\n      transition: all 0.15s;\n      cursor: pointer;\n      border-width: 1px;\n    }\n\n    button:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n\n    .app-btn-primary {\n      border-color: var(--accent);\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n    .app-btn-primary:hover {\n      background-color: var(--accent-hover);\n      border-color: var(--accent-hover);\n    }\n\n    .app-btn-secondary {\n      border-color: var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n    }\n    .app-btn-secondary:hover {\n      background-color: var(--bg-hover);\n    }\n\n    .app-btn-danger {\n      border-color: var(--error);\n      background-color: var(--error);\n      color: var(--text-on-error);\n    }\n    .app-btn-danger:hover {\n      opacity: 0.9;\n    }\n\n    .app-btn-warning {\n      border-color: var(--warning);\n      background-color: var(--warning);\n      color: var(--text-on-warning);\n    }\n    .app-btn-warning:hover {\n      opacity: 0.9;\n    }\n\n    .app-btn-success {\n      border-color: var(--success);\n      background-color: var(--success);\n      color: var(--text-on-success);\n    }\n    .app-btn-success:hover {\n      opacity: 0.9;\n    }\n\n    .app-btn-ghost {\n      border-color: transparent;\n      background-color: transparent;\n      color: var(--text-secondary);\n    }\n    .app-btn-ghost:hover {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .app-btn-sm {\n      padding: 0.25rem 0.5rem;\n      font-size: 0.875rem;\n    }\n\n    .app-btn-md {\n      padding: 0.5rem 1rem;\n      font-size: 1rem;\n    }\n\n    .app-btn-lg {\n      padding: 0.75rem 1.5rem;\n      font-size: 1.125rem;\n    }\n\n    .app-btn-full {\n      width: 100%;\n    }\n\n    .app-btn-icon {\n      font-size: 1.25rem;\n    }\n\n    .app-btn-spinner {\n      width: 1rem;\n      height: 1rem;\n      border: 2px solid currentColor;\n      border-top-color: transparent;\n      border-radius: 50%;\n      animation: spin 0.6s linear infinite;\n    }\n\n    @keyframes spin {\n      to {\n        transform: rotate(360deg);\n      }\n    }",
+  },
+  {
+    id: "canvas",
+    name: "AppCanvas",
+    selector: "app-canvas",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "gridColumns",
+        type: "number",
+        default: 12,
+      },
+      {
+        name: "showGrid",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template:
+      '<div class="canvas-area" style="${gridStyle}">\n        ${this.showGrid\n          ? html',
+    css: ":host {\n      display: block;\n      width: 100%;\n      height: 100%;\n      background-color: var(--bg-primary);\n      position: relative;\n      overflow: auto;\n    }\n\n    .canvas-area {\n      min-width: 100%;\n      min-height: 100%;\n      position: relative;\n    }\n\n    .grid {\n      position: absolute;\n      top: 0;\n      left: 0;\n      right: 0;\n      bottom: 0;\n      pointer-events: none;\n      display: grid;\n      grid-template-columns: repeat(var(--grid-cols), 1fr);\n      gap: 0;\n    }\n\n    .grid-cell {\n      border-right: 1px solid var(--border-color);\n      border-bottom: 1px solid var(--border-color);\n      min-height: 4rem;\n    }\n\n    .grid.visible {\n      background-color: rgba(0, 0, 0, 0.02);\n    }\n\n    .canvas-drop-zone {\n      position: absolute;\n      top: 0;\n      left: 0;\n      right: 0;\n      bottom: 0;\n    }\n\n    .canvas-element {\n      position: absolute;\n      border: 2px dashed transparent;\n      border-radius: 0.5rem;\n      padding: 0.5rem;\n      cursor: move;\n      transition: border-color 0.15s;\n    }\n\n    .canvas-element:hover {\n      border-color: var(--accent);\n    }\n\n    .canvas-element.selected {\n      border-color: var(--accent);\n      border-style: solid;\n      box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 99, 102, 241), 0.2);\n    }\n\n    .canvas-placeholder {\n      border: 2px dashed var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-secondary);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      color: var(--text-muted);\n      font-size: 0.875rem;\n    }",
+  },
+  {
+    id: "card",
+    name: "AppCard",
+    selector: "app-card",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "title",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "content",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "elevated",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "borderRadius",
+        type: "number",
+        default: 8,
+      },
+      {
+        name: "padding",
+        type: "number",
+        default: 16,
+      },
+    ],
+    template:
+      '<div class="card ${this.elevated ? "card-elevated" : ""}">\n        ${this.title\n          ? html',
+    css: ":host {\n      display: block;\n    }\n\n    .card {\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      overflow: hidden;\n      transition: box-shadow 0.15s;\n    }\n\n    .card-elevated {\n      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),\n        0 2px 4px -1px rgba(0, 0, 0, 0.06);\n    }\n\n    .card-header {\n      padding: 1rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .card-title {\n      margin: 0;\n      font-size: 1rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .card-content {\n      padding: 1rem;\n      color: var(--text-secondary);\n      font-size: 0.875rem;\n      line-height: 1.5;\n    }",
+  },
+  {
+    id: "checkbox",
+    name: "AppCheckbox",
+    selector: "app-checkbox",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "checked",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "label",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template:
+      '<label>\n        <input\n          type="checkbox"\n          .checked="${this.checked}"\n          ?disabled="${this.disabled}"\n          @change="${this._handleChange}"\n        />\n        <span class="checkbox-label">${this.label}</span>\n      </label>',
+    css: ':host {\n      display: inline-flex;\n      align-items: center;\n    }\n\n    label {\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n      cursor: pointer;\n    }\n\n    input[type="checkbox"] {\n      width: 1rem;\n      height: 1rem;\n      accent-color: var(--accent);\n      cursor: pointer;\n    }\n\n    input[type="checkbox"]:disabled {\n      cursor: not-allowed;\n      opacity: 0.5;\n    }\n\n    .checkbox-label {\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      user-select: none;\n    }\n\n    :host([disabled]) .checkbox-label {\n      color: var(--text-secondary);\n      cursor: not-allowed;\n    }',
+  },
+  {
+    id: "chip",
+    name: "AppChip",
+    selector: "app-chip",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "label",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "removable",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template:
+      '<span class="chip">\n        ${this.icon ? html`<i class="material-icons chip-icon">${this.icon}</i>` : ""}\n        <span>${this.label}</span>\n        ${this.removable\n          ? html`<button class="remove-btn" @click="${this._handleRemove}" aria-label="Remove">×</button>',
+    css: ":host {\n      display: inline-flex;\n    }\n\n    .chip {\n      display: inline-flex;\n      align-items: center;\n      gap: 0.375rem;\n      padding: 0.25rem 0.75rem;\n      border-radius: 1rem;\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      font-weight: 500;\n      transition: background-color 0.15s;\n    }\n\n    .chip:hover {\n      background-color: var(--bg-hover);\n    }\n\n    .chip-icon {\n      font-size: 1rem;\n    }\n\n    .remove-btn {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1rem;\n      height: 1rem;\n      padding: 0;\n      border: none;\n      background: transparent;\n      color: var(--text-secondary);\n      cursor: pointer;\n      border-radius: 50%;\n      transition: background-color 0.15s;\n      margin-left: 0.125rem;\n    }\n\n    .remove-btn:hover {\n      background-color: var(--border-color);\n      color: var(--text-primary);\n    }",
+  },
+  {
+    id: "component-palette",
+    name: "AppComponentPalette",
+    selector: "app-component-palette",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "categories",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "searchable",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template:
+      '<div class="palette-header">\n        <div class="palette-title">Components</div>\n        ${this.searchable\n          ? html',
+    css: ":host {\n      display: block;\n      background-color: var(--bg-elevated);\n      border-right: 1px solid var(--border-color);\n      height: 100%;\n      overflow-y: auto;\n    }\n\n    .palette-header {\n      padding: 1rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .palette-title {\n      font-size: 0.875rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      margin-bottom: 0.75rem;\n    }\n\n    .search-input {\n      width: 100%;\n      padding: 0.5rem 0.75rem;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-primary);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      box-sizing: border-box;\n    }\n\n    .search-input::placeholder {\n      color: var(--text-muted);\n    }\n\n    .search-input:focus {\n      outline: none;\n      border-color: var(--accent);\n    }\n\n    .category {\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .category-header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 0.75rem 1rem;\n      cursor: pointer;\n      color: var(--text-primary);\n      font-weight: 500;\n      font-size: 0.875rem;\n    }\n\n    .category-header:hover {\n      background-color: var(--bg-hover);\n    }\n\n    .category-arrow {\n      transition: transform 0.2s;\n      font-size: 0.75rem;\n    }\n\n    .category-arrow.collapsed {\n      transform: rotate(-90deg);\n    }\n\n    .category-items {\n      padding: 0 1rem 0.75rem;\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .category-items.collapsed {\n      display: none;\n    }\n\n    .component-item {\n      padding: 0.5rem 0.75rem;\n      border-radius: 0.375rem;\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n      cursor: grab;\n    }\n\n    .component-item:hover {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .component-item:active {\n      cursor: grabbing;\n    }",
+  },
+  {
+    id: "confirm-dialog",
+    name: "AppConfirmDialog",
+    selector: "app-confirm-dialog",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "open",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "title",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "message",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "confirmText",
+        type: "string",
+        default: "Confirm",
+      },
+      {
+        name: "cancelText",
+        type: "string",
+        default: "Cancel",
+      },
+    ],
+    template: "",
+    css: ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.6);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .dialog {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 1rem;\n      width: 400px;\n      max-width: 90vw;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1.25rem 1.5rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    header h2 {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem;\n      border-radius: 0.25rem;\n      color: var(--text-secondary);\n      font-size: 1.25rem;\n      line-height: 1;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.5rem;\n      color: var(--text-secondary);\n      font-size: 0.9375rem;\n      line-height: 1.5;\n    }\n\n    footer {\n      display: flex;\n      gap: 0.75rem;\n      padding: 1rem 1.5rem;\n      border-top: 1px solid var(--border-color);\n      justify-content: flex-end;\n    }\n\n    button {\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid;\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n    }\n\n    .cancel-btn {\n      background: transparent;\n      border-color: var(--border-color);\n      color: var(--text-secondary);\n    }\n\n    .cancel-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .confirm-btn {\n      background: var(--accent);\n      border-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .confirm-btn:hover {\n      opacity: 0.9;\n    }\n\n    .danger-btn {\n      background: var(--error);\n      border-color: var(--error);\n      color: var(--text-on-error);\n    }\n\n    .danger-btn:hover {\n      opacity: 0.9;\n    }",
+  },
+  {
+    id: "data-table",
+    name: "AppDataTable",
+    selector: "app-data-table",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "columns",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "data",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "selectable",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template:
+      '<table>\n        <thead>\n          <tr>\n            ${this.selectable ? html`<th class="radio-cell"></th>` : ""}\n            ${cols.map((col) => html`<th>${col.name}</th>`)}\n          </tr>\n        </thead>\n        <tbody>\n          ${rows.map(\n            (row, index) => html',
+    css: ":host {\n      display: block;\n      overflow-x: auto;\n    }\n\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      font-size: 0.875rem;\n    }\n\n    th {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      background-color: var(--bg-secondary);\n      color: var(--text-primary);\n      font-weight: 600;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    td {\n      padding: 0.75rem 1rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    tr {\n      cursor: default;\n    }\n\n    tr:hover td {\n      background-color: var(--bg-hover);\n    }\n\n    tr.selected td {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    tr.selectable {\n      cursor: pointer;\n    }\n\n    .radio-cell {\n      width: 2rem;\n    }\n\n    .radio {\n      width: 1rem;\n      height: 1rem;\n      border: 2px solid var(--border-color);\n      border-radius: 50%;\n      display: inline-block;\n    }\n\n    tr.selected .radio {\n      border-color: var(--text-on-accent);\n      background-color: var(--text-on-accent);\n    }",
+  },
+  {
+    id: "dialog",
+    name: "AppDialog",
+    selector: "app-dialog",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "open",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "title",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "size",
+        type: "string",
+        default: "md",
+      },
+      {
+        name: "showHeader",
+        type: "boolean",
+        default: true,
+      },
+      {
+        name: "showFooter",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template: "",
+    css: ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.6);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .dialog {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 1rem;\n      min-width: 360px;\n      max-height: 90vh;\n      display: flex;\n      flex-direction: column;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);\n    }\n\n    .dialog-sm {\n      width: 360px;\n    }\n\n    .dialog-md {\n      width: 520px;\n    }\n\n    .dialog-lg {\n      width: 720px;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1.25rem 1.5rem;\n      border-bottom: 2px solid var(--border-color);\n      background: var(--bg-elevated);\n      border-radius: 1rem 1rem 0 0;\n    }\n\n    header h2 {\n      margin: 0;\n      font-size: 1.25rem;\n      font-weight: 700;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem 0.5rem;\n      border-radius: 0.375rem;\n      color: var(--text-secondary);\n      font-size: 1.5rem;\n      line-height: 1;\n      font-weight: 300;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.5rem;\n      overflow-y: auto;\n      color: var(--text-primary);\n    }",
+  },
+  {
+    id: "empty-state",
+    name: "AppEmptyState",
+    selector: "app-empty-state",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "title",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "message",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<div class="icon-container ${this.variant}">\n        ${this.icon\n          ? html`<span class="icon">${this.icon}</span>',
+    css: ":host {\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      text-align: center;\n      padding: 2rem;\n      gap: 1rem;\n    }\n\n    .icon-container {\n      width: 64px;\n      height: 64px;\n      border-radius: 50%;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      background: var(--bg-elevated);\n      border: 2px solid var(--border-color);\n    }\n\n    .icon-container.danger {\n      background: var(--error);\n      border-color: var(--error);\n    }\n\n    .icon-container.success {\n      background: var(--success);\n      border-color: var(--success);\n    }\n\n    .icon {\n      font-size: 2rem;\n      width: 2rem;\n      height: 2rem;\n    }\n\n    .icon-container.danger .icon,\n    .icon-container.success .icon {\n      color: var(--text-on-error);\n    }\n\n    .title {\n      font-size: 1.5rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      margin: 0;\n    }\n\n    .message {\n      font-size: 1rem;\n      color: var(--text-secondary);\n      margin: 0;\n      max-width: 400px;\n    }\n\n    .action {\n      margin-top: 0.5rem;\n    }\n\n    button {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      gap: 0.5rem;\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--accent);\n      background: var(--accent);\n      color: var(--text-on-accent);\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n    }\n\n    button:hover {\n      background: var(--accent-hover);\n      border-color: var(--accent-hover);\n    }",
+  },
+  {
+    id: "footer",
+    name: "AppFooter",
+    selector: "app-footer",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "text",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<footer>\n        <p class="footer-text">${this.text}</p>\n        <slot></slot>\n      </footer>',
+    css: ":host {\n      display: block;\n    }\n\n    footer {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      padding: 1rem;\n      background: var(--bg-elevated);\n      border-top: 1px solid var(--border-color);\n      min-height: 48px;\n    }\n\n    .footer-text {\n      margin: 0;\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n      text-align: center;\n    }",
+  },
+  {
+    id: "header",
+    name: "AppHeader",
+    selector: "app-header",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "title",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "showBack",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "breadcrumbs",
+        type: "string",
+        default: "[]",
+      },
+    ],
+    template: "<header>\n        ${this.showBack\n          ? html",
+    css: ":host {\n      display: block;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      padding: 1rem 1.5rem;\n      background: var(--bg-header, var(--bg-elevated));\n      border-bottom: 1px solid var(--border-color);\n      min-height: 56px;\n      gap: 1rem;\n    }\n\n    .back-btn {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 36px;\n      height: 36px;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background: var(--bg-elevated);\n      color: var(--text-primary);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n      font-size: 1.25rem;\n    }\n\n    .back-btn:hover {\n      background: var(--bg-hover);\n    }\n\n    .title-area {\n      flex: 1;\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    h1 {\n      margin: 0;\n      font-size: 1.25rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .breadcrumbs {\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n    }\n\n    .breadcrumb-separator {\n      color: var(--text-secondary);\n      opacity: 0.5;\n    }",
+  },
+  {
+    id: "input",
+    name: "AppInput",
+    selector: "app-input",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "type",
+        type: "string",
+        default: "text",
+      },
+      {
+        name: "placeholder",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template:
+      '<div class="app-input-wrapper">\n        ${this.label\n          ? html`<label class="app-input-label">${this.label}</label>',
+    css: ":host {\n      display: block;\n    }\n\n    .app-input-wrapper {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .app-input-label {\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-primary);\n    }\n\n    .app-input-container {\n      position: relative;\n      display: flex;\n      align-items: center;\n    }\n\n    .app-input {\n      width: 100%;\n      padding: 0.5rem 0.75rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-primary);\n      color: var(--text-primary);\n      box-sizing: border-box;\n      transition: all 0.15s;\n      outline: none;\n    }\n\n    .app-input::placeholder {\n      color: var(--text-muted);\n    }\n\n    .app-input:focus {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    .app-input-default:focus {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    .app-input-error {\n      border-color: var(--error);\n      box-shadow: 0 0 0 1px var(--error);\n    }\n\n    .app-input-with-icon {\n      padding-left: 2.5rem;\n    }\n\n    .app-input-icon {\n      position: absolute;\n      left: 0.75rem;\n      font-size: 1.25rem;\n      color: var(--text-muted);\n    }\n\n    .app-input-focused .app-input-icon {\n      color: var(--accent);\n    }\n\n    .app-input:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n      background-color: var(--bg-tertiary);\n    }\n\n    .app-input-error-text {\n      font-size: 0.75rem;\n      color: var(--error);\n    }",
+  },
+  {
+    id: "json-view",
+    name: "AppJsonView",
+    selector: "app-json-view",
+    packageType: "shared",
+    category: "layout",
+    props: [],
+    template:
+      '<div class="json-container">\n        ${this._syntaxHighlight(formatted)}\n      </div>',
+    css: ":host {\n      display: block;\n    }\n\n    .json-container {\n      background-color: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      padding: 1rem;\n      font-family: monospace;\n      font-size: 0.875rem;\n      overflow-x: auto;\n      white-space: pre-wrap;\n      word-break: break-word;\n    }\n\n    .json-key {\n      color: var(--accent);\n    }\n\n    .json-string {\n      color: var(--success);\n    }\n\n    .json-number {\n      color: var(--warning);\n    }\n\n    .json-boolean {\n      color: var(--error);\n    }\n\n    .json-null {\n      color: var(--text-muted);\n    }",
+  },
+  {
+    id: "loading",
+    name: "AppLoading",
+    selector: "app-loading",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "size",
+        type: "string",
+        default: "md",
+      },
+    ],
+    template: '<div class="spinner spinner-${this.size}"></div>',
+    css: ":host {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n    }\n\n    .spinner {\n      border: 2px solid var(--border-color);\n      border-top-color: var(--accent);\n      border-radius: 50%;\n      animation: spin 0.7s linear infinite;\n    }\n\n    .spinner-sm {\n      width: 16px;\n      height: 16px;\n      border-width: 2px;\n    }\n\n    .spinner-md {\n      width: 32px;\n      height: 32px;\n      border-width: 3px;\n    }\n\n    .spinner-lg {\n      width: 48px;\n      height: 48px;\n      border-width: 4px;\n    }\n\n    @keyframes spin {\n      to {\n        transform: rotate(360deg);\n      }\n    }",
+  },
+  {
+    id: "modal",
+    name: "AppModal",
+    selector: "app-modal",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "open",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "title",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "size",
+        type: "string",
+        default: "md",
+      },
+    ],
+    template: "",
+    css: ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.5);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .modal {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.75rem;\n      min-width: 320px;\n      max-height: 90vh;\n      display: flex;\n      flex-direction: column;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);\n    }\n\n    .modal-sm {\n      width: 320px;\n    }\n\n    .modal-md {\n      width: 480px;\n    }\n\n    .modal-lg {\n      width: 640px;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1rem 1.25rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    header h3 {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem;\n      border-radius: 0.25rem;\n      color: var(--text-secondary);\n      font-size: 1.25rem;\n      line-height: 1;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.25rem;\n      overflow-y: auto;\n      color: var(--text-primary);\n    }",
+  },
+  {
+    id: "page-container",
+    name: "AppPageContainer",
+    selector: "app-page-container",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "title",
+        type: "string",
+        default: "",
+      },
+    ],
+    template: "${this.title\n        ? html",
+    css: ":host {\n      display: flex;\n      flex-direction: column;\n      height: 100%;\n    }\n\n    .page-header {\n      display: flex;\n      align-items: center;\n      padding: 1rem 1.5rem;\n      background: var(--bg-elevated);\n      border-bottom: 1px solid var(--border-color);\n      min-height: 56px;\n      gap: 1rem;\n    }\n\n    .page-title {\n      margin: 0;\n      font-size: 1.25rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .page-header-actions {\n      margin-left: auto;\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n    }\n\n    .page-content {\n      flex: 1;\n      overflow: auto;\n      padding: 1.5rem;\n    }",
+  },
+  {
+    id: "page-toolbar",
+    name: "AppPageToolbar",
+    selector: "app-page-toolbar",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "title",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "actions",
+        type: "string",
+        default: "[]",
+      },
+    ],
+    template:
+      '<div class="toolbar">\n        <div class="toolbar-title-area">\n          <h2 class="toolbar-title">${this.title}</h2>\n          <slot name="subtitle"></slot>\n        </div>\n        <div class="toolbar-actions">\n          ${parsedActions.map(\n            (action) => html',
+    css: ":host {\n      display: block;\n    }\n\n    .toolbar {\n      display: flex;\n      align-items: center;\n      padding: 1rem 1.5rem;\n      background: var(--bg-elevated);\n      border-bottom: 1px solid var(--border-color);\n      gap: 1rem;\n      flex-wrap: wrap;\n    }\n\n    .toolbar-title-area {\n      flex: 1;\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n      min-width: 200px;\n    }\n\n    .toolbar-title {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .toolbar-subtitle {\n      margin: 0;\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n    }\n\n    .toolbar-actions {\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n      flex-wrap: wrap;\n    }\n\n    .action-btn {\n      display: inline-flex;\n      align-items: center;\n      gap: 0.5rem;\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background: var(--bg-elevated);\n      color: var(--text-primary);\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n      font-size: 0.875rem;\n    }\n\n    .action-btn:hover {\n      background: var(--bg-hover);\n    }\n\n    .action-btn.primary {\n      border-color: var(--accent);\n      background: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .action-btn.primary:hover {\n      background: var(--accent-hover);\n      border-color: var(--accent-hover);\n    }\n\n    .action-btn.danger {\n      border-color: var(--error);\n      background: var(--error);\n      color: var(--text-on-error);\n    }\n\n    .action-btn.ghost {\n      border-color: transparent;\n      background: transparent;\n      color: var(--text-secondary);\n    }\n\n    .action-btn.ghost:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .action-icon {\n      font-size: 1.125rem;\n    }",
+  },
+  {
+    id: "pagination",
+    name: "AppPagination",
+    selector: "app-pagination",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "page",
+        type: "number",
+        default: 1,
+      },
+      {
+        name: "total",
+        type: "number",
+        default: 1,
+      },
+      {
+        name: "pageSize",
+        type: "number",
+        default: 10,
+      },
+    ],
+    template: "",
+    css: ":host {\n      display: block;\n    }\n\n    .pagination {\n      display: inline-flex;\n      align-items: center;\n      gap: 0.25rem;\n    }\n\n    button {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      min-width: 2rem;\n      height: 2rem;\n      padding: 0 0.5rem;\n      border: 1px solid var(--border-color);\n      border-radius: 0.375rem;\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      cursor: pointer;\n      transition: background-color 0.15s;\n    }\n\n    button:hover:not(:disabled) {\n      background-color: var(--bg-hover);\n    }\n\n    button:disabled {\n      opacity: 0.4;\n      cursor: not-allowed;\n    }\n\n    button.active {\n      background-color: var(--accent);\n      border-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .ellipsis {\n      padding: 0 0.25rem;\n      color: var(--text-secondary);\n    }",
+  },
+  {
+    id: "progress-bar",
+    name: "AppProgressBar",
+    selector: "app-progress-bar",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "value",
+        type: "number",
+        default: 0,
+      },
+      {
+        name: "max",
+        type: "number",
+        default: 100,
+      },
+    ],
+    template:
+      '<div class="progress-container">\n        <div\n          class="progress-fill ${this._getFillClass()}"\n          style="width: ${this._percentage}%"\n        ></div>\n      </div>',
+    css: ":host {\n      display: block;\n    }\n\n    .progress-container {\n      width: 100%;\n      height: 0.5rem;\n      background-color: var(--bg-elevated);\n      border-radius: 0.25rem;\n      overflow: hidden;\n      border: 1px solid var(--border-color);\n    }\n\n    .progress-fill {\n      height: 100%;\n      border-radius: 0.25rem;\n      transition: width 0.3s ease;\n    }\n\n    .progress-fill.low {\n      background-color: var(--warning);\n    }\n\n    .progress-fill.medium {\n      background-color: var(--accent);\n    }\n\n    .progress-fill.high {\n      background-color: var(--success);\n    }",
+  },
+  {
+    id: "properties-panel",
+    name: "AppPropertiesPanel",
+    selector: "app-properties-panel",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "element",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<div class="panel-header">\n        <div class="panel-title">Properties</div>\n        ${this._elementId\n          ? html`<div class="element-id">${this._elementId}</div>',
+    css: ':host {\n      display: block;\n      background-color: var(--bg-elevated);\n      border-left: 1px solid var(--border-color);\n      height: 100%;\n      overflow-y: auto;\n    }\n\n    .panel-header {\n      padding: 1rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .panel-title {\n      font-size: 0.875rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      margin-bottom: 0.25rem;\n    }\n\n    .element-id {\n      font-size: 0.75rem;\n      color: var(--text-muted);\n      font-family: monospace;\n    }\n\n    .properties-section {\n      padding: 1rem;\n    }\n\n    .section-title {\n      font-size: 0.75rem;\n      font-weight: 600;\n      color: var(--text-secondary);\n      text-transform: uppercase;\n      letter-spacing: 0.05em;\n      margin-bottom: 0.75rem;\n    }\n\n    .property-row {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n      margin-bottom: 0.75rem;\n    }\n\n    .property-label {\n      font-size: 0.875rem;\n      color: var(--text-primary);\n    }\n\n    .property-input {\n      padding: 0.5rem 0.75rem;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-primary);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n    }\n\n    .property-input:focus {\n      outline: none;\n      border-color: var(--accent);\n    }\n\n    .property-input[type="checkbox"] {\n      width: 1rem;\n      height: 1rem;\n    }\n\n    select.property-input {\n      cursor: pointer;\n    }\n\n    .empty-state {\n      padding: 2rem 1rem;\n      text-align: center;\n      color: var(--text-muted);\n      font-size: 0.875rem;\n    }',
+  },
+  {
+    id: "radio",
+    name: "AppRadio",
+    selector: "app-radio",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "name",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "value",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "checked",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template:
+      '<label>\n        <input\n          type="radio"\n          name="${this.name}"\n          value="${this.value}"\n          .checked="${this.checked}"\n          ?disabled="${this.disabled}"\n          @change="${this._handleChange}"\n        />\n        <span class="radio-label"><slot></slot></span>\n      </label>',
+    css: ':host {\n      display: inline-flex;\n      align-items: center;\n    }\n\n    label {\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n      cursor: pointer;\n    }\n\n    input[type="radio"] {\n      width: 1rem;\n      height: 1rem;\n      accent-color: var(--accent);\n      cursor: pointer;\n    }\n\n    input[type="radio"]:disabled {\n      cursor: not-allowed;\n      opacity: 0.5;\n    }\n\n    .radio-label {\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      user-select: none;\n    }\n\n    :host([disabled]) .radio-label {\n      color: var(--text-secondary);\n      cursor: not-allowed;\n    }',
+  },
+  {
+    id: "segment-selector",
+    name: "AppSegmentSelector",
+    selector: "app-segment-selector",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "options",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "selected",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<div class="segment-container">\n        ${options.map(\n          (opt) => html',
+    css: ":host {\n      display: inline-flex;\n    }\n\n    .segment-container {\n      display: inline-flex;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      overflow: hidden;\n      background-color: var(--bg-elevated);\n    }\n\n    .segment {\n      padding: 0.5rem 1rem;\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-secondary);\n      cursor: pointer;\n      transition: background-color 0.15s, color 0.15s;\n      border-right: 1px solid var(--border-color);\n    }\n\n    .segment:last-child {\n      border-right: none;\n    }\n\n    .segment:hover:not(.selected) {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .segment.selected {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n    }",
+  },
+  {
+    id: "select",
+    name: "AppSelect",
+    selector: "app-select",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "options",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "value",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "placeholder",
+        type: "string",
+        default: "Select an option",
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template:
+      '<select\n        .value="${this.value}"\n        ?disabled="${this.disabled}"\n        placeholder="${this.placeholder}"\n        @change="${this._handleChange}"\n      >\n        <option value="" disabled selected hidden>${this.placeholder}</option>\n        ${parsedOptions.map(\n          (option) => html`<option value="${option}">${option}</option>`,\n        )}\n      </select>',
+    css: ":host {\n      display: inline-flex;\n    }\n\n    select {\n      display: inline-flex;\n      align-items: center;\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      font-size: 1rem;\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n      min-width: 150px;\n    }\n\n    select:hover:not(:disabled) {\n      background-color: var(--bg-hover);\n    }\n\n    select:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n\n    select:focus {\n      outline: none;\n      border-color: var(--accent);\n    }",
+  },
+  {
+    id: "sidebar",
+    name: "AppSidebar",
+    selector: "app-sidebar",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "collapsed",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "items",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "width",
+        type: "number",
+        default: 240,
+      },
+      {
+        name: "collapsedWidth",
+        type: "number",
+        default: 64,
+      },
+    ],
+    template:
+      '<li>\n        <div\n          class="nav-item ${depth > 0 ? "nav-item-child" : ""}"\n          @click="${() => this._handleItemClick(item)}"\n        >\n          ${item.icon\n            ? html`<span class="nav-item-icon">${item.icon}</span>',
+    css: ":host {\n      display: block;\n    }\n\n    aside {\n      display: flex;\n      flex-direction: column;\n      width: var(--sidebar-width, 240px);\n      min-width: var(--sidebar-width, 240px);\n      height: 100%;\n      background: var(--bg-elevated);\n      border-right: 1px solid var(--border-color);\n      transition: width 0.2s, min-width 0.2s;\n      overflow: hidden;\n    }\n\n    aside.collapsed {\n      width: 64px;\n      min-width: 64px;\n    }\n\n    .sidebar-header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1rem;\n      border-bottom: 1px solid var(--border-color);\n      min-height: 56px;\n    }\n\n    .collapse-btn {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 32px;\n      height: 32px;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background: transparent;\n      color: var(--text-secondary);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n      font-size: 1.25rem;\n    }\n\n    .collapse-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    nav {\n      flex: 1;\n      overflow-y: auto;\n      overflow-x: hidden;\n      padding: 0.5rem;\n    }\n\n    .nav-section {\n      margin-bottom: 0.5rem;\n    }\n\n    .nav-section-title {\n      padding: 0.5rem 0.75rem;\n      font-size: 0.75rem;\n      font-weight: 600;\n      color: var(--text-secondary);\n      text-transform: uppercase;\n      letter-spacing: 0.05em;\n    }\n\n    ul {\n      list-style: none;\n      margin: 0;\n      padding: 0;\n    }\n\n    li {\n      margin: 0;\n    }\n\n    .nav-item {\n      display: flex;\n      align-items: center;\n      gap: 0.75rem;\n      padding: 0.625rem 0.75rem;\n      border-radius: 0.5rem;\n      color: var(--text-secondary);\n      text-decoration: none;\n      cursor: pointer;\n      transition: all 0.15s;\n      white-space: nowrap;\n      overflow: hidden;\n    }\n\n    .nav-item:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .nav-item.active {\n      background: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .nav-item-icon {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 20px;\n      height: 20px;\n      font-size: 1.25rem;\n      flex-shrink: 0;\n    }\n\n    .nav-item-label {\n      flex: 1;\n      overflow: hidden;\n      text-overflow: ellipsis;\n    }\n\n    .nav-item-children {\n      margin-left: 1.25rem;\n      border-left: 1px solid var(--border-color);\n      padding-left: 0.5rem;\n    }",
+  },
+  {
+    id: "slider",
+    name: "AppSlider",
+    selector: "app-slider",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "min",
+        type: "number",
+        default: 0,
+      },
+      {
+        name: "max",
+        type: "number",
+        default: 100,
+      },
+      {
+        name: "value",
+        type: "number",
+        default: 0,
+      },
+      {
+        name: "step",
+        type: "number",
+        default: 1,
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template:
+      '<div class="slider-wrapper">\n        <input\n          type="range"\n          .value="${String(this.value)}"\n          min="${String(this.min)}"\n          max="${String(this.max)}"\n          step="${String(this.step)}"\n          ?disabled="${this.disabled}"\n          @input="${this._handleInput}"\n        />\n      </div>',
+    css: ':host {\n      display: block;\n      width: 100%;\n    }\n\n    .slider-wrapper {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .slider-label {\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-primary);\n    }\n\n    input[type="range"] {\n      width: 100%;\n      height: 0.5rem;\n      border-radius: 0.25rem;\n      background-color: var(--border-color);\n      outline: none;\n      cursor: pointer;\n      -webkit-appearance: none;\n      appearance: none;\n    }\n\n    input[type="range"]::-webkit-slider-thumb {\n      -webkit-appearance: none;\n      appearance: none;\n      width: 1.25rem;\n      height: 1.25rem;\n      border-radius: 50%;\n      background-color: var(--accent);\n      cursor: pointer;\n      border: none;\n      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n      transition: transform 0.1s;\n    }\n\n    input[type="range"]::-webkit-slider-thumb:hover {\n      transform: scale(1.1);\n    }\n\n    input[type="range"]::-moz-range-thumb {\n      width: 1.25rem;\n      height: 1.25rem;\n      border-radius: 50%;\n      background-color: var(--accent);\n      cursor: pointer;\n      border: none;\n      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n    }\n\n    input[type="range"]:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n\n    input[type="range"]:focus {\n      outline: none;\n    }\n\n    input[type="range"]:focus::-webkit-slider-thumb {\n      box-shadow: 0 0 0 2px var(--accent);\n    }\n\n    .slider-value {\n      font-size: 0.75rem;\n      color: var(--text-secondary);\n      text-align: right;\n    }',
+  },
+  {
+    id: "split-view",
+    name: "AppSplitView",
+    selector: "app-split-view",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "split",
+        type: "number",
+        default: 50,
+      },
+      {
+        name: "minFirst",
+        type: "number",
+        default: 20,
+      },
+      {
+        name: "minSecond",
+        type: "number",
+        default: 20,
+      },
+    ],
+    template:
+      '<div class="split-container ${this.direction}">\n        <div\n          class="split-pane first"\n          style="${firstSize}: ${this.split}%; flex-grow: 0;"\n        >\n          <slot name="first"></slot>\n        </div>\n        <div\n          class="split-divider ${this._isDragging ? "dragging" : ""}"\n          @mousedown="${this._onDividerMouseDown}"\n        ></div>\n        <div class="split-pane second" style="${secondSize}: auto; flex: 1;">\n          <slot name="second"></slot>\n        </div>\n      </div>',
+    css: ':host {\n      display: block;\n      height: 100%;\n    }\n\n    .split-container {\n      display: flex;\n      height: 100%;\n      width: 100%;\n      overflow: hidden;\n    }\n\n    .split-container.vertical {\n      flex-direction: column;\n    }\n\n    .split-pane {\n      overflow: auto;\n      min-width: 0;\n      min-height: 0;\n    }\n\n    .split-pane.first {\n      flex-shrink: 0;\n    }\n\n    .split-container.horizontal .split-pane.first {\n      height: 100%;\n    }\n\n    .split-container.vertical .split-pane.first {\n      width: 100%;\n    }\n\n    .split-divider {\n      flex-shrink: 0;\n      background: var(--border-color);\n      transition: background 0.15s;\n      position: relative;\n      z-index: 1;\n    }\n\n    .split-container.horizontal .split-divider {\n      width: 6px;\n      cursor: col-resize;\n    }\n\n    .split-container.vertical .split-divider {\n      height: 6px;\n      cursor: row-resize;\n    }\n\n    .split-divider:hover,\n    .split-divider.dragging {\n      background: var(--accent);\n    }\n\n    .split-divider::after {\n      content: "";\n      position: absolute;\n      background: transparent;\n    }\n\n    .horizontal .split-divider::after {\n      top: 0;\n      bottom: 0;\n      left: -4px;\n      right: -4px;\n    }\n\n    .vertical .split-divider::after {\n      left: 0;\n      right: 0;\n      top: -4px;\n      bottom: -4px;\n    }',
+  },
+  {
+    id: "spinner",
+    name: "AppSpinner",
+    selector: "app-spinner",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "size",
+        type: "string",
+        default: "md",
+      },
+      {
+        name: "color",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "label",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<span class="ring ${this.size}" style=${this.color ? `border-top-color: ${this.color}` : ""} role="status"></span>\n      ${this.label ? html`<span class="label">${this.label}</span>` : ""}',
+    css: ":host {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      gap: 0.5rem;\n    }\n    .ring {\n      display: inline-block;\n      border-style: solid;\n      border-color: var(--border-color, #e5e7eb);\n      border-top-color: var(--accent, #3b82f6);\n      border-radius: 50%;\n      animation: spin 0.7s linear infinite;\n      box-sizing: border-box;\n    }\n    .ring.sm { width: 16px; height: 16px; border-width: 2px; }\n    .ring.md { width: 28px; height: 28px; border-width: 3px; }\n    .ring.lg { width: 44px; height: 44px; border-width: 4px; }\n    .ring.xl { width: 64px; height: 64px; border-width: 5px; }\n    .label { font-size: 0.875rem; color: var(--text-secondary, #6b7280); }\n    @keyframes spin { to { transform: rotate(360deg); } }",
+  },
+  {
+    id: "stats-card",
+    name: "AppStatsCard",
+    selector: "app-stats-card",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "label",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "value",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "icon",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<div class="stats-card">\n        ${this.icon\n          ? html`<div class="stats-icon">${this.icon}</div>',
+    css: ":host {\n      display: block;\n    }\n\n    .stats-card {\n      display: flex;\n      align-items: center;\n      gap: 1rem;\n      padding: 1rem;\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n    }\n\n    .stats-icon {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 3rem;\n      height: 3rem;\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n      border-radius: 0.5rem;\n      font-size: 1.5rem;\n    }\n\n    .stats-info {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .stats-value {\n      font-size: 1.5rem;\n      font-weight: 700;\n      color: var(--text-primary);\n      line-height: 1;\n    }\n\n    .stats-label {\n      font-size: 0.875rem;\n      color: var(--text-muted);\n      font-weight: 500;\n    }",
+  },
+  {
+    id: "switch",
+    name: "AppSwitch",
+    selector: "app-switch",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "checked",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template:
+      '<label class="switch-container">\n        <input\n          type="checkbox"\n          class="switch-input"\n          .checked="${this.checked}"\n          ?disabled="${this.disabled}"\n          @change="${this._handleChange}"\n          role="switch"\n          aria-checked="${this.checked}"\n        />\n        <span class="switch-slider"></span>\n      </label>',
+    css: ':host {\n      display: inline-flex;\n      align-items: center;\n    }\n\n    .switch-container {\n      position: relative;\n      display: inline-flex;\n      align-items: center;\n      cursor: pointer;\n    }\n\n    .switch-input {\n      position: absolute;\n      opacity: 0;\n      width: 0;\n      height: 0;\n    }\n\n    .switch-slider {\n      position: relative;\n      width: 2.75rem;\n      height: 1.5rem;\n      background-color: var(--border-color);\n      border-radius: 1rem;\n      transition: background-color 0.2s;\n    }\n\n    .switch-slider::before {\n      content: "";\n      position: absolute;\n      top: 0.125rem;\n      left: 0.125rem;\n      width: 1.25rem;\n      height: 1.25rem;\n      background-color: white;\n      border-radius: 50%;\n      transition: transform 0.2s;\n      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n    }\n\n    .switch-input:checked + .switch-slider {\n      background-color: var(--accent);\n    }\n\n    .switch-input:checked + .switch-slider::before {\n      transform: translateX(1.25rem);\n    }\n\n    .switch-input:disabled + .switch-slider {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n\n    .switch-input:focus + .switch-slider {\n      outline: 2px solid var(--accent);\n      outline-offset: 2px;\n    }',
+  },
+  {
+    id: "table-view",
+    name: "AppTableView",
+    selector: "app-table-view",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "columns",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "data",
+        type: "string",
+        default: "[]",
+      },
+    ],
+    template:
+      "<table>\n        <thead>\n          <tr>\n            ${cols.map((col) => html`<th>${col.name}</th>`)}\n          </tr>\n        </thead>\n        <tbody>\n          ${rows.map(\n            (row) => html",
+    css: ":host {\n      display: block;\n      overflow-x: auto;\n    }\n\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      font-size: 0.875rem;\n    }\n\n    th {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      background-color: var(--bg-secondary);\n      color: var(--text-primary);\n      font-weight: 600;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    td {\n      padding: 0.75rem 1rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    tr:hover td {\n      background-color: var(--bg-hover);\n    }",
+  },
+  {
+    id: "tabs",
+    name: "AppTabs",
+    selector: "app-tabs",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "tabs",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "activeTab",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<div class="tabs">\n        ${tabs.map(\n          (tab) => html',
+    css: ":host {\n      display: block;\n    }\n\n    .tabs {\n      display: flex;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .tab {\n      padding: 0.75rem 1.25rem;\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-secondary);\n      cursor: pointer;\n      border-bottom: 2px solid transparent;\n      margin-bottom: -1px;\n      transition: color 0.15s, border-color 0.15s;\n    }\n\n    .tab:hover {\n      color: var(--text-primary);\n    }\n\n    .tab.active {\n      color: var(--accent);\n      border-bottom-color: var(--accent);\n    }",
+  },
+  {
+    id: "textarea",
+    name: "AppTextarea",
+    selector: "app-textarea",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "value",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "placeholder",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "rows",
+        type: "number",
+        default: 3,
+      },
+      {
+        name: "disabled",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template:
+      '<textarea\n        .value="${this.value}"\n        placeholder="${this.placeholder}"\n        rows="${this.rows}"\n        ?disabled="${this.disabled}"\n        @input="${this._handleInput}"\n      ></textarea>',
+    css: ":host {\n      display: block;\n    }\n\n    .textarea-wrapper {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .textarea-label {\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-primary);\n    }\n\n    textarea {\n      width: 100%;\n      padding: 0.5rem 0.75rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      box-sizing: border-box;\n      transition: all 0.15s;\n      outline: none;\n      resize: vertical;\n      font-family: inherit;\n      font-size: 0.875rem;\n      line-height: 1.5;\n    }\n\n    textarea::placeholder {\n      color: var(--text-muted);\n    }\n\n    textarea:focus {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    textarea:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n      background-color: var(--bg-tertiary);\n    }",
+  },
+  {
+    id: "tooltip",
+    name: "AppTooltip",
+    selector: "app-tooltip",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "text",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "position",
+        type: "string",
+        default: "top",
+      },
+      {
+        name: "trigger",
+        type: "string",
+        default: "hover",
+      },
+      {
+        name: "delay",
+        type: "number",
+        default: 200,
+      },
+    ],
+    template:
+      '<div\n        class="trigger-wrapper"\n        @mouseenter=${this.trigger === "hover" ? this.show : undefined}\n        @mouseleave=${this.trigger === "hover" ? this.hide : undefined}\n        @click=${this.trigger === "click" ? this.toggle : undefined}\n        @focus=${this.trigger === "focus" ? this.show : undefined}\n        @blur=${this.trigger === "focus" ? this.hide : undefined}\n      >\n        <slot></slot>\n      </div>\n      <div class="bubble ${this.position} ${this.visible ? "visible" : ""}" role="tooltip">${this.text}</div>',
+    css: ":host {\n      position: relative;\n      display: inline-flex;\n    }\n    .bubble {\n      position: absolute;\n      background: var(--bg-elevated, #1f2937);\n      color: var(--text-on-accent, #ffffff);\n      padding: 0.375rem 0.625rem;\n      border-radius: 0.375rem;\n      font-size: 0.75rem;\n      line-height: 1.2;\n      white-space: nowrap;\n      z-index: 1000;\n      pointer-events: none;\n      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);\n      opacity: 0;\n      transform: scale(0.95);\n      transition: opacity 0.15s, transform 0.15s;\n    }\n    .bubble.visible {\n      opacity: 1;\n      transform: scale(1);\n    }\n    .bubble.top { bottom: calc(100% + 6px); left: 50%; transform-origin: bottom center; transform: translateX(-50%) scale(0.95); }\n    .bubble.top.visible { transform: translateX(-50%) scale(1); }\n    .bubble.bottom { top: calc(100% + 6px); left: 50%; transform-origin: top center; transform: translateX(-50%) scale(0.95); }\n    .bubble.bottom.visible { transform: translateX(-50%) scale(1); }\n    .bubble.left { right: calc(100% + 6px); top: 50%; transform-origin: right center; transform: translateY(-50%) scale(0.95); }\n    .bubble.left.visible { transform: translateY(-50%) scale(1); }\n    .bubble.right { left: calc(100% + 6px); top: 50%; transform-origin: left center; transform: translateY(-50%) scale(0.95); }\n    .bubble.right.visible { transform: translateY(-50%) scale(1); }",
+  },
+  {
+    id: "theme-toggle",
+    name: "AppThemeToggle",
+    selector: "app-theme-toggle",
+    packageType: "shared",
+    category: "layout",
+    props: [],
+    template:
+      '<button\n        type="button"\n        @click="${this._handleToggle}"\n        title="${this.isDark ? "Switch to light" : "Switch to dark"}"\n      >\n        ${this.isDark\n          ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">\n          <circle cx="12" cy="12" r="5"></circle>\n          <line x1="12" y1="1" x2="12" y2="3"></line>\n          <line x1="12" y1="21" x2="12" y2="23"></line>\n          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>\n          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>\n          <line x1="1" y1="12" x2="3" y2="12"></line>\n          <line x1="21" y1="12" x2="23" y2="12"></line>\n          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>\n          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>\n        </svg>`\n          : html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">\n          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>\n        </svg>`}\n      </button>',
+    css: ":host {\n      display: inline-flex;\n    }\n\n    button {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 2.5rem;\n      height: 2.5rem;\n      border-radius: 50%;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n    }\n\n    button:hover {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n      border-color: var(--accent);\n    }\n\n    svg {\n      width: 1.25rem;\n      height: 1.25rem;\n    }",
+  },
+  {
+    id: "icon",
+    name: "AppIcon",
+    selector: "app-icon",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "name",
+        type: "string",
+        default: "clear",
+      },
+      {
+        name: "svgClass",
+        type: "string",
+        default: "",
+      },
+    ],
+    template: "",
+    css: ":host {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1.25em;\n      height: 1.25em;\n    }\n\n    svg {\n      width: 100%;\n      height: 100%;\n      color: inherit;\n    }\n\n    .icon-spinner {\n      animation: icon-spin 1s linear infinite;\n    }\n\n    @keyframes icon-spin {\n      to {\n        transform: rotate(360deg);\n      }\n    }",
+  },
+  {
+    id: "text-input",
+    name: "AppTextInput",
+    selector: "app-text-input",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "value",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "placeholder",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "charCount",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "maxChars",
+        type: "number",
+        default: 0,
+      },
+      {
+        name: "id",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "clearable",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template:
+      '<div class="input-container">\n        <textarea\n          id="${this.id || ""}"\n          .value="${this.value || ""}"\n          placeholder="${this.placeholder || ""}"\n          @input="${this._handleInput}"\n          @textarea="${(e: Event) => this._autoResize(e.target as HTMLTextAreaElement)}"\n        ></textarea>\n        <div class="footer">\n          <span class="char-count">${displayCount}</span>\n          ${this.clearable\n            ? html`<button class="clear-btn" type="button" @click="${this._handleClear}">\n                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">\n                  <line x1="18" y1="6" x2="6" y2="18"></line>\n                  <line x1="6" y1="6" x2="18" y2="18"></line>\n                </svg>\n              </button>`\n            : ""}\n        </div>\n      </div>',
+    css: ":host {\n      display: flex;\n      flex-direction: column;\n      width: 100%;\n    }\n\n    .input-container {\n      display: flex;\n      flex-direction: column;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-elevated);\n      transition: border-color 0.15s;\n    }\n\n    .input-container:focus-within {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    textarea {\n      width: 100%;\n      min-height: 2.5rem;\n      padding: 0.5rem 0.75rem;\n      border: none;\n      background: transparent;\n      color: var(--text-primary);\n      font-family: inherit;\n      font-size: 0.875rem;\n      line-height: 1.5;\n      resize: none;\n      outline: none;\n      overflow: hidden;\n    }\n\n    textarea::placeholder {\n      color: var(--text-muted);\n    }\n\n    .footer {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 0.25rem 0.75rem 0.375rem;\n      border-top: 1px solid var(--border-color);\n    }\n\n    .char-count {\n      font-size: 0.75rem;\n      color: var(--text-muted);\n    }\n\n    .clear-btn {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1.5rem;\n      height: 1.5rem;\n      border-radius: 50%;\n      border: none;\n      background: transparent;\n      color: var(--text-muted);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n    }\n\n    .clear-btn:hover {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .clear-btn svg {\n      width: 0.875rem;\n      height: 0.875rem;\n    }",
+  },
+  {
+    id: "language-selector",
+    name: "AppLanguageSelector",
+    selector: "app-language-selector",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "languages",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "value",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "label",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "labelId",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '${this.label\n        ? html`<span class="selector-label" id="${this.labelId || ""}">${this.label}</span>`\n        : ""}\n      <div class="select-wrapper">\n        <select\n          .value="${this.value || ""}"\n          @change="${this._handleChange}"\n        >\n          ${parsedLanguages.map(\n            (lang) => html`<option value="${lang}">${lang}</option>`\n          )}\n        </select>\n        <span class="chevron-icon">\n          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">\n            <polyline points="6 9 12 15 18 9"></polyline>\n          </svg>\n        </span>\n      </div>',
+    css: ":host {\n      display: inline-flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .selector-label {\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-primary);\n    }\n\n    .select-wrapper {\n      position: relative;\n      display: inline-flex;\n      align-items: center;\n    }\n\n    select {\n      appearance: none;\n      -webkit-appearance: none;\n      padding: 0.5rem 2rem 0.5rem 0.75rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      font-family: inherit;\n      cursor: pointer;\n      outline: none;\n      transition: border-color 0.15s;\n    }\n\n    select:focus {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    .chevron-icon {\n      position: absolute;\n      right: 0.5rem;\n      pointer-events: none;\n      width: 1rem;\n      height: 1rem;\n      color: var(--text-muted);\n    }",
+  },
+  {
+    id: "shortcuts-overlay",
+    name: "AppShortcutsOverlay",
+    selector: "app-shortcuts-overlay",
+    packageType: "shared",
+    category: "layout",
+    props: [],
+    template:
+      '<div class="overlay ${this.open ? "" : "hidden"}" @click="${this._handleBackdropClick}">\n        <div class="modal">\n          <div class="modal-header">\n            <h2 class="modal-title">Keyboard Shortcuts</h2>\n            <button class="close-btn" type="button" @click="${this._close}">\n              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">\n                <line x1="18" y1="6" x2="6" y2="18"></line>\n                <line x1="6" y1="6" x2="18" y2="18"></line>\n              </svg>\n            </button>\n          </div>\n          <ul class="shortcut-list">\n            ${shortcuts.map(\n              (s) => html`<li class="shortcut-item">\n                <span class="shortcut-desc">${s.description}</span>\n                <kbd>${s.keys.join(" ")}</kbd>\n              </li>`\n            )}\n          </ul>\n        </div>\n      </div>',
+    css: ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      z-index: 10000;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      background-color: rgba(0, 0, 0, 0.5);\n      opacity: 1;\n      transition: opacity 0.2s ease;\n    }\n\n    .overlay.hidden {\n      opacity: 0;\n      pointer-events: none;\n    }\n\n    .modal {\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.75rem;\n      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);\n      width: 100%;\n      max-width: 28rem;\n      max-height: 80vh;\n      overflow-y: auto;\n      padding: 1.5rem;\n    }\n\n    .modal-header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      margin-bottom: 1rem;\n    }\n\n    .modal-title {\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      margin: 0;\n    }\n\n    .close-btn {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 2rem;\n      height: 2rem;\n      border-radius: 0.375rem;\n      border: none;\n      background: transparent;\n      color: var(--text-muted);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n    }\n\n    .close-btn:hover {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .close-btn svg {\n      width: 1rem;\n      height: 1rem;\n    }\n\n    .shortcut-list {\n      display: flex;\n      flex-direction: column;\n      gap: 0.75rem;\n      list-style: none;\n      margin: 0;\n      padding: 0;\n    }\n\n    .shortcut-item {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      gap: 1rem;\n    }\n\n    .shortcut-desc {\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n    }\n\n    kbd {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      padding: 0.25rem 0.5rem;\n      background-color: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 0.375rem;\n      font-family: monospace;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n    }",
+  },
+  {
+    id: "translation-output",
+    name: "AppTranslationOutput",
+    selector: "app-translation-output",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "value",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "placeholder",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "id",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<div class="output-container">\n        <textarea\n          id="${this.id || ""}"\n          .value="${this.value || ""}"\n          placeholder="${this.placeholder || ""}"\n          readonly\n        ></textarea>\n        <button class="copy-btn" type="button" @click="${this._handleCopy}" title="Copy to clipboard">\n          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">\n            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>\n            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>\n          </svg>\n        </button>\n      </div>',
+    css: ":host {\n      display: flex;\n      flex-direction: column;\n      width: 100%;\n    }\n\n    .output-container {\n      position: relative;\n      display: flex;\n      flex-direction: column;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-elevated);\n    }\n\n    textarea {\n      width: 100%;\n      min-height: 2.5rem;\n      padding: 0.5rem 0.75rem;\n      padding-right: 2.5rem;\n      border: none;\n      background: transparent;\n      color: var(--text-primary);\n      font-family: inherit;\n      font-size: 0.875rem;\n      line-height: 1.5;\n      resize: none;\n      outline: none;\n      overflow: hidden;\n    }\n\n    textarea::placeholder {\n      color: var(--text-muted);\n    }\n\n    .copy-btn {\n      position: absolute;\n      top: 0.5rem;\n      right: 0.5rem;\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1.75rem;\n      height: 1.75rem;\n      border-radius: 0.375rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-muted);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n    }\n\n    .copy-btn:hover {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n      border-color: var(--accent);\n    }\n\n    .copy-btn svg {\n      width: 0.875rem;\n      height: 0.875rem;\n    }",
+  },
+  {
+    id: "tree",
+    name: "AppTree",
+    selector: "app-tree",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "nodes",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "selectable",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "selected",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "expanded",
+        type: "string",
+        default: "[]",
+      },
+    ],
+    template:
+      '<ul role="tree">\n        ${flat.map(({ node, depth, expanded }) => {\n          const hasChildren = !!(node.children && node.children.length);\n          const isSelected = this.selectable && this.selectedId === node.id;\n          return html`<li role="treeitem" aria-expanded="${hasChildren ? expanded : undefined}">\n            <div\n              class="row ${isSelected ? "selected" : ""}"\n              style="padding-left: ${depth * 1.5}rem"\n              @click="${() => this._handleNodeClick(node)}"\n            >\n              <span class="toggle ${hasChildren ? (expanded ? "expanded" : "") : "empty"}">${hasChildren ? (expanded ? "▼" : "▶") : ""}</span>\n              ${node.icon ? html`<span class="icon">${node.icon}</span>` : ""}\n              <span class="label">${node.label}</span>\n            </div>\n            ${hasChildren && expanded ? html`<li class="children">${this._renderNodes(node.children, depth + 1)}</li>` : ""}\n          </li>`;\n        })}\n      </ul>',
+    css: ":host {\n      display: block;\n      font-size: 0.875rem;\n      color: var(--text-primary, #1f2937);\n    }\n\n    ul {\n      list-style: none;\n      margin: 0;\n      padding: 0;\n    }\n\n    li {\n      user-select: none;\n    }\n\n    .row {\n      display: flex;\n      align-items: center;\n      gap: 0.375rem;\n      padding: 0.375rem 0.5rem;\n      border-radius: 0.375rem;\n      cursor: pointer;\n      transition: background-color 0.1s;\n    }\n\n    .row:hover {\n      background: var(--bg-hover, #f3f4f6);\n    }\n\n    .row.selected {\n      background: var(--accent, #3b82f6);\n      color: var(--text-on-accent, #ffffff);\n    }\n\n    .toggle {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1rem;\n      height: 1rem;\n      font-size: 0.75rem;\n      transition: transform 0.15s;\n    }\n\n    .toggle.expanded {\n      transform: rotate(90deg);\n    }\n\n    .toggle.empty {\n      visibility: hidden;\n    }\n\n    .icon {\n      font-size: 1rem;\n      width: 1rem;\n      text-align: center;\n    }\n\n    .label {\n      flex: 1;\n    }\n\n    .children {\n      padding-left: 1.25rem;\n    }",
+  },
+  {
+    id: "divider",
+    name: "AppDivider",
+    selector: "app-divider",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "orientation",
+        type: "string",
+        default: "horizontal",
+      },
+      {
+        name: "spacing",
+        type: "string",
+        default: "md",
+      },
+      {
+        name: "color",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<div class="line" style=${this.color ? `background: ${this.color}` : ""} role="separator"></div>',
+    css: ':host {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n    }\n\n    :host([orientation="vertical"]) {\n      display: inline-flex;\n      align-items: stretch;\n      height: 100%;\n    }\n\n    .line {\n      background: var(--divider-color, var(--border-color, #e5e7eb));\n      width: 100%;\n      height: 1px;\n    }\n\n    :host([orientation="vertical"]) .line {\n      width: 1px;\n      height: 100%;\n    }\n\n    :host([spacing="none"]) {\n      margin: 0;\n    }\n\n    :host([spacing="sm"]) {\n      margin: 0.5rem 0;\n    }\n\n    :host([spacing="md"]) {\n      margin: 1rem 0;\n    }\n\n    :host([spacing="lg"]) {\n      margin: 1.5rem 0;\n    }\n\n    :host([spacing="xl"]) {\n      margin: 2.5rem 0;\n    }\n\n    :host([orientation="vertical"][spacing="none"]) {\n      margin: 0;\n    }\n\n    :host([orientation="vertical"][spacing="sm"]) {\n      margin: 0 0.5rem;\n    }\n\n    :host([orientation="vertical"][spacing="md"]) {\n      margin: 0 1rem;\n    }\n\n    :host([orientation="vertical"][spacing="lg"]) {\n      margin: 0 1.5rem;\n    }\n\n    :host([orientation="vertical"][spacing="xl"]) {\n      margin: 0 2.5rem;\n    }',
+  },
+  {
+    id: "form",
+    name: "AppForm",
+    selector: "app-form",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "heading",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "submitText",
+        type: "string",
+        default: "Submit",
+      },
+      {
+        name: "cancelText",
+        type: "string",
+        default: "Cancel",
+      },
+      {
+        name: "showActions",
+        type: "boolean",
+        default: true,
+      },
+    ],
+    template:
+      '${this.heading ? html`<h3 class="heading">${this.heading}</h3>` : ""}\n      <form @submit=${this.submit} novalidate>\n        <div class="fields"><slot></slot></div>\n        ${this.showActions\n          ? html`<div class="actions">\n              <button type="button" class="cancel-btn" @click="${this._handleCancel}">${this.cancelText}</button>\n              <button type="submit" class="submit-btn">${this.submitText}</button>\n            </div>`\n          : ""}\n      </form>',
+    css: ":host {\n      display: block;\n      background: var(--bg-elevated, #ffffff);\n      border: 1px solid var(--border-color, #e5e7eb);\n      border-radius: 0.5rem;\n      padding: 1.25rem;\n    }\n\n    .heading {\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary, #1f2937);\n      margin: 0 0 1rem;\n    }\n\n    .fields {\n      display: flex;\n      flex-direction: column;\n      gap: 0.75rem;\n    }\n\n    .actions {\n      display: flex;\n      justify-content: flex-end;\n      gap: 0.5rem;\n      margin-top: 1.25rem;\n      padding-top: 1rem;\n      border-top: 1px solid var(--border-color, #e5e7eb);\n    }\n\n    button {\n      padding: 0.5rem 1rem;\n      border-radius: 0.375rem;\n      border: 1px solid var(--border-color, #e5e7eb);\n      background: var(--bg-elevated, #ffffff);\n      color: var(--text-primary, #1f2937);\n      font-size: 0.875rem;\n      font-weight: 500;\n      cursor: pointer;\n      transition: background-color 0.15s;\n    }\n\n    button:hover {\n      background: var(--bg-hover, #f3f4f6);\n    }\n\n    button.primary,\n    button.submit-btn {\n      background: var(--accent, #3b82f6);\n      border-color: var(--accent, #3b82f6);\n      color: var(--text-on-accent, #ffffff);\n    }\n\n    button.primary:hover,\n    button.submit-btn:hover {\n      opacity: 0.9;\n    }",
+  },
+];
+// Layout Components
+const layoutComponents = [
+  {
+    id: "canvas-toolbar",
+    name: "CanvasToolbar",
+    selector: "app-canvas-toolbar",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "zoomLevel",
+        type: "number",
+        default: 100,
+      },
+      {
+        name: "showGrid",
+        type: "boolean",
+        default: true,
+      },
+      {
+        name: "canUndo",
+        type: "boolean",
+        default: true,
+      },
+      {
+        name: "canRedo",
+        type: "boolean",
+        default: true,
+      },
+    ],
+    template:
+      '<div class="toolbar-group">\n        <button\n          class="toolbar-btn"\n          @click="${() => this._emit("undo")}"\n          ?disabled="${!this.canUndo}"\n          title="Undo"\n        >\n          <mat-icon>undo</mat-icon>\n        </button>\n        <button\n          class="toolbar-btn"\n          @click="${() => this._emit("redo")}"\n          ?disabled="${!this.canRedo}"\n          title="Redo"\n        >\n          <mat-icon>redo</mat-icon>\n        </button>\n      </div>\n      <div class="toolbar-group">\n        <button\n          class="toolbar-btn"\n          @click="${() => this._emit("zoom-out")}"\n          title="Zoom Out"\n        >\n          <mat-icon>remove</mat-icon>\n        </button>\n        <span class="zoom-label">${this.zoomLevel}%</span>\n        <button\n          class="toolbar-btn"\n          @click="${() => this._emit("zoom-in")}"\n          title="Zoom In"\n        >\n          <mat-icon>add</mat-icon>\n        </button>\n        <button\n          class="toolbar-btn"\n          @click="${() => this._emit("zoom-reset")}"\n          title="Reset Zoom"\n        >\n          <mat-icon>fit_screen</mat-icon>\n        </button>\n      </div>\n      <div class="toolbar-group">\n        <button\n          class="toolbar-btn ${this.showGrid ? "active" : ""}"\n          @click="${() => this._emit("toggle-grid")}"\n          title="Toggle Grid"\n        >\n          <mat-icon>grid_on</mat-icon>\n        </button>\n      </div>',
+    css: ":host {\n      display: inline-flex;\n      align-items: center;\n      gap: 4px;\n    }\n    .toolbar-group {\n      display: flex;\n      align-items: center;\n      gap: 2px;\n      padding: 0 4px;\n    }\n    .toolbar-group:not(:last-child) {\n      border-right: 1px solid var(--border-color);\n    }\n    .toolbar-btn {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 32px;\n      height: 32px;\n      border: none;\n      background: transparent;\n      border-radius: 6px;\n      cursor: pointer;\n      color: var(--text-secondary);\n      transition:\n        background-color 0.15s ease,\n        color 0.15s ease;\n    }\n    .toolbar-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n    .toolbar-btn:active {\n      background: var(--bg-tertiary);\n    }\n    .toolbar-btn.active {\n      background: var(--accent);\n      color: white;\n    }\n    .toolbar-btn[disabled] {\n      opacity: 0.4;\n      cursor: not-allowed;\n    }\n    .zoom-label {\n      font-size: 12px;\n      color: var(--text-secondary);\n      min-width: 48px;\n      text-align: center;\n    }\n    mat-icon {\n      font-size: 20px;\n      width: 20px;\n      height: 20px;\n    }",
+  },
+  {
+    id: "designer-sidebar",
+    name: "DesignerSidebar",
+    selector: "app-designer-sidebar",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "collapsed",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "header",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<div class="sidebar-wrapper">\n        <aside class="designer-sidebar ${this.collapsed ? "collapsed" : ""}">\n          <div class="sidebar-header">\n            <span class="sidebar-header-title">${this.header}</span>\n          </div>\n          <div class="sidebar-content">\n            <slot name="content"></slot>\n          </div>\n          <div class="sidebar-footer">\n            <slot name="footer"></slot>\n          </div>\n        </aside>\n        <div class="sidebar-toggle-container">\n          <button class="sidebar-toggle" @click=${this._toggleCollapse}>\n            ${this.collapsed\n              ? this.position === "left"\n                ? "▶"\n                : "◀"\n              : this.position === "left"\n                ? "◀"\n                : "▶"}\n          </button>\n        </div>\n      </div>',
+    css: ':host {\n      display: block;\n      height: 100%;\n    }\n\n    .sidebar-wrapper {\n      position: relative;\n      height: 100%;\n      display: flex;\n    }\n\n    .sidebar-toggle-container {\n      position: absolute;\n      top: 50%;\n      transform: translateY(-50%);\n      z-index: 10;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 24px;\n      height: 48px;\n      background: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 4px;\n      transition: all var(--transition-fast, 150ms);\n    }\n\n    .sidebar-toggle-container:hover {\n      background: var(--bg-hover);\n    }\n\n    :host([position="left"]) .sidebar-toggle-container {\n      right: -12px;\n    }\n\n    :host([position="right"]) .sidebar-toggle-container {\n      left: -12px;\n      right: auto;\n    }\n\n    .sidebar-toggle {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 24px;\n      height: 28px;\n      padding: 0;\n      background: transparent;\n      border: none;\n      border-radius: 4px;\n      color: var(--text-secondary);\n      cursor: pointer;\n      transition: all var(--transition-fast, 150ms);\n    }\n\n    .sidebar-toggle:hover {\n      color: var(--text-primary);\n    }\n\n    .designer-sidebar {\n      display: flex;\n      flex-direction: column;\n      height: 100%;\n      background: var(--bg-secondary);\n      border-right: 1px solid var(--border-color);\n      transition:\n        width var(--transition-normal, 200ms) ease,\n        opacity var(--transition-normal, 200ms) ease;\n      overflow: hidden;\n      flex-shrink: 0;\n    }\n\n    :host([position="right"]) .designer-sidebar {\n      border-right: none;\n      border-left: 1px solid var(--border-color);\n    }\n\n    .designer-sidebar.collapsed {\n      width: 0;\n      visibility: hidden;\n    }\n\n    .sidebar-header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 0.75rem 1rem;\n      border-bottom: 1px solid var(--border-color);\n      min-height: 48px;\n      background: var(--bg-secondary);\n      flex-shrink: 0;\n    }\n\n    :host([position="right"]) .sidebar-header {\n      flex-direction: row-reverse;\n    }\n\n    .sidebar-header-title {\n      font-size: 0.875rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      white-space: nowrap;\n      overflow: hidden;\n      text-overflow: ellipsis;\n    }\n\n    .sidebar-content {\n      flex: 1;\n      overflow: auto;\n      min-height: 0;\n    }\n\n    .sidebar-footer {\n      padding: 0.75rem 1rem;\n      border-top: 1px solid var(--border-color);\n      flex-shrink: 0;\n    }',
+  },
+];
+// Feedback Components
+const feedbackComponents = [
+  {
+    id: "command-palette",
+    name: "AppCommandPalette",
+    selector: "app-command-palette",
+    packageType: "shared",
+    category: "feedback",
+    props: [
+      {
+        name: "open",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "commands",
+        type: "string",
+        default: "[]",
+      },
+    ],
+    template:
+      '<div class="command-palette"><input type="text" placeholder="Type a command..." /></div>',
+    css: ":host { display: block; }",
+  },
+  {
+    id: "toast",
+    name: "AppToast",
+    selector: "app-toast",
+    packageType: "shared",
+    category: "feedback",
+    props: [
+      {
+        name: "message",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "type",
+        type: "string",
+        default: "info",
+      },
+      {
+        name: "duration",
+        type: "number",
+        default: 3000,
+      },
+    ],
+    template: '<div class="toast toast-${this.type}">${this.message}</div>',
+    css: ":host { display: block; }",
+  },
+  {
+    id: "snackbar",
+    name: "AppSnackbar",
+    selector: "app-snackbar",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "message",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "action",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "duration",
+        type: "number",
+        default: 4000,
+      },
+      {
+        name: "type",
+        type: "string",
+        default: "default",
+      },
+      {
+        name: "open",
+        type: "boolean",
+        default: false,
+      },
+    ],
+    template: "",
+    css: ":host {\n      position: fixed;\n      bottom: 1.5rem;\n      left: 50%;\n      transform: translateX(-50%);\n      z-index: 9999;\n      display: block;\n    }\n    .bar {\n      display: inline-flex;\n      align-items: center;\n      gap: 0.75rem;\n      padding: 0.75rem 1rem;\n      border-radius: 0.5rem;\n      background: var(--bg-elevated, #1f2937);\n      color: var(--text-on-accent, #ffffff);\n      font-size: 0.875rem;\n      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);\n      min-width: 280px;\n      max-width: 560px;\n      border-left: 4px solid var(--accent, #3b82f6);\n    }\n    .bar.success { border-left-color: var(--success, #10b981); }\n    .bar.error { border-left-color: var(--error, #ef4444); }\n    .bar.warning { border-left-color: var(--warning, #f59e0b); }\n    .bar.info { border-left-color: var(--info, #3b82f6); }\n    .message { flex: 1; }\n    .action-btn {\n      background: transparent;\n      border: none;\n      color: var(--accent, #3b82f6);\n      font-weight: 600;\n      cursor: pointer;\n      padding: 0.25rem 0.5rem;\n      border-radius: 0.25rem;\n      text-transform: uppercase;\n      font-size: 0.75rem;\n    }\n    .action-btn:hover { background: rgba(255, 255, 255, 0.1); }\n    .close-btn {\n      background: transparent;\n      border: none;\n      color: inherit;\n      cursor: pointer;\n      padding: 0.125rem 0.25rem;\n      opacity: 0.7;\n      font-size: 1.125rem;\n      line-height: 1;\n    }\n    .close-btn:hover { opacity: 1; }",
+  },
+];
+// Data Components
+const dataComponents = [
+  {
+    id: "data-data-table",
+    name: "data data table",
+    selector: "data-data-table",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "columns",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "data",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "selectable",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "selectedKey",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<div class="app-data-table">\n        <table class="app-data-table__table">\n          <thead class="app-data-table__head">\n            <tr>\n              ${this.selectable\n                ? html',
+    css: ":host {\n      display: block;\n    }\n\n    .app-data-table {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      overflow: hidden;\n    }\n\n    .app-data-table__table {\n      width: 100%;\n      border-collapse: collapse;\n    }\n\n    .app-data-table__head {\n      background: var(--bg-tertiary);\n    }\n\n    th {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .app-data-table__th-check {\n      width: 2.5rem;\n      color: var(--text-muted);\n    }\n\n    td {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-subtle);\n    }\n\n    .app-data-table__body tr:last-child td {\n      border-bottom: none;\n    }\n\n    .app-data-table__body tr {\n      cursor: default;\n      transition: background 150ms ease;\n    }\n\n    .app-data-table__body tr:hover td {\n      background: var(--bg-hover);\n    }\n\n    .app-data-table__row--selected td {\n      background: color-mix(in srgb, var(--accent) 10%, transparent);\n    }\n\n    .app-data-table__row--selected:hover td {\n      background: color-mix(in srgb, var(--accent) 15%, transparent);\n    }\n\n    .app-data-table__td-check {\n      width: 2.5rem;\n      padding-right: 0;\n    }\n\n    .app-data-table__check-icon {\n      font-size: 1.25rem;\n      color: var(--accent);\n      cursor: pointer;\n    }\n\n    .app-data-table__empty {\n      text-align: center;\n      color: var(--text-muted);\n      padding: 2rem;\n    }",
+  },
+  {
+    id: "data-json-view",
+    name: "DataJsonView",
+    selector: "data-json-view",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "data",
+        type: "string",
+        default: "null",
+      },
+      {
+        name: "indent",
+        type: "number",
+        default: 2,
+      },
+    ],
+    template: '<pre class="app-json-view" .innerHTML=${highlighted}></pre>',
+    css: ':host {\n      display: block;\n    }\n\n    .app-json-view {\n      background: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      padding: 1rem;\n      margin: 0;\n      font-family: "Fira Code", "Cascadia Code", "JetBrains Mono", monospace;\n      font-size: 0.8125rem;\n      line-height: 1.6;\n      color: var(--text-primary);\n      overflow-x: auto;\n      white-space: pre;\n    }\n\n    .jv-key {\n      color: #9cdcfe;\n    }\n\n    .jv-string {\n      color: #ce9178;\n    }\n\n    .jv-number {\n      color: #b5cea8;\n    }\n\n    .jv-boolean {\n      color: #569cd6;\n    }\n\n    .jv-null {\n      color: #808080;\n    }',
+  },
+  {
+    id: "data-segment-selector",
+    name: "DataSegmentSelector",
+    selector: "data-segment-selector",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "segments",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "selected",
+        type: "string",
+        default: "",
+      },
+    ],
+    template:
+      '<div class="app-segment-selector">\n        ${this.segments.map(\n          (seg) => html',
+    css: ":host {\n      display: inline-block;\n    }\n\n    .app-segment-selector {\n      display: inline-flex;\n      background: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      padding: 0.25rem;\n      gap: 0.25rem;\n    }\n\n    .app-segment-selector__btn {\n      display: flex;\n      align-items: center;\n      gap: 0.375rem;\n      padding: 0.5rem 1rem;\n      border: none;\n      border-radius: 0.375rem;\n      background: transparent;\n      color: var(--text-secondary);\n      font-size: 0.875rem;\n      font-weight: 500;\n      cursor: pointer;\n      transition:\n        background 150ms ease,\n        color 150ms ease;\n      white-space: nowrap;\n    }\n\n    .app-segment-selector__btn:hover:not(.app-segment-selector__btn--active) {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .app-segment-selector__btn--active {\n      background: var(--accent);\n      color: var(--accent-50);\n    }\n\n    .app-segment-selector__icon {\n      font-size: 1rem;\n    }",
+  },
+  {
+    id: "data-stats-card",
+    name: "DataStatsCard",
+    selector: "data-stats-card",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "label",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "value",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "icon",
+        type: "string",
+        default: "",
+      },
+      {
+        name: "iconBgClass",
+        type: "string",
+        default: "bg-accent",
+      },
+    ],
+    template:
+      '<div class="app-stats-card">\n        <div class="app-stats-card__icon-wrap ${this.iconBgClass}">\n          <span class="material-icons app-stats-card__icon">${this.icon}</span>\n        </div>\n        <div class="app-stats-card__content">\n          <p class="app-stats-card__label">${this.label}</p>\n          <p class="app-stats-card__value">${this.value}</p>\n        </div>\n      </div>',
+    css: ":host {\n      display: block;\n    }\n\n    .app-stats-card {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      padding: 1rem;\n      display: flex;\n      align-items: center;\n      gap: 1rem;\n    }\n\n    .app-stats-card__icon-wrap {\n      width: 3rem;\n      height: 3rem;\n      border-radius: 0.5rem;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      flex-shrink: 0;\n    }\n\n    .app-stats-card__icon {\n      font-size: 1.5rem;\n      color: var(--accent);\n    }\n\n    .app-stats-card__content {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n      min-width: 0;\n    }\n\n    .app-stats-card__label {\n      margin: 0;\n      font-size: 0.75rem;\n      font-weight: 500;\n      color: var(--text-muted);\n      text-transform: uppercase;\n      letter-spacing: 0.05em;\n    }\n\n    .app-stats-card__value {\n      margin: 0;\n      font-size: 1.5rem;\n      font-weight: 700;\n      color: var(--text-primary);\n      line-height: 1.2;\n    }",
+  },
+  {
+    id: "data-table-view",
+    name: "data table view",
+    selector: "data-table-view",
+    packageType: "shared",
+    category: "forms",
+    props: [
+      {
+        name: "columns",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "data",
+        type: "string",
+        default: "[]",
+      },
+      {
+        name: "sortable",
+        type: "boolean",
+        default: false,
+      },
+      {
+        name: "pageSize",
+        type: "number",
+        default: 10,
+      },
+      {
+        name: "total",
+        type: "number",
+        default: 0,
+      },
+    ],
+    template:
+      '<div class="app-table-view">\n        <table class="app-table-view__table">\n          <thead class="app-table-view__head">\n            <tr>\n              ${this.columns.map(\n                (col) => html',
+    css: ":host {\n      display: block;\n    }\n\n    .app-table-view {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      overflow: hidden;\n    }\n\n    .app-table-view__table {\n      width: 100%;\n      border-collapse: collapse;\n    }\n\n    .app-table-view__head {\n      background: var(--bg-tertiary);\n    }\n\n    .app-table-view__head tr {\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    th {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-subtle);\n      font-weight: 600;\n    }\n\n    .app-table-view__th--sortable {\n      cursor: pointer;\n      user-select: none;\n    }\n\n    .app-table-view__th--sortable:hover {\n      background: var(--bg-hover);\n    }\n\n    .app-table-view__th-inner {\n      display: flex;\n      align-items: center;\n      gap: 0.25rem;\n    }\n\n    .app-table-view__sort-icon {\n      font-size: 1rem;\n      color: var(--text-muted);\n    }\n\n    td {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-subtle);\n    }\n\n    .app-table-view__body tr:last-child td {\n      border-bottom: none;\n    }\n\n    .app-table-view__body tr:hover td {\n      background: var(--bg-hover);\n    }\n\n    .app-table-view__empty {\n      text-align: center;\n      color: var(--text-muted);\n      padding: 2rem;\n    }\n\n    .app-table-view__pagination {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      gap: 0.75rem;\n      padding: 0.75rem;\n      border-top: 1px solid var(--border-subtle);\n    }\n\n    .app-table-view__page-btn {\n      background: none;\n      border: 1px solid var(--border-color);\n      border-radius: 0.25rem;\n      width: 2rem;\n      height: 2rem;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      cursor: pointer;\n      color: var(--text-primary);\n      padding: 0;\n    }\n\n    .app-table-view__page-btn:hover:not(:disabled) {\n      background: var(--bg-hover);\n      border-color: var(--accent);\n    }\n\n    .app-table-view__page-btn:disabled {\n      opacity: 0.4;\n      cursor: not-allowed;\n    }\n\n    .app-table-view__page-info {\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n    }",
+  },
+];
+const components = uiComponents;
+
 /**
  * Abstract base component that provides a destroy$ Subject for subscription cleanup.
  * Extend this class instead of OnDestroy directly when you need to manage RxJS subscriptions.
@@ -10431,125 +13063,6 @@ i0.ɵɵngDeclareClassMetadata({
           template: "",
         },
       ],
-    },
-  ],
-});
-
-// Flat key-value translation maps for i18n
-// All schema text should use i18nKey referencing these keys
-const EN = {
-  // App-level
-  "app.title": "Translator",
-  "app.subtitle": "Translate text between 15 languages instantly",
-  // Header
-  "header.shortcuts": "Shortcuts",
-  "header.theme": "Theme",
-  // Labels
-  "label.from": "From",
-  "label.to": "To",
-  // Buttons
-  "button.translate": "Translate",
-  "button.clear": "Clear",
-  // Footer
-  "footer.text": "Translator - Translate text between 15 languages instantly",
-  // Shortcuts overlay
-  "shortcuts.title": "Keyboard Shortcuts",
-  "shortcuts.description": "Press the following keys to trigger actions",
-  // App language selector
-  "lang.selector.label": "Language",
-  // Input placeholders
-  "input.placeholder": "Enter text to translate...",
-  "output.placeholder": "Translation will appear here as you type...",
-};
-const RU = {
-  // App-level
-  "app.title": "Переводчик",
-  "app.subtitle": "Переводите текст между 15 языками мгновенно",
-  // Header
-  "header.shortcuts": "Ярлыки",
-  "header.theme": "Тема",
-  // Labels
-  "label.from": "С",
-  "label.to": "На",
-  // Buttons
-  "button.translate": "Перевести",
-  "button.clear": "Очистить",
-  // Footer
-  "footer.text": "Переводчик — переводите текст между 15 языками мгновенно",
-  // Shortcuts overlay
-  "shortcuts.title": "Горячие клавиши",
-  "shortcuts.description": "Нажмите следующие клавиши для выполнения действий",
-  // App language selector
-  "lang.selector.label": "Язык",
-  // Input placeholders
-  "input.placeholder": "Введите текст для перевода...",
-  "output.placeholder": "Перевод появится здесь по мере ввода...",
-};
-
-const TRANSLATIONS = {
-  en: EN,
-  ru: RU,
-};
-/**
- * Singleton i18n service for schema-driven UI.
- * Use I18nService.instance.t('key') to translate.
- */
-class I18nService {
-  static _instance = null;
-  static get instance() {
-    if (!I18nService._instance) {
-      I18nService._instance = new I18nService();
-    }
-    return I18nService._instance;
-  }
-  _locale = signal("en", ...(ngDevMode ? [{ debugName: "_locale" }] : []));
-  get locale() {
-    return this._locale.asReadonly();
-  }
-  get translations() {
-    return TRANSLATIONS[this._locale()];
-  }
-  setLocale(locale) {
-    this._locale.set(locale);
-  }
-  /**
-   * Translate a key. Falls back to English, then to the key itself.
-   */
-  t(key) {
-    const locale = this._locale();
-    return TRANSLATIONS[locale]?.[key] ?? TRANSLATIONS["en"]?.[key] ?? key;
-  }
-  /**
-   * Get all available locales.
-   */
-  getAvailableLocales() {
-    return ["en", "ru"];
-  }
-  static ɵfac = i0.ɵɵngDeclareFactory({
-    minVersion: "12.0.0",
-    version: "20.3.25",
-    ngImport: i0,
-    type: I18nService,
-    deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable,
-  });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
-    version: "20.3.25",
-    ngImport: i0,
-    type: I18nService,
-    providedIn: "root",
-  });
-}
-i0.ɵɵngDeclareClassMetadata({
-  minVersion: "12.0.0",
-  version: "20.3.25",
-  ngImport: i0,
-  type: I18nService,
-  decorators: [
-    {
-      type: Injectable,
-      args: [{ providedIn: "root" }],
     },
   ],
 });
@@ -11687,6 +14200,7 @@ class SchemaRendererService {
   componentRegistry;
   dataBindingResolver;
   layoutEngine;
+  i18n;
   _pages = signal([], ...(ngDevMode ? [{ debugName: "_pages" }] : []));
   _currentPageId = signal(
     null,
@@ -11704,6 +14218,7 @@ class SchemaRendererService {
     componentRegistry,
     dataBindingResolver,
     layoutEngine,
+    i18n,
   ) {
     this.dataStore = dataStore;
     this.crudService = crudService;
@@ -11711,6 +14226,7 @@ class SchemaRendererService {
     this.componentRegistry = componentRegistry;
     this.dataBindingResolver = dataBindingResolver;
     this.layoutEngine = layoutEngine;
+    this.i18n = i18n;
   }
   componentResolver = null;
   routeResolver = null;
@@ -11753,6 +14269,12 @@ class SchemaRendererService {
       variant: appConfig?.variant,
       size: appConfig?.size,
     };
+    // Initialize locale from schema settings
+    const settings =
+      appConfig && "settings" in appConfig ? appConfig.settings : undefined;
+    if (settings?.defaultLocale) {
+      this.i18n.setLocale(settings.defaultLocale);
+    }
     // Extract layout regions (AppSchema only)
     if ("layoutRegions" in schema && Array.isArray(schema.layoutRegions)) {
       this._layoutRegions.set(schema.layoutRegions);
@@ -11864,7 +14386,7 @@ class SchemaRendererService {
       layout,
       layout.children || [],
       (childId) =>
-        this.getCurrentPage()?.components.find((c) => c.id === childId),
+        this.getCurrentPage()?.components?.find((c) => c.id === childId),
       (l, childId) => this.layoutEngine.resolveGridPosition(l, childId),
     );
   }
@@ -11873,7 +14395,7 @@ class SchemaRendererService {
     container.innerHTML = "";
     if (layout.children) {
       for (const childId of layout.children) {
-        const component = this.getCurrentPage()?.components.find(
+        const component = this.getCurrentPage()?.components?.find(
           (c) => c.id === childId,
         );
         if (component) {
@@ -11918,10 +14440,22 @@ class SchemaRendererService {
   resolveClass(layout) {
     return this.layoutEngine.resolveClass(layout);
   }
+  /**
+   * Resolves responsive grid position based on current window width.
+   * Merges breakpoint overrides (sm, md, lg) into base position.
+   */
+  resolveResponsiveGridPosition(pos) {
+    if (!pos.sm && !pos.md && !pos.lg) return pos;
+    const width = window.innerWidth;
+    if (width < 640 && pos.sm) return { ...pos, ...pos.sm };
+    if (width < 1024 && pos.md) return { ...pos, ...pos.md };
+    if (pos.lg) return { ...pos, ...pos.lg };
+    return pos;
+  }
   getComponentProps(componentId) {
     const page = this.getCurrentPage();
     if (!page) return {};
-    const component = page.components.find((c) => c.id === componentId);
+    const component = (page.components ?? []).find((c) => c.id === componentId);
     return component?.props || {};
   }
   generatePage(pageId) {
@@ -11963,8 +14497,9 @@ class SchemaRendererService {
     const el = document.createElement(finalSelector);
     // Apply grid position
     if (data.gridPosition) {
-      el.style.gridColumn = `${data.gridPosition.column} / span ${data.gridPosition.colSpan || 1}`;
-      el.style.gridRow = `${data.gridPosition.row} / span ${data.gridPosition.rowSpan || 1}`;
+      const resolved = this.resolveResponsiveGridPosition(data.gridPosition);
+      el.style.gridColumn = `${resolved.column} / span ${resolved.colSpan || 1}`;
+      el.style.gridRow = `${resolved.row} / span ${resolved.rowSpan || 1}`;
     } else if (data.position) {
       el.style.position = "absolute";
       el.style.left = `${data.position.x}px`;
@@ -11977,15 +14512,15 @@ class SchemaRendererService {
     }
     // Get mapped classes from props (variant, size, etc.)
     const theme = getCurrentStyle();
-    const globalContext =
-      this._appConfig.variant || this._appConfig.size
-        ? { variant: this._appConfig.variant, size: this._appConfig.size }
-        : undefined;
+    const globalContext = {
+      variant: this._appConfig.variant || theme,
+      size: this._appConfig.size,
+    };
     const explicitVariant = data.props?.["variant"];
     const explicitSize = data.props?.["size"];
     const mappedClasses = this.mapPropsToClasses(
       data.componentId,
-      data.props,
+      data.props ?? {},
       theme,
       explicitVariant,
       explicitSize,
@@ -11993,7 +14528,7 @@ class SchemaRendererService {
     );
     const mappedClassStr = mappedClasses.join(" ");
     const resolvedClasses = this.resolveClasses(
-      data.classes,
+      data.classes ?? "",
       def?.defaultClasses || "",
     );
     const finalClasses = mappedClassStr
@@ -12013,28 +14548,28 @@ class SchemaRendererService {
       mergedProps,
       data.id,
     );
-    // Handle text / i18nKey prop for native HTML elements
-    // i18nKey takes precedence over text
+    // Handle text / i18nKey / label props
+    // i18nKey takes precedence over text, text takes precedence over label
     const i18nKey = resolvedProps["i18nKey"];
     const textValue = resolvedProps["text"];
+    const labelValue = resolvedProps["label"];
     if (i18nKey !== undefined) {
-      const translated = I18nService.instance.t(String(i18nKey));
-      if (!el.shadowRoot) {
-        el.textContent = translated;
-      } else {
-        el["label"] = translated;
-      }
+      el["label"] = this.i18n.t(String(i18nKey));
     } else if (textValue !== undefined) {
-      if (!el.shadowRoot) {
-        el.textContent = String(textValue);
-      } else {
+      // Native HTML elements get textContent; custom elements get label property
+      const isCustom = el.tagName.includes("-");
+      if (isCustom) {
         el["label"] = String(textValue);
+      } else {
+        el.textContent = String(textValue);
       }
+    } else if (labelValue !== undefined) {
+      el["label"] = String(labelValue);
     }
     // Handle placeholder_i18n prop: resolve via I18nService and set as placeholder
     const placeholderI18n = resolvedProps["placeholder_i18n"];
     if (placeholderI18n !== undefined) {
-      el["placeholder"] = I18nService.instance.t(String(placeholderI18n));
+      el["placeholder"] = this.i18n.t(String(placeholderI18n));
     }
     for (const [key, value] of Object.entries(resolvedProps)) {
       if (
@@ -12439,7 +14974,13 @@ class SchemaRendererService {
     // 31. Responsive breakpoints (sm:, md:, lg:)
     const responsive = props["responsive"];
     if (responsive) {
-      const gapMap = { xs: "1", sm: "2", md: "4", lg: "6", xl: "8" };
+      const gapMap = {
+        xs: "1",
+        sm: "2",
+        md: "4",
+        lg: "6",
+        xl: "8",
+      };
       // sm: breakpoint (640px+)
       if (responsive["sm"]) {
         const sm = responsive["sm"];
@@ -12594,6 +15135,7 @@ class SchemaRendererService {
       { token: ComponentRegistryService },
       { token: DataBindingResolverService },
       { token: LayoutEngineService },
+      { token: I18nService },
     ],
     target: i0.ɵɵFactoryTarget.Injectable,
   });
@@ -12623,6 +15165,7 @@ i0.ɵɵngDeclareClassMetadata({
     { type: ComponentRegistryService },
     { type: DataBindingResolverService },
     { type: LayoutEngineService },
+    { type: I18nService },
   ],
 });
 
@@ -12958,10 +15501,7 @@ i0.ɵɵngDeclareClassMetadata({
 });
 
 class GuardService {
-  permissionService;
-  constructor(permissionService) {
-    this.permissionService = permissionService;
-  }
+  permissionService = inject(PermissionService);
   canActivate() {
     return Promise.resolve(this.permissionService.isAuthenticated());
   }
@@ -13001,7 +15541,7 @@ class GuardService {
     version: "20.3.25",
     ngImport: i0,
     type: GuardService,
-    deps: [{ token: PermissionService }],
+    deps: [],
     target: i0.ɵɵFactoryTarget.Injectable,
   });
   static ɵprov = i0.ɵɵngDeclareInjectable({
@@ -13023,7 +15563,6 @@ i0.ɵɵngDeclareClassMetadata({
       args: [{ providedIn: "root" }],
     },
   ],
-  ctorParameters: () => [{ type: PermissionService }],
 });
 
 class SchemaRouterService {
@@ -13270,9 +15809,9 @@ i0.ɵɵngDeclareClassMetadata({
 });
 
 class SchemaElementComponent {
+  renderer = inject(SchemaRendererService);
   element;
   elements = [];
-  ngOnInit() {}
   get componentType() {
     const type = SCHEMA_COMPONENT_MAP.get(this.tag);
     return type ?? null;
@@ -13281,7 +15820,16 @@ class SchemaElementComponent {
     return this.element.componentId;
   }
   get classes() {
-    return this.element.classes ?? "";
+    const base = this.element.classes ?? "";
+    if (!this.element.props) return base;
+    const theme = getCurrentStyle();
+    const mapped = this.renderer.mapPropsToClasses(
+      this.element.componentId,
+      this.element.props,
+      theme,
+    );
+    const mappedStr = mapped.join(" ").trim();
+    return mappedStr ? `${base} ${mappedStr}` : base;
   }
   get childElements() {
     return this.element.children ?? [];
@@ -13346,7 +15894,7 @@ class SchemaElementComponent {
     inputs: { element: "element", elements: "elements" },
     ngImport: i0,
     template:
-      '<div [id]="element.id" [class]="classes" [style]="gridStyle">\n  @if (isNativeHtml && props[\'text\']) {\n    <ng-container [ngSwitch]="tag">\n      <h1 *ngSwitchCase="\'h1\'">{{ props[\'text\'] }}</h1>\n      <h2 *ngSwitchCase="\'h2\'">{{ props[\'text\'] }}</h2>\n      <p *ngSwitchCase="\'p\'">{{ props[\'text\'] }}</p>\n      <footer *ngSwitchCase="\'footer\'">{{ props[\'text\'] }}</footer>\n      <span *ngSwitchDefault>{{ props[\'text\'] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container *ngComponentOutlet="componentType; inputs: props"></ng-container>\n  }\n  @for (child of childElements; track $index) {\n    <app-schema-element [element]="child" [elements]="elements"></app-schema-element>\n  }\n</div>\n',
+      '<div [id]="element.id" [class]="classes" [style]="gridStyle">\n  @if (isNativeHtml && props["text"]) {\n    <ng-container [ngSwitch]="tag">\n      <h1 *ngSwitchCase="\'h1\'">{{ props["text"] }}</h1>\n      <h2 *ngSwitchCase="\'h2\'">{{ props["text"] }}</h2>\n      <p *ngSwitchCase="\'p\'">{{ props["text"] }}</p>\n      <footer *ngSwitchCase="\'footer\'">{{ props["text"] }}</footer>\n      <span *ngSwitchDefault>{{ props["text"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container\n      *ngComponentOutlet="componentType; inputs: props"\n    ></ng-container>\n  }\n  @for (child of childElements; track $index) {\n    <app-schema-element\n      [element]="child"\n      [elements]="elements"\n    ></app-schema-element>\n  }\n</div>\n',
     styles: [":host{display:contents}\n"],
     dependencies: [
       {
@@ -13358,7 +15906,7 @@ class SchemaElementComponent {
       { kind: "ngmodule", type: CommonModule },
       {
         kind: "directive",
-        type: i1$2.NgComponentOutlet,
+        type: i1$1.NgComponentOutlet,
         selector: "[ngComponentOutlet]",
         inputs: [
           "ngComponentOutlet",
@@ -13373,19 +15921,19 @@ class SchemaElementComponent {
       },
       {
         kind: "directive",
-        type: i1$2.NgSwitch,
+        type: i1$1.NgSwitch,
         selector: "[ngSwitch]",
         inputs: ["ngSwitch"],
       },
       {
         kind: "directive",
-        type: i1$2.NgSwitchCase,
+        type: i1$1.NgSwitchCase,
         selector: "[ngSwitchCase]",
         inputs: ["ngSwitchCase"],
       },
       {
         kind: "directive",
-        type: i1$2.NgSwitchDefault,
+        type: i1$1.NgSwitchDefault,
         selector: "[ngSwitchDefault]",
       },
     ],
@@ -13405,7 +15953,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [CommonModule],
           template:
-            '<div [id]="element.id" [class]="classes" [style]="gridStyle">\n  @if (isNativeHtml && props[\'text\']) {\n    <ng-container [ngSwitch]="tag">\n      <h1 *ngSwitchCase="\'h1\'">{{ props[\'text\'] }}</h1>\n      <h2 *ngSwitchCase="\'h2\'">{{ props[\'text\'] }}</h2>\n      <p *ngSwitchCase="\'p\'">{{ props[\'text\'] }}</p>\n      <footer *ngSwitchCase="\'footer\'">{{ props[\'text\'] }}</footer>\n      <span *ngSwitchDefault>{{ props[\'text\'] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container *ngComponentOutlet="componentType; inputs: props"></ng-container>\n  }\n  @for (child of childElements; track $index) {\n    <app-schema-element [element]="child" [elements]="elements"></app-schema-element>\n  }\n</div>\n',
+            '<div [id]="element.id" [class]="classes" [style]="gridStyle">\n  @if (isNativeHtml && props["text"]) {\n    <ng-container [ngSwitch]="tag">\n      <h1 *ngSwitchCase="\'h1\'">{{ props["text"] }}</h1>\n      <h2 *ngSwitchCase="\'h2\'">{{ props["text"] }}</h2>\n      <p *ngSwitchCase="\'p\'">{{ props["text"] }}</p>\n      <footer *ngSwitchCase="\'footer\'">{{ props["text"] }}</footer>\n      <span *ngSwitchDefault>{{ props["text"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container\n      *ngComponentOutlet="componentType; inputs: props"\n    ></ng-container>\n  }\n  @for (child of childElements; track $index) {\n    <app-schema-element\n      [element]="child"\n      [elements]="elements"\n    ></app-schema-element>\n  }\n</div>\n',
           styles: [":host{display:contents}\n"],
         },
       ],
@@ -13558,13 +16106,13 @@ class SchemaRouteViewerComponent {
     usesOnChanges: true,
     ngImport: i0,
     template:
-      '@if (page(); as p) {\n  <div [class]="containerClass()" [ngStyle]="gridStyles()">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element [element]="element" [elements]="p.canvasElements"></app-schema-element>\n    }\n  </div>\n}\n',
+      '@if (page(); as p) {\n  <div [class]="containerClass()" [ngStyle]="gridStyles()">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]="element"\n        [elements]="p.canvasElements"\n      ></app-schema-element>\n    }\n  </div>\n}\n',
     styles: [":host{display:block}.schema-page{min-height:100%}\n"],
     dependencies: [
       { kind: "ngmodule", type: CommonModule },
       {
         kind: "directive",
-        type: i1$2.NgStyle,
+        type: i1$1.NgStyle,
         selector: "[ngStyle]",
         inputs: ["ngStyle"],
       },
@@ -13592,7 +16140,7 @@ i0.ɵɵngDeclareClassMetadata({
           imports: [CommonModule, SchemaElementComponent],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           template:
-            '@if (page(); as p) {\n  <div [class]="containerClass()" [ngStyle]="gridStyles()">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element [element]="element" [elements]="p.canvasElements"></app-schema-element>\n    }\n  </div>\n}\n',
+            '@if (page(); as p) {\n  <div [class]="containerClass()" [ngStyle]="gridStyles()">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]="element"\n        [elements]="p.canvasElements"\n      ></app-schema-element>\n    }\n  </div>\n}\n',
           styles: [":host{display:block}.schema-page{min-height:100%}\n"],
         },
       ],
@@ -13645,7 +16193,11 @@ class InvokeWrapperService {
   async invokeWithRetry(
     cmd,
     args,
-    retryOptions = { maxAttempts: 3, initialDelayMs: 1000, maxDelayMs: 30000 },
+    retryOptions = {
+      maxAttempts: 3,
+      initialDelayMs: 1000,
+      maxDelayMs: 30000,
+    },
   ) {
     return invokeWithRetry(
       () => this.invokeWithTimeout(cmd, args, retryOptions.maxDelayMs),
@@ -14021,6 +16573,13 @@ class SchemaShellComponent {
         this.themeService.toggleDarkMode();
       });
       this.themeService.loadTheme(schema.app?.style ?? this.defaultTheme);
+      // Load the variant CSS into <head> so CSS variables and class selectors are available
+      const variant = schema.app?.style ?? this.defaultTheme;
+      await loadStyleVariant(variant);
+      // Re-inject dark mode CSS for the newly loaded variant if dark mode is active
+      if (this.themeService.isDarkMode()) {
+        this.themeService.setDarkMode(true);
+      }
       const route =
         this.initialRoute || schema.pages[0].route || `/${schema.pages[0].id}`;
       console.log(`[SchemaShell] navigate("${route}")`);
@@ -14071,6 +16630,17 @@ class SchemaShellComponent {
   retry() {
     this.loadSchema();
   }
+  /**
+   * Returns CSS classes for a region container by mapping its props to Tailwind-style classes.
+   * Uses the same mapPropsToClasses() logic as schema elements for consistent styling.
+   */
+  getRegionClasses(region) {
+    if (!region?.props) return "";
+    const theme = getCurrentStyle();
+    return this.renderer
+      .mapPropsToClasses(region.componentId || "div", region.props, theme)
+      .join(" ");
+  }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
     version: "20.3.25",
@@ -14102,9 +16672,9 @@ class SchemaShellComponent {
     host: { listeners: { "window:toggle-dark": "onWindowToggleDark($event)" } },
     ngImport: i0,
     template:
-      '@if (loading()) {\n<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; min-height: 100vh;">\n  <app-loading size="lg"></app-loading>\n  <p style="color: var(--text-secondary); font-size: 1.125rem;">Loading application...</p>\n</div>\n} @else if (error(); as err) {\n<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">\n  <app-empty-state\n    variant="danger"\n    title="Application Not Available"\n    [message]="err"\n    actionLabel="Retry"\n    (action)="retry()"\n  ></app-empty-state>\n</div>\n} @else {\n<div class="app-layout"\n     [style.grid-template-columns]="gridColumns()"\n     [style.grid-template-rows]="gridRows()"\n     [style.grid-template-areas]="gridAreas()">\n\n  @if (headerRegion(); as region) {\n    <div data-region="header" style="grid-area: header">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]="child" [elements]="region.children || []" />\n      }\n    </div>\n  }\n\n  @if (sidebarLeftRegion(); as region) {\n    <div data-region="sidebar-left" style="grid-area: sidebar-left">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]="child" [elements]="region.children || []" />\n      }\n    </div>\n  }\n\n  <div data-region="content" style="grid-area: content">\n    <lib-schema-route-viewer />\n  </div>\n\n  @if (sidebarRightRegion(); as region) {\n    <div data-region="sidebar-right" style="grid-area: sidebar-right">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]="child" [elements]="region.children || []" />\n      }\n    </div>\n  }\n\n  @if (footerRegion(); as region) {\n    <div data-region="footer" style="grid-area: footer">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]="child" [elements]="region.children || []" />\n      }\n    </div>\n  }\n\n  @if (bottomNavRegion(); as region) {\n    <div data-region="bottom-nav" style="grid-area: bottom-nav">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]="child" [elements]="region.children || []" />\n      }\n    </div>\n  }\n\n  @for (region of otherRegions(); track region.id) {\n    <div data-region="other" style="grid-area: other">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]="child" [elements]="region.children || []" />\n      }\n    </div>\n  }\n</div>\n\n@for (region of overlayRegions(); track region.id) {\n  <div class="layout-overlay" data-region="overlay">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </div>\n}\n}\n',
+      '@if (loading()) {\n  <div\n    style="\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      gap: 1rem;\n      min-height: 100vh;\n    "\n  >\n    <app-loading size="lg"></app-loading>\n    <p style="color: var(--text-secondary); font-size: 1.125rem">\n      Loading application...\n    </p>\n  </div>\n} @else if (error(); as err) {\n  <div\n    style="\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      min-height: 100vh;\n      padding: 2rem;\n    "\n  >\n    <app-empty-state\n      variant="danger"\n      title="Application Not Available"\n      [message]="err"\n      actionLabel="Retry"\n      (action)="retry()"\n    ></app-empty-state>\n  </div>\n} @else {\n  <div\n    class="app-layout"\n    [style.grid-template-columns]="gridColumns()"\n    [style.grid-template-rows]="gridRows()"\n    [style.grid-template-areas]="gridAreas()"\n  >\n    @if (headerRegion(); as region) {\n      <div data-region="header" [class]="getRegionClasses(region)" style="grid-area: header">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (sidebarLeftRegion(); as region) {\n      <div data-region="sidebar-left" [class]="getRegionClasses(region)" style="grid-area: sidebar-left">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    <div data-region="content" style="grid-area: content">\n      <lib-schema-route-viewer />\n    </div>\n\n    @if (sidebarRightRegion(); as region) {\n      <div data-region="sidebar-right" [class]="getRegionClasses(region)" style="grid-area: sidebar-right">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (footerRegion(); as region) {\n      <div data-region="footer" [class]="getRegionClasses(region)" style="grid-area: footer">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (bottomNavRegion(); as region) {\n      <div data-region="bottom-nav" [class]="getRegionClasses(region)" style="grid-area: bottom-nav">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @for (region of otherRegions(); track region.id) {\n      <div data-region="other" [class]="getRegionClasses(region)" style="grid-area: other">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n  </div>\n\n  @for (region of overlayRegions(); track region.id) {\n    <div class="layout-overlay" data-region="overlay">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element\n          [element]="child"\n          [elements]="region.children || []"\n        />\n      }\n    </div>\n  }\n}\n',
     styles: [
-      ":host{display:block;height:100%}.app-layout{display:grid;min-height:100vh}[data-region=header]{display:flex;flex-direction:row;align-items:center;justify-content:space-between}[data-region=content]{overflow:auto;min-height:0}[data-region=sidebar-left],[data-region=sidebar-right]{overflow:auto}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n",
+      ":host{display:block;height:100%}.app-layout{display:grid;min-height:100vh}[data-region=content],[data-region=sidebar-left],[data-region=sidebar-right]{overflow:auto}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n",
     ],
     dependencies: [
       { kind: "ngmodule", type: CommonModule },
@@ -14142,9 +16712,9 @@ i0.ɵɵngDeclareClassMetadata({
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           template:
-            '@if (loading()) {\n<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; min-height: 100vh;">\n  <app-loading size="lg"></app-loading>\n  <p style="color: var(--text-secondary); font-size: 1.125rem;">Loading application...</p>\n</div>\n} @else if (error(); as err) {\n<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">\n  <app-empty-state\n    variant="danger"\n    title="Application Not Available"\n    [message]="err"\n    actionLabel="Retry"\n    (action)="retry()"\n  ></app-empty-state>\n</div>\n} @else {\n<div class="app-layout"\n     [style.grid-template-columns]="gridColumns()"\n     [style.grid-template-rows]="gridRows()"\n     [style.grid-template-areas]="gridAreas()">\n\n  @if (headerRegion(); as region) {\n    <div data-region="header" style="grid-area: header">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]="child" [elements]="region.children || []" />\n      }\n    </div>\n  }\n\n  @if (sidebarLeftRegion(); as region) {\n    <div data-region="sidebar-left" style="grid-area: sidebar-left">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]="child" [elements]="region.children || []" />\n      }\n    </div>\n  }\n\n  <div data-region="content" style="grid-area: content">\n    <lib-schema-route-viewer />\n  </div>\n\n  @if (sidebarRightRegion(); as region) {\n    <div data-region="sidebar-right" style="grid-area: sidebar-right">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]="child" [elements]="region.children || []" />\n      }\n    </div>\n  }\n\n  @if (footerRegion(); as region) {\n    <div data-region="footer" style="grid-area: footer">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]="child" [elements]="region.children || []" />\n      }\n    </div>\n  }\n\n  @if (bottomNavRegion(); as region) {\n    <div data-region="bottom-nav" style="grid-area: bottom-nav">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]="child" [elements]="region.children || []" />\n      }\n    </div>\n  }\n\n  @for (region of otherRegions(); track region.id) {\n    <div data-region="other" style="grid-area: other">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element [element]="child" [elements]="region.children || []" />\n      }\n    </div>\n  }\n</div>\n\n@for (region of overlayRegions(); track region.id) {\n  <div class="layout-overlay" data-region="overlay">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </div>\n}\n}\n',
+            '@if (loading()) {\n  <div\n    style="\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      gap: 1rem;\n      min-height: 100vh;\n    "\n  >\n    <app-loading size="lg"></app-loading>\n    <p style="color: var(--text-secondary); font-size: 1.125rem">\n      Loading application...\n    </p>\n  </div>\n} @else if (error(); as err) {\n  <div\n    style="\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      min-height: 100vh;\n      padding: 2rem;\n    "\n  >\n    <app-empty-state\n      variant="danger"\n      title="Application Not Available"\n      [message]="err"\n      actionLabel="Retry"\n      (action)="retry()"\n    ></app-empty-state>\n  </div>\n} @else {\n  <div\n    class="app-layout"\n    [style.grid-template-columns]="gridColumns()"\n    [style.grid-template-rows]="gridRows()"\n    [style.grid-template-areas]="gridAreas()"\n  >\n    @if (headerRegion(); as region) {\n      <div data-region="header" [class]="getRegionClasses(region)" style="grid-area: header">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (sidebarLeftRegion(); as region) {\n      <div data-region="sidebar-left" [class]="getRegionClasses(region)" style="grid-area: sidebar-left">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    <div data-region="content" style="grid-area: content">\n      <lib-schema-route-viewer />\n    </div>\n\n    @if (sidebarRightRegion(); as region) {\n      <div data-region="sidebar-right" [class]="getRegionClasses(region)" style="grid-area: sidebar-right">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (footerRegion(); as region) {\n      <div data-region="footer" [class]="getRegionClasses(region)" style="grid-area: footer">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (bottomNavRegion(); as region) {\n      <div data-region="bottom-nav" [class]="getRegionClasses(region)" style="grid-area: bottom-nav">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @for (region of otherRegions(); track region.id) {\n      <div data-region="other" [class]="getRegionClasses(region)" style="grid-area: other">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n  </div>\n\n  @for (region of overlayRegions(); track region.id) {\n    <div class="layout-overlay" data-region="overlay">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element\n          [element]="child"\n          [elements]="region.children || []"\n        />\n      }\n    </div>\n  }\n}\n',
           styles: [
-            ":host{display:block;height:100%}.app-layout{display:grid;min-height:100vh}[data-region=header]{display:flex;flex-direction:row;align-items:center;justify-content:space-between}[data-region=content]{overflow:auto;min-height:0}[data-region=sidebar-left],[data-region=sidebar-right]{overflow:auto}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n",
+            ":host{display:block;height:100%}.app-layout{display:grid;min-height:100vh}[data-region=content],[data-region=sidebar-left],[data-region=sidebar-right]{overflow:auto}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n",
           ],
         },
       ],
@@ -14277,9 +16847,9 @@ class SchemaFetcherService {
     if (!schema || typeof schema !== "object") return false;
     const s = schema;
     return (
-      typeof s.schemaVersion === "string" &&
-      typeof s.app === "object" &&
-      Array.isArray(s.pages)
+      typeof s["schemaVersion"] === "string" &&
+      typeof s["app"] === "object" &&
+      Array.isArray(s["pages"])
     );
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
@@ -14287,7 +16857,7 @@ class SchemaFetcherService {
     version: "20.3.25",
     ngImport: i0,
     type: SchemaFetcherService,
-    deps: [{ token: i1$3.HttpClient, optional: true }],
+    deps: [{ token: i1$2.HttpClient, optional: true }],
     target: i0.ɵɵFactoryTarget.Injectable,
   });
   static ɵprov = i0.ɵɵngDeclareInjectable({
@@ -14311,7 +16881,7 @@ i0.ɵɵngDeclareClassMetadata({
   ],
   ctorParameters: () => [
     {
-      type: i1$3.HttpClient,
+      type: i1$2.HttpClient,
       decorators: [
         {
           type: Optional,
@@ -14929,7 +17499,7 @@ class SignalSyncService {
     version: "20.3.25",
     ngImport: i0,
     type: SignalSyncService,
-    deps: [{ token: i1$3.HttpClient }],
+    deps: [{ token: i1$2.HttpClient }],
     target: i0.ɵɵFactoryTarget.Injectable,
   });
   static ɵprov = i0.ɵɵngDeclareInjectable({
@@ -14951,7 +17521,7 @@ i0.ɵɵngDeclareClassMetadata({
       args: [{ providedIn: "root" }],
     },
   ],
-  ctorParameters: () => [{ type: i1$3.HttpClient }],
+  ctorParameters: () => [{ type: i1$2.HttpClient }],
 });
 
 class SignalLoggerService {
@@ -15361,7 +17931,9 @@ class UnifiedStorageService {
 
 class CrudService {
   async find(entity, id) {
-    const result = await this.execute("find", entity, { filter: { id } });
+    const result = await this.execute("find", entity, {
+      filter: { id },
+    });
     return result.data ?? null;
   }
   async findAll(entity, filter) {
@@ -15375,11 +17947,17 @@ class CrudService {
     return result.data;
   }
   async update(entity, id, data) {
-    const result = await this.execute("update", entity, { id, data });
+    const result = await this.execute("update", entity, {
+      id,
+      data,
+    });
     return result.data;
   }
   async patch(entity, id, data) {
-    const result = await this.execute("patch", entity, { id, data });
+    const result = await this.execute("patch", entity, {
+      id,
+      data,
+    });
     return result.data;
   }
   async delete(entity, id) {
@@ -16476,6 +19054,7 @@ export {
   RbacHasRoleDirective,
   CrudService as RemoteCrudService,
   ResponseStatus,
+  SCHEMA_COMPONENT_MAP,
   SchemaElementComponent,
   SchemaFetcherService,
   SchemaRendererService,
@@ -16502,11 +19081,13 @@ export {
   chunk,
   clamp,
   createGraph,
+  dataComponents,
   dedupe,
   dfs,
   difference,
   dijkstra,
   factorial,
+  feedbackComponents,
   fibonacci,
   findNode,
   flatten,
@@ -16534,6 +19115,7 @@ export {
   jaroWinkler,
   jumpSearch,
   kebabToCamel,
+  layoutComponents,
   lcm,
   lcsLength,
   lcsSubstringLength,
@@ -16551,6 +19133,7 @@ export {
   primesUpTo,
   rbacGuard,
   rbacRoleGuard,
+  registerSchemaComponent,
   setCurrentStyle,
   sortBy,
   stddev,
@@ -16558,6 +19141,7 @@ export {
   topologicalSort,
   treeDepth,
   truncate,
+  uiComponents,
   union,
   unwrapResponse,
   upperBound,

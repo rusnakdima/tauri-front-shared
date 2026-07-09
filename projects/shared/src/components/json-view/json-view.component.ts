@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, inject } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 
@@ -42,8 +42,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
 })
 export class JsonViewComponent {
   @Input() data: unknown = {};
-
-  constructor(private sanitizer: DomSanitizer) {}
+  private sanitizer = inject<DomSanitizer>(DomSanitizer);
 
   get safeHtml(): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(this.formattedHtml);

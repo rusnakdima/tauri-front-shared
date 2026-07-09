@@ -115,7 +115,10 @@ export class StyleThemeService {
     this.removeDarkModeVariables();
     const style = document.createElement("style");
     style.id = "dark-mode-variables";
-    style.textContent = this.getDarkModeVariablesCSS(variant);
+    // Both mechanisms are needed: :root {} variables AND .dark .{prefix}* class selectors
+    style.textContent =
+      this.getDarkModeVariablesCSS(variant) +
+      this.getDarkModeCSSForVariant(variant);
     document.head.appendChild(style);
   }
 
@@ -279,6 +282,35 @@ export class StyleThemeService {
   --border-color: #f5f5f0;
   --border-subtle: #c0c0c0;
 }
+
+.dark .brut-card {
+  background: #2a2a2a;
+  border-color: #f5f5f0;
+}
+.dark .brut-btn {
+  background: #2a2a2a;
+  border-color: #f5f5f0;
+  color: #f5f5f0;
+}
+.dark .brut-btn:hover { background: #3a3a3a; }
+.dark .brut-btn-primary { background: #ff3b30; color: #ffffff; }
+.dark .brut-input {
+  background: #2a2a2a;
+  border-color: #f5f5f0;
+  color: #f5f5f0;
+}
+.dark .brut-input:focus { background: #3a3a3a; outline: none; }
+.dark .brut-modal {
+  background: #2a2a2a;
+  border-color: #f5f5f0;
+}
+.dark .brut-chip { background: #ffd60a; color: #0a0a0a; border-color: #f5f5f0; }
+.dark .brut-badge { background: #ff3b30; color: #ffffff; border-color: #f5f5f0; }
+.dark .brut-tabs { border-bottom-color: #f5f5f0; }
+.dark .brut-tab { background: #2a2a2a; border-color: #f5f5f0; color: #f5f5f0; }
+.dark .brut-tab.active { background: #ff3b30; color: #ffffff; }
+.dark .brut-divider { background: #f5f5f0; }
+.dark .brut-spinner { border-color: #f5f5f0; border-top-color: #ff3b30; }
 `;
   }
 
@@ -302,6 +334,49 @@ export class StyleThemeService {
   --border-color: #1a1009;
   --border-subtle: #4a2e18;
 }
+
+.dark .skeu-card {
+  background: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%);
+  border-color: #1a1009;
+  color: #f5e6c8;
+}
+.dark .skeu-card.paper {
+  background: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%);
+  color: #f5e6c8;
+  border-color: #5a4e3f;
+}
+.dark .skeu-btn {
+  background: linear-gradient(180deg, #4a3a28 0%, #1a1009 100%);
+  border-color: #1a1009;
+  color: #f5e6c8;
+}
+.dark .skeu-btn:hover { filter: brightness(1.15); }
+.dark .skeu-btn-primary {
+  background: linear-gradient(180deg, #d4a017 0%, #8b6508 100%);
+  color: #f5e6c8;
+}
+.dark .skeu-input {
+  background: linear-gradient(180deg, #4a3e2f 0%, #3a3025 100%);
+  border-color: #1a1009;
+  color: #f5e6c8;
+}
+.dark .skeu-modal {
+  background: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%);
+  border-color: #1a1009;
+  color: #f5e6c8;
+}
+.dark .skeu-chip {
+  background: linear-gradient(180deg, #4a3a28 0%, #1a1009 100%);
+  border-color: #1a1009;
+  color: #f5e6c8;
+}
+.dark .skeu-badge {
+  background: linear-gradient(180deg, #d4a017 0%, #8b6508 100%);
+  color: #f5e6c8;
+}
+.dark .skeu-tabs {}
+.dark .skeu-divider { background: #1a1009; }
+.dark .skeu-spinner { border-color: #1a1009; border-top-color: #d4a017; }
 `;
   }
 

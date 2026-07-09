@@ -143,9 +143,7 @@ export class SchemaRouterService {
     }
   }
 
-  resolveRoute(
-    route: string,
-  ): {
+  resolveRoute(route: string): {
     page: Page | null;
     layout: Layout | null;
     params: Record<string, string>;

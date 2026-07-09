@@ -99,9 +99,9 @@ export class SchemaFetcherService {
     if (!schema || typeof schema !== "object") return false;
     const s = schema as Record<string, unknown>;
     return (
-      typeof s.schemaVersion === "string" &&
-      typeof s.app === "object" &&
-      Array.isArray(s.pages)
+      typeof s["schemaVersion"] === "string" &&
+      typeof s["app"] === "object" &&
+      Array.isArray(s["pages"])
     );
   }
 }

@@ -8,21 +8,8 @@ const TRANSLATIONS: Record<Locale, Record<string, string>> = {
   ru: RU,
 };
 
-/**
- * Singleton i18n service for schema-driven UI.
- * Use I18nService.instance.t('key') to translate.
- */
 @Injectable({ providedIn: "root" })
 export class I18nService {
-  private static _instance: I18nService | null = null;
-
-  static get instance(): I18nService {
-    if (!I18nService._instance) {
-      I18nService._instance = new I18nService();
-    }
-    return I18nService._instance;
-  }
-
   private readonly _locale = signal<Locale>("en");
 
   get locale() {

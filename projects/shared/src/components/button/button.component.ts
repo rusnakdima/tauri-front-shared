@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Component, Input, Output, EventEmitter, inject } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
+import { I18nService } from "../../core/lib/i18n/i18n.service";
 
 export type ButtonStyle = "solid" | "outline" | "soft" | "ghost";
 export type ButtonVariant =
@@ -275,6 +276,8 @@ export type ButtonSize = "sm" | "md" | "lg";
   ],
 })
 export class ButtonComponent {
+  private i18n = inject(I18nService);
+
   @Input() variant: ButtonVariant = "primary";
   @Input() buttonStyle: ButtonStyle = "solid";
   @Input() size: ButtonSize = "md";
@@ -285,6 +288,11 @@ export class ButtonComponent {
   @Input() fullWidth = false;
   @Input() type: "button" | "submit" | "reset" = "button";
   @Input() label = "";
+  @Input() set i18nKey(value: string | undefined) {
+    if (value !== undefined && value !== null) {
+      this.label = this.i18n.t(value);
+    }
+  }
   @Input() classes = "";
   @Input() ariaLabel = "";
   @Input() align = "";

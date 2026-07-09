@@ -1,7 +1,18 @@
 import { Injectable } from "@angular/core";
 import { LitElement } from "lit";
-import type { ElementConfig, GridPosition, DataBinding } from "./types";
+import type { GridPosition } from "../types";
 import { I18nService } from "../i18n/i18n.service";
+
+// Extended config with fields used by this service
+interface ElementFactoryConfig {
+  id: string;
+  componentId: string;
+  gridPosition?: GridPosition;
+  classes?: string;
+  styles?: Record<string, string>;
+  props?: Record<string, unknown>;
+  children?: string[];
+}
 import {
   StyleVariant,
   getCurrentStyle,
@@ -22,12 +33,14 @@ export interface ComponentRegistry {
 export class ElementFactoryService {
   private registry: ComponentRegistry | null = null;
 
+  constructor(private i18n: I18nService) {}
+
   setRegistry(registry: ComponentRegistry): void {
     this.registry = registry;
   }
 
   async createElement(
-    config: ElementConfig,
+    config: ElementFactoryConfig,
     componentRegistry: ComponentRegistry,
   ): Promise<HTMLElement | null> {
     const selector = componentRegistry.getSelector(config.componentId);
@@ -75,11 +88,12 @@ export class ElementFactoryService {
     // Handle i18nKey resolution
     const i18nKey = config.props?.["i18nKey"];
     if (i18nKey !== undefined) {
-      const translated = I18nService.instance.t(String(i18nKey));
-      if (!element.shadowRoot) {
-        element.textContent = translated;
-      } else {
+      const translated = this.i18n.t(String(i18nKey));
+      const isCustom = element.tagName.includes("-");
+      if (isCustom) {
         (element as any)["label"] = translated;
+      } else {
+        element.textContent = translated;
       }
     }
 
@@ -101,7 +115,7 @@ export class ElementFactoryService {
       }
     }
 
-    for (const childId of config.children) {
+    for (const childId of config.children ?? []) {
       const childConfig = this.getChildConfig(config.componentId, childId);
       if (childConfig) {
         const childElement = await this.createElement(
@@ -136,25 +150,28 @@ export class ElementFactoryService {
     }
   }
 
-  private createFallbackElement(config: ElementConfig): HTMLElement {
+  private createFallbackElement(config: ElementFactoryConfig): HTMLElement {
     const fallback = document.createElement("div");
     fallback.setAttribute("data-sdui-fallback", config.componentId);
     fallback.setAttribute("data-element-id", config.id);
-    fallback.className = config.classes;
+    if (config.classes) fallback.className = config.classes;
 
     const i18nKey = config.props?.["i18nKey"];
     if (i18nKey !== undefined) {
-      fallback.textContent = I18nService.instance.t(String(i18nKey));
+      fallback.textContent = this.i18n.t(String(i18nKey));
     }
 
     return fallback;
   }
 
-  getChildConfig(parentType: string, childKey: string): ElementConfig | null {
+  getChildConfig(
+    parentType: string,
+    childKey: string,
+  ): ElementFactoryConfig | null {
     if (!this.registry?.getDefinition) return null;
     const parentDef = this.registry.getDefinition(parentType);
     if (!parentDef || !parentDef.children) return null;
-    for (const child of parentDef.children as unknown as ElementConfig[]) {
+    for (const child of parentDef.children as unknown as ElementFactoryConfig[]) {
       if ((child as unknown as { key: string }).key === childKey) return child;
     }
     return null;

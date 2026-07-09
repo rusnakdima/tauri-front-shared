@@ -44,7 +44,10 @@ export { SignalLoggerService } from "./core/lib/signal-logger/signal-logger.serv
 export { DataPatchService } from "./core/lib/data-patch/data-patch.service";
 export { ToastService } from "./core/lib/toast/toast.service";
 export { SchemaElementComponent } from "./core/lib/schema-router/schema-element.component";
-export { SCHEMA_COMPONENT_MAP, registerSchemaComponent } from "./core/lib/schema-component.registry";
+export {
+  SCHEMA_COMPONENT_MAP,
+  registerSchemaComponent,
+} from "./core/lib/schema-component.registry";
 
 // Storage services
 export { StorageService } from "./storage/storage.service";

@@ -48,6 +48,7 @@ export class SchemaRendererService {
     private componentRegistry: ComponentRegistryService,
     private dataBindingResolver: DataBindingResolverService,
     private layoutEngine: LayoutEngineService,
+    private i18n: I18nService,
   ) {}
 
   private componentResolver:
@@ -100,6 +101,15 @@ export class SchemaRendererService {
       variant: appConfig?.variant,
       size: appConfig?.size,
     };
+
+    // Initialize locale from schema settings
+    const settings =
+      appConfig && "settings" in appConfig
+        ? (appConfig as any).settings
+        : undefined;
+    if (settings?.defaultLocale) {
+      this.i18n.setLocale(settings.defaultLocale);
+    }
 
     // Extract layout regions (AppSchema only)
     if ("layoutRegions" in schema && Array.isArray(schema.layoutRegions)) {
@@ -237,7 +247,7 @@ export class SchemaRendererService {
       layout,
       layout.children || [],
       (childId) =>
-        this.getCurrentPage()?.components.find((c) => c.id === childId),
+        this.getCurrentPage()?.components?.find((c) => c.id === childId),
       (l, childId) => this.layoutEngine.resolveGridPosition(l, childId),
     );
   }
@@ -251,7 +261,7 @@ export class SchemaRendererService {
 
     if (layout.children) {
       for (const childId of layout.children) {
-        const component = this.getCurrentPage()?.components.find(
+        const component = this.getCurrentPage()?.components?.find(
           (c) => c.id === childId,
         );
         if (component) {
@@ -310,11 +320,24 @@ export class SchemaRendererService {
     return this.layoutEngine.resolveClass(layout);
   }
 
+  /**
+   * Resolves responsive grid position based on current window width.
+   * Merges breakpoint overrides (sm, md, lg) into base position.
+   */
+  private resolveResponsiveGridPosition(pos: GridPosition): GridPosition {
+    if (!pos.sm && !pos.md && !pos.lg) return pos;
+    const width = window.innerWidth;
+    if (width < 640 && pos.sm) return { ...pos, ...pos.sm };
+    if (width < 1024 && pos.md) return { ...pos, ...pos.md };
+    if (pos.lg) return { ...pos, ...pos.lg };
+    return pos;
+  }
+
   getComponentProps(componentId: string): Record<string, unknown> {
     const page = this.getCurrentPage();
     if (!page) return {};
 
-    const component = page.components.find((c) => c.id === componentId);
+    const component = (page.components ?? []).find((c) => c.id === componentId);
     return component?.props || {};
   }
 
@@ -370,8 +393,9 @@ export class SchemaRendererService {
 
     // Apply grid position
     if (data.gridPosition) {
-      el.style.gridColumn = `${data.gridPosition.column} / span ${data.gridPosition.colSpan || 1}`;
-      el.style.gridRow = `${data.gridPosition.row} / span ${data.gridPosition.rowSpan || 1}`;
+      const resolved = this.resolveResponsiveGridPosition(data.gridPosition);
+      el.style.gridColumn = `${resolved.column} / span ${resolved.colSpan || 1}`;
+      el.style.gridRow = `${resolved.row} / span ${resolved.rowSpan || 1}`;
     } else if (data.position) {
       el.style.position = "absolute";
       el.style.left = `${data.position.x}px`;
@@ -386,15 +410,15 @@ export class SchemaRendererService {
 
     // Get mapped classes from props (variant, size, etc.)
     const theme = getCurrentStyle();
-    const globalContext: GlobalStyleContext | undefined =
-      this._appConfig.variant || this._appConfig.size
-        ? { variant: this._appConfig.variant, size: this._appConfig.size }
-        : undefined;
+    const globalContext: GlobalStyleContext = {
+      variant: this._appConfig.variant || theme,
+      size: this._appConfig.size,
+    };
     const explicitVariant = data.props?.["variant"] as string | undefined;
     const explicitSize = data.props?.["size"] as string | undefined;
     const mappedClasses = this.mapPropsToClasses(
       data.componentId,
-      data.props,
+      data.props ?? {},
       theme,
       explicitVariant,
       explicitSize,
@@ -403,7 +427,7 @@ export class SchemaRendererService {
     const mappedClassStr = mappedClasses.join(" ");
 
     const resolvedClasses = this.resolveClasses(
-      data.classes,
+      data.classes ?? "",
       def?.defaultClasses || "",
     );
     const finalClasses = mappedClassStr
@@ -426,32 +450,30 @@ export class SchemaRendererService {
       data.id,
     );
 
-    // Handle text / i18nKey prop for native HTML elements
-    // i18nKey takes precedence over text
+    // Handle text / i18nKey / label props
+    // i18nKey takes precedence over text, text takes precedence over label
     const i18nKey = resolvedProps["i18nKey"];
     const textValue = resolvedProps["text"];
+    const labelValue = resolvedProps["label"];
 
     if (i18nKey !== undefined) {
-      const translated = I18nService.instance.t(String(i18nKey));
-      if (!el.shadowRoot) {
-        el.textContent = translated;
-      } else {
-        (el as any)["label"] = translated;
-      }
+      (el as any)["label"] = this.i18n.t(String(i18nKey));
     } else if (textValue !== undefined) {
-      if (!el.shadowRoot) {
-        el.textContent = String(textValue);
-      } else {
+      // Native HTML elements get textContent; custom elements get label property
+      const isCustom = el.tagName.includes("-");
+      if (isCustom) {
         (el as any)["label"] = String(textValue);
+      } else {
+        el.textContent = String(textValue);
       }
+    } else if (labelValue !== undefined) {
+      (el as any)["label"] = String(labelValue);
     }
 
     // Handle placeholder_i18n prop: resolve via I18nService and set as placeholder
     const placeholderI18n = resolvedProps["placeholder_i18n"];
     if (placeholderI18n !== undefined) {
-      (el as any)["placeholder"] = I18nService.instance.t(
-        String(placeholderI18n),
-      );
+      (el as any)["placeholder"] = this.i18n.t(String(placeholderI18n));
     }
 
     for (const [key, value] of Object.entries(resolvedProps)) {

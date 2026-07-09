@@ -4,33 +4,13 @@ import {
   OnInit,
   OnChanges,
   SimpleChanges,
+  Type,
   TemplateRef,
   ViewContainerRef,
 } from "@angular/core";
 import { Subject, Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { CanActivateFn } from "@angular/router";
-
-/**
- * Abstract base component that provides a destroy$ Subject for subscription cleanup.
- * Extend this class instead of OnDestroy directly when you need to manage RxJS subscriptions.
- */
-declare abstract class BaseDestroyableComponent implements OnDestroy {
-  protected readonly destroy$: Subject<void>;
-  ngOnDestroy(): void;
-  static ɵfac: i0.ɵɵFactoryDeclaration<BaseDestroyableComponent, never>;
-  static ɵcmp: i0.ɵɵComponentDeclaration<
-    BaseDestroyableComponent,
-    "lib-base-destroyable",
-    never,
-    {},
-    {},
-    never,
-    never,
-    true,
-    never
-  >;
-}
 
 type ColorMode = "light" | "dark" | "system";
 interface Theme {
@@ -81,6 +61,24 @@ interface ThemeConfig {
   accentColor?: string;
   cssVariables?: Record<string, string>;
 }
+interface SharedPropDef {
+  name: string;
+  type: "string" | "number" | "boolean" | "select";
+  default?: unknown;
+  options?: string[];
+}
+interface SharedComponentDef {
+  id: string;
+  name: string;
+  selector: string;
+  packageType: "ui" | "feedback" | "data" | "layout" | "shared";
+  category: string;
+  icon?: string;
+  defaultClasses?: string;
+  props: SharedPropDef[];
+  template: string;
+  css: string;
+}
 interface GridPosition {
   column: number;
   row: number;
@@ -88,6 +86,12 @@ interface GridPosition {
   rowSpan?: number;
   colStart?: number;
   rowStart?: number;
+  /** Responsive override for screens < 640px */
+  sm?: Partial<GridPosition>;
+  /** Responsive override for screens 640–1023px */
+  md?: Partial<GridPosition>;
+  /** Responsive override for screens >= 1024px */
+  lg?: Partial<GridPosition>;
 }
 interface ComponentDef {
   id: string;
@@ -226,6 +230,32 @@ interface AppSchema {
   pages: Page[];
   handlers?: Record<string, unknown>;
   stores?: Record<string, unknown>;
+}
+
+declare const uiComponents: SharedComponentDef[];
+declare const layoutComponents: SharedComponentDef[];
+declare const feedbackComponents: SharedComponentDef[];
+declare const dataComponents: SharedComponentDef[];
+
+/**
+ * Abstract base component that provides a destroy$ Subject for subscription cleanup.
+ * Extend this class instead of OnDestroy directly when you need to manage RxJS subscriptions.
+ */
+declare abstract class BaseDestroyableComponent implements OnDestroy {
+  protected readonly destroy$: Subject<void>;
+  ngOnDestroy(): void;
+  static ɵfac: i0.ɵɵFactoryDeclaration<BaseDestroyableComponent, never>;
+  static ɵcmp: i0.ɵɵComponentDeclaration<
+    BaseDestroyableComponent,
+    "lib-base-destroyable",
+    never,
+    {},
+    {},
+    never,
+    never,
+    true,
+    never
+  >;
 }
 
 declare class SignalStoreService {
@@ -481,6 +511,24 @@ declare class LayoutEngineService {
   static ɵprov: i0.ɵɵInjectableDeclaration<LayoutEngineService>;
 }
 
+type Locale = "en" | "ru";
+declare class I18nService {
+  private readonly _locale;
+  get locale(): i0.Signal<Locale>;
+  get translations(): Record<string, string>;
+  setLocale(locale: Locale): void;
+  /**
+   * Translate a key. Falls back to English, then to the key itself.
+   */
+  t(key: string): string;
+  /**
+   * Get all available locales.
+   */
+  getAvailableLocales(): Locale[];
+  static ɵfac: i0.ɵɵFactoryDeclaration<I18nService, never>;
+  static ɵprov: i0.ɵɵInjectableDeclaration<I18nService>;
+}
+
 type StyleVariant =
   | "claymorphism"
   | "glassmorphism"
@@ -542,6 +590,7 @@ declare class SchemaRendererService {
   private componentRegistry;
   private dataBindingResolver;
   private layoutEngine;
+  private i18n;
   private _pages;
   private _currentPageId;
   private _navigationStack;
@@ -553,6 +602,7 @@ declare class SchemaRendererService {
     componentRegistry: ComponentRegistryService,
     dataBindingResolver: DataBindingResolverService,
     layoutEngine: LayoutEngineService,
+    i18n: I18nService,
   );
   private componentResolver;
   private routeResolver;
@@ -611,6 +661,11 @@ declare class SchemaRendererService {
     componentId: string,
   ): GridPosition | null;
   resolveClass(layout: Layout): string;
+  /**
+   * Resolves responsive grid position based on current window width.
+   * Merges breakpoint overrides (sm, md, lg) into base position.
+   */
+  private resolveResponsiveGridPosition;
   getComponentProps(componentId: string): Record<string, unknown>;
   generatePage(pageId: string): {
     layouts: Layout[];
@@ -653,205 +708,6 @@ declare class SchemaRendererService {
   static ɵprov: i0.ɵɵInjectableDeclaration<SchemaRendererService>;
 }
 
-/**
- * Permission represents a resource-action pair with optional field-level restrictions.
- * Based on ZenithDB pattern.
- */
-interface Permission {
-  resource: string;
-  action: string;
-  fields?: string[];
-}
-/**
- * Role contains a set of permissions and metadata.
- * Based on ZenithDB pattern.
- */
-interface Role {
-  id: string;
-  name: string;
-  description: string;
-  permissions: Permission[];
-}
-/**
- * User representation with roles.
- * Based on ZenithDB pattern.
- */
-interface User {
-  id: string;
-  username: string;
-  email: string;
-  roles: string[];
-}
-/**
- * Context-based permission levels from TaskFlow pattern.
- */
-declare enum TodoPermission {
-  VIEWER = "viewer",
-  EDITOR = "editor",
-  MODERATOR = "moderator",
-  OWNER = "owner",
-}
-/**
- * Result of a permission check with all available actions.
- * Based on TaskFlow pattern.
- */
-interface PermissionCheckResult {
-  canView: boolean;
-  canCreate: boolean;
-  canEdit: boolean;
-  canDelete: boolean;
-  canArchive: boolean;
-  canManageAssignees: boolean;
-  permissionLevel: string;
-}
-/**
- * Context for todo-level permission evaluation.
- */
-interface TodoPermissionContext {
-  todoId: string;
-  userId: string;
-  assigneeRoles: Record<string, string>;
-  visibility: "public" | "shared" | "private";
-  ownerId: string;
-  effectivePermission: TodoPermission;
-}
-/**
- * Context for field-level permission evaluation.
- */
-interface FieldPermissionContext {
-  resource: string;
-  action: string;
-  fields: string[];
-  userId: string;
-}
-declare class PermissionService {
-  private _currentUser;
-  private _roles;
-  private _isAdmin;
-  readonly currentUser: i0.Signal<User>;
-  readonly roles: i0.Signal<Role[]>;
-  readonly isAdmin: i0.Signal<boolean>;
-  setUser(user: User | null): void;
-  setRoles(roles: Role[]): void;
-  setIsAdmin(isAdmin: boolean): void;
-  /**
-   * Load roles from backend. Subclasses or consumers should override
-   * with actual TauriBridge invocation.
-   */
-  loadRoles(): Promise<Role[]>;
-  /**
-   * Create a new role.
-   */
-  createRole(
-    name: string,
-    description: string,
-    permissions: Permission[],
-  ): Promise<Role>;
-  /**
-   * Update an existing role.
-   */
-  updateRole(
-    roleId: string,
-    name: string,
-    description: string,
-    permissions: Permission[],
-  ): Promise<Role>;
-  /**
-   * Delete a role by ID.
-   */
-  deleteRole(roleId: string): Promise<void>;
-  /**
-   * Check if current user has permission for a resource-action pair.
-   * Supports wildcard "*" permission that grants all access.
-   */
-  hasPermission(resource: string, action: string): boolean;
-  /**
-   * Check if current user can access a resource with optional field restrictions.
-   */
-  canAccess(resource: string, action: string, fields?: string[]): boolean;
-  /**
-   * Check if current user has a specific role.
-   */
-  hasRole(roleId: string): boolean;
-  /**
-   * Check if user is authenticated.
-   */
-  isAuthenticated(): boolean;
-  /**
-   * Get the effective permission level for a user on a todo.
-   * Based on TaskFlow's getTodoPermission logic.
-   */
-  getTodoPermission(context: TodoPermissionContext): TodoPermission;
-  /**
-   * Create a todo permission context object.
-   */
-  createTodoPermissionContext(params: {
-    todoId: string;
-    userId: string;
-    assigneeRoles: Record<string, string>;
-    visibility: "public" | "shared" | "private";
-    ownerId: string;
-  }): TodoPermissionContext;
-  /**
-   * Convert role string to TodoPermission enum.
-   */
-  fromStr(role: string): TodoPermission;
-  /**
-   * Check if user can edit todo fields (moderator or owner only).
-   */
-  canEditTodoFields(permission: TodoPermission): boolean;
-  /**
-   * Check if user can delete a todo (owner only).
-   */
-  canDeleteTodo(permission: TodoPermission): boolean;
-  /**
-   * Check if user can archive a todo (owner only).
-   */
-  canArchiveTodo(permission: TodoPermission): boolean;
-  /**
-   * Check if user can manage assignees (moderator or owner).
-   */
-  canManageAssignees(permission: TodoPermission): boolean;
-  /**
-   * Check if user can create tasks/subtasks/comments (editor+ or admin).
-   */
-  canCreateTask(permission: TodoPermission): boolean;
-  /**
-   * Full permission check result for a todo context.
-   */
-  checkTodoPermissions(context: TodoPermissionContext): PermissionCheckResult;
-  /**
-   * Check if user can edit a specific entity based on ownership or permission level.
-   */
-  canEditEntity(
-    entityOwnerId: string,
-    permission: TodoPermission,
-    userId: string,
-  ): boolean;
-  /**
-   * Check if user can delete a specific entity based on ownership or permission level.
-   */
-  canDeleteEntity(
-    entityOwnerId: string,
-    permission: TodoPermission,
-    userId: string,
-  ): boolean;
-  /**
-   * Get available resources for permission configuration.
-   */
-  availableResources(): string[];
-  /**
-   * Get available actions for permission configuration.
-   */
-  availableActions(): string[];
-  /**
-   * Clear all state (useful for logout).
-   */
-  clear(): void;
-  static ɵfac: i0.ɵɵFactoryDeclaration<PermissionService, never>;
-  static ɵprov: i0.ɵɵInjectableDeclaration<PermissionService>;
-}
-
 interface GuardConfig {
   type: "auth" | "role" | "permission" | "admin";
   role?: string;
@@ -860,7 +716,6 @@ interface GuardConfig {
 }
 declare class GuardService {
   private permissionService;
-  constructor(permissionService: PermissionService);
   canActivate(): Promise<boolean>;
   canActivateWithConfig(config: GuardConfig): Promise<boolean>;
   private checkAuth;
@@ -1088,6 +943,11 @@ declare class SchemaShellComponent implements OnInit {
   onWindowToggleDark(event: Event): void;
   private loadSchema;
   retry(): void;
+  /**
+   * Returns CSS classes for a region container by mapping its props to Tailwind-style classes.
+   * Uses the same mapPropsToClasses() logic as schema elements for consistent styling.
+   */
+  getRegionClasses(region: LayoutElement | null): string;
   static ɵfac: i0.ɵɵFactoryDeclaration<SchemaShellComponent, never>;
   static ɵcmp: i0.ɵɵComponentDeclaration<
     SchemaShellComponent,
@@ -1154,30 +1014,6 @@ declare class ShortcutService {
   private _checkModifiers;
   static ɵfac: i0.ɵɵFactoryDeclaration<ShortcutService, never>;
   static ɵprov: i0.ɵɵInjectableDeclaration<ShortcutService>;
-}
-
-type Locale = "en" | "ru";
-/**
- * Singleton i18n service for schema-driven UI.
- * Use I18nService.instance.t('key') to translate.
- */
-declare class I18nService {
-  private static _instance;
-  static get instance(): I18nService;
-  private readonly _locale;
-  get locale(): i0.Signal<Locale>;
-  get translations(): Record<string, string>;
-  setLocale(locale: Locale): void;
-  /**
-   * Translate a key. Falls back to English, then to the key itself.
-   */
-  t(key: string): string;
-  /**
-   * Get all available locales.
-   */
-  getAvailableLocales(): Locale[];
-  static ɵfac: i0.ɵɵFactoryDeclaration<I18nService, never>;
-  static ɵprov: i0.ɵɵInjectableDeclaration<I18nService>;
 }
 
 /**
@@ -1451,10 +1287,10 @@ declare class DataPatchService {
   static ɵprov: i0.ɵɵInjectableDeclaration<DataPatchService>;
 }
 
-declare class SchemaElementComponent implements OnInit {
+declare class SchemaElementComponent {
+  private renderer;
   element: CanvasElement;
   elements: CanvasElement[];
-  ngOnInit(): void;
   get componentType(): i0.Type<any>;
   get tag(): string;
   get classes(): string;
@@ -1478,6 +1314,12 @@ declare class SchemaElementComponent implements OnInit {
     never
   >;
 }
+
+declare const SCHEMA_COMPONENT_MAP: Map<string, Type<any>>;
+declare function registerSchemaComponent(
+  selector: string,
+  component: Type<any>,
+): void;
 
 type FilterOperator =
   "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "contains" | "in";
@@ -1755,6 +1597,205 @@ declare function treeDepth<T>(node: TreeNode<T>): number;
 declare function flattenTree<T>(node: TreeNode<T>): TreeNode<T>[];
 
 /**
+ * Permission represents a resource-action pair with optional field-level restrictions.
+ * Based on ZenithDB pattern.
+ */
+interface Permission {
+  resource: string;
+  action: string;
+  fields?: string[];
+}
+/**
+ * Role contains a set of permissions and metadata.
+ * Based on ZenithDB pattern.
+ */
+interface Role {
+  id: string;
+  name: string;
+  description: string;
+  permissions: Permission[];
+}
+/**
+ * User representation with roles.
+ * Based on ZenithDB pattern.
+ */
+interface User {
+  id: string;
+  username: string;
+  email: string;
+  roles: string[];
+}
+/**
+ * Context-based permission levels from TaskFlow pattern.
+ */
+declare enum TodoPermission {
+  VIEWER = "viewer",
+  EDITOR = "editor",
+  MODERATOR = "moderator",
+  OWNER = "owner",
+}
+/**
+ * Result of a permission check with all available actions.
+ * Based on TaskFlow pattern.
+ */
+interface PermissionCheckResult {
+  canView: boolean;
+  canCreate: boolean;
+  canEdit: boolean;
+  canDelete: boolean;
+  canArchive: boolean;
+  canManageAssignees: boolean;
+  permissionLevel: string;
+}
+/**
+ * Context for todo-level permission evaluation.
+ */
+interface TodoPermissionContext {
+  todoId: string;
+  userId: string;
+  assigneeRoles: Record<string, string>;
+  visibility: "public" | "shared" | "private";
+  ownerId: string;
+  effectivePermission: TodoPermission;
+}
+/**
+ * Context for field-level permission evaluation.
+ */
+interface FieldPermissionContext {
+  resource: string;
+  action: string;
+  fields: string[];
+  userId: string;
+}
+declare class PermissionService {
+  private _currentUser;
+  private _roles;
+  private _isAdmin;
+  readonly currentUser: i0.Signal<User>;
+  readonly roles: i0.Signal<Role[]>;
+  readonly isAdmin: i0.Signal<boolean>;
+  setUser(user: User | null): void;
+  setRoles(roles: Role[]): void;
+  setIsAdmin(isAdmin: boolean): void;
+  /**
+   * Load roles from backend. Subclasses or consumers should override
+   * with actual TauriBridge invocation.
+   */
+  loadRoles(): Promise<Role[]>;
+  /**
+   * Create a new role.
+   */
+  createRole(
+    name: string,
+    description: string,
+    permissions: Permission[],
+  ): Promise<Role>;
+  /**
+   * Update an existing role.
+   */
+  updateRole(
+    roleId: string,
+    name: string,
+    description: string,
+    permissions: Permission[],
+  ): Promise<Role>;
+  /**
+   * Delete a role by ID.
+   */
+  deleteRole(roleId: string): Promise<void>;
+  /**
+   * Check if current user has permission for a resource-action pair.
+   * Supports wildcard "*" permission that grants all access.
+   */
+  hasPermission(resource: string, action: string): boolean;
+  /**
+   * Check if current user can access a resource with optional field restrictions.
+   */
+  canAccess(resource: string, action: string, fields?: string[]): boolean;
+  /**
+   * Check if current user has a specific role.
+   */
+  hasRole(roleId: string): boolean;
+  /**
+   * Check if user is authenticated.
+   */
+  isAuthenticated(): boolean;
+  /**
+   * Get the effective permission level for a user on a todo.
+   * Based on TaskFlow's getTodoPermission logic.
+   */
+  getTodoPermission(context: TodoPermissionContext): TodoPermission;
+  /**
+   * Create a todo permission context object.
+   */
+  createTodoPermissionContext(params: {
+    todoId: string;
+    userId: string;
+    assigneeRoles: Record<string, string>;
+    visibility: "public" | "shared" | "private";
+    ownerId: string;
+  }): TodoPermissionContext;
+  /**
+   * Convert role string to TodoPermission enum.
+   */
+  fromStr(role: string): TodoPermission;
+  /**
+   * Check if user can edit todo fields (moderator or owner only).
+   */
+  canEditTodoFields(permission: TodoPermission): boolean;
+  /**
+   * Check if user can delete a todo (owner only).
+   */
+  canDeleteTodo(permission: TodoPermission): boolean;
+  /**
+   * Check if user can archive a todo (owner only).
+   */
+  canArchiveTodo(permission: TodoPermission): boolean;
+  /**
+   * Check if user can manage assignees (moderator or owner).
+   */
+  canManageAssignees(permission: TodoPermission): boolean;
+  /**
+   * Check if user can create tasks/subtasks/comments (editor+ or admin).
+   */
+  canCreateTask(permission: TodoPermission): boolean;
+  /**
+   * Full permission check result for a todo context.
+   */
+  checkTodoPermissions(context: TodoPermissionContext): PermissionCheckResult;
+  /**
+   * Check if user can edit a specific entity based on ownership or permission level.
+   */
+  canEditEntity(
+    entityOwnerId: string,
+    permission: TodoPermission,
+    userId: string,
+  ): boolean;
+  /**
+   * Check if user can delete a specific entity based on ownership or permission level.
+   */
+  canDeleteEntity(
+    entityOwnerId: string,
+    permission: TodoPermission,
+    userId: string,
+  ): boolean;
+  /**
+   * Get available resources for permission configuration.
+   */
+  availableResources(): string[];
+  /**
+   * Get available actions for permission configuration.
+   */
+  availableActions(): string[];
+  /**
+   * Clear all state (useful for logout).
+   */
+  clear(): void;
+  static ɵfac: i0.ɵɵFactoryDeclaration<PermissionService, never>;
+  static ɵprov: i0.ɵɵInjectableDeclaration<PermissionService>;
+}
+
+/**
  * Route guard that checks resource-action permissions.
  *
  * Usage in route config:
@@ -1871,6 +1912,7 @@ export {
   RbacHasRoleDirective,
   CrudService as RemoteCrudService,
   ResponseStatus,
+  SCHEMA_COMPONENT_MAP,
   SchemaElementComponent,
   SchemaFetcherService,
   SchemaRendererService,
@@ -1897,11 +1939,13 @@ export {
   chunk,
   clamp,
   createGraph,
+  dataComponents,
   dedupe,
   dfs,
   difference,
   dijkstra,
   factorial,
+  feedbackComponents,
   fibonacci,
   findNode,
   flatten,
@@ -1929,6 +1973,7 @@ export {
   jaroWinkler,
   jumpSearch,
   kebabToCamel,
+  layoutComponents,
   lcm,
   lcsLength,
   lcsSubstringLength,
@@ -1946,6 +1991,7 @@ export {
   primesUpTo,
   rbacGuard,
   rbacRoleGuard,
+  registerSchemaComponent,
   setCurrentStyle,
   sortBy,
   stddev,
@@ -1953,6 +1999,7 @@ export {
   topologicalSort,
   treeDepth,
   truncate,
+  uiComponents,
   union,
   unwrapResponse,
   upperBound,

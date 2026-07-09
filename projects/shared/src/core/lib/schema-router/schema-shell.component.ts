@@ -16,6 +16,10 @@ import { StyleThemeService } from "../../../styles/theme.service";
 import { ThemeToggleService } from "../../../styles/theme-toggle.service";
 import { FallbackService } from "../fallback/fallback.service";
 import type { StyleVariant } from "../../../styles/style-registry";
+import {
+  loadStyleVariant,
+  getCurrentStyle,
+} from "../../../styles/style-registry";
 import { SchemaRouteViewerComponent } from "./schema-route-viewer.component";
 import { SchemaElementComponent } from "./schema-element.component";
 import type { LayoutElement, RegionType, UiSchema } from "../types";
@@ -188,6 +192,13 @@ export class SchemaShellComponent implements OnInit {
         this.themeService.toggleDarkMode();
       });
       this.themeService.loadTheme(schema.app?.style ?? this.defaultTheme);
+      // Load the variant CSS into <head> so CSS variables and class selectors are available
+      const variant = schema.app?.style ?? this.defaultTheme;
+      await loadStyleVariant(variant);
+      // Re-inject dark mode CSS for the newly loaded variant if dark mode is active
+      if (this.themeService.isDarkMode()) {
+        this.themeService.setDarkMode(true);
+      }
       const route =
         this.initialRoute || schema.pages[0].route || `/${schema.pages[0].id}`;
       console.log(`[SchemaShell] navigate("${route}")`);
@@ -245,5 +256,17 @@ export class SchemaShellComponent implements OnInit {
 
   retry() {
     this.loadSchema();
+  }
+
+  /**
+   * Returns CSS classes for a region container by mapping its props to Tailwind-style classes.
+   * Uses the same mapPropsToClasses() logic as schema elements for consistent styling.
+   */
+  getRegionClasses(region: LayoutElement | null): string {
+    if (!region?.props) return "";
+    const theme = getCurrentStyle();
+    return this.renderer
+      .mapPropsToClasses(region.componentId || "div", region.props, theme)
+      .join(" ");
   }
 }

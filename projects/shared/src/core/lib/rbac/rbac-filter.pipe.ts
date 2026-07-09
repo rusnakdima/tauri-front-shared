@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform, inject } from "@angular/core";
+import { Pipe, PipeTransform } from "@angular/core";
 import { RbacService, User } from "./rbac.service";
 
 @Pipe({
@@ -7,7 +7,7 @@ import { RbacService, User } from "./rbac.service";
   pure: false,
 })
 export class RbacHasPermissionPipe implements PipeTransform {
-  private rbac = inject(RbacService);
+  constructor(private rbac: RbacService) {}
 
   transform(user: User | null, permission: string): boolean {
     if (!user) return false;

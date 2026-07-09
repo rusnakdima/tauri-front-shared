@@ -37,9 +37,17 @@ export class SchemaRouterService {
 
   readonly hasSchema = computed(() => this._schema() !== null);
   readonly currentPageId = computed(() => this._currentPage()?.id ?? null);
-  readonly currentPageTitle = computed(() => this._currentPage()?.meta?.title ?? "");
+  readonly currentPageTitle = computed(
+    () => this._currentPage()?.meta?.title ?? "",
+  );
 
   setSchema(schema: UiSchema): void {
+    console.log(
+      "[SchemaRouter] setSchema() called, pages:",
+      schema?.pages?.length ?? 0,
+      "layouts:",
+      schema?.layouts?.length ?? 0,
+    );
     this._schema.set(schema);
     this._error.set(null);
   }
@@ -54,12 +62,13 @@ export class SchemaRouterService {
 
   async navigate(
     route: string,
-    options: NavigationOptions = {}
+    options: NavigationOptions = {},
   ): Promise<boolean> {
     this._isLoading.set(true);
     this._error.set(null);
 
     try {
+      console.log(`[SchemaRouter] navigate("${route}") attempting...`);
       let matched = this.resolveRoute(route);
       if (!matched) {
         // Fall back to /404 page if route not found
@@ -69,6 +78,9 @@ export class SchemaRouterService {
         }
       }
       if (!matched) {
+        console.warn(
+          `[SchemaRouter] navigate("${route}") - route NOT FOUND, falling back to /404`,
+        );
         this._error.set(`Route not found: ${route}`);
         return false;
       }
@@ -77,10 +89,15 @@ export class SchemaRouterService {
 
       // Run guards if configured
       if (page && this.guardService) {
-        const pageGuards = (page as unknown as Record<string, unknown>).guards as RouteConfig["guards"] | undefined;
+        const pageGuards = (page as unknown as Record<string, unknown>)
+          .guards as RouteConfig["guards"] | undefined;
         if (pageGuards?.length) {
           for (const guard of pageGuards) {
-            const allowed = await this.guardService.canActivateWithConfig(guard as unknown as Parameters<typeof this.guardService.canActivateWithConfig>[0]);
+            const allowed = await this.guardService.canActivateWithConfig(
+              guard as unknown as Parameters<
+                typeof this.guardService.canActivateWithConfig
+              >[0],
+            );
             if (!allowed) {
               this._error.set(`Navigation blocked by guard: ${guard.type}`);
               return false;
@@ -97,14 +114,23 @@ export class SchemaRouterService {
       this._params.set(params);
 
       if (page) {
+        console.log(
+          `[SchemaRouter] navigate("${route}") - SUCCESS, page="${page.name}", id="${page.id}"`,
+        );
         this._currentPage.set(page);
 
         // Load layout if specified
         if (page.layout && this._schema()) {
-          const layout = this._schema()!.layouts.find((l) => l.id === page.layout);
+          const layout = this._schema()!.layouts.find(
+            (l) => l.id === page.layout,
+          );
           this._currentLayout.set(layout ?? null);
+          console.log(
+            `[SchemaRouter] page "${page.name}" has layout="${page.layout}", found=${!!layout}`,
+          );
         } else {
           this._currentLayout.set(null);
+          console.log(`[SchemaRouter] page "${page.name}" has NO layout`);
         }
       }
 
@@ -118,8 +144,12 @@ export class SchemaRouterService {
   }
 
   resolveRoute(
-    route: string
-  ): { page: Page | null; layout: Layout | null; params: Record<string, string> } | null {
+    route: string,
+  ): {
+    page: Page | null;
+    layout: Layout | null;
+    params: Record<string, string>;
+  } | null {
     const schema = this._schema();
     if (!schema) return null;
 
@@ -133,7 +163,9 @@ export class SchemaRouterService {
     for (const p of schema.pages) {
       const { match, params } = this.matchRoute(p.route, route);
       if (match) {
-        const layout = p.layout ? schema.layouts.find((l) => l.id === p.layout) ?? null : null;
+        const layout = p.layout
+          ? (schema.layouts.find((l) => l.id === p.layout) ?? null)
+          : null;
         return { page: p, layout, params };
       }
     }
@@ -143,7 +175,7 @@ export class SchemaRouterService {
 
   private matchRoute(
     pattern: string,
-    path: string
+    path: string,
   ): { match: boolean; params: Record<string, string> } {
     const patternParts = pattern.split("/").filter(Boolean);
     const pathParts = path.split("/").filter(Boolean);

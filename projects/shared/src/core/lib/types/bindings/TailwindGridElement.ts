@@ -2,4 +2,11 @@
 import type { GridPosition } from "./GridPosition";
 import type { TailwindResponsiveClasses } from "./TailwindResponsiveClasses";
 
-export interface TailwindGridElement { id: string, componentId: string, classes: string | null, gridPosition: GridPosition, responsiveClasses: TailwindResponsiveClasses | null, slot: string | null, }
+export interface TailwindGridElement {
+  id: string;
+  componentId: string;
+  classes: string | null;
+  gridPosition: GridPosition;
+  responsiveClasses: TailwindResponsiveClasses | null;
+  slot: string | null;
+}

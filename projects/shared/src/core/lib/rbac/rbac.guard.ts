@@ -1,4 +1,4 @@
-import { inject } from "@angular/core";
+import { inject, Injector } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
 import { PermissionService } from "./permission.service";
 
@@ -16,16 +16,18 @@ import { PermissionService } from "./permission.service";
  * }
  */
 export const rbacGuard: CanActivateFn = (route, _state) => {
-  const permissionService = inject(PermissionService);
-  const router = inject(Router);
+  const injector = inject(Injector);
+  const permissionService = injector.get(PermissionService);
+  const router = injector.get(Router);
 
   if (!permissionService.isAuthenticated()) {
     router.navigate(["/login"]);
     return false;
   }
 
-  const requiredPermissions = route.data?.["permissions"] as string[] | undefined;
-  const requireAll = route.data?.["requireAll"] as boolean ?? false;
+  const requiredPermissions = route.data?.["permissions"] as
+    string[] | undefined;
+  const requireAll = (route.data?.["requireAll"] as boolean) ?? false;
 
   if (requiredPermissions && requiredPermissions.length > 0) {
     const results = requiredPermissions.map((perm) => {
@@ -62,8 +64,9 @@ export const rbacGuard: CanActivateFn = (route, _state) => {
  * }
  */
 export const rbacRoleGuard: CanActivateFn = (route, _state) => {
-  const permissionService = inject(PermissionService);
-  const router = inject(Router);
+  const injector = inject(Injector);
+  const permissionService = injector.get(PermissionService);
+  const router = injector.get(Router);
 
   if (!permissionService.isAuthenticated()) {
     router.navigate(["/login"]);
@@ -73,7 +76,9 @@ export const rbacRoleGuard: CanActivateFn = (route, _state) => {
   const requiredRoles = route.data?.["roles"] as string[] | undefined;
 
   if (requiredRoles && requiredRoles.length > 0) {
-    const hasRole = requiredRoles.some((role) => permissionService.hasRole(role));
+    const hasRole = requiredRoles.some((role) =>
+      permissionService.hasRole(role),
+    );
     if (!hasRole) {
       router.navigate(["/unauthorized"]);
       return false;

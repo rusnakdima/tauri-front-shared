@@ -1,6 +1,7 @@
-import { Injectable, inject } from "@angular/core";
+import { Injectable, Injector, inject } from "@angular/core";
 import { Layout, GridPosition } from "../types";
-import { ThemeService } from "../theme/theme.service";
+import { StyleThemeService } from "../../../styles/theme.service";
+// ThemeService is resolved lazily via Injector — optional, layout-engine works without it
 
 export interface GridTemplate {
   columns: string[];
@@ -10,7 +11,7 @@ export interface GridTemplate {
 
 @Injectable({ providedIn: "root" })
 export class LayoutEngineService {
-  private themeService = inject(ThemeService, { optional: true });
+  private injector = inject(Injector);
 
   resolveClass(layout: Layout): string {
     if (layout.class) return layout.class;
@@ -25,15 +26,20 @@ export class LayoutEngineService {
       if (layout.colGap) classes.push(`gap-x-${layout.colGap}`);
       if (layout.alignItems) {
         const map: Record<string, string> = {
-          start: "items-start", center: "items-center", end: "items-end",
-          stretch: "items-stretch", baseline: "items-baseline",
+          start: "items-start",
+          center: "items-center",
+          end: "items-end",
+          stretch: "items-stretch",
+          baseline: "items-baseline",
         };
         if (map[layout.alignItems]) classes.push(map[layout.alignItems]);
       }
       if (layout.justifyItems) {
         const map: Record<string, string> = {
-          start: "justify-items-start", center: "justify-items-center",
-          end: "justify-items-end", stretch: "justify-items-stretch",
+          start: "justify-items-start",
+          center: "justify-items-center",
+          end: "justify-items-end",
+          stretch: "justify-items-stretch",
         };
         if (map[layout.justifyItems]) classes.push(map[layout.justifyItems]);
       }
@@ -46,22 +52,30 @@ export class LayoutEngineService {
       if (layout.colGap) classes.push(`gap-x-${layout.colGap}`);
       if (layout.flexWrap === "wrap") classes.push("flex-wrap");
       else if (layout.flexWrap === "nowrap") classes.push("flex-nowrap");
-      else if (layout.flexWrap === "wrap-reverse") classes.push("flex-wrap-reverse");
+      else if (layout.flexWrap === "wrap-reverse")
+        classes.push("flex-wrap-reverse");
       if (layout.flexGrow === true) classes.push("flex-grow");
       else if (layout.flexGrow === false) classes.push("flex-grow-0");
       if (layout.flexShrink === true) classes.push("flex-shrink");
       else if (layout.flexShrink === false) classes.push("flex-shrink-0");
       if (layout.alignItems) {
         const map: Record<string, string> = {
-          start: "items-start", center: "items-center", end: "items-end",
-          stretch: "items-stretch", baseline: "items-baseline",
+          start: "items-start",
+          center: "items-center",
+          end: "items-end",
+          stretch: "items-stretch",
+          baseline: "items-baseline",
         };
         if (map[layout.alignItems]) classes.push(map[layout.alignItems]);
       }
       if (layout.alignContent) {
         const map: Record<string, string> = {
-          start: "content-start", center: "content-center", end: "content-end",
-          between: "content-between", around: "content-around", evenly: "content-evenly",
+          start: "content-start",
+          center: "content-center",
+          end: "content-end",
+          between: "content-between",
+          around: "content-around",
+          evenly: "content-evenly",
         };
         if (map[layout.alignContent]) classes.push(map[layout.alignContent]);
       }
@@ -90,10 +104,11 @@ export class LayoutEngineService {
    * then sets them as inline CSS variables on the container.
    */
   applyThemeVariables(container: HTMLElement): void {
-    if (!this.themeService) return;
+    const ts = this.injector.get(StyleThemeService, null) as any;
+    if (!ts) return;
 
     const root = document.documentElement;
-    const accent = this.themeService.accentColor();
+    const accent = ts.accentColor();
 
     // Copy theme CSS variables from root to the container
     // This ensures layout containers have explicit theme values even if
@@ -122,9 +137,11 @@ export class LayoutEngineService {
     }
 
     // Apply accent shades if available
-    const shades = this.themeService.accentShades();
+    const shades = ts?.accentShades?.();
     if (shades) {
-      for (const [key, value] of Object.entries(shades)) {
+      for (const [key, value] of Object.entries(
+        shades as Record<string, string>,
+      )) {
         container.style.setProperty(`--accent-${key}`, value);
       }
     }
@@ -223,7 +240,10 @@ export class LayoutEngineService {
     };
   }
 
-  calculateGridSpan(colSpan: number | undefined, rowSpan: number | undefined): {
+  calculateGridSpan(
+    colSpan: number | undefined,
+    rowSpan: number | undefined,
+  ): {
     gridColumn: string;
     gridRow: string;
   } {
@@ -233,18 +253,35 @@ export class LayoutEngineService {
     };
   }
 
-  applyLayoutStyles(
+  async applyLayoutStyles(
     container: HTMLElement,
     layout: Layout,
     children: string[],
     getComponentById: (id: string) => { selector: string } | undefined,
     resolvePosition: (layout: Layout, childId: string) => GridPosition | null,
-  ): void {
+  ): Promise<void> {
     if (layout.children) {
       for (const childId of layout.children) {
         const component = getComponentById(childId);
         if (component) {
-          const el = document.createElement(component.selector);
+          const selector = component.selector;
+          // Wait for custom element to be defined if it's a custom element
+          if (selector.includes("-")) {
+            try {
+              await Promise.race([
+                customElements.whenDefined(selector),
+                new Promise((_, reject) =>
+                  setTimeout(
+                    () => reject(new Error(`Timeout: ${selector}`)),
+                    2000,
+                  ),
+                ),
+              ]);
+            } catch (e) {
+              console.warn(`[LayoutEngine] Element not ready: ${selector}`, e);
+            }
+          }
+          const el = document.createElement(selector);
           const position = resolvePosition(layout, childId);
           if (position) {
             el.style.gridColumn = `${position.column} / span ${position.colSpan || 1}`;

@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component } from "@angular/core";
 import { ModalComponent } from "../modal/modal.component";
 import { ConfirmService } from "./confirm.service";
 @Component({
@@ -8,7 +8,8 @@ import { ConfirmService } from "./confirm.service";
   templateUrl: "./confirm-dialog.component.html",
 })
 export class ConfirmDialogComponent {
-  confirmService = inject(ConfirmService);
+  constructor(private confirmService: ConfirmService) {}
+
   get options() {
     return this.confirmService.options();
   }

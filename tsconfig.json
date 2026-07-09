@@ -14,7 +14,7 @@
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
@@ -23,10 +23,7 @@
       "@tauri-front/core": ["projects/core"],
       "@tauri-front/storage": ["projects/storage"],
       "@tauri-front/grid": ["projects/grid"],
-      "@tauri-front/ui": ["projects/ui"],
-      "@tauri-front/data": ["projects/data"],
-      "@tauri-front/feedback": ["projects/feedback"],
-      "@tauri-front/layout": ["projects/layout"]
+      "@tauri-front/shared": ["projects/shared"]
     },
 
   },

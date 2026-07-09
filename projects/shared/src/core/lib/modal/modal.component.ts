@@ -6,7 +6,6 @@ import {
   ElementRef,
   OnInit,
   OnDestroy,
-  inject,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
 } from "@angular/core";
@@ -34,8 +33,6 @@ export class ModalComponent implements OnInit, OnDestroy {
   opened = output<void>();
   isVisible = signal(false);
   isAnimating = signal(false);
-  private elementRef = inject(ElementRef);
-  private cdr = inject(ChangeDetectorRef);
   private previousActiveElement: HTMLElement | null = null;
   private openedTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private closedTimeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -118,11 +115,13 @@ export class ModalComponent implements OnInit, OnDestroy {
     return sizes[this.size()];
   }
   get contentPositionClasses(): string {
-    return this.contentPosition() === "top" ? "items-start pt-[10vh]" : "items-center";
+    return this.contentPosition() === "top"
+      ? "items-start pt-[10vh]"
+      : "items-center";
   }
   private trapFocus(): void {
     const focusableElements = this.elementRef.nativeElement.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     if (focusableElements.length > 0) {
       (focusableElements[0] as HTMLElement).focus();
@@ -138,4 +137,9 @@ export class ModalComponent implements OnInit, OnDestroy {
     document.body.style.overflow = "";
     document.removeEventListener("keydown", this.escapeKeyHandler);
   }
+
+  constructor(
+    private elementRef: ElementRef,
+    private cdr: ChangeDetectorRef,
+  ) {}
 }

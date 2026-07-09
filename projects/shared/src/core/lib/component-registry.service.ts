@@ -111,7 +111,9 @@ export class ComponentRegistryService {
   getSelector(componentId: string): string {
     const def = this.registry.get(componentId);
     if (!def) {
-      console.warn(`ComponentRegistry: Unknown component "${componentId}", using fallback selector`);
+      console.warn(
+        `ComponentRegistry: Unknown component "${componentId}", using fallback selector`,
+      );
       return `app-${componentId}`;
     }
     return def.selector;
@@ -126,23 +128,29 @@ export class ComponentRegistryService {
     return def?.behaviors;
   }
 
-  mergeBehavior(componentId: string, schemaBehavior?: ComponentBehavior): ComponentBehavior {
+  mergeBehavior(
+    componentId: string,
+    schemaBehavior?: ComponentBehavior,
+  ): ComponentBehavior {
     const registered = this.resolveBehavior(componentId) ?? {};
     if (!schemaBehavior) return registered;
 
     return {
       selfMethods: { ...registered.selfMethods, ...schemaBehavior.selfMethods },
-      classSetters: { ...registered.classSetters, ...schemaBehavior.classSetters },
+      classSetters: {
+        ...registered.classSetters,
+        ...schemaBehavior.classSetters,
+      },
       eventHandlers: this.mergeEventHandlers(
         registered.eventHandlers,
-        schemaBehavior.eventHandlers
+        schemaBehavior.eventHandlers,
       ),
     };
   }
 
   private mergeEventHandlers(
     base?: ElementEvents,
-    override?: ElementEvents
+    override?: ElementEvents,
   ): ElementEvents | undefined {
     if (!base && !override) return undefined;
     if (!base) return override;
@@ -162,7 +170,8 @@ export class ComponentRegistryService {
 
   getComponentsByCategory(category: string): string[] {
     // Filter components by category from manifest
-    const manifest = this.componentManifest[category] as Record<string, unknown> | undefined;
+    const manifest = this.componentManifest[category] as
+      Record<string, unknown> | undefined;
     if (!manifest) return [];
     return Object.keys(manifest);
   }
@@ -197,13 +206,14 @@ export class ComponentRegistryService {
   ): Promise<CustomElementConstructor> {
     const cached = this._componentModules.get(selector);
     if (cached) {
-      const constructor = (
-        cached as Record<string, CustomElementConstructor>
-      )["default"];
+      const constructor = (cached as Record<string, CustomElementConstructor>)[
+        "default"
+      ];
       if (constructor) return constructor;
     }
 
-    const def = this._schemaComponents.get(selector) as ComponentDef | undefined;
+    const def = this._schemaComponents.get(selector) as
+      ComponentDef | undefined;
     if (!def) {
       throw new Error(`Component not found: ${selector}`);
     }
@@ -214,9 +224,9 @@ export class ComponentRegistryService {
     >;
     this.registerComponentModule(selector, module);
 
-    const constructor = (
-      module as Record<string, CustomElementConstructor>
-    )["default"];
+    const constructor = (module as Record<string, CustomElementConstructor>)[
+      "default"
+    ];
     if (!constructor) {
       throw new Error(
         `Module ${selector} does not export a default CustomElementConstructor`,

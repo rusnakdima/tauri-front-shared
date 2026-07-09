@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "useDefineForClassFields": false,
+    "emitDecoratorMetadata": true,
     "outDir": "./dist",
     "declaration": true
   },

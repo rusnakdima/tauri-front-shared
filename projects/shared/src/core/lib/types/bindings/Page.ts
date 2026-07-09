@@ -3,4 +3,12 @@ import type { CanvasElement } from "./CanvasElement";
 import type { PageMeta } from "./PageMeta";
 import type { PageSection } from "./PageSection";
 
-export interface Page { id: string, name: string, route: string, layout: string | null, meta: PageMeta, sections: Record<string, PageSection>, canvasElements: Array<CanvasElement>, }
+export interface Page {
+  id: string;
+  name: string;
+  route: string;
+  layout: string | null;
+  meta: PageMeta;
+  sections: Record<string, PageSection>;
+  canvasElements: Array<CanvasElement>;
+}

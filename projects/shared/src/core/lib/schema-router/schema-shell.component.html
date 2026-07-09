@@ -1,27 +1,124 @@
 @if (loading()) {
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; min-height: 100vh;">
-  <app-loading size="lg"></app-loading>
-  <p style="color: var(--text-secondary); font-size: 1.125rem;">Loading application...</p>
-</div>
+  <div
+    style="
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      min-height: 100vh;
+    "
+  >
+    <app-loading size="lg"></app-loading>
+    <p style="color: var(--text-secondary); font-size: 1.125rem">
+      Loading application...
+    </p>
+  </div>
 } @else if (error(); as err) {
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem;">
-  <app-empty-state
-    variant="danger"
-    title="Application Not Available"
-    [message]="err"
-    actionLabel="Retry"
-    (action)="retry()"
-  ></app-empty-state>
-</div>
+  <div
+    style="
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    "
+  >
+    <app-empty-state
+      variant="danger"
+      title="Application Not Available"
+      [message]="err"
+      actionLabel="Retry"
+      (action)="retry()"
+    ></app-empty-state>
+  </div>
 } @else {
-@for (region of layoutRegions(); track region.id) {
-  @if (region.visible !== false) {
-    <div [class]="region.classes || ''" [attr.data-region]="region.id">
+  <div
+    class="app-layout"
+    [style.grid-template-columns]="gridColumns()"
+    [style.grid-template-rows]="gridRows()"
+    [style.grid-template-areas]="gridAreas()"
+  >
+    @if (headerRegion(); as region) {
+      <div data-region="header" style="grid-area: header">
+        @for (child of region.children || []; track child.id) {
+          <app-schema-element
+            [element]="child"
+            [elements]="region.children || []"
+          />
+        }
+      </div>
+    }
+
+    @if (sidebarLeftRegion(); as region) {
+      <div data-region="sidebar-left" style="grid-area: sidebar-left">
+        @for (child of region.children || []; track child.id) {
+          <app-schema-element
+            [element]="child"
+            [elements]="region.children || []"
+          />
+        }
+      </div>
+    }
+
+    <div data-region="content" style="grid-area: content">
+      <lib-schema-route-viewer />
+    </div>
+
+    @if (sidebarRightRegion(); as region) {
+      <div data-region="sidebar-right" style="grid-area: sidebar-right">
+        @for (child of region.children || []; track child.id) {
+          <app-schema-element
+            [element]="child"
+            [elements]="region.children || []"
+          />
+        }
+      </div>
+    }
+
+    @if (footerRegion(); as region) {
+      <div data-region="footer" style="grid-area: footer">
+        @for (child of region.children || []; track child.id) {
+          <app-schema-element
+            [element]="child"
+            [elements]="region.children || []"
+          />
+        }
+      </div>
+    }
+
+    @if (bottomNavRegion(); as region) {
+      <div data-region="bottom-nav" style="grid-area: bottom-nav">
+        @for (child of region.children || []; track child.id) {
+          <app-schema-element
+            [element]="child"
+            [elements]="region.children || []"
+          />
+        }
+      </div>
+    }
+
+    @for (region of otherRegions(); track region.id) {
+      <div data-region="other" style="grid-area: other">
+        @for (child of region.children || []; track child.id) {
+          <app-schema-element
+            [element]="child"
+            [elements]="region.children || []"
+          />
+        }
+      </div>
+    }
+  </div>
+
+  @for (region of overlayRegions(); track region.id) {
+    <div class="layout-overlay" data-region="overlay">
       @for (child of region.children || []; track child.id) {
-        <app-schema-element [element]="child" [elements]="region.children || []"></app-schema-element>
+        <app-schema-element
+          [element]="child"
+          [elements]="region.children || []"
+        />
       }
     </div>
   }
-}
-<lib-schema-route-viewer />
 }

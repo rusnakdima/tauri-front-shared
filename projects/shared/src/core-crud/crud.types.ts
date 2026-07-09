@@ -1,4 +1,5 @@
-export type FilterOperator = "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "contains" | "in";
+export type FilterOperator =
+  "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "contains" | "in";
 
 export interface CrudFilter {
   field: string;

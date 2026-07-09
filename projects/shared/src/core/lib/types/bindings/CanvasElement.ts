@@ -2,4 +2,11 @@
 import type { DataBinding } from "./DataBinding";
 import type { GridPosition } from "./GridPosition";
 
-export interface CanvasElement { id: string, componentId: string, gridPosition: GridPosition, classes: string, children: Array<string>, dataBinding: DataBinding | null, }
+export interface CanvasElement {
+  id: string;
+  componentId: string;
+  gridPosition: GridPosition;
+  classes: string;
+  children: Array<string>;
+  dataBinding: DataBinding | null;
+}

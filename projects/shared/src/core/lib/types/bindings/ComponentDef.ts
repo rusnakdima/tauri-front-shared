@@ -2,4 +2,17 @@
 import type { ComponentProp } from "./ComponentProp";
 import type { GridDefaults } from "./GridDefaults";
 
-export interface ComponentDef { id: string, name: string, category: string, componentType: string, template: string | null, props: Record<string, ComponentProp>, defaultClasses: string, gridDefaults: GridDefaults | null, slots: Array<string>, allowedChildren: string, events: Array<string>, i18N: Record<string, Record<string, string>>, }
+export interface ComponentDef {
+  id: string;
+  name: string;
+  category: string;
+  componentType: string;
+  template: string | null;
+  props: Record<string, ComponentProp>;
+  defaultClasses: string;
+  gridDefaults: GridDefaults | null;
+  slots: Array<string>;
+  allowedChildren: string;
+  events: Array<string>;
+  i18N: Record<string, Record<string, string>>;
+}

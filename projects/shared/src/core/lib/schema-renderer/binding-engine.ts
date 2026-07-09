@@ -29,7 +29,10 @@ export class BindingEngine {
     return this.resolveBinding(value, context);
   }
 
-  private resolveValueFromPath(path: string, context: Record<string, unknown>): unknown {
+  private resolveValueFromPath(
+    path: string,
+    context: Record<string, unknown>,
+  ): unknown {
     const fnCallMatch = path.match(/^fn\(([^)]*)\)$/);
     if (fnCallMatch) {
       return this.resolveFunctionCall(fnCallMatch[1], context);
@@ -46,7 +49,10 @@ export class BindingEngine {
     return this.getNestedValue(context, path);
   }
 
-  private resolveFunctionCall(argsStr: string, context: Record<string, unknown>): unknown {
+  private resolveFunctionCall(
+    argsStr: string,
+    context: Record<string, unknown>,
+  ): unknown {
     const args = this.parseArgs(argsStr);
     const fnName = args[0];
     const fnArgs = args.slice(1);
@@ -116,7 +122,10 @@ export class BindingEngine {
     return current;
   }
 
-  private getFunction(name: string, context: Record<string, unknown>): Function | undefined {
+  private getFunction(
+    name: string,
+    context: Record<string, unknown>,
+  ): Function | undefined {
     const fnContext = context["fn"] as Record<string, Function> | undefined;
     if (fnContext && typeof fnContext[name] === "function") {
       return fnContext[name];

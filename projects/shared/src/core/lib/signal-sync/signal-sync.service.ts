@@ -1,11 +1,11 @@
-import { Injectable, signal, computed, inject } from "@angular/core";
+import { Injectable, signal, computed } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 export type SyncStatus = "idle" | "syncing" | "error" | "offline";
 
 @Injectable({ providedIn: "root" })
 export class SignalSyncService {
-  private http = inject(HttpClient);
+  constructor(private http: HttpClient) {}
 
   private _syncStatus = signal<SyncStatus>("idle");
   private _lastSyncTime = signal<Date | null>(null);

@@ -1,6 +1,7 @@
-// Side-effect import: Import ALL Lit components to trigger @customElement decorators
-// The decorator calls customElements.define() when the module is executed
-// This file MUST be imported before any component usage
+// Side-effect import: Import ALL Angular components to trigger registerSchemaComponent()
+// Each component file calls registerSchemaComponent() on module load,
+// which registers the component in SCHEMA_COMPONENT_MAP for dynamic resolution.
+// This file MUST be imported before any schema rendering.
 
 // UI Components
 import "./components/button/button.component";
@@ -38,12 +39,29 @@ import "./components/tabs/tabs.component";
 import "./components/progress-bar/progress-bar.component";
 import "./components/segment-selector/segment-selector.component";
 import "./components/icons/icons.component";
+import "./components/tooltip/tooltip.component";
+import "./components/snackbar/snackbar.component";
+import "./components/spinner/spinner.component";
+import "./components/divider/divider.component";
+import "./components/tree/tree.component";
+import "./components/form/form.component";
+import "./components/checkbox/checkbox.component";
+import "./components/toast/toast-component";
+
+// Nav Components
+import "./ui/nav/nav-item";
+import "./ui/nav/nav-group";
+
+// Designer Components
+import "./components/canvas-toolbar/canvas-toolbar.component";
+import "./components/designer-sidebar/designer-sidebar.component";
+import "./components/main-editor/main-editor.component";
+import "./components/command-palette/command-palette.component";
 
 // Translator-specific Components
 import "./components/language-selector/language-selector.component";
 import "./components/swap-button/swap-button.component";
 import "./components/text-input/text-input.component";
 import "./components/translation-output/translation-output.component";
-import "./components/toast/toast-component";
 import "./components/theme-toggle/theme-toggle.component";
 import "./components/shortcuts-overlay/shortcuts-overlay.component";

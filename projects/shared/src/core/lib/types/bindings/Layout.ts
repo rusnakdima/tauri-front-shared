@@ -2,4 +2,9 @@
 import type { GridTemplate } from "./GridTemplate";
 import type { LayoutSlot } from "./LayoutSlot";
 
-export interface Layout { id: string, name: string, slots: Record<string, LayoutSlot>, gridTemplate: GridTemplate | null, }
+export interface Layout {
+  id: string;
+  name: string;
+  slots: Record<string, LayoutSlot>;
+  gridTemplate: GridTemplate | null;
+}

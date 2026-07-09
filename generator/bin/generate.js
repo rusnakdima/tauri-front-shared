@@ -128,16 +128,16 @@ Options:
   -d, --dry-run              Preview output without writing files
   -h, --help                 Show this help message
 
-Available features:
-  core-api  - @tauri-front/core (SignalStore, SignalSync, SignalLogger, CrudService)
-  ui        - @tauri-front/ui (Button, Input, Checkbox, Tabs, etc.)
-  layout    - @tauri-front/layout (Header, Sidebar, Footer, SplitView)
-  theme     - @tauri-front/core (ThemeService)
-  events    - @tauri-front/core (EventBusService)
-  data      - @tauri-front/data (cards, tables)
-  feedback  - @tauri-front/feedback (Dialog, Toast, Modal)
-  storage   - @tauri-front/storage (LocalStorage, IndexedDB)
-  grid      - @tauri-front/grid (Grid layout)
+Available features (all in @tauri-front/shared):
+  core-api  - SignalStore, SignalSync, SignalLogger, CrudService
+  ui        - Button, Input, Checkbox, Tabs, etc.
+  layout    - Header, Sidebar, Footer, SplitView
+  theme     - ThemeService
+  events    - EventBusService
+  data      - cards, tables
+  feedback  - Dialog, Toast, Modal
+  storage   - LocalStorage, IndexedDB
+  grid      - Grid layout
 
 Example:
   npx @tauri-front/generator --schema ./schema.json --output ./my-app --app-name MyApp

@@ -17,7 +17,10 @@ export async function invokeWithRetry<T>(
     } catch (error) {
       lastError = error as Error;
       if (attempt < maxAttempts - 1) {
-        const delay = Math.min(initialDelayMs * Math.pow(2, attempt), maxDelayMs);
+        const delay = Math.min(
+          initialDelayMs * Math.pow(2, attempt),
+          maxDelayMs,
+        );
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }

@@ -12,9 +12,13 @@ export class PermissionEvaluator {
     this.rules.push(rule);
   }
 
-  evaluate(resource: string, action: string, context?: Record<string, unknown>): boolean {
+  evaluate(
+    resource: string,
+    action: string,
+    context?: Record<string, unknown>,
+  ): boolean {
     const matchingRules = this.rules.filter(
-      (r) => r.resource === resource && r.action === action
+      (r) => r.resource === resource && r.action === action,
     );
 
     for (const rule of matchingRules) {
@@ -35,7 +39,10 @@ export class PermissionEvaluator {
     this.rules = [];
   }
 
-  private evaluateConditions(conditions: Record<string, unknown>, context: Record<string, unknown>): boolean {
+  private evaluateConditions(
+    conditions: Record<string, unknown>,
+    context: Record<string, unknown>,
+  ): boolean {
     for (const [key, expected] of Object.entries(conditions)) {
       if (context[key] !== expected) {
         return false;

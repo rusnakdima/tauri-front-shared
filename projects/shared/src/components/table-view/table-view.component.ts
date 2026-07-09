@@ -1,42 +1,71 @@
-import { LitElement, html, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { Component, Input } from "@angular/core";
+import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 
-export interface TableColumn {
-  name: string;
+interface ColumnDef {
   key: string;
+  name: string;
 }
+type RowData = Record<string, unknown>;
 
-@customElement("app-table-view")
-export class AppTableView extends LitElement {
-  @property() declare columns: string;
-  @property() declare data: string;
-  constructor() {
-    super();
-    for (const key of ["columns", "data"]) {
-      if (Object.prototype.hasOwnProperty.call(this, key)) {
-        const val = (this as Record<string, unknown>)[key];
-        delete (this as Record<string, unknown>)[key];
-        (this as Record<string, unknown>)[key] = val;
+@Component({
+  selector: "app-table-view",
+  standalone: true,
+  template: `
+    <table>
+      <thead>
+        <tr>
+          @for (col of parsedColumns; track col.key) {
+            <th>{{ col.name }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of parsedData; track row) {
+          <tr>
+            @for (col of parsedColumns; track col.key) {
+              <td>{{ row[col.key] }}</td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  `,
+  styles: [
+    `
+      :host {
+        display: block;
+        overflow-x: auto;
       }
-    }
-  }
-
-  override connectedCallback(): void {
-    const saved: Record<string, unknown> = {};
-    for (const key of ["columns", "data"]) {
-      if (Object.prototype.hasOwnProperty.call(this, key)) {
-        saved[key] = (this as Record<string, unknown>)[key];
-        delete (this as Record<string, unknown>)[key];
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.875rem;
       }
-    }
-    super.connectedCallback();
-    for (const [key, value] of Object.entries(saved)) {
-      (this as Record<string, unknown>)[key] = value;
-    }
-  }
+      th {
+        text-align: left;
+        padding: 0.75rem 1rem;
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        font-weight: 600;
+        border-bottom: 1px solid var(--border-color);
+      }
+      td {
+        padding: 0.75rem 1rem;
+        color: var(--text-primary);
+        border-bottom: 1px solid var(--border-color);
+      }
+      tr:hover td {
+        background-color: var(--bg-hover);
+      }
+    `,
+  ],
+})
+export class TableViewComponent {
+  @Input() columns: string | ColumnDef[] = "[]";
+  @Input() data: string | RowData[] = "[]";
 
-
-  private _getColumns(): TableColumn[] {
+  get parsedColumns(): ColumnDef[] {
+    if (Array.isArray(this.columns)) return this.columns;
     try {
       return JSON.parse(this.columns);
     } catch {
@@ -44,73 +73,14 @@ export class AppTableView extends LitElement {
     }
   }
 
-  private _getData(): Record<string, unknown>[] {
+  get parsedData(): RowData[] {
+    if (Array.isArray(this.data)) return this.data;
     try {
       return JSON.parse(this.data);
     } catch {
       return [];
     }
   }
-
-  static override styles = css`
-    :host {
-      display: block;
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.875rem;
-    }
-
-    th {
-      text-align: left;
-      padding: 0.75rem 1rem;
-      background-color: var(--bg-secondary);
-      color: var(--text-primary);
-      font-weight: 600;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    td {
-      padding: 0.75rem 1rem;
-      color: var(--text-primary);
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    tr:hover td {
-      background-color: var(--bg-hover);
-    }
-  `;
-
-  override render() {
-    const cols = this._getColumns();
-    const rows = this._getData();
-
-    return html`
-      <table>
-        <thead>
-          <tr>
-            ${cols.map((col) => html`<th>${col.name}</th>`)}
-          </tr>
-        </thead>
-        <tbody>
-          ${rows.map(
-            (row) => html`
-              <tr>
-                ${cols.map((col) => html`<td>${row[col.key] ?? ""}</td>`)}
-              </tr>
-            `,
-          )}
-        </tbody>
-      </table>
-    `;
-  }
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    "app-table-view": AppTableView;
-  }
-}
+registerSchemaComponent("app-table-view", TableViewComponent);

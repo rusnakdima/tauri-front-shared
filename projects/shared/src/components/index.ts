@@ -1,5 +1,4 @@
-// Re-export Lit web components from local source files.
-// These will be compiled by ng-packagr.
+// Re-export Angular components from local source files.
 
 export * from "./button/button.component";
 export * from "./input/input.component";

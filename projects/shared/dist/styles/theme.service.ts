@@ -50,11 +50,11 @@ export class StyleThemeService {
   private resolveThemeVariant(theme: string): StyleVariant {
     const map: Record<string, StyleVariant> = {
       "material-design-v3": "material-design-v3",
-      "neumorphism": "neumorphism",
-      "claymorphism": "claymorphism",
-      "glassmorphism": "glassmorphism",
-      "brutalism": "brutalism",
-      "skeuomorphism": "skeuomorphism",
+      neumorphism: "neumorphism",
+      claymorphism: "claymorphism",
+      glassmorphism: "glassmorphism",
+      brutalism: "brutalism",
+      skeuomorphism: "skeuomorphism",
     };
     if (map[theme]) return map[theme];
     return "material-design-v3";
@@ -147,7 +147,7 @@ export class StyleThemeService {
   --bg-header: #1c1b1f;
   --bg-secondary: #211f26;
 }`,
-      "neumorphism": `
+      neumorphism: `
 :root {
   --accent: #a78bfa;
   --accent-hover: #8b7cf7;
@@ -167,7 +167,7 @@ export class StyleThemeService {
   --bg-secondary: #1e2533;
   --bg-tertiary: #171923;
 }`,
-      "claymorphism": `
+      claymorphism: `
 :root {
   --accent: #a78bfa;
   --accent-hover: #8b7cf7;
@@ -187,7 +187,7 @@ export class StyleThemeService {
   --bg-secondary: #1e2533;
   --bg-tertiary: #171923;
 }`,
-      "glassmorphism": `
+      glassmorphism: `
 :root {
   --accent: rgba(167, 139, 250, 0.8);
   --accent-hover: rgba(187, 159, 250, 0.9);
@@ -207,7 +207,7 @@ export class StyleThemeService {
   --bg-secondary: rgba(25, 25, 45, 0.75);
   --bg-tertiary: rgba(10, 10, 20, 0.95);
 }`,
-      "brutalism": `
+      brutalism: `
 :root {
   --color-brut-base: #1a1a1a;
   --color-brut-ink: #f5f5f0;
@@ -220,7 +220,7 @@ export class StyleThemeService {
   --text-muted: #909090;
   --border-color: #f5f5f0;
 }`,
-      "skeuomorphism": `
+      skeuomorphism: `
 :root {
   --color-skeu-base: #2b1f14;
   --color-skeu-leather: #3a2a18;

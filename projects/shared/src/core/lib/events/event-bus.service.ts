@@ -23,7 +23,11 @@ export class EventBusService {
     }
   }
 
-  on(event: string, handler: (data: unknown) => void, context?: unknown): () => void {
+  on(
+    event: string,
+    handler: (data: unknown) => void,
+    context?: unknown,
+  ): () => void {
     if (!this.handlers.has(event)) {
       this.handlers.set(event, new Set());
     }
@@ -34,7 +38,11 @@ export class EventBusService {
     return () => this.off(event, wrapped);
   }
 
-  once(event: string, handler: (data: unknown) => void, context?: unknown): () => void {
+  once(
+    event: string,
+    handler: (data: unknown) => void,
+    context?: unknown,
+  ): () => void {
     const wrapped = (...args: unknown[]) => {
       this.off(event, wrapped);
       handler.apply(context, args);

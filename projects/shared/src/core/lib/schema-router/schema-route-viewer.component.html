@@ -1,7 +1,10 @@
 @if (page(); as p) {
-  <div class="schema-page">
+  <div [class]="containerClass()" [ngStyle]="gridStyles()">
     @for (element of p.canvasElements; track element.id) {
-      <app-schema-element [element]="element" [elements]="p.canvasElements"></app-schema-element>
+      <app-schema-element
+        [element]="element"
+        [elements]="p.canvasElements"
+      ></app-schema-element>
     }
   </div>
 }

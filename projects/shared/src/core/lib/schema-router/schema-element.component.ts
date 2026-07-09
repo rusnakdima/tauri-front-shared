@@ -1,27 +1,28 @@
-import { Component, Input, inject, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { ComponentRegistryService } from "../component-registry.service";
-import { EventBusService } from "../events/event-bus.service";
+import { SCHEMA_COMPONENT_MAP } from "../schema-component.registry";
 import type { CanvasElement } from "../types";
 
 @Component({
   selector: "app-schema-element",
   standalone: true,
   imports: [CommonModule],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: "./schema-element.component.html",
   styleUrl: "./schema-element.component.css",
 })
-export class SchemaElementComponent {
+export class SchemaElementComponent implements OnInit {
   @Input({ required: true }) element!: CanvasElement;
   @Input({ required: true }) elements: CanvasElement[] = [];
 
-  private registry = inject(ComponentRegistryService);
-  private eventBus = inject(EventBusService);
+  ngOnInit() {}
+
+  get componentType() {
+    const type = SCHEMA_COMPONENT_MAP.get(this.tag);
+    return type ?? null;
+  }
 
   get tag(): string {
-    const def = this.registry.get(this.element.componentId);
-    return def?.selector ?? this.element.componentId;
+    return this.element.componentId;
   }
 
   get classes(): string {
@@ -36,7 +37,45 @@ export class SchemaElementComponent {
     return this.element.props ?? {};
   }
 
-  get isKnownComponent(): boolean {
-    return this.registry.has(this.element.componentId);
+  get gridStyle(): Partial<CSSStyleDeclaration> {
+    const gp = this.element.gridPosition;
+    if (!gp) return {};
+    const style: Record<string, string> = {};
+    const col = `${gp.column} / span ${gp.colSpan || 1}`;
+    const row = `${gp.row} / span ${gp.rowSpan || 1}`;
+    return { gridColumn: col, gridRow: row } as Partial<CSSStyleDeclaration>;
+  }
+
+  get isNativeHtml(): boolean {
+    return [
+      "div",
+      "span",
+      "h1",
+      "h2",
+      "h3",
+      "p",
+      "footer",
+      "header",
+      "section",
+      "article",
+      "main",
+      "aside",
+      "nav",
+      "ul",
+      "li",
+      "a",
+      "img",
+      "label",
+      "small",
+      "strong",
+      "em",
+      "i",
+      "b",
+      "code",
+      "pre",
+      "blockquote",
+      "figure",
+      "figcaption",
+    ].includes(this.tag);
   }
 }

@@ -1,6 +1,11 @@
-import { Injectable, signal, computed, inject } from "@angular/core";
+import { Injectable, signal, computed } from "@angular/core";
 import { ToastService, ToastType } from "../toast/toast.service";
-import { parseError, formatError, type AppError, ErrorType } from "../../../core-api/tauri/error";
+import {
+  parseError,
+  formatError,
+  type AppError,
+  ErrorType,
+} from "../../../core-api/tauri/error";
 
 export interface ErrorLogEntry {
   id: string;
@@ -27,17 +32,17 @@ const MAX_ERROR_LOG_ENTRIES = 100;
 
 @Injectable({ providedIn: "root" })
 export class ErrorHandlerService {
-  private toastService = inject(ToastService);
-
   private errorLogSignal = signal<ErrorLogEntry[]>([]);
   private onlineSignal = signal<boolean>(navigator.onLine);
   private retryCounter = 0;
 
   readonly errorLog = computed(() => this.errorLogSignal());
   readonly isOnline = computed(() => this.onlineSignal());
-  readonly errorCount = computed(() => this.errorLogSignal().filter((e) => !e.dismissed).length);
+  readonly errorCount = computed(
+    () => this.errorLogSignal().filter((e) => !e.dismissed).length,
+  );
 
-  constructor() {
+  constructor(private toastService: ToastService) {
     this.setupOnlineOfflineListeners();
   }
 
@@ -46,10 +51,7 @@ export class ErrorHandlerService {
     window.addEventListener("offline", () => this.onlineSignal.set(false));
   }
 
-  handleError(
-    error: unknown,
-    context?: string,
-  ): AppError {
+  handleError(error: unknown, context?: string): AppError {
     const appError = this.normalizeError(error);
     const message = formatError(appError);
     const fullMessage = context ? `[${context}] ${message}` : message;
@@ -69,7 +71,9 @@ export class ErrorHandlerService {
     return parseError(error);
   }
 
-  private isHttpError(error: unknown): error is { status?: number; message?: string; statusText?: string } {
+  private isHttpError(
+    error: unknown,
+  ): error is { status?: number; message?: string; statusText?: string } {
     return (
       typeof error === "object" &&
       error !== null &&
@@ -78,7 +82,11 @@ export class ErrorHandlerService {
     );
   }
 
-  private convertHttpError(httpError: { status?: number; message?: string; statusText?: string }): AppError {
+  private convertHttpError(httpError: {
+    status?: number;
+    message?: string;
+    statusText?: string;
+  }): AppError {
     const status = httpError.status ?? 0;
     const message = httpError.message || httpError.statusText || "HTTP error";
 
@@ -113,7 +121,11 @@ export class ErrorHandlerService {
     this.toastService.show({ type, message });
   }
 
-  private addToErrorLog(error: AppError, message: string, context?: string): void {
+  private addToErrorLog(
+    error: AppError,
+    message: string,
+    context?: string,
+  ): void {
     const entry: ErrorLogEntry = {
       id: `error-${++this.retryCounter}-${Date.now()}`,
       timestamp: new Date(),
@@ -131,7 +143,9 @@ export class ErrorHandlerService {
 
   dismissError(id: string): void {
     this.errorLogSignal.update((log) =>
-      log.map((entry) => (entry.id === id ? { ...entry, dismissed: true } : entry))
+      log.map((entry) =>
+        entry.id === id ? { ...entry, dismissed: true } : entry,
+      ),
     );
   }
 
@@ -147,7 +161,10 @@ export class ErrorHandlerService {
     fn: () => Promise<T>,
     config: Partial<RetryConfig> = {},
   ): Promise<T> {
-    const { maxAttempts, initialDelayMs, maxDelayMs } = { ...DEFAULT_RETRY_CONFIG, ...config };
+    const { maxAttempts, initialDelayMs, maxDelayMs } = {
+      ...DEFAULT_RETRY_CONFIG,
+      ...config,
+    };
     let lastError: Error;
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -156,7 +173,10 @@ export class ErrorHandlerService {
       } catch (error) {
         lastError = error as Error;
         if (attempt < maxAttempts - 1) {
-          const delay = Math.min(initialDelayMs * Math.pow(2, attempt), maxDelayMs);
+          const delay = Math.min(
+            initialDelayMs * Math.pow(2, attempt),
+            maxDelayMs,
+          );
           await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }

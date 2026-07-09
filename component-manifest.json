@@ -3,7 +3,7 @@
     "id": "bottom-panel",
     "name": "AppBottomPanel",
     "selector": "app-bottom-panel",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -44,7 +44,7 @@
     "id": "slider",
     "name": "AppSlider",
     "selector": "app-slider",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -80,7 +80,7 @@
     "id": "theme-toggle",
     "name": "AppThemeToggle",
     "selector": "app-theme-toggle",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "layout",
     "props": [],
     "template": "<button\n        type=\"button\"\n        @click=\"${this._handleToggle}\"\n        title=\"${this.isDark ? \"Switch to light\" : \"Switch to dark\"}\"\n      >\n        ${this.isDark\n          ? html",
@@ -90,7 +90,7 @@
     "id": "tooltip",
     "name": "AppTooltip",
     "selector": "app-tooltip",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -121,7 +121,7 @@
     "id": "json-view",
     "name": "AppJsonView",
     "selector": "app-json-view",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "layout",
     "props": [],
     "template": "<div class=\"json-container\">\n        ${this._syntaxHighlight(formatted)}\n      </div>",
@@ -131,7 +131,7 @@
     "id": "data-table",
     "name": "AppDataTable",
     "selector": "app-data-table",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -157,7 +157,7 @@
     "id": "loading",
     "name": "AppLoading",
     "selector": "app-loading",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -173,7 +173,7 @@
     "id": "stats-card",
     "name": "AppStatsCard",
     "selector": "app-stats-card",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -199,7 +199,7 @@
     "id": "button",
     "name": "AppButton",
     "selector": "app-button",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -245,7 +245,7 @@
     "id": "split-view",
     "name": "AppSplitView",
     "selector": "app-split-view",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -271,7 +271,7 @@
     "id": "footer",
     "name": "AppFooter",
     "selector": "app-footer",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -287,7 +287,7 @@
     "id": "component-palette",
     "name": "AppComponentPalette",
     "selector": "app-component-palette",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -308,7 +308,7 @@
     "id": "switch",
     "name": "AppSwitch",
     "selector": "app-switch",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -329,7 +329,7 @@
     "id": "page-container",
     "name": "AppPageContainer",
     "selector": "app-page-container",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -345,7 +345,7 @@
     "id": "card",
     "name": "AppCard",
     "selector": "app-card",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -381,7 +381,7 @@
     "id": "chip",
     "name": "AppChip",
     "selector": "app-chip",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -395,14 +395,14 @@
         "default": false
       }
     ],
-    "template": "<span class=\"chip\">\n        ${this.icon ? html`<i class=\"material-icons chip-icon\">${this.icon}</i>` : \"\"}\n        <span>${this.label}</span>\n        ${this.removable\n          ? html`<button class=\"remove-btn\" @click=\"${this._handleRemove}\" aria-label=\"Remove\">×</button>",
+    "template": "<span class=\"chip\">\n        ${this.icon ? html`<i class=\"material-icons chip-icon\">${this.icon}</i>` : \"\"}\n        <span>${this.label}</span>\n        ${this.removable\n          ? html`<button class=\"remove-btn\" @click=\"${this._handleRemove}\" aria-label=\"Remove\">\u00d7</button>",
     "css": ":host {\n      display: inline-flex;\n    }\n\n    .chip {\n      display: inline-flex;\n      align-items: center;\n      gap: 0.375rem;\n      padding: 0.25rem 0.75rem;\n      border-radius: 1rem;\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      font-weight: 500;\n      transition: background-color 0.15s;\n    }\n\n    .chip:hover {\n      background-color: var(--bg-hover);\n    }\n\n    .chip-icon {\n      font-size: 1rem;\n    }\n\n    .remove-btn {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1rem;\n      height: 1rem;\n      padding: 0;\n      border: none;\n      background: transparent;\n      color: var(--text-secondary);\n      cursor: pointer;\n      border-radius: 50%;\n      transition: background-color 0.15s;\n      margin-left: 0.125rem;\n    }\n\n    .remove-btn:hover {\n      background-color: var(--border-color);\n      color: var(--text-primary);\n    }"
   },
   {
     "id": "radio",
     "name": "AppRadio",
     "selector": "app-radio",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -433,7 +433,7 @@
     "id": "text-input",
     "name": "AppTextInput",
     "selector": "app-text-input",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -474,7 +474,7 @@
     "id": "language-selector",
     "name": "AppLanguageSelector",
     "selector": "app-language-selector",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -505,7 +505,7 @@
     "id": "shortcuts-overlay",
     "name": "AppShortcutsOverlay",
     "selector": "app-shortcuts-overlay",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "layout",
     "props": [],
     "template": "<div class=\"overlay ${this.open ? \"\" : \"hidden\"}\" @click=\"${this._handleBackdropClick}\">\n        <div class=\"modal\">\n          <div class=\"modal-header\">\n            <h2 class=\"modal-title\">Keyboard Shortcuts</h2>\n            <button class=\"close-btn\" type=\"button\" @click=\"${this._close}\">\n              <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n                <line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"></line>\n                <line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"></line>\n              </svg>\n            </button>\n          </div>\n          <ul class=\"shortcut-list\">\n            ${shortcuts.map(\n              (s) => html",
@@ -515,7 +515,7 @@
     "id": "textarea",
     "name": "AppTextarea",
     "selector": "app-textarea",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -546,7 +546,7 @@
     "id": "spinner",
     "name": "AppSpinner",
     "selector": "app-spinner",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -572,7 +572,7 @@
     "id": "translation-output",
     "name": "AppTranslationOutput",
     "selector": "app-translation-output",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -598,7 +598,7 @@
     "id": "empty-state",
     "name": "AppEmptyState",
     "selector": "app-empty-state",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -619,7 +619,7 @@
     "id": "select",
     "name": "AppSelect",
     "selector": "app-select",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -650,7 +650,7 @@
     "id": "input",
     "name": "AppInput",
     "selector": "app-input",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -676,7 +676,7 @@
     "id": "badge",
     "name": "AppBadge",
     "selector": "app-badge",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -702,7 +702,7 @@
     "id": "icon",
     "name": "AppIcon",
     "selector": "app-icon",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -723,7 +723,7 @@
     "id": "table-view",
     "name": "AppTableView",
     "selector": "app-table-view",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -744,7 +744,7 @@
     "id": "header",
     "name": "AppHeader",
     "selector": "app-header",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -770,7 +770,7 @@
     "id": "tree",
     "name": "AppTree",
     "selector": "app-tree",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -801,7 +801,7 @@
     "id": "page-toolbar",
     "name": "AppPageToolbar",
     "selector": "app-page-toolbar",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -822,7 +822,7 @@
     "id": "divider",
     "name": "AppDivider",
     "selector": "app-divider",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -848,7 +848,7 @@
     "id": "form",
     "name": "AppForm",
     "selector": "app-form",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -879,7 +879,7 @@
     "id": "modal",
     "name": "AppModal",
     "selector": "app-modal",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -905,7 +905,7 @@
     "id": "canvas",
     "name": "AppCanvas",
     "selector": "app-canvas",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "layout",
     "props": [],
     "template": "<div class=\"canvas-area\" style=\"${gridStyle}\">\n        ${this.showGrid\n          ? html",
@@ -915,7 +915,7 @@
     "id": "confirm-dialog",
     "name": "AppConfirmDialog",
     "selector": "app-confirm-dialog",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -951,7 +951,7 @@
     "id": "tabs",
     "name": "AppTabs",
     "selector": "app-tabs",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -972,7 +972,7 @@
     "id": "pagination",
     "name": "AppPagination",
     "selector": "app-pagination",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -998,7 +998,7 @@
     "id": "snackbar",
     "name": "AppSnackbar",
     "selector": "app-snackbar",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -1034,7 +1034,7 @@
     "id": "dialog",
     "name": "AppDialog",
     "selector": "app-dialog",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -1070,7 +1070,7 @@
     "id": "checkbox",
     "name": "AppCheckbox",
     "selector": "app-checkbox",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -1096,7 +1096,7 @@
     "id": "sidebar",
     "name": "AppSidebar",
     "selector": "app-sidebar",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -1127,7 +1127,7 @@
     "id": "avatar",
     "name": "AppAvatar",
     "selector": "app-avatar",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -1153,7 +1153,7 @@
     "id": "segment-selector",
     "name": "AppSegmentSelector",
     "selector": "app-segment-selector",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -1174,7 +1174,7 @@
     "id": "properties-panel",
     "name": "AppPropertiesPanel",
     "selector": "app-properties-panel",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {
@@ -1190,7 +1190,7 @@
     "id": "progress-bar",
     "name": "AppProgressBar",
     "selector": "app-progress-bar",
-    "packageType": "ui",
+    "packageType": "shared",
     "category": "forms",
     "props": [
       {

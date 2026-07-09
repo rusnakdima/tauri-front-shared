@@ -1,6 +1,6 @@
-export * from "./schema-renderer.service.js";
+export * from "./schema-renderer.service";
 export { ComponentRegistryService } from "../component-registry.service";
-export { DataBindingResolverService } from "./data-binding-resolver.js";
-export { LayoutEngineService } from "./layout-engine.js";
-export type { GridTemplate } from "./layout-engine.js";
-export type { DataBinding } from "./data-binding-resolver.js";
+export { DataBindingResolverService } from "./data-binding-resolver";
+export { LayoutEngineService } from "./layout-engine";
+export type { GridTemplate } from "./layout-engine";
+export type { DataBinding } from "./data-binding-resolver";

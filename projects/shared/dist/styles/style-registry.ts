@@ -1,5 +1,10 @@
 export type StyleVariant =
-  "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3" | "brutalism" | "skeuomorphism";
+  | "claymorphism"
+  | "glassmorphism"
+  | "neumorphism"
+  | "material-design-v3"
+  | "brutalism"
+  | "skeuomorphism";
 
 export interface ComponentStyleMap {
   [componentId: string]: {
@@ -47,7 +52,7 @@ const BRUTALISM_CSS = `
   --font-brut-mono: "JetBrains Mono", "Courier New", monospace;
   --font-brut-sans: "Inter", "Arial Black", sans-serif;
 
-  /* Generic aliases for Lit components */
+  /* Generic aliases for all components */
   --accent: var(--color-brut-accent);
   --accent-hover: #d62b22;
   --text-on-accent: #ffffff;
@@ -176,7 +181,7 @@ const SKEUOMORPHISM_CSS = `
     inset 0 -10px 20px rgba(255,255,255,0.1),
     0 4px 8px rgba(0,0,0,0.2);
 
-  /* Generic aliases for Lit components */
+  /* Generic aliases for all components */
   --accent: var(--color-skeu-accent);
   --accent-hover: var(--color-skeu-accent-dark);
   --text-on-accent: var(--color-skeu-cream);
@@ -343,7 +348,7 @@ const NEUMORPHISM_CSS = `
     inset 8px 8px 16px var(--color-neu-shadow-dark-strong),
     inset -8px -8px 16px var(--color-neu-shadow-light-strong);
 
-  /* Generic variables for Lit components */
+  /* Generic variables for all components */
   --accent: #6d5dfc;
   --accent-hover: #5a4cdb;
   --text-on-accent: #ffffff;
@@ -942,7 +947,7 @@ const CLAYMORPHISM_CSS = `
   --radius-clay-lg: 24px;
   --radius-clay-xl: 32px;
 
-  /* Generic variables for Lit components */
+  /* Generic variables for all components */
   --accent: #6d5dfc;
   --accent-hover: #5a4cdb;
   --text-on-accent: #ffffff;
@@ -1220,7 +1225,7 @@ const GLASSMORPHISM_CSS = `
   --blur-glass-medium: 20px;
   --blur-glass-heavy: 40px;
 
-  /* Generic variables for Lit components */
+  /* Generic variables for all components */
   --accent: #6d5dfc;
   --accent-hover: #5a4cdb;
   --text-on-accent: #ffffff;
@@ -1684,7 +1689,7 @@ const MATERIAL_DESIGN_V3_CSS = `
   --radius-m3-extra-large: 28px;
   --radius-m3-full: 50%;
 
-  /* Generic variables for Lit components */
+  /* Generic variables for all components */
   --accent: #6750a4;
   --accent-hover: #7c4dff;
   --text-on-accent: #ffffff;
@@ -2718,7 +2723,10 @@ export const STYLE_VARIANTS: Record<StyleVariant, StyleVariantConfig> = {
     classPrefix: "brut-",
     description: "Sharp edges, hard shadows, high-contrast typography",
     componentStyles: {
-      "app-button": { variants: { default: "brut-btn" }, sizes: { sm: "brut-btn-sm", md: "", lg: "brut-btn-lg" } },
+      "app-button": {
+        variants: { default: "brut-btn" },
+        sizes: { sm: "brut-btn-sm", md: "", lg: "brut-btn-lg" },
+      },
       "app-card": { variants: { default: "brut-card" } },
       "app-input": { variants: { default: "brut-input" } },
       "app-textarea": { variants: { default: "brut-input" } },
@@ -2738,10 +2746,16 @@ export const STYLE_VARIANTS: Record<StyleVariant, StyleVariantConfig> = {
     name: "Skeuomorphism",
     cssString: SKEUOMORPHISM_CSS,
     classPrefix: "skeu-",
-    description: "Realistic textures with leather, paper, and glossy highlights",
+    description:
+      "Realistic textures with leather, paper, and glossy highlights",
     componentStyles: {
-      "app-button": { variants: { default: "skeu-btn" }, sizes: { sm: "skeu-btn-sm", md: "", lg: "skeu-btn-lg" } },
-      "app-card": { variants: { default: "skeu-card", paper: "skeu-card paper" } },
+      "app-button": {
+        variants: { default: "skeu-btn" },
+        sizes: { sm: "skeu-btn-sm", md: "", lg: "skeu-btn-lg" },
+      },
+      "app-card": {
+        variants: { default: "skeu-card", paper: "skeu-card paper" },
+      },
       "app-input": { variants: { default: "skeu-input" } },
       "app-textarea": { variants: { default: "skeu-input" } },
       "app-modal": { variants: { default: "skeu-modal" } },

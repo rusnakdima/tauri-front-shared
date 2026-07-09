@@ -1,1 +1,1 @@
-dist/index.d.ts
+export * from "./dist/lib/public-api";

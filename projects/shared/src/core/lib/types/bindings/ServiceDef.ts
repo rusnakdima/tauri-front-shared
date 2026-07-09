@@ -2,4 +2,11 @@
 import type { ServiceCrud } from "./ServiceCrud";
 import type { ServiceField } from "./ServiceField";
 
-export interface ServiceDef { id: string, name: string, entity: string, provider: string, crud: ServiceCrud, fields: Array<ServiceField>, }
+export interface ServiceDef {
+  id: string;
+  name: string;
+  entity: string;
+  provider: string;
+  crud: ServiceCrud;
+  fields: Array<ServiceField>;
+}

@@ -44,7 +44,12 @@ function findComponentFiles(dir: string, flatTs = false): string[] {
       } else {
         files.push(...findComponentFiles(fullPath));
       }
-    } else if (flatTs && entry.isFile() && entry.name.endsWith(".ts") && !entry.name.includes(".component.")) {
+    } else if (
+      flatTs &&
+      entry.isFile() &&
+      entry.name.endsWith(".ts") &&
+      !entry.name.includes(".component.")
+    ) {
       files.push(fullPath);
     }
   }
@@ -69,9 +74,11 @@ function extractProperties(content: string): SharedComponentProp[] {
   const props: SharedComponentProp[] = [];
   const seen = new Set<string>();
 
-  const lines = content.split('\n');
+  const lines = content.split("\n");
   for (const line of lines) {
-    const propMatch = line.match(/^\s*@property\(\s*(.*?)\s*\)\s+(\w+)(?:\s*:\s*([^\s=][^\s=]*))?\s*=\s*([^;]+);/);
+    const propMatch = line.match(
+      /^\s*@property\(\s*(.*?)\s*\)\s+(\w+)(?:\s*:\s*([^\s=][^\s=]*))?\s*=\s*([^;]+);/,
+    );
     if (!propMatch) continue;
 
     const [, optionsStr, propName, inlineType, defaultStr] = propMatch;
@@ -107,20 +114,32 @@ function extractProperties(content: string): SharedComponentProp[] {
     // Check for options array
     const optionsMatch = optionsStr.match(/options\s*:\s*\[([^\]]+)\]/);
     const options = optionsMatch
-      ? optionsMatch[1].split(",").map((o) => o.trim().replace(/^["']|["']$/g, ""))
+      ? optionsMatch[1]
+          .split(",")
+          .map((o) => o.trim().replace(/^["']|["']$/g, ""))
       : undefined;
     if (options) {
-      propType = options.length > 0 && options[0].match(/^#[0-9A-Fa-f]{6}$/) ? "color" : "select";
+      propType =
+        options.length > 0 && options[0].match(/^#[0-9A-Fa-f]{6}$/)
+          ? "color"
+          : "select";
     }
 
-    props.push({ name: propName, type: propType, default: defaultValue, options });
+    props.push({
+      name: propName,
+      type: propType,
+      default: defaultValue,
+      options,
+    });
   }
 
   return props;
 }
 
 function extractCss(content: string): string {
-  const stylesMatch = content.match(/static\s+override\s+styles\s*=\s*css`([\s\S]*?)`/);
+  const stylesMatch = content.match(
+    /static\s+override\s+styles\s*=\s*css`([\s\S]*?)`/,
+  );
   if (stylesMatch) {
     return stylesMatch[1].trim();
   }
@@ -141,13 +160,20 @@ function extractTemplate(content: string): string {
 
 function deriveCategory(props: SharedComponentProp[]): string {
   const hasFormProp = props.some(
-    (p) => p.type === "string" || p.type === "number" || p.type === "boolean" || p.type === "select"
+    (p) =>
+      p.type === "string" ||
+      p.type === "number" ||
+      p.type === "boolean" ||
+      p.type === "select",
   );
   if (hasFormProp) return "forms";
   return "layout";
 }
 
-function parseComponent(filePath: string, packageType: string): SharedComponentDef | null {
+function parseComponent(
+  filePath: string,
+  packageType: string,
+): SharedComponentDef | null {
   const content = fs.readFileSync(filePath, "utf-8");
 
   if (!isLitComponent(content)) {
@@ -197,7 +223,9 @@ function main() {
   const outputPath = path.resolve(PROJECT_ROOT, "component-manifest.json");
   fs.writeFileSync(outputPath, JSON.stringify(components, null, 2));
 
-  console.log(`Generated ${components.length} components to component-manifest.json`);
+  console.log(
+    `Generated ${components.length} components to component-manifest.json`,
+  );
 }
 
 main();

@@ -1,12 +1,21 @@
 import { Injectable } from "@angular/core";
 import { LitElement } from "lit";
 import type { ElementConfig, GridPosition, DataBinding } from "./types";
+import { I18nService } from "../i18n/i18n.service";
+import {
+  StyleVariant,
+  getCurrentStyle,
+  getComponentStyleClasses,
+  GlobalStyleContext,
+} from "../../../styles/style-registry";
 
 export interface ComponentRegistry {
   getSelector(componentId: string): string | undefined;
   getInputs(componentId: string): string[];
   getOutputs(componentId: string): string[];
-  getDefinition?(componentId: string): { children?: Array<{ key: string; [key: string]: unknown }> } | undefined;
+  getDefinition?(
+    componentId: string,
+  ): { children?: Array<{ key: string; [key: string]: unknown }> } | undefined;
 }
 
 @Injectable({ providedIn: "root" })
@@ -17,11 +26,28 @@ export class ElementFactoryService {
     this.registry = registry;
   }
 
-  createElement(config: ElementConfig, componentRegistry: ComponentRegistry): HTMLElement | null {
+  async createElement(
+    config: ElementConfig,
+    componentRegistry: ComponentRegistry,
+  ): Promise<HTMLElement | null> {
     const selector = componentRegistry.getSelector(config.componentId);
     if (!selector) {
       console.warn(`Component not registered: ${config.componentId}`);
       return this.createFallbackElement(config);
+    }
+
+    // Wait for custom element to be defined
+    if (selector.includes("-")) {
+      try {
+        await Promise.race([
+          customElements.whenDefined(selector),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error(`Timeout: ${selector}`)), 2000),
+          ),
+        ]);
+      } catch (e) {
+        console.warn(`[ElementFactory] Element not ready: ${selector}`, e);
+      }
     }
 
     const element = document.createElement(selector);
@@ -46,10 +72,42 @@ export class ElementFactoryService {
       }
     }
 
+    // Handle i18nKey resolution
+    const i18nKey = config.props?.["i18nKey"];
+    if (i18nKey !== undefined) {
+      const translated = I18nService.instance.t(String(i18nKey));
+      if (!element.shadowRoot) {
+        element.textContent = translated;
+      } else {
+        (element as any)["label"] = translated;
+      }
+    }
+
+    // Handle styleName CSS class mapping
+    const styleName = config.props?.["styleName"] as string | undefined;
+    if (styleName) {
+      const theme = getCurrentStyle();
+      const classesStr = getComponentStyleClasses(
+        theme,
+        config.componentId,
+        styleName,
+      );
+      if (classesStr) {
+        const existing = element.getAttribute("class") || "";
+        element.setAttribute(
+          "class",
+          existing ? `${existing} ${classesStr}` : classesStr,
+        );
+      }
+    }
+
     for (const childId of config.children) {
       const childConfig = this.getChildConfig(config.componentId, childId);
       if (childConfig) {
-        const childElement = this.createElement(childConfig, componentRegistry);
+        const childElement = await this.createElement(
+          childConfig,
+          componentRegistry,
+        );
         if (childElement) {
           element.appendChild(childElement);
         }
@@ -59,7 +117,10 @@ export class ElementFactoryService {
     return element;
   }
 
-  private applyGridPosition(element: HTMLElement, position: GridPosition): void {
+  private applyGridPosition(
+    element: HTMLElement,
+    position: GridPosition,
+  ): void {
     const style = element.style;
 
     if (position.colStart !== null) {
@@ -80,6 +141,12 @@ export class ElementFactoryService {
     fallback.setAttribute("data-sdui-fallback", config.componentId);
     fallback.setAttribute("data-element-id", config.id);
     fallback.className = config.classes;
+
+    const i18nKey = config.props?.["i18nKey"];
+    if (i18nKey !== undefined) {
+      fallback.textContent = I18nService.instance.t(String(i18nKey));
+    }
+
     return fallback;
   }
 

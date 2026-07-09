@@ -5,7 +5,6 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  inject,
 } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
 @Component({
@@ -16,7 +15,7 @@ import { MatIconModule } from "@angular/material/icon";
   templateUrl: "./pagination.component.html",
 })
 export class PaginationComponent {
-  private cdr = inject(ChangeDetectorRef);
+  constructor(private cdr: ChangeDetectorRef) {}
   @Input() totalItems = 0;
   @Input() currentPage = 0;
   @Input() pageSize = 50;

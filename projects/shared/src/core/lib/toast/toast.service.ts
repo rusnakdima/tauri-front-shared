@@ -65,20 +65,26 @@ export class ToastService {
   }
   success(
     message: string,
-    options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>
+    options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>,
   ): string {
     return this.show({ ...options, type: "success", message });
   }
-  error(message: string, options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>): string {
+  error(
+    message: string,
+    options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>,
+  ): string {
     return this.show({ ...options, type: "error", message });
   }
   warning(
     message: string,
-    options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>
+    options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>,
   ): string {
     return this.show({ ...options, type: "warning", message });
   }
-  info(message: string, options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>): string {
+  info(
+    message: string,
+    options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>,
+  ): string {
     return this.show({ ...options, type: "info", message });
   }
   dismiss(id: string): void {
@@ -97,11 +103,14 @@ export class ToastService {
   update(
     id: string,
     changes: Partial<
-      Pick<ToastConfig, "message" | "title" | "type" | "duration" | "persistent" | "action">
-    >
+      Pick<
+        ToastConfig,
+        "message" | "title" | "type" | "duration" | "persistent" | "action"
+      >
+    >,
   ): void {
     this.toastsSignal.update((toasts) =>
-      toasts.map((t) => (t.id === id ? { ...t, ...changes } : t))
+      toasts.map((t) => (t.id === id ? { ...t, ...changes } : t)),
     );
   }
 }

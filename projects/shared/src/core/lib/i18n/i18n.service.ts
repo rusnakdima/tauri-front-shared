@@ -1,7 +1,7 @@
-import { Injectable, signal } from '@angular/core';
-import { EN, RU } from './translations';
+import { Injectable, signal } from "@angular/core";
+import { EN, RU } from "./translations";
 
-export type Locale = 'en' | 'ru';
+export type Locale = "en" | "ru";
 
 const TRANSLATIONS: Record<Locale, Record<string, string>> = {
   en: EN,
@@ -12,7 +12,7 @@ const TRANSLATIONS: Record<Locale, Record<string, string>> = {
  * Singleton i18n service for schema-driven UI.
  * Use I18nService.instance.t('key') to translate.
  */
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class I18nService {
   private static _instance: I18nService | null = null;
 
@@ -23,7 +23,7 @@ export class I18nService {
     return I18nService._instance;
   }
 
-  private readonly _locale = signal<Locale>('en');
+  private readonly _locale = signal<Locale>("en");
 
   get locale() {
     return this._locale.asReadonly();
@@ -42,13 +42,13 @@ export class I18nService {
    */
   t(key: string): string {
     const locale = this._locale();
-    return TRANSLATIONS[locale]?.[key] ?? TRANSLATIONS['en']?.[key] ?? key;
+    return TRANSLATIONS[locale]?.[key] ?? TRANSLATIONS["en"]?.[key] ?? key;
   }
 
   /**
    * Get all available locales.
    */
   getAvailableLocales(): Locale[] {
-    return ['en', 'ru'];
+    return ["en", "ru"];
   }
 }

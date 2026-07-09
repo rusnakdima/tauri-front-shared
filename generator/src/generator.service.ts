@@ -18,15 +18,15 @@ import type {
 import { AVAILABLE_FEATURES } from "./types.js";
 
 const FEATURE_PACKAGE_MAP: Record<string, string> = {
-  "core-api": "@tauri-front/core",
-  ui: "@tauri-front/ui",
-  layout: "@tauri-front/layout",
-  theme: "@tauri-front/core",
-  events: "@tauri-front/core",
-  data: "@tauri-front/data",
-  feedback: "@tauri-front/feedback",
-  storage: "@tauri-front/storage",
-  grid: "@tauri-front/grid",
+  "core-api": "@tauri-front/shared",
+  ui: "@tauri-front/shared",
+  layout: "@tauri-front/shared",
+  theme: "@tauri-front/shared",
+  events: "@tauri-front/shared",
+  data: "@tauri-front/shared",
+  feedback: "@tauri-front/shared",
+  storage: "@tauri-front/shared",
+  grid: "@tauri-front/shared",
 };
 
 export class GeneratorService {

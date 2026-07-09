@@ -11,7 +11,11 @@ export interface InvokeOptions {
 
 @Injectable({ providedIn: "root" })
 export class InvokeWrapperService {
-  async invoke<T>(cmd: string, args?: Record<string, unknown>, options?: InvokeOptions): Promise<T> {
+  async invoke<T>(
+    cmd: string,
+    args?: Record<string, unknown>,
+    options?: InvokeOptions,
+  ): Promise<T> {
     try {
       return await invoke<T>(cmd, args);
     } catch (err) {
@@ -25,7 +29,11 @@ export class InvokeWrapperService {
   async invokeWithRetry<T>(
     cmd: string,
     args?: Record<string, unknown>,
-    retryOptions: RetryOptions = { maxAttempts: 3, initialDelayMs: 1000, maxDelayMs: 30000 },
+    retryOptions: RetryOptions = {
+      maxAttempts: 3,
+      initialDelayMs: 1000,
+      maxDelayMs: 30000,
+    },
   ): Promise<T> {
     return invokeWithRetry(
       () => this.invokeWithTimeout<T>(cmd, args, retryOptions.maxDelayMs),
@@ -33,7 +41,12 @@ export class InvokeWrapperService {
     );
   }
 
-  async timeout<T>(ms: number, cmd: string, args?: Record<string, unknown>, options?: InvokeOptions): Promise<T> {
+  async timeout<T>(
+    ms: number,
+    cmd: string,
+    args?: Record<string, unknown>,
+    options?: InvokeOptions,
+  ): Promise<T> {
     const { signal } = options ?? {};
     const doTimeout = new Promise<never>((_, reject) =>
       setTimeout(
@@ -43,8 +56,13 @@ export class InvokeWrapperService {
     );
     if (signal) {
       const doAbort = new Promise<never>((_, reject) => {
-        if (signal.aborted) { reject(signal.reason); return; }
-        signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+        if (signal.aborted) {
+          reject(signal.reason);
+          return;
+        }
+        signal.addEventListener("abort", () => reject(signal.reason), {
+          once: true,
+        });
       });
       return Promise.race([invoke<T>(cmd, args), doTimeout, doAbort]);
     }

@@ -1,35 +1,8 @@
 // @tauri-front/shared - Unified shared library
 // Explicit re-exports to avoid name collisions
 
-// Disable Lit dev mode warnings and class field shadowing errors
-// Must be set before Lit imports
-const global = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : {};
-Object.defineProperty(global, 'litDevMode', { value: false, writable: true, configurable: true });
-
-// Suppress unhandled promise rejections from Lit class field warnings
-if (typeof window !== 'undefined') {
-  const originalHandler = (window as any).onunhandledrejection;
-  (window as any).onunhandledrejection = (event: PromiseRejectionEvent) => {
-    const reason = event?.reason;
-    if (reason?.message?.includes('class fields') || reason?.message?.includes('Lit is in dev mode')) {
-      event.preventDefault();
-      return;
-    }
-    if (originalHandler) originalHandler(event);
-  };
-}
-
-// Component metadata exports (from components.ts - static definitions)
-export {
-  components,
-  uiComponents,
-  layoutComponents,
-  feedbackComponents,
-  dataComponents,
-} from "./components";
-
-// Side-effect import: registers ALL Lit custom elements via @customElement decorators
-// MUST be imported before any component usage
+// Side-effect import: registers ALL Angular components in SCHEMA_COMPONENT_MAP
+// MUST be imported before any schema rendering
 import "./register-components";
 
 // Core SDUI services (core/lib/)
@@ -42,22 +15,31 @@ export { LayoutEngineService } from "./core/lib/schema-renderer/layout-engine";
 export type { GridTemplate } from "./core/lib/schema-renderer/layout-engine";
 export { SchemaRouterService } from "./core/lib/schema-router/schema-router.service";
 export { SchemaRouteViewerComponent } from "./core/lib/schema-router/schema-route-viewer.component";
+export { SchemaShellComponent } from "./core/lib/schema-router/schema-shell.component";
+export { SchemaFetcherService } from "./core/lib/schema-fetcher/schema-fetcher.service";
 export { GuardService } from "./core/lib/schema-router/guard.service";
-export { ThemeService } from "./core/lib/theme/theme.service";
 export { EventBusService } from "./core/lib/events/event-bus.service";
 export { ShortcutService } from "./core/lib/shortcuts/shortcut.service";
 export type { Shortcut } from "./core/lib/shortcuts/shortcut.service";
 export { I18nService } from "./core/lib/i18n/i18n.service";
 export { GlobalStateService } from "./core/lib/global-state/global-state.service";
 export { ErrorHandlerService } from "./core/lib/error-handler/error-handler.service";
-export type { ErrorLogEntry, RetryConfig } from "./core/lib/error-handler/error-handler.service";
+export type {
+  ErrorLogEntry,
+  RetryConfig,
+} from "./core/lib/error-handler/error-handler.service";
 
 // Missing services
 export { SignalStoreService } from "./core/lib/signal-store/signal-store.service";
 export { SignalSyncService } from "./core/lib/signal-sync/signal-sync.service";
+export { SignalLoggerService } from "./core/lib/signal-logger/signal-logger.service";
 export { DataPatchService } from "./core/lib/data-patch/data-patch.service";
 export { ToastService } from "./core/lib/toast/toast.service";
 export { SchemaElementComponent } from "./core/lib/schema-router/schema-element.component";
+
+// Storage services
+export { StorageService } from "./storage/storage.service";
+export { UnifiedStorageService } from "./core-storage/unified-storage.service";
 
 // Existing working services
 export { InvokeWrapperService } from "./core-api/invoke-wrapper.service";
@@ -66,7 +48,13 @@ export { CrudService as RemoteCrudService } from "./core-crud/crud.service";
 // Core API types
 export { ResponseStatus } from "./core-api/tauri/response";
 export type { Response } from "./core-api/tauri/response";
-export { isSuccess, isError, getErrorMessage, unwrapResponse, mapResponse } from "./core-api/tauri/response";
+export {
+  isSuccess,
+  isError,
+  getErrorMessage,
+  unwrapResponse,
+  mapResponse,
+} from "./core-api/tauri/response";
 export { ErrorType, parseError, formatError } from "./core-api/tauri/error";
 export type { AppError } from "./core-api/tauri/error";
 
@@ -103,6 +91,9 @@ export { sortBy } from "./utils/sorting";
 export { clamp } from "./utils/math";
 export { timeAgo } from "./utils/time";
 
+// Algorithms
+export * from "./algorithms";
+
 // Style system
 export {
   loadStyleVariant,
@@ -114,9 +105,8 @@ export {
 } from "./styles/style-registry";
 export type { StyleVariant, ComponentStyleMap } from "./styles/style-registry";
 export { StyleThemeService } from "./styles/theme.service";
-
-// UI Showcase
-export { UiShowcaseComponent } from "./ui-showcase/ui-showcase.component";
+export { StyleThemeService as ThemeService } from "./styles/theme.service";
+export { ThemeToggleService } from "./styles/theme-toggle.service";
 
 // RBAC / Permission Service
 export { PermissionService } from "./core/lib/rbac/permission.service";
@@ -130,4 +120,7 @@ export type {
 } from "./core/lib/rbac/permission.service";
 export { TodoPermission } from "./core/lib/rbac/permission.service";
 export { rbacGuard, rbacRoleGuard } from "./core/lib/rbac/rbac.guard";
-export { RbacHasPermissionDirective, RbacHasRoleDirective } from "./core/lib/rbac/rbac-has-permission.directive";
+export {
+  RbacHasPermissionDirective,
+  RbacHasRoleDirective,
+} from "./core/lib/rbac/rbac-has-permission.directive";

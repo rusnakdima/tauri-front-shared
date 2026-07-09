@@ -1,125 +1,70 @@
-import { LitElement, html, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { Component, Input } from "@angular/core";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 
-@customElement("app-json-view")
-export class AppJsonView extends LitElement {
-  @property() declare data: string | object;
-  constructor() {
-    super();
-    for (const key of ["data"]) {
-      if (Object.prototype.hasOwnProperty.call(this, key)) {
-        const val = (this as Record<string, unknown>)[key];
-        delete (this as Record<string, unknown>)[key];
-        (this as Record<string, unknown>)[key] = val;
+@Component({
+  selector: "app-json-view",
+  standalone: true,
+  template: `<div class="json-container" [innerHTML]="safeHtml"></div>`,
+  styles: [
+    `
+      :host {
+        display: block;
       }
-    }
-  }
-
-  override connectedCallback(): void {
-    const saved: Record<string, unknown> = {};
-    for (const key of ["data"]) {
-      if (Object.prototype.hasOwnProperty.call(this, key)) {
-        saved[key] = (this as Record<string, unknown>)[key];
-        delete (this as Record<string, unknown>)[key];
+      .json-container {
+        background-color: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        font-family: monospace;
+        font-size: 0.875rem;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
       }
-    }
-    super.connectedCallback();
-    for (const [key, value] of Object.entries(saved)) {
-      (this as Record<string, unknown>)[key] = value;
-    }
+      .json-key {
+        color: var(--accent);
+      }
+      .json-string {
+        color: var(--success);
+      }
+      .json-number {
+        color: var(--warning);
+      }
+      .json-boolean {
+        color: var(--error);
+      }
+      .json-null {
+        color: var(--text-muted);
+      }
+    `,
+  ],
+})
+export class JsonViewComponent {
+  @Input() data: unknown = {};
+
+  constructor(private sanitizer: DomSanitizer) {}
+
+  get safeHtml(): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(this.formattedHtml);
   }
 
-
-  private _getFormattedJson(): string {
-    try {
-      const parsed =
-        typeof this.data === "string" ? JSON.parse(this.data) : this.data;
-      return JSON.stringify(parsed, null, 2);
-    } catch {
-      return String(this.data);
-    }
+  private get formattedHtml(): string {
+    const formatted = JSON.stringify(this.data, null, 2);
+    return this.syntaxHighlight(formatted);
   }
 
-  static override styles = css`
-    :host {
-      display: block;
-    }
-
-    .json-container {
-      background-color: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 0.5rem;
-      padding: 1rem;
-      font-family: monospace;
-      font-size: 0.875rem;
-      overflow-x: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .json-key {
-      color: var(--accent);
-    }
-
-    .json-string {
-      color: var(--success);
-    }
-
-    .json-number {
-      color: var(--warning);
-    }
-
-    .json-boolean {
-      color: var(--error);
-    }
-
-    .json-null {
-      color: var(--text-muted);
-    }
-  `;
-
-  private _syntaxHighlight(json: string): ReturnType<typeof html>[] {
-    const result: ReturnType<typeof html>[] = [];
-    const lines = json.split("\n");
-
-    lines.forEach((line, lineIndex) => {
-      const processed = line.replace(
-        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
-        (match) => {
-          let cls = "json-number";
-          if (/^"/.test(match)) {
-            if (/:$/.test(match)) {
-              cls = "json-key";
-              return `<span class="${cls}">${match}</span>`;
-            } else {
-              cls = "json-string";
-            }
-          } else if (/true|false/.test(match)) {
-            cls = "json-boolean";
-          } else if (/null/.test(match)) {
-            cls = "json-null";
-          }
-          return `<span class="${cls}">${match}</span>`;
-        },
-      );
-      result.push(html`${processed}${lineIndex < lines.length - 1 ? html`<br/>` : ""}`);
-    });
-
-    return result;
-  }
-
-  override render() {
-    const formatted = this._getFormattedJson();
-    return html`
-      <div class="json-container">
-        ${this._syntaxHighlight(formatted)}
-      </div>
-    `;
+  private syntaxHighlight(json: string): string {
+    return json
+      .replace(/("(?:[^"\\]|\\.)*")\s*:/g, '<span class="json-key">$1</span>:')
+      .replace(/"((?:[^"\\]|\\.)*)"/g, '<span class="json-string">"$1"</span>')
+      .replace(
+        /\b(-?\d+\.?\d*(?:[eE][+-]?\d+)?)\b/g,
+        '<span class="json-number">$1</span>',
+      )
+      .replace(/\b(true|false)\b/g, '<span class="json-boolean">$1</span>')
+      .replace(/\bnull\b/g, '<span class="json-null">null</span>');
   }
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    "app-json-view": AppJsonView;
-  }
-}
+registerSchemaComponent("app-json-view", JsonViewComponent);

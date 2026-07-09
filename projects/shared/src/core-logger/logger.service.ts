@@ -9,7 +9,7 @@ export interface LogEntry {
   context?: string;
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class LoggerService {
   private _logs: LogEntry[] = [];
 

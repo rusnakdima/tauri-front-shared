@@ -34,7 +34,10 @@ export class SchemaFetcherService {
         try {
           return await this.loadSchema(options.fallbackOptions);
         } catch (fallbackError) {
-          console.error("SchemaFetcher: Fallback schema also failed:", fallbackError);
+          console.error(
+            "SchemaFetcher: Fallback schema also failed:",
+            fallbackError,
+          );
           throw primaryError;
         }
       }
@@ -58,7 +61,9 @@ export class SchemaFetcherService {
 
   private async loadHttp(url: string): Promise<UiSchema> {
     if (!this.http) {
-      throw new Error("HttpClient not available. Import HttpClientModule or provide provideHttpClient().");
+      throw new Error(
+        "HttpClient not available. Import HttpClientModule or provide provideHttpClient().",
+      );
     }
     return firstValueFrom(this.http.get<UiSchema>(url));
   }

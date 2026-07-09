@@ -1,2 +1,6 @@
-:host { display: block; }
-.schema-page { display: contents; }
+:host {
+  display: block;
+}
+.schema-page {
+  min-height: 100%;
+}

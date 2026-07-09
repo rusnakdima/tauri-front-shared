@@ -65,10 +65,11 @@ export async function invokeCommand<T>(
   }
 
   try {
-    const result = await invokeWithRetry(
-      () => invoke<T>(command, args),
-      { maxAttempts: retryCount + 1, initialDelayMs: retryDelay, maxDelayMs: 60000 },
-    );
+    const result = await invokeWithRetry(() => invoke<T>(command, args), {
+      maxAttempts: retryCount + 1,
+      initialDelayMs: retryDelay,
+      maxDelayMs: 60000,
+    });
     return {
       success: true,
       data: result,

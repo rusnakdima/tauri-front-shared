@@ -19,7 +19,10 @@
         <div
           class="flex items-center justify-between border-b border-[var(--border-subtle)] px-6 py-4"
         >
-          <h2 [id]="'modal-title-' + title()" class="text-lg font-semibold text-[var(--text-main)]">
+          <h2
+            [id]="'modal-title-' + title()"
+            class="text-lg font-semibold text-[var(--text-main)]"
+          >
             {{ title() }}
           </h2>
           @if (showCloseButton()) {

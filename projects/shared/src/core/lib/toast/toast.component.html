@@ -75,7 +75,9 @@
     @if (toast().title) {
       <p class="text-sm font-semibold">{{ toast().title }}</p>
     }
-    <p class="text-sm" [class.font-medium]="!toast().title">{{ toast().message }}</p>
+    <p class="text-sm" [class.font-medium]="!toast().title">
+      {{ toast().message }}
+    </p>
     @if (toast().action) {
       <button
         class="mt-2 text-sm font-medium text-[var(--color-success)] transition-colors hover:text-[var(--color-success)]"

@@ -106,20 +106,29 @@ export class DataBindingExpressionResolver {
     const rightVal = this.resolveExpression(right.trim());
 
     switch (op) {
-      case "==": return leftVal == rightVal;
-      case "!=": return leftVal != rightVal;
-      case ">": return Number(leftVal) > Number(rightVal);
-      case "<": return Number(leftVal) < Number(rightVal);
-      case ">=": return Number(leftVal) >= Number(rightVal);
-      case "<=": return Number(leftVal) <= Number(rightVal);
-      default: return false;
+      case "==":
+        return leftVal == rightVal;
+      case "!=":
+        return leftVal != rightVal;
+      case ">":
+        return Number(leftVal) > Number(rightVal);
+      case "<":
+        return Number(leftVal) < Number(rightVal);
+      case ">=":
+        return Number(leftVal) >= Number(rightVal);
+      case "<=":
+        return Number(leftVal) <= Number(rightVal);
+      default:
+        return false;
     }
   }
 
   callFunction(fnName: string, args: unknown[] = []): unknown {
     const fn = this.functionRegistry.get(fnName);
     if (!fn) {
-      console.warn(`DataBindingExpressionResolver: Function "${fnName}" not found`);
+      console.warn(
+        `DataBindingExpressionResolver: Function "${fnName}" not found`,
+      );
       return null;
     }
     return fn.apply(null, args);

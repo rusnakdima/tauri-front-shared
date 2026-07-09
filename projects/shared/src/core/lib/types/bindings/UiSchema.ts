@@ -7,4 +7,14 @@ import type { ModuleDef } from "./ModuleDef";
 import type { Page } from "./Page";
 import type { ServiceDef } from "./ServiceDef";
 
-export interface UiSchema { schemaVersion: string, app: AppConfig, pages: Array<Page>, layouts: Array<Layout>, components: Array<ComponentDef>, sharedComponents: Array<ComponentDef>, services: Array<ServiceDef>, modules: Array<ModuleDef>, i18N: I18nConfig, }
+export interface UiSchema {
+  schemaVersion: string;
+  app: AppConfig;
+  pages: Array<Page>;
+  layouts: Array<Layout>;
+  components: Array<ComponentDef>;
+  sharedComponents: Array<ComponentDef>;
+  services: Array<ServiceDef>;
+  modules: Array<ModuleDef>;
+  i18N: I18nConfig;
+}

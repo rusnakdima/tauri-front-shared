@@ -1,4 +1,10 @@
-import { Directive, inject, Input, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
+import {
+  Directive,
+  Input,
+  OnInit,
+  TemplateRef,
+  ViewContainerRef,
+} from "@angular/core";
 import { PermissionService } from "./permission.service";
 
 /**
@@ -17,11 +23,13 @@ import { PermissionService } from "./permission.service";
   standalone: true,
 })
 export class RbacHasPermissionDirective implements OnInit {
-  private permissionService = inject(PermissionService);
-  private templateRef = inject(TemplateRef<unknown>);
-  private viewContainer = inject(ViewContainerRef);
-
   @Input("rbacHasPermission") permission: string | string[] = "";
+
+  constructor(
+    private permissionService: PermissionService,
+    private templateRef: TemplateRef<unknown>,
+    private viewContainer: ViewContainerRef,
+  ) {}
 
   ngOnInit(): void {
     this.updateView();
@@ -39,12 +47,16 @@ export class RbacHasPermissionDirective implements OnInit {
     if (Array.isArray(this.permission)) {
       return this.permission.every((perm) => {
         const [resource, action] = perm.split(".");
-        return resource && action ? this.permissionService.hasPermission(resource, action) : false;
+        return resource && action
+          ? this.permissionService.hasPermission(resource, action)
+          : false;
       });
     }
 
     const [resource, action] = this.permission.split(".");
-    return resource && action ? this.permissionService.hasPermission(resource, action) : false;
+    return resource && action
+      ? this.permissionService.hasPermission(resource, action)
+      : false;
   }
 }
 
@@ -60,11 +72,13 @@ export class RbacHasPermissionDirective implements OnInit {
   standalone: true,
 })
 export class RbacHasRoleDirective implements OnInit {
-  private permissionService = inject(PermissionService);
-  private templateRef = inject(TemplateRef<unknown>);
-  private viewContainer = inject(ViewContainerRef);
-
   @Input("rbacHasRole") role: string | string[] = "";
+
+  constructor(
+    private permissionService: PermissionService,
+    private templateRef: TemplateRef<unknown>,
+    private viewContainer: ViewContainerRef,
+  ) {}
 
   ngOnInit(): void {
     this.updateView();

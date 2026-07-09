@@ -119,7 +119,11 @@ export class PermissionService {
   /**
    * Create a new role.
    */
-  async createRole(name: string, description: string, permissions: Permission[]): Promise<Role> {
+  async createRole(
+    name: string,
+    description: string,
+    permissions: Permission[],
+  ): Promise<Role> {
     const role: Role = {
       id: crypto.randomUUID(),
       name,
@@ -133,7 +137,12 @@ export class PermissionService {
   /**
    * Update an existing role.
    */
-  async updateRole(roleId: string, name: string, description: string, permissions: Permission[]): Promise<Role> {
+  async updateRole(
+    roleId: string,
+    name: string,
+    description: string,
+    permissions: Permission[],
+  ): Promise<Role> {
     let updatedRole: Role | undefined;
     this._roles.update((roles) =>
       roles.map((r) => {
@@ -142,7 +151,7 @@ export class PermissionService {
           return updatedRole;
         }
         return r;
-      })
+      }),
     );
     if (!updatedRole) {
       throw new Error(`Role ${roleId} not found`);
@@ -176,7 +185,13 @@ export class PermissionService {
       const role = roles.find((r) => r.id === roleId || r.name === roleId);
       if (!role) continue;
 
-      if (role.permissions.some((p) => (p.resource === resource || p.resource === "*") && (p.action === action || p.action === "*"))) {
+      if (
+        role.permissions.some(
+          (p) =>
+            (p.resource === resource || p.resource === "*") &&
+            (p.action === action || p.action === "*"),
+        )
+      ) {
         return true;
       }
     }
@@ -200,7 +215,9 @@ export class PermissionService {
       const role = roles.find((r) => r.id === roleId || r.name === roleId);
       if (!role) continue;
 
-      const permission = role.permissions.find((p) => p.resource === resource && p.action === action);
+      const permission = role.permissions.find(
+        (p) => p.resource === resource && p.action === action,
+      );
       if (permission?.fields) {
         return fields.every((f) => permission.fields!.includes(f));
       }
@@ -302,7 +319,9 @@ export class PermissionService {
    * Check if user can edit todo fields (moderator or owner only).
    */
   canEditTodoFields(permission: TodoPermission): boolean {
-    return [TodoPermission.MODERATOR, TodoPermission.OWNER].includes(permission);
+    return [TodoPermission.MODERATOR, TodoPermission.OWNER].includes(
+      permission,
+    );
   }
 
   /**
@@ -323,7 +342,9 @@ export class PermissionService {
    * Check if user can manage assignees (moderator or owner).
    */
   canManageAssignees(permission: TodoPermission): boolean {
-    return [TodoPermission.MODERATOR, TodoPermission.OWNER].includes(permission);
+    return [TodoPermission.MODERATOR, TodoPermission.OWNER].includes(
+      permission,
+    );
   }
 
   /**
@@ -331,7 +352,11 @@ export class PermissionService {
    */
   canCreateTask(permission: TodoPermission): boolean {
     if (this._isAdmin()) return true;
-    return [TodoPermission.EDITOR, TodoPermission.MODERATOR, TodoPermission.OWNER].includes(permission);
+    return [
+      TodoPermission.EDITOR,
+      TodoPermission.MODERATOR,
+      TodoPermission.OWNER,
+    ].includes(permission);
   }
 
   /**
@@ -353,7 +378,11 @@ export class PermissionService {
   /**
    * Check if user can edit a specific entity based on ownership or permission level.
    */
-  canEditEntity(entityOwnerId: string, permission: TodoPermission, userId: string): boolean {
+  canEditEntity(
+    entityOwnerId: string,
+    permission: TodoPermission,
+    userId: string,
+  ): boolean {
     if ([TodoPermission.MODERATOR, TodoPermission.OWNER].includes(permission)) {
       return true;
     }
@@ -366,7 +395,11 @@ export class PermissionService {
   /**
    * Check if user can delete a specific entity based on ownership or permission level.
    */
-  canDeleteEntity(entityOwnerId: string, permission: TodoPermission, userId: string): boolean {
+  canDeleteEntity(
+    entityOwnerId: string,
+    permission: TodoPermission,
+    userId: string,
+  ): boolean {
     return this.canEditEntity(entityOwnerId, permission, userId);
   }
 
@@ -378,7 +411,14 @@ export class PermissionService {
    * Get available resources for permission configuration.
    */
   availableResources(): string[] {
-    return ["users", "connections", "collections", "queries", "schemas", "settings"];
+    return [
+      "users",
+      "connections",
+      "collections",
+      "queries",
+      "schemas",
+      "settings",
+    ];
   }
 
   /**

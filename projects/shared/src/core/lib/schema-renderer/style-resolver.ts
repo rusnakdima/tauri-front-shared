@@ -63,7 +63,7 @@ export class StyleResolver {
   resolveClasses(
     baseClasses: string,
     overrideClasses?: string,
-    options?: StyleResolutionOptions
+    options?: StyleResolutionOptions,
   ): ResolvedStyles {
     const base = this.extractStyles(baseClasses);
 
@@ -88,7 +88,7 @@ export class StyleResolver {
 
   resolveCssVariables(
     css: Record<string, string>,
-    theme?: Theme
+    theme?: Theme,
   ): Record<string, string> {
     const resolved: Record<string, string> = { ...css };
 
@@ -176,7 +176,10 @@ export class StyleResolver {
     return result;
   }
 
-  private applyThemeColors(dest: Record<string, string>, colors: ThemeColors): void {
+  private applyThemeColors(
+    dest: Record<string, string>,
+    colors: ThemeColors,
+  ): void {
     dest["--color-bg-primary"] = colors.bgPrimary;
     dest["--color-bg-secondary"] = colors.bgSecondary;
     dest["--color-bg-tertiary"] = colors.bgTertiary;

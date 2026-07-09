@@ -3,4 +3,11 @@ import type { GridArea } from "./GridArea";
 import type { GridTrack } from "./GridTrack";
 import type { TailwindBreakpoints } from "./TailwindBreakpoints";
 
-export interface GridTemplate { id: string, columns: Array<GridTrack>, rows: Array<GridTrack>, gap: string, areas: Array<GridArea> | null, breakpoints: TailwindBreakpoints | null, }
+export interface GridTemplate {
+  id: string;
+  columns: Array<GridTrack>;
+  rows: Array<GridTrack>;
+  gap: string;
+  areas: Array<GridArea> | null;
+  breakpoints: TailwindBreakpoints | null;
+}

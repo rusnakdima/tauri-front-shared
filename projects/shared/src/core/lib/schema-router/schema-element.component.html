@@ -1,31 +1,21 @@
-<div [id]="element.id" [class]="classes">
-  @if (tag === 'app-button') {
-    <app-button [label]="props['label']" [buttonStyle]="props['buttonStyle']" [variant]="props['variant']" [size]="props['size']"></app-button>
-  } @else if (tag === 'app-language-selector') {
-    <app-language-selector [labelId]="props['labelId']"></app-language-selector>
-  } @else if (tag === 'app-text-input') {
-    <app-text-input [id]="props['id']" [placeholder]="props['placeholder']" [clearable]="props['clearable']" [maxChars]="props['maxChars']"></app-text-input>
-  } @else if (tag === 'app-translation-output') {
-    <app-translation-output [id]="props['id']" [placeholder]="props['placeholder']"></app-translation-output>
-  } @else if (tag === 'app-swap-button') {
-    <app-swap-button></app-swap-button>
-  } @else if (tag === 'app-theme-toggle') {
-    <app-theme-toggle></app-theme-toggle>
-  } @else if (tag === 'app-shortcuts-overlay') {
-    <app-shortcuts-overlay></app-shortcuts-overlay>
-  } @else if (tag === 'app-loading') {
-    <app-loading></app-loading>
-  } @else if (props['text']) {
-    <!-- Plain element with text content: span, p, h1, h2, footer -->
+<div [id]="element.id" [class]="classes" [style]="gridStyle">
+  @if (isNativeHtml && props["text"]) {
     <ng-container [ngSwitch]="tag">
-      <h1 *ngSwitchCase="'h1'">{{ props['text'] }}</h1>
-      <h2 *ngSwitchCase="'h2'">{{ props['text'] }}</h2>
-      <p *ngSwitchCase="'p'">{{ props['text'] }}</p>
-      <footer *ngSwitchCase="'footer'">{{ props['text'] }}</footer>
-      <span *ngSwitchDefault>{{ props['text'] }}</span>
+      <h1 *ngSwitchCase="'h1'">{{ props["text"] }}</h1>
+      <h2 *ngSwitchCase="'h2'">{{ props["text"] }}</h2>
+      <p *ngSwitchCase="'p'">{{ props["text"] }}</p>
+      <footer *ngSwitchCase="'footer'">{{ props["text"] }}</footer>
+      <span *ngSwitchDefault>{{ props["text"] }}</span>
     </ng-container>
+  } @else if (componentType) {
+    <ng-container
+      *ngComponentOutlet="componentType; inputs: props"
+    ></ng-container>
   }
-  @for (child of childElements; track child.id) {
-    <app-schema-element [element]="child" [elements]="elements"></app-schema-element>
+  @for (child of childElements; track $index) {
+    <app-schema-element
+      [element]="child"
+      [elements]="elements"
+    ></app-schema-element>
   }
 </div>

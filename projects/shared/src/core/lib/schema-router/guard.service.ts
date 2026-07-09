@@ -1,4 +1,4 @@
-import { Injectable, inject } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { PermissionService } from "../rbac/permission.service";
 
 export interface GuardConfig {
@@ -10,7 +10,7 @@ export interface GuardConfig {
 
 @Injectable({ providedIn: "root" })
 export class GuardService {
-  private permissionService = inject(PermissionService);
+  constructor(private permissionService: PermissionService) {}
 
   canActivate(): Promise<boolean> {
     return Promise.resolve(this.permissionService.isAuthenticated());

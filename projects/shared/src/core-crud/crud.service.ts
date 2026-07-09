@@ -13,7 +13,9 @@ export abstract class CrudService {
   ): Promise<T>;
 
   async find<T>(entity: string, id: string): Promise<T | null> {
-    const result = await this.execute<{ data?: T }>("find", entity, { filter: { id } });
+    const result = await this.execute<{ data?: T }>("find", entity, {
+      filter: { id },
+    });
     return result.data ?? null;
   }
 
@@ -30,12 +32,18 @@ export abstract class CrudService {
   }
 
   async update<T>(entity: string, id: string, data: unknown): Promise<T> {
-    const result = await this.execute<{ data: T }>("update", entity, { id, data });
+    const result = await this.execute<{ data: T }>("update", entity, {
+      id,
+      data,
+    });
     return result.data;
   }
 
   async patch<T>(entity: string, id: string, data: unknown): Promise<T> {
-    const result = await this.execute<{ data: T }>("patch", entity, { id, data });
+    const result = await this.execute<{ data: T }>("patch", entity, {
+      id,
+      data,
+    });
     return result.data;
   }
 

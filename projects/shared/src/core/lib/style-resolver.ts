@@ -16,7 +16,7 @@ export class StyleResolver {
     options: {
       colorMode?: "light" | "dark" | "system";
       extraClasses?: string;
-    } = {}
+    } = {},
   ): StyleResolution {
     const { extraClasses = "" } = options;
     const allClasses = `${classes} ${extraClasses}`.trim();
@@ -93,16 +93,13 @@ export class StyleResolver {
     return classGroups.filter(Boolean).join(" ");
   }
 
-  getVariantClasses(
-    baseClass: string,
-    variant: string
-  ): string {
+  getVariantClasses(baseClass: string, variant: string): string {
     return `${baseClass}-${variant}`;
   }
 
   resolveResponsiveClasses(
     classes: string,
-    breakpoint: "sm" | "md" | "lg" | "xl" | "2xl"
+    breakpoint: "sm" | "md" | "lg" | "xl" | "2xl",
   ): string {
     const classList = classes.split(/\s+/).filter(Boolean);
     const prefix = `${breakpoint}:`;
@@ -138,8 +135,16 @@ export class StyleResolver {
 
   private isColorClass(cls: string): boolean {
     const colorPrefixes = [
-      "text-", "bg-", "border-", "fill-", "stroke-",
-      "text-", "bg-", "ring-", "shadow-", "decoration-",
+      "text-",
+      "bg-",
+      "border-",
+      "fill-",
+      "stroke-",
+      "text-",
+      "bg-",
+      "ring-",
+      "shadow-",
+      "decoration-",
     ];
     return colorPrefixes.some((prefix) => cls.startsWith(prefix));
   }

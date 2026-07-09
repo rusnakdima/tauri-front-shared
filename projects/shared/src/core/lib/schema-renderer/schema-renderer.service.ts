@@ -1,5 +1,13 @@
-import { Injectable, signal, inject } from "@angular/core";
-import { GridPosition, ComponentDef, Layout, Page, LayoutElement, AppSchema, CanvasElement } from "../types";
+import { Injectable, signal } from "@angular/core";
+import {
+  GridPosition,
+  ComponentDef,
+  Layout,
+  Page,
+  LayoutElement,
+  AppSchema,
+  CanvasElement,
+} from "../types";
 import { SignalStoreService } from "../signal-store/signal-store.service";
 import { EventBusService } from "../events/event-bus.service";
 import { CrudService } from "../crud/crud.service";
@@ -14,8 +22,6 @@ import {
   getComponentStyleClasses,
   GlobalStyleContext,
 } from "../../../styles/style-registry";
-
-export type { CanvasElement } from "../types";
 
 export interface PageSchema {
   id: string;
@@ -35,12 +41,14 @@ export class SchemaRendererService {
   private _navigationStack = signal<string[]>([]);
   private _appConfig: { variant?: string; size?: string } = {};
 
-  private dataStore = inject(SignalStoreService);
-  private crudService = inject(CrudService);
-  private eventBus = inject(EventBusService);
-  private componentRegistry = inject(ComponentRegistryService);
-  private dataBindingResolver = inject(DataBindingResolverService);
-  private layoutEngine = new LayoutEngineService();
+  constructor(
+    private dataStore: SignalStoreService,
+    private crudService: CrudService,
+    private eventBus: EventBusService,
+    private componentRegistry: ComponentRegistryService,
+    private dataBindingResolver: DataBindingResolverService,
+    private layoutEngine: LayoutEngineService,
+  ) {}
 
   private componentResolver:
     ((selector: string) => ComponentDef | undefined) | null = null;
@@ -49,11 +57,12 @@ export class SchemaRendererService {
   // Schema-level handlers and stores
   private _handlers: Record<string, unknown> = {};
   private _stores: Record<string, unknown> = {};
-  private _layoutRegions: LayoutElement[] = [];
+  private _layoutRegions = signal<LayoutElement[]>([]);
   private _currentRoute = signal<string>("");
 
   pages = this._pages.asReadonly();
   currentPageId = this._currentPageId.asReadonly();
+  layoutRegions = this._layoutRegions.asReadonly();
 
   registerComponent(def: ComponentDef): void {
     this.componentRegistry.registerComponent(def);
@@ -67,33 +76,45 @@ export class SchemaRendererService {
     return this.componentRegistry.getComponent(selector);
   }
 
-  loadSchema(schema: AppSchema | { pages: Page[]; app?: { variant?: string; size?: string } }): void {
+  loadSchema(
+    schema:
+      AppSchema | { pages: Page[]; app?: { variant?: string; size?: string } },
+  ): void {
+    console.log(
+      "[SchemaRenderer] loadSchema() called, pages:",
+      schema?.pages?.length ?? 0,
+    );
     // Support both AppSchema and legacy Page[] format
     const pages = schema.pages;
     this._pages.set(pages || []);
     this.componentRegistry.loadComponentsFromSchema(pages || []);
 
     // Extract app config
-    const appConfig = 'app' in schema ? schema.app : ('app' in schema ? (schema as any).app : undefined);
+    const appConfig =
+      "app" in schema
+        ? schema.app
+        : "app" in schema
+          ? (schema as any).app
+          : undefined;
     this._appConfig = {
       variant: appConfig?.variant,
       size: appConfig?.size,
     };
 
     // Extract layout regions (AppSchema only)
-    if ('layoutRegions' in schema && Array.isArray(schema.layoutRegions)) {
-      this._layoutRegions = schema.layoutRegions;
+    if ("layoutRegions" in schema && Array.isArray(schema.layoutRegions)) {
+      this._layoutRegions.set(schema.layoutRegions);
     } else {
-      this._layoutRegions = [];
+      this._layoutRegions.set([]);
     }
 
     // Extract handlers (AppSchema only)
-    if ('handlers' in schema && schema.handlers) {
+    if ("handlers" in schema && schema.handlers) {
       this._handlers = schema.handlers;
     }
 
     // Extract stores (AppSchema only)
-    if ('stores' in schema && schema.stores) {
+    if ("stores" in schema && schema.stores) {
       this._stores = schema.stores;
       // Register stores in data store
       for (const [key, value] of Object.entries(schema.stores)) {
@@ -120,25 +141,31 @@ export class SchemaRendererService {
   }
 
   getLayoutRegions(): LayoutElement[] {
-    return this._layoutRegions;
+    return this._layoutRegions();
   }
 
-  isElementVisible(element: { routes?: { include?: string[]; exclude?: string[] }; visible?: boolean | { when?: string; equals?: unknown } }): boolean {
+  isElementVisible(element: {
+    routes?: { include?: string[]; exclude?: string[] };
+    visible?: boolean | { when?: string; equals?: unknown };
+  }): boolean {
     const route = this._currentRoute();
 
     // Check explicit visible prop
     if (element.visible !== undefined) {
-      if (typeof element.visible === 'boolean') {
+      if (typeof element.visible === "boolean") {
         return element.visible;
       }
       // visible: { when: "{{role}}", equals: "admin" }
-      if (typeof element.visible === 'object' && element.visible.when) {
+      if (typeof element.visible === "object" && element.visible.when) {
         // Simple equality check for now
         const binding = element.visible.when;
         const expected = element.visible.equals;
         // TODO: Implement proper data binding resolution
-        const current = this.dataBindingResolver.resolveProps({ value: binding }, '');
-        return current['value'] === expected;
+        const current = this.dataBindingResolver.resolveProps(
+          { value: binding },
+          "",
+        );
+        return current["value"] === expected;
       }
     }
 
@@ -147,12 +174,20 @@ export class SchemaRendererService {
       const { include, exclude } = element.routes;
 
       // If include is set and doesn't contain "*" or current route, hide
-      if (include && include.length > 0 && !include.includes("*") && !include.some(r => route.match(new RegExp(r.replace('*', '.*'))))) {
+      if (
+        include &&
+        include.length > 0 &&
+        !include.includes("*") &&
+        !include.some((r) => route.match(new RegExp(r.replace("*", ".*"))))
+      ) {
         return false;
       }
 
       // If exclude contains current route, hide
-      if (exclude && exclude.some(r => route.match(new RegExp(r.replace('*', '.*'))))) {
+      if (
+        exclude &&
+        exclude.some((r) => route.match(new RegExp(r.replace("*", ".*"))))
+      ) {
         return false;
       }
     }
@@ -192,9 +227,12 @@ export class SchemaRendererService {
     this.routeResolver = resolver;
   }
 
-  renderGridLayout(container: HTMLElement, layout: Layout): void {
+  async renderGridLayout(
+    container: HTMLElement,
+    layout: Layout,
+  ): Promise<void> {
     this.layoutEngine.renderGridLayout(container, layout);
-    this.layoutEngine.applyLayoutStyles(
+    await this.layoutEngine.applyLayoutStyles(
       container,
       layout,
       layout.children || [],
@@ -204,7 +242,10 @@ export class SchemaRendererService {
     );
   }
 
-  renderFlexLayout(container: HTMLElement, layout: Layout): void {
+  async renderFlexLayout(
+    container: HTMLElement,
+    layout: Layout,
+  ): Promise<void> {
     this.layoutEngine.renderFlexLayout(container, layout);
     container.innerHTML = "";
 
@@ -214,7 +255,27 @@ export class SchemaRendererService {
           (c) => c.id === childId,
         );
         if (component) {
-          const el = document.createElement(component.selector);
+          const selector = component.selector;
+          // Wait for custom element to be defined if it's a custom element
+          if (selector.includes("-")) {
+            try {
+              await Promise.race([
+                customElements.whenDefined(selector),
+                new Promise((_, reject) =>
+                  setTimeout(
+                    () => reject(new Error(`Timeout: ${selector}`)),
+                    2000,
+                  ),
+                ),
+              ]);
+            } catch (e) {
+              console.warn(
+                `[SchemaRenderer] Element not ready: ${selector}`,
+                e,
+              );
+            }
+          }
+          const el = document.createElement(selector);
           container.appendChild(el);
         }
       }
@@ -293,7 +354,10 @@ export class SchemaRendererService {
         await Promise.race([
           customElements.whenDefined(finalSelector),
           new Promise((_, reject) =>
-            setTimeout(() => reject(new Error(`Timeout: ${finalSelector}`)), 2000)
+            setTimeout(
+              () => reject(new Error(`Timeout: ${finalSelector}`)),
+              2000,
+            ),
           ),
         ]);
       } catch (e) {
@@ -338,7 +402,10 @@ export class SchemaRendererService {
     );
     const mappedClassStr = mappedClasses.join(" ");
 
-    const resolvedClasses = this.resolveClasses(data.classes, def?.defaultClasses || "");
+    const resolvedClasses = this.resolveClasses(
+      data.classes,
+      def?.defaultClasses || "",
+    );
     const finalClasses = mappedClassStr
       ? this.resolveClasses(resolvedClasses, mappedClassStr)
       : resolvedClasses;
@@ -410,10 +477,13 @@ export class SchemaRendererService {
         // Boolean properties: set as property for Lit compatibility
         (el as any)[key] = value === true || value === "true" || value === key;
       } else {
-        // For Lit web components, use property assignment instead of setAttribute
-        // JSON.stringify arrays/objects since Lit components expect string props like JSON
+        // Use property assignment for component inputs
         let finalValue: unknown = value;
-        if (value !== null && typeof value === "object" && !Array.isArray(value)) {
+        if (
+          value !== null &&
+          typeof value === "object" &&
+          !Array.isArray(value)
+        ) {
           finalValue = JSON.stringify(value);
         } else if (Array.isArray(value)) {
           finalValue = JSON.stringify(value);
@@ -461,7 +531,14 @@ export class SchemaRendererService {
     return el;
   }
 
-  async render(container: HTMLElement, pageSchema: PageSchema, currentRoute?: string): Promise<void> {
+  async render(
+    container: HTMLElement,
+    pageSchema: PageSchema,
+    currentRoute?: string,
+  ): Promise<void> {
+    console.log(
+      `[SchemaRenderer] render() called: page="${pageSchema?.name}", elements=${pageSchema?.elements?.length ?? 0}, currentRoute="${currentRoute}"`,
+    );
     container.innerHTML = "";
 
     // Update current route for visibility checks
@@ -492,7 +569,10 @@ export class SchemaRendererService {
     }
   }
 
-  private async renderNestedChildren(parent: HTMLElement, element: CanvasElement): Promise<void> {
+  private async renderNestedChildren(
+    parent: HTMLElement,
+    element: CanvasElement,
+  ): Promise<void> {
     if (!element.children || element.children.length === 0) return;
 
     for (const child of element.children) {
@@ -519,7 +599,7 @@ export class SchemaRendererService {
       this.setCurrentRoute(currentRoute);
     }
 
-    const region = this._layoutRegions.find(r => r.id === regionId);
+    const region = this._layoutRegions().find((r) => r.id === regionId);
     if (!region) {
       console.warn(`Layout region not found: ${regionId}`);
       return;
@@ -527,7 +607,7 @@ export class SchemaRendererService {
 
     // Check visibility
     if (!this.isElementVisible(region)) {
-      container.style.display = 'none';
+      container.style.display = "none";
       return;
     }
 
@@ -539,10 +619,15 @@ export class SchemaRendererService {
     if (region.children && region.children.length > 0) {
       for (const child of region.children) {
         if (this.isElementVisible(child as unknown as CanvasElement)) {
-          const childEl = await this.createElement(child as unknown as CanvasElement);
+          const childEl = await this.createElement(
+            child as unknown as CanvasElement,
+          );
           if (childEl) {
             // Recursively render nested children
-            await this.renderNestedChildren(childEl, child as unknown as CanvasElement);
+            await this.renderNestedChildren(
+              childEl,
+              child as unknown as CanvasElement,
+            );
             el.appendChild(childEl);
           }
         }
@@ -637,13 +722,14 @@ export class SchemaRendererService {
     else if (direction === "row-reverse") classes.push("flex-row-reverse");
     else if (direction === "col-reverse") classes.push("flex-col-reverse");
 
-    // 4. Gap spacing
-    const gap = props["gap"] as string | undefined;
-    if (gap === "xs") classes.push("gap-1");
-    else if (gap === "sm") classes.push("gap-2");
-    else if (gap === "md") classes.push("gap-4");
-    else if (gap === "lg") classes.push("gap-6");
-    else if (gap === "xl") classes.push("gap-8");
+    // 4. Gap spacing (supports both string tokens and numeric values)
+    const gap = props["gap"] as string | number | undefined;
+    if (gap === "xs" || gap === 1) classes.push("gap-1");
+    else if (gap === "sm" || gap === 2) classes.push("gap-2");
+    else if (gap === "md" || gap === 3) classes.push("gap-3");
+    else if (gap === "lg" || gap === 4) classes.push("gap-4");
+    else if (gap === "xl" || gap === 6) classes.push("gap-6");
+    else if (gap === "2xl" || gap === 8) classes.push("gap-8");
 
     // 5. Align items
     const align = props["align"] as string | undefined;
@@ -690,7 +776,9 @@ export class SchemaRendererService {
     else if (maxWidth === "lg") classes.push("max-w-lg");
     else if (maxWidth === "xl") classes.push("max-w-xl");
     else if (maxWidth === "2xl") classes.push("max-w-2xl");
+    else if (maxWidth === "3xl") classes.push("max-w-3xl");
     else if (maxWidth === "6xl") classes.push("max-w-6xl");
+    else if (maxWidth === "7xl") classes.push("max-w-7xl");
 
     // 10. MX auto
     const mx = props["mx"] as string | undefined;
@@ -839,9 +927,16 @@ export class SchemaRendererService {
     else if (paddingY === "xl") classes.push("py-8");
 
     // 31. Responsive breakpoints (sm:, md:, lg:)
-    const responsive = props["responsive"] as Record<string, Record<string, unknown>> | undefined;
+    const responsive = props["responsive"] as
+      Record<string, Record<string, unknown>> | undefined;
     if (responsive) {
-      const gapMap: Record<string, string> = { xs: "1", sm: "2", md: "4", lg: "6", xl: "8" };
+      const gapMap: Record<string, string> = {
+        xs: "1",
+        sm: "2",
+        md: "4",
+        lg: "6",
+        xl: "8",
+      };
 
       // sm: breakpoint (640px+)
       if (responsive["sm"]) {
@@ -850,7 +945,8 @@ export class SchemaRendererService {
         if (sm["layout"] === "grid") classes.push("sm:grid");
         if (sm["direction"] === "row") classes.push("sm:flex-row");
         if (sm["direction"] === "col") classes.push("sm:flex-col");
-        if (sm["gap"] && gapMap[sm["gap"] as string]) classes.push(`sm:gap-${gapMap[sm["gap"] as string]}`);
+        if (sm["gap"] && gapMap[sm["gap"] as string])
+          classes.push(`sm:gap-${gapMap[sm["gap"] as string]}`);
         if (sm["align"] === "center") classes.push("sm:items-center");
         if (sm["align"] === "start") classes.push("sm:items-start");
         if (sm["align"] === "end") classes.push("sm:items-end");
@@ -869,7 +965,8 @@ export class SchemaRendererService {
         if (md["layout"] === "grid") classes.push("md:grid");
         if (md["direction"] === "row") classes.push("md:flex-row");
         if (md["direction"] === "col") classes.push("md:flex-col");
-        if (md["gap"] && gapMap[md["gap"] as string]) classes.push(`md:gap-${gapMap[md["gap"] as string]}`);
+        if (md["gap"] && gapMap[md["gap"] as string])
+          classes.push(`md:gap-${gapMap[md["gap"] as string]}`);
         if (md["align"] === "center") classes.push("md:items-center");
         if (md["align"] === "start") classes.push("md:items-start");
         if (md["align"] === "end") classes.push("md:items-end");
@@ -889,7 +986,8 @@ export class SchemaRendererService {
         if (lg["layout"] === "grid") classes.push("lg:grid");
         if (lg["direction"] === "row") classes.push("lg:flex-row");
         if (lg["direction"] === "col") classes.push("lg:flex-col");
-        if (lg["gap"] && gapMap[lg["gap"] as string]) classes.push(`lg:gap-${gapMap[lg["gap"] as string]}`);
+        if (lg["gap"] && gapMap[lg["gap"] as string])
+          classes.push(`lg:gap-${gapMap[lg["gap"] as string]}`);
         if (lg["align"] === "center") classes.push("lg:items-center");
         if (lg["justify"] === "center") classes.push("lg:justify-center");
         if (lg["justify"] === "between") classes.push("lg:justify-between");
@@ -897,6 +995,39 @@ export class SchemaRendererService {
         if (lg["padding"] === "lg") classes.push("lg:p-6");
       }
     }
+
+    // 32. Text size
+    const textSize = props["textSize"] as string | undefined;
+    if (textSize === "xs") classes.push("text-xs");
+    else if (textSize === "sm") classes.push("text-sm");
+    else if (textSize === "base") classes.push("text-base");
+    else if (textSize === "lg") classes.push("text-lg");
+    else if (textSize === "xl") classes.push("text-xl");
+    else if (textSize === "2xl") classes.push("text-2xl");
+    else if (textSize === "3xl") classes.push("text-3xl");
+
+    // 33. Font weight
+    const fontWeight = props["fontWeight"] as string | undefined;
+    if (fontWeight === "light") classes.push("font-light");
+    else if (fontWeight === "normal") classes.push("font-normal");
+    else if (fontWeight === "medium") classes.push("font-medium");
+    else if (fontWeight === "semibold") classes.push("font-semibold");
+    else if (fontWeight === "bold") classes.push("font-bold");
+
+    // 34. Position
+    const position = props["position"] as string | undefined;
+    if (position === "relative") classes.push("relative");
+    else if (position === "absolute") classes.push("absolute");
+    else if (position === "fixed") classes.push("fixed");
+    else if (position === "sticky") classes.push("sticky");
+
+    // 35. Z-index
+    const zIndex = props["zIndex"] as string | number | undefined;
+    if (zIndex === 10 || zIndex === "10") classes.push("z-10");
+    else if (zIndex === 20 || zIndex === "20") classes.push("z-20");
+    else if (zIndex === 30 || zIndex === "30") classes.push("z-30");
+    else if (zIndex === 40 || zIndex === "40") classes.push("z-40");
+    else if (zIndex === 50 || zIndex === "50") classes.push("z-50");
 
     return classes;
   }

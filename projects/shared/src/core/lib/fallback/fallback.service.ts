@@ -15,9 +15,12 @@ export class FallbackService {
       return { schema, isFallback: false };
     } catch (error) {
       return {
-        schema: this.getFallbackSchema(error instanceof Error ? error.message : "Parse error") as unknown as T,
+        schema: this.getFallbackSchema(
+          error instanceof Error ? error.message : "Parse error",
+        ) as unknown as T,
         isFallback: true,
-        error: error instanceof Error ? error.message : "Failed to parse schema",
+        error:
+          error instanceof Error ? error.message : "Failed to parse schema",
       };
     }
   }

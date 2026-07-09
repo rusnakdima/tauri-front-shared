@@ -181,7 +181,9 @@ export class DataBindingResolverService {
     }
   }
 
-  private resolveParams(params: Record<string, unknown>): Record<string, unknown> {
+  private resolveParams(
+    params: Record<string, unknown>,
+  ): Record<string, unknown> {
     const resolved: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(params)) {
       resolved[key] = this.resolveDataBinding(value);
@@ -209,9 +211,7 @@ export class DataBindingResolverService {
     return query;
   }
 
-  private buildFilters(
-    filterObj: Record<string, unknown>,
-  ): CrudFilter[] {
+  private buildFilters(filterObj: Record<string, unknown>): CrudFilter[] {
     const filters: CrudFilter[] = [];
     for (const [field, value] of Object.entries(filterObj)) {
       filters.push({ field, operator: "eq", value });

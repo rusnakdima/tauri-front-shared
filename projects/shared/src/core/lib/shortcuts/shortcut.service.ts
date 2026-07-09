@@ -1,4 +1,4 @@
-import { Injectable, signal, inject } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
 import { EventBusService } from "../events/event-bus.service";
 
 export interface Shortcut {
@@ -14,11 +14,10 @@ export interface Shortcut {
 @Injectable({ providedIn: "root" })
 export class ShortcutService {
   private _shortcuts = signal<Shortcut[]>([]);
-  private eventBus = inject(EventBusService);
 
   readonly shortcuts = this._shortcuts.asReadonly();
 
-  constructor() {
+  constructor(private eventBus: EventBusService) {
     window.addEventListener("keydown", (e) => this._handleKeyDown(e));
   }
 

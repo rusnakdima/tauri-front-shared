@@ -1,46 +1,90 @@
-import { LitElement, html, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 
 export interface BottomPanelTab {
   id: string;
   label: string;
 }
 
-@customElement("app-bottom-panel")
-export class AppBottomPanel extends LitElement {
-  @property() declare tabs: string;
-  @property() declare activeTab: string;
-  @property() declare position: string;
-  @property({ type: Boolean }) declare fullWidth: boolean;
-  @property({ type: Boolean }) declare floating: boolean;
-  @property({ type: Number }) declare borderRadius: number;
-  constructor() {
-    super();
-    for (const key of ["tabs", "activeTab", "position", "fullWidth", "floating", "borderRadius"]) {
-      if (Object.prototype.hasOwnProperty.call(this, key)) {
-        const val = (this as Record<string, unknown>)[key];
-        delete (this as Record<string, unknown>)[key];
-        (this as Record<string, unknown>)[key] = val;
+@Component({
+  selector: "app-bottom-panel",
+  standalone: true,
+  template: `
+    <div class="panel-tabs">
+      @for (tab of parsedTabs; track tab.id) {
+        <div
+          class="panel-tab"
+          [class.active]="activeTab === tab.id"
+          (click)="handleTabClick(tab.id)"
+        >
+          {{ tab.label }}
+        </div>
       }
-    }
-  }
-
-  override connectedCallback(): void {
-    const saved: Record<string, unknown> = {};
-    for (const key of ["tabs", "activeTab", "position", "fullWidth", "floating", "borderRadius"]) {
-      if (Object.prototype.hasOwnProperty.call(this, key)) {
-        saved[key] = (this as Record<string, unknown>)[key];
-        delete (this as Record<string, unknown>)[key];
+    </div>
+    <div class="panel-content">
+      <ng-content></ng-content>
+      @if (!parsedTabs.length) {
+        <div class="empty-state">No tabs available</div>
       }
-    }
-    super.connectedCallback();
-    for (const [key, value] of Object.entries(saved)) {
-      (this as Record<string, unknown>)[key] = value;
-    }
-  }
+    </div>
+  `,
+  styles: [
+    `
+      :host {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--bg-elevated);
+        border-top: 1px solid var(--border-color);
+        height: 100%;
+      }
+      .panel-tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid var(--border-color);
+        padding: 0 0.5rem;
+      }
+      .panel-tab {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        transition: all 0.15s;
+      }
+      .panel-tab:hover {
+        color: var(--text-primary);
+      }
+      .panel-tab.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+      .panel-content {
+        flex: 1;
+        overflow: auto;
+        padding: 1rem;
+      }
+      .empty-state {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        text-align: center;
+        padding: 2rem;
+      }
+    `,
+  ],
+})
+export class BottomPanelComponent {
+  @Input() tabs: string | BottomPanelTab[] = "[]";
+  @Input() activeTab = "";
+  @Input() position = "bottom";
+  @Input() fullWidth = false;
+  @Input() floating = false;
+  @Input() borderRadius = 0;
+  @Output() tabChange = new EventEmitter<string>();
 
-
-  private _getTabs(): BottomPanelTab[] {
+  get parsedTabs(): BottomPanelTab[] {
+    if (Array.isArray(this.tabs)) return this.tabs;
     try {
       return JSON.parse(this.tabs);
     } catch {
@@ -48,91 +92,10 @@ export class AppBottomPanel extends LitElement {
     }
   }
 
-  private _handleTabClick(tabId: string) {
-    this.dispatchEvent(
-      new CustomEvent("tabChange", {
-        detail: { tabId },
-        bubbles: true,
-        composed: true,
-      }),
-    );
-  }
-
-  static override styles = css`
-    :host {
-      display: flex;
-      flex-direction: column;
-      background-color: var(--bg-elevated);
-      border-top: 1px solid var(--border-color);
-      height: 100%;
-    }
-
-    .panel-tabs {
-      display: flex;
-      gap: 0;
-      border-bottom: 1px solid var(--border-color);
-      padding: 0 0.5rem;
-    }
-
-    .panel-tab {
-      padding: 0.75rem 1rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px;
-      transition: all 0.15s;
-    }
-
-    .panel-tab:hover {
-      color: var(--text-primary);
-    }
-
-    .panel-tab.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
-
-    .panel-content {
-      flex: 1;
-      overflow: auto;
-      padding: 1rem;
-    }
-
-    .empty-state {
-      color: var(--text-muted);
-      font-size: 0.875rem;
-      text-align: center;
-      padding: 2rem;
-    }
-  `;
-
-  override render() {
-    const tabsList = this._getTabs();
-
-    return html`
-      <div class="panel-tabs">
-        ${tabsList.map(
-          (tab) => html`
-            <div
-              class="panel-tab ${this.activeTab === tab.id ? "active" : ""}"
-              @click="${() => this._handleTabClick(tab.id)}"
-            >
-              ${tab.label}
-            </div>
-          `,
-        )}
-      </div>
-      <div class="panel-content">
-        <slot></slot>
-      </div>
-    `;
+  handleTabClick(tabId: string) {
+    this.activeTab = tabId;
+    this.tabChange.emit(tabId);
   }
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    "app-bottom-panel": AppBottomPanel;
-  }
-}
+registerSchemaComponent("app-bottom-panel", BottomPanelComponent);

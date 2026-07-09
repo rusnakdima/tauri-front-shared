@@ -186,10 +186,23 @@ export interface CanvasElement {
   dataBinding?: { entity: string; field: string };
 }
 
+export type RegionType =
+  | "header"
+  | "sidebar"
+  | "sidebar-left"
+  | "sidebar-right"
+  | "footer"
+  | "bottom-nav"
+  | "nav"
+  | "overlay"
+  | "other";
+
 // Layout element for global layout regions (header, footer, sidebar)
 export interface LayoutElement {
   id: string;
   componentId: string;
+  /** Explicit region type — tells the shell where to place this region in the layout grid */
+  region?: RegionType;
   classes?: string;
   props?: Record<string, unknown>;
   // Nested children elements (hierarchical structure)

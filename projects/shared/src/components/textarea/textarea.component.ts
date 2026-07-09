@@ -11,6 +11,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
     <textarea
       [placeholder]="placeholder"
       [disabled]="disabled"
+      [style.flexGrow]="flexGrow ? 1 : null"
       (input)="handleInput($event)"
     ></textarea>
   `,
@@ -57,6 +58,7 @@ export class TextareaComponent {
   @Input() placeholder = "";
   @Input() disabled = false;
   @Input() value = "";
+  @Input() flexGrow = false;
   @Output() input = new EventEmitter<string>();
 
   handleInput(e: Event) {

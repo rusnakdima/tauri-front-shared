@@ -10,7 +10,7 @@ export interface GuardConfig {
 
 @Injectable({ providedIn: "root" })
 export class GuardService {
-  private permissionService = inject(PermissionService);
+  constructor(private permissionService: PermissionService) {}
 
   canActivate(): Promise<boolean> {
     return Promise.resolve(this.permissionService.isAuthenticated());

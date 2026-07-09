@@ -52,7 +52,8 @@ export class SchemaRendererService {
   ) {}
 
   private componentResolver:
-    ((selector: string) => ComponentDef | undefined) | null = null;
+    | ((selector: string) => ComponentDef | undefined)
+    | null = null;
   private routeResolver: ((route: string) => string | null) | null = null;
 
   // Schema-level handlers and stores
@@ -79,7 +80,8 @@ export class SchemaRendererService {
 
   loadSchema(
     schema:
-      AppSchema | { pages: Page[]; app?: { variant?: string; size?: string } },
+      | AppSchema
+      | { pages: Page[]; app?: { variant?: string; size?: string } },
   ): void {
     console.log(
       "[SchemaRenderer] loadSchema() called, pages:",
@@ -500,6 +502,10 @@ export class SchemaRendererService {
         (el as any)[key] = value === true || value === "true" || value === key;
       } else {
         // Use property assignment for component inputs
+        // Skip props that don't exist as inputs to avoid NG0303 errors
+        if ((el as any)[key] === undefined) {
+          continue;
+        }
         let finalValue: unknown = value;
         if (
           value !== null &&
@@ -510,7 +516,11 @@ export class SchemaRendererService {
         } else if (Array.isArray(value)) {
           finalValue = JSON.stringify(value);
         }
-        (el as any)[key] = finalValue;
+        try {
+          (el as any)[key] = finalValue;
+        } catch (e) {
+          // Skip properties that can't be set
+        }
       }
     }
 
@@ -950,7 +960,8 @@ export class SchemaRendererService {
 
     // 31. Responsive breakpoints (sm:, md:, lg:)
     const responsive = props["responsive"] as
-      Record<string, Record<string, unknown>> | undefined;
+      | Record<string, Record<string, unknown>>
+      | undefined;
     if (responsive) {
       const gapMap: Record<string, string> = {
         xs: "1",

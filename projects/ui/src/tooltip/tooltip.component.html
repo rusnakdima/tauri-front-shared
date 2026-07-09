@@ -1,8 +1,0 @@
-<div class="app-tooltip-wrapper" [class.app-tooltip-show]="show">
-  <ng-content></ng-content>
-  @if (show) {
-    <div class="app-tooltip" [class.app-tooltip-{{ position }}]="true">
-      {{ content }}
-    </div>
-  }
-</div>

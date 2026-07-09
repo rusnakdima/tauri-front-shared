@@ -1,17 +1,140 @@
-import { Component, AfterViewInit, signal, computed, Output, EventEmitter } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 import {
-  uiComponents,
-  layoutComponents,
-  feedbackComponents,
-  dataComponents,
-  getAllStyleVariants,
-} from "@tauri-front/shared";
+  Component,
+  signal,
+  computed,
+  Output,
+  EventEmitter,
+  OnInit,
+  Type,
+} from "@angular/core";
+import { NgComponentOutlet, NgIf } from "@angular/common";
+import { FormsModule } from "@angular/forms";
+import { SCHEMA_COMPONENT_MAP, loadStyleVariant } from "@tauri-front/shared";
+
+// Static list of known component selectors from register-components.ts
+const KNOWN_COMPONENTS = [
+  "app-avatar",
+  "app-badge",
+  "app-button",
+  "app-card",
+  "app-checkbox",
+  "app-chip",
+  "app-input",
+  "app-textarea",
+  "app-select",
+  "app-slider",
+  "app-switch",
+  "app-radio",
+  "app-tabs",
+  "app-progress-bar",
+  "app-pagination",
+  "app-loading",
+  "app-spinner",
+  "app-tooltip",
+  "app-snackbar",
+  "app-divider",
+  "app-tree",
+  "app-form",
+  "app-dialog",
+  "app-modal",
+  "app-confirm-dialog",
+  "app-toast",
+  "app-json-view",
+  "app-stats-card",
+  "app-empty-state",
+  "app-segment-selector",
+  "app-data-table",
+  "app-bottom-panel",
+  "app-header",
+  "app-footer",
+  "app-sidebar",
+  "app-page-container",
+  "app-page-toolbar",
+  "app-split-view",
+  "app-component-palette",
+  "app-canvas",
+  "app-properties-panel",
+  "app-icon",
+  "app-nav-item",
+  "app-nav-group",
+  "app-canvas-toolbar",
+  "app-designer-sidebar",
+  "app-main-editor",
+  "app-command-palette",
+  "app-language-selector",
+  "app-swap-button",
+  "app-text-input",
+  "app-translation-output",
+  "app-theme-toggle",
+  "app-shortcuts-overlay",
+  "app-table-view",
+];
+
+export interface ShowcaseComponentDef {
+  id: string;
+  name: string;
+  selector: string;
+  category: string;
+}
+
+// Preview configuration for each component type
+interface PreviewConfig {
+  className: string;
+  content: string;
+  type:
+    | "button"
+    | "input"
+    | "card"
+    | "badge"
+    | "chip"
+    | "avatar"
+    | "checkbox"
+    | "toggle"
+    | "text"
+    | "tabs"
+    | "progress"
+    | "divider"
+    | "spinner";
+}
+
+const PREVIEW_CONFIG: Record<string, PreviewConfig> = {
+  "app-button": { className: "glass-btn", content: "Click Me", type: "button" },
+  "app-card": { className: "glass-card", content: "Card", type: "card" },
+  "app-input": {
+    className: "glass-input",
+    content: "Enter text...",
+    type: "input",
+  },
+  "app-textarea": {
+    className: "glass-input",
+    content: "Enter description...",
+    type: "input",
+  },
+  "app-badge": { className: "glass-badge", content: "NEW", type: "badge" },
+  "app-chip": { className: "glass-chip", content: "Design", type: "chip" },
+  "app-avatar": { className: "glass-avatar", content: "JS", type: "avatar" },
+  "app-checkbox": {
+    className: "glass-checkbox",
+    content: "Remember me",
+    type: "checkbox",
+  },
+  "app-switch": { className: "glass-toggle", content: "ON", type: "toggle" },
+  "app-slider": { className: "glass-slider", content: "50%", type: "text" },
+  "app-tabs": { className: "glass-tabs", content: "Tab", type: "tabs" },
+  "app-progress-bar": {
+    className: "glass-progress",
+    content: "65%",
+    type: "progress",
+  },
+  "app-divider": { className: "glass-divider", content: "", type: "divider" },
+  "app-loading": { className: "glass-spinner", content: "", type: "spinner" },
+  "app-spinner": { className: "glass-spinner", content: "", type: "spinner" },
+};
 
 @Component({
   selector: "app-showcase",
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, NgComponentOutlet, NgIf],
   template: `
     <div class="showcase-container">
       <div class="showcase-filters">
@@ -25,16 +148,172 @@ import {
       </div>
       <div class="component-grid">
         @for (comp of filteredComponents(); track comp.id) {
-          <div class="component-card">
+          <div class="component-card" (click)="openPreview(comp.selector)">
             <div class="card-header">
               <span class="component-name">{{ comp.name }}</span>
               <code class="component-selector">{{ comp.selector }}</code>
             </div>
-            <div
-              class="component-preview"
-              [attr.data-selector]="comp.selector"
-              (click)="openPreview(comp.selector)"
-            ></div>
+            <div class="component-preview">
+              <div
+                class="preview-wrapper"
+                [class]="'preview-' + getPreviewType(comp.selector)"
+              >
+                @switch (getPreviewType(comp.selector)) {
+                  @case ("button") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @case ("input") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @case ("card") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @case ("badge") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @case ("chip") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @case ("avatar") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @case ("checkbox") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @case ("toggle") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @case ("tabs") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @case ("text") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @case ("progress") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @case ("spinner") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @case ("divider") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @case ("select") {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    }
+                  }
+                  @default {
+                    @if (getComponentType(comp.selector); as compType) {
+                      <ng-container
+                        *ngComponentOutlet="
+                          compType;
+                          inputs: getDefaultProps(comp.selector)
+                        "
+                      ></ng-container>
+                    } @else {
+                      <div class="preview-placeholder">{{ comp.label }}</div>
+                    }
+                  }
+                }
+              </div>
+            </div>
             <div class="card-footer">
               <span class="category-badge">{{ comp.category }}</span>
             </div>
@@ -43,288 +322,388 @@ import {
       </div>
     </div>
   `,
-  styles: [`
-    .showcase-container { padding: 1.5rem; }
-    .showcase-filters { margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-    .search-input {
-      padding: 0.5rem 0.875rem; border-radius: 0.5rem;
-      border: 1px solid var(--border-color, #e5e7eb);
-      background: var(--bg-elevated, #ffffff);
-      color: var(--text-primary, #1a1a1a);
-      font-size: 0.875rem; min-width: 240px; outline: none;
-    }
-    .search-input:focus { border-color: var(--accent, #3b82f6); }
-    .component-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1rem;
-    }
-    .component-card {
-      display: flex; flex-direction: column;
-      border: 1px solid var(--border-color, #e5e7eb);
-      border-radius: 0.75rem;
-      background: var(--bg-elevated, #ffffff);
-      overflow: hidden;
-      cursor: pointer;
-      transition: box-shadow 0.15s;
-    }
-    .component-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .card-header {
-      display: flex; flex-direction: column; gap: 0.25rem;
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid var(--border-color, #e5e7eb);
-      background: var(--bg-secondary, #f9fafb);
-    }
-    .component-name { font-size: 0.875rem; font-weight: 600; color: var(--text-primary, #1a1a1a); }
-    .component-selector { font-size: 0.6875rem; color: var(--text-muted, #9ca3af); font-family: monospace; }
-    .component-preview {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 80px; padding: 1rem;
-      background: var(--bg-primary, #f8f9fa);
-      color: var(--text-primary, #1a1a1a);
-    }
-    .card-footer {
-      display: flex; align-items: center; gap: 0.375rem;
-      padding: 0.5rem 1rem; border-top: 1px solid var(--border-color, #e5e7eb);
-    }
-    .category-badge {
-      font-size: 0.6875rem; padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-weight: 500;
-      background: var(--bg-tertiary, #f3f4f6); color: var(--text-secondary, #6b7280); text-transform: capitalize;
-    }
-  `],
+  styles: [
+    `
+      .showcase-container {
+        padding: 1.5rem;
+      }
+      .showcase-filters {
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .search-input {
+        padding: 0.5rem 0.875rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border-color, #e5e7eb);
+        background: var(--bg-elevated, #ffffff);
+        color: var(--text-primary, #1a1a1a);
+        font-size: 0.875rem;
+        min-width: 240px;
+        outline: none;
+      }
+      .search-input:focus {
+        border-color: var(--accent, #3b82f6);
+      }
+      .component-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 1rem;
+      }
+      .component-card {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--border-color, #e5e7eb);
+        border-radius: 0.75rem;
+        background: var(--bg-elevated, #ffffff);
+        overflow: hidden;
+        cursor: pointer;
+        transition: box-shadow 0.15s;
+      }
+      .component-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .card-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-color, #e5e7eb);
+        background: var(--bg-secondary, #f9fafb);
+      }
+      .component-name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-primary, #1a1a1a);
+      }
+      .component-selector {
+        font-size: 0.6875rem;
+        color: var(--text-muted, #9ca3af);
+        font-family: monospace;
+      }
+      .component-preview {
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background: var(--bg-primary, #f9fafb);
+      }
+      .card-footer {
+        padding: 0.5rem 1rem;
+        border-top: 1px solid var(--border-color, #e5e7eb);
+        background: var(--bg-secondary, #f9fafb);
+      }
+      .category-badge {
+        font-size: 0.6875rem;
+        padding: 0.125rem 0.375rem;
+        border-radius: 0.25rem;
+        background: var(--bg-primary, #e5e7eb);
+        color: var(--text-secondary, #6b7280);
+      }
+      /* Preview element styles */
+      .preview-wrapper {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .preview-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8125rem;
+        cursor: pointer;
+      }
+      .preview-input {
+        width: 100%;
+        max-width: 180px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8125rem;
+      }
+      .preview-card {
+        width: 100%;
+        max-width: 200px;
+        padding: 0.75rem;
+        text-align: left;
+      }
+      .preview-card-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+      }
+      .preview-card-desc {
+        font-size: 0.75rem;
+        opacity: 0.8;
+      }
+      .preview-badge {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.6875rem;
+        font-weight: 600;
+      }
+      .preview-chip {
+        padding: 0.25rem 0.625rem;
+        font-size: 0.6875rem;
+        font-weight: 500;
+      }
+      .preview-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 700;
+      }
+      .preview-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+      }
+      .preview-checkbox input {
+        display: none;
+      }
+      .preview-label {
+        font-size: 0.75rem;
+      }
+      .preview-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .glass-toggle {
+        width: 36px;
+        height: 20px;
+        border-radius: 10px;
+        position: relative;
+        cursor: pointer;
+      }
+      .glass-toggle::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: white;
+        transition: transform 0.2s;
+      }
+      .glass-toggle.active::after {
+        transform: translateX(16px);
+      }
+      .preview-toggle-label {
+        font-size: 0.75rem;
+      }
+      .preview-tabs {
+        display: flex;
+        gap: 0.25rem;
+      }
+      .preview-tab {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.6875rem;
+        cursor: pointer;
+      }
+      .preview-progress {
+        width: 100%;
+        max-width: 180px;
+        height: 8px;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .glass-progress-bar {
+        height: 100%;
+        background: var(--accent, #6d5dfc);
+      }
+      .glass-divider {
+        width: 100%;
+        height: 1px;
+        background: var(--border-color, rgba(255, 255, 255, 0.3));
+      }
+      .preview-spinner {
+        width: 24px;
+        height: 24px;
+        border: 3px solid var(--border-color, rgba(255, 255, 255, 0.2));
+        border-top-color: var(--accent, #6d5dfc);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .preview-generic {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+      }
+    `,
+  ],
 })
-export class ShowcaseComponent implements AfterViewInit {
-  readonly styleVariants = getAllStyleVariants();
+export class ShowcaseComponent implements OnInit {
   @Output() componentSelected = new EventEmitter<string>();
 
-  protected categories = signal<Record<string, any[]>>({});
-  readonly searchQuery = signal("");
-  readonly selectedCategory = signal("all");
+  readonly currentVariant = signal<string>("material-design-v3");
 
-  // Deduplicate by id — tooltip/snackbar appear in multiple source arrays
-  readonly allComponents = [
-    ...uiComponents,
-    ...layoutComponents,
-    ...feedbackComponents,
-    ...dataComponents,
-  ].reduce((acc, comp) => {
-    if (!acc.find((c: any) => c.id === comp.id)) acc.push(comp);
-    return acc;
-  }, [] as any[]);
+  searchQuery = signal("");
 
-  readonly filteredComponents = computed(() => {
-    const components = this.allComponents;
-    if (!components) return [];
-    const query = this.searchQuery().toLowerCase();
-    if (!query) return components;
-    return components.filter(
+  async ngOnInit() {
+    await loadStyleVariant("material-design-v3");
+    this.currentVariant.set("material-design-v3");
+  }
+
+  // Build component list from SCHEMA_COMPONENT_MAP keys
+  private allComponents: ShowcaseComponentDef[] = KNOWN_COMPONENTS.filter(
+    (selector) => SCHEMA_COMPONENT_MAP.has(selector),
+  ).map((selector) => ({
+    id: selector.replace("app-", ""),
+    name: formatName(selector),
+    selector,
+    category: getCategory(selector),
+  }));
+
+  filteredComponents = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    if (!query) return this.allComponents;
+    return this.allComponents.filter(
       (c) =>
         c.name.toLowerCase().includes(query) ||
         c.id.toLowerCase().includes(query) ||
-        (c.category && c.category.toLowerCase().includes(query))
+        c.category.toLowerCase().includes(query),
     );
   });
 
-  async ngAfterViewInit() {
-    // Defer to next tick so Angular finishes rendering the @for loop
-    setTimeout(() => this.renderAllComponents(), 0);
+  getPreviewType(selector: string): string {
+    const config = PREVIEW_CONFIG[selector];
+    return config ? config.type : "text";
   }
 
-  private async renderAllComponents() {
-    const previews = document.querySelectorAll(
-      ".component-preview[data-selector]"
-    ) as NodeListOf<HTMLElement>;
+  getPreviewContent(selector: string): string {
+    const config = PREVIEW_CONFIG[selector];
+    return config ? config.content : selector.replace("app-", "");
+  }
 
-    for (const preview of previews) {
-      const selector = preview.getAttribute("data-selector");
-      if (!selector || preview.children.length > 0) continue;
-      // Skip if not a registered custom element (whenDefined hangs for unregistered tags)
-      if (!customElements.get(selector)) continue;
-      try {
-        await Promise.race([
-          customElements.whenDefined(selector),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error("timeout")), 500)
-          ),
-        ]);
-        const el = document.createElement(selector);
-        this.setDefaultProps(el, selector);
-        preview.appendChild(el);
-      } catch { /* ignore */ }
-    }
+  getPreviewClass(selector: string): string {
+    const config = PREVIEW_CONFIG[selector];
+    return config ? config.className : "glass-surface";
+  }
+
+  getComponentType(selector: string): Type<any> | null {
+    return SCHEMA_COMPONENT_MAP.get(selector) || null;
+  }
+
+  getDefaultProps(selector: string): Record<string, unknown> {
+    const defaults: Record<string, Record<string, unknown>> = {
+      "app-button": { variant: "solid", label: "Submit" },
+      "app-card": { title: "Dashboard", subtitle: "Welcome back, User" },
+      "app-input": { placeholder: "Enter text...", label: "Input" },
+      "app-textarea": {
+        placeholder: "Enter description...",
+        label: "Textarea",
+      },
+      "app-badge": { label: "NEW", variant: "primary" },
+      "app-chip": { label: "Design", closeable: false },
+      "app-avatar": { name: "User", size: "md" },
+      "app-checkbox": { label: "Remember me", checked: false },
+      "app-switch": { checked: false, label: "Toggle" },
+      "app-slider": { value: 50, min: 0, max: 100 },
+      "app-tabs": { tabs: ["Tab A", "Tab B", "Tab C"] },
+      "app-progress-bar": { value: 65, max: 100 },
+      "app-spinner": { size: "md" },
+      "app-divider": {},
+      "app-select": {
+        placeholder: "Select...",
+        options: ["Option A", "Option B", "Option C"],
+      },
+      "app-tooltip": { content: "Tooltip text" },
+      "app-empty-state": {
+        title: "No Data",
+        message: "There is no data to display",
+      },
+    };
+    return defaults[selector] || {};
   }
 
   openPreview(selector: string) {
     this.componentSelected.emit(selector);
   }
+}
 
-  private setDefaultProps(el: HTMLElement, selector: string) {
-    // Common props for all components
-    const tag = selector.replace("app-", "");
-    switch (tag) {
-      case "avatar":
-        (el as any).alt = "User";
-        (el as any).size = "md";
-        break;
-      case "badge":
-        (el as any).variant = "primary";
-        (el as any).text = "Label";
-        break;
-      case "button":
-        (el as any).variant = "filled";
-        (el as any).text = "Button";
-        break;
-      case "card":
-        (el as any).title = "Card Title";
-        break;
-      case "checkbox":
-        (el as any).label = "Checkbox";
-        break;
-      case "chip":
-        (el as any).text = "Chip";
-        break;
-      case "input":
-        (el as any).placeholder = "Enter text...";
-        break;
-      case "textarea":
-        (el as any).placeholder = "Enter text...";
-        break;
-      case "select":
-      case "app-select":
-        (el as any).placeholder = "Select...";
-        break;
-      case "slider":
-        (el as any).value = 50;
-        break;
-      case "switch":
-        (el as any).checked = false;
-        break;
-      case "radio":
-        (el as any).label = "Radio";
-        break;
-      case "tabs":
-        (el as any).tabs = JSON.stringify([{"label":"Tab 1"},{"label":"Tab 2"}]);
-        break;
-      case "progress-bar":
-      case "progressbar":
-        (el as any).value = 60;
-        break;
-      case "loading":
-      case "spinner":
-        (el as any).size = "md";
-        break;
-      case "tooltip":
-        (el as any).text = "Tooltip";
-        break;
-      case "empty-state":
-        (el as any).title = "No Data";
-        (el as any).description = "Nothing to show here.";
-        break;
-      case "stats-card":
-        (el as any).title = "Stat";
-        (el as any).value = "42";
-        break;
-      case "json-view":
-        (el as any).data = JSON.stringify({"key":"value"});
-        break;
-      case "data-table":
-      case "datatable":
-        (el as any).columns = JSON.stringify(["Name","Status"]);
-        (el as any).data = JSON.stringify([["Item 1","Active"],["Item 2","Inactive"]]);
-        break;
-      case "segment-selector":
-      case "segmentselector":
-        (el as any).options = JSON.stringify(["Option 1","Option 2"]);
-        break;
-      case "pagination":
-        (el as any).page = 1;
-        (el as any).total = 10;
-        break;
-      case "dialog":
-      case "modal":
-        (el as any).open = false;
-        break;
-      case "confirm-dialog":
-        (el as any).open = false;
-        break;
-      case "snackbar":
-        (el as any).message = "Snackbar message";
-        (el as any).type = "info";
-        (el as any).open = false;
-        break;
-      case "toast":
-        (el as any).type = "info";
-        (el as any).message = "Notification";
-        break;
-      case "bottom-panel":
-        (el as any).tabs = JSON.stringify([{"label":"Tab 1"},{"label":"Tab 2"}]);
-        break;
-      case "component-palette":
-        (el as any).categories = JSON.stringify([{"name":"Forms","components":["Input","Select"]}]);
-        break;
-      case "icon":
-        (el as any).name = "translate";
-        break;
-      case "header":
-        (el as any).title = "Page Title";
-        break;
-      case "footer":
-        (el as any).text = "© 2026 tauri-front-shared";
-        break;
-      case "sidebar":
-        (el as any).items = JSON.stringify([{"id":"home","label":"Home"},{"id":"settings","label":"Settings"}]);
-        break;
-      case "page-container":
-        (el as any).title = "Page Container";
-        break;
-      case "page-toolbar":
-        (el as any).title = "Toolbar";
-        (el as any).actions = JSON.stringify([{"label":"Add"},{"label":"Delete"}]);
-        break;
-      case "split-view":
-        // split-view requires slot content
-        break;
-      case "properties-panel":
-        (el as any).element = "app-button";
-        break;
-      case "canvas":
-        (el as any).gridColumns = 12;
-        (el as any).showGrid = true;
-        break;
-      case "divider":
-        (el as any).orientation = "horizontal";
-        (el as any).spacing = "md";
-        break;
-      case "tree":
-        (el as any).nodes = JSON.stringify([{"id":"root","label":"Root","children":[{"id":"child1","label":"Child 1"},{"id":"child2","label":"Child 2"}]}]);
-        break;
-      case "form":
-        (el as any).heading = "Form";
-        break;
-      case "text-input":
-        (el as any).placeholder = "Type to translate...";
-        break;
-      case "translation-output":
-        (el as any).text = "Translation result";
-        break;
-      case "swap-button":
-        (el as any).label = "⇄";
-        break;
-      case "theme-toggle":
-        // auto-renders toggle
-        break;
-      case "language-selector":
-        (el as any).languages = JSON.stringify([{"code":"en","name":"English"},{"code":"es","name":"Spanish"}]);
-        break;
-      case "shortcuts-overlay":
-        (el as any).shortcuts = JSON.stringify([{"key":"Ctrl+K","description":"Command palette"}]);
-        break;
-      case "table-view":
-        (el as any).columns = JSON.stringify(["Name","Status"]);
-        (el as any).data = JSON.stringify([["Alice","Active"],["Bob","Inactive"]]);
-        break;
-      default:
-        break;
-    }
-  }
+function formatName(selector: string): string {
+  return selector
+    .replace("app-", "")
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function getCategory(selector: string): string {
+  const s = selector.replace("app-", "");
+  const ui = [
+    "button",
+    "input",
+    "textarea",
+    "select",
+    "checkbox",
+    "radio",
+    "slider",
+    "switch",
+    "chip",
+    "badge",
+  ];
+  const layout = [
+    "header",
+    "footer",
+    "sidebar",
+    "page-container",
+    "page-toolbar",
+    "split-view",
+    "bottom-panel",
+  ];
+  const data = [
+    "table",
+    "data-table",
+    "tree",
+    "stats-card",
+    "progress-bar",
+    "pagination",
+    "json-view",
+    "segment-selector",
+  ];
+  const feedback = [
+    "toast",
+    "snackbar",
+    "tooltip",
+    "loading",
+    "spinner",
+    "dialog",
+    "modal",
+    "confirm-dialog",
+    "empty-state",
+    "divider",
+  ];
+
+  if (ui.includes(s)) return "UI";
+  if (layout.includes(s)) return "Layout";
+  if (data.includes(s)) return "Data";
+  if (feedback.includes(s)) return "Feedback";
+  if (s.includes("nav")) return "Navigation";
+  if (
+    s.includes("editor") ||
+    s.includes("designer") ||
+    s.includes("palette") ||
+    s.includes("canvas")
+  )
+    return "Designer";
+  if (
+    s.includes("language") ||
+    s.includes("swap") ||
+    s.includes("text-input") ||
+    s.includes("translation") ||
+    s.includes("theme") ||
+    s.includes("shortcuts")
+  )
+    return "App";
+  return "Other";
 }

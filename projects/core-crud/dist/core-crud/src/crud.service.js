@@ -2,7 +2,9 @@ import { __decorate } from "tslib";
 import { Injectable } from "@angular/core";
 let CrudService = class CrudService {
   async find(entity, id) {
-    const result = await this.execute("find", entity, { filter: { id } });
+    const result = await this.execute("find", entity, {
+      filter: { id },
+    });
     return result.data ?? null;
   }
   async findAll(entity, filter) {
@@ -16,11 +18,17 @@ let CrudService = class CrudService {
     return result.data;
   }
   async update(entity, id, data) {
-    const result = await this.execute("update", entity, { id, data });
+    const result = await this.execute("update", entity, {
+      id,
+      data,
+    });
     return result.data;
   }
   async patch(entity, id, data) {
-    const result = await this.execute("patch", entity, { id, data });
+    const result = await this.execute("patch", entity, {
+      id,
+      data,
+    });
     return result.data;
   }
   async delete(entity, id) {

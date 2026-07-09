@@ -1,0 +1,195 @@
+{
+  "id": "showcase",
+  "schemaVersion": "1.0",
+  "app": {
+    "id": "showcase",
+    "name": "Showcase",
+    "style": "default"
+  },
+  "layoutRegions": [
+    {
+      "id": "header",
+      "componentId": "app-header",
+      "props": {
+        "title": "@tauri-front/shared Showcase"
+      },
+      "children": [
+        {
+          "id": "theme-toggle",
+          "componentId": "app-theme-toggle"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "id": "showcase",
+      "name": "Showcase",
+      "route": "/",
+      "canvasElements": [
+        {
+          "id": "section-forms",
+          "componentId": "app-card",
+          "props": {
+            "title": "Form Components"
+          },
+          "children": [
+            { "id": "btn-primary", "componentId": "app-button", "props": { "label": "Primary", "variant": "primary" } },
+            { "id": "btn-danger", "componentId": "app-button", "props": { "label": "Danger", "variant": "danger" } },
+            { "id": "btn-warning", "componentId": "app-button", "props": { "label": "Warning", "variant": "warning" } },
+            { "id": "btn-success", "componentId": "app-button", "props": { "label": "Success", "variant": "success" } },
+            { "id": "btn-ghost", "componentId": "app-button", "props": { "label": "Ghost", "buttonStyle": "ghost" } },
+            { "id": "btn-outline", "componentId": "app-button", "props": { "label": "Outline", "buttonStyle": "outline" } },
+            { "id": "btn-sm", "componentId": "app-button", "props": { "label": "Small", "size": "sm" } },
+            { "id": "btn-lg", "componentId": "app-button", "props": { "label": "Large", "size": "lg" } },
+            { "id": "btn-loading", "componentId": "app-button", "props": { "label": "Loading", "loading": true } },
+            { "id": "btn-disabled", "componentId": "app-button", "props": { "label": "Disabled", "disabled": true } },
+            { "id": "badge-demo", "componentId": "app-badge", "props": { "label": "3", "variant": "primary" } },
+            { "id": "badge-danger", "componentId": "app-badge", "props": { "label": "Hot", "variant": "danger" } },
+            { "id": "input-demo", "componentId": "app-input", "props": { "placeholder": "Enter text..." } },
+            { "id": "switch-demo", "componentId": "app-switch" },
+            { "id": "checkbox-demo", "componentId": "app-checkbox", "props": { "label": "I agree" } },
+            { "id": "radio-group", "componentId": "app-radio", "props": { "name": "plan", "value": "pro" } },
+            { "id": "slider-demo", "componentId": "app-slider", "props": { "value": 50 } },
+            { "id": "select-demo", "componentId": "app-select", "props": { "options": ["Option A", "Option B", "Option C"], "placeholder": "Pick one" } },
+            { "id": "chip-demo", "componentId": "app-chip", "props": { "label": "Removable chip", "removable": true } },
+            { "id": "textarea-demo", "componentId": "app-textarea", "props": { "placeholder": "Long text..." } }
+          ]
+        },
+        {
+          "id": "section-layout",
+          "componentId": "app-card",
+          "props": {
+            "title": "Layout Components"
+          },
+          "children": [
+            { "id": "tabs-demo", "componentId": "app-tabs" },
+            { "id": "pagination-demo", "componentId": "app-pagination", "props": { "page": 3, "total": 100, "pageSize": 10 } },
+            { "id": "progress-demo", "componentId": "app-progress-bar", "props": { "value": 65 } },
+            { "id": "loading-spinner", "componentId": "app-loading", "props": { "size": "md" } },
+            { "id": "avatar-demo", "componentId": "app-avatar", "props": { "src": "", "alt": "User", "size": "md" } }
+          ]
+        },
+        {
+          "id": "section-feedback",
+          "componentId": "app-card",
+          "props": {
+            "title": "Feedback Components"
+          },
+          "children": [
+            { "id": "dialog-demo", "componentId": "app-dialog", "props": { "title": "Dialog Title", "open": false } },
+            { "id": "modal-demo", "componentId": "app-modal", "props": { "title": "Modal", "open": false } },
+            { "id": "confirm-dialog-demo", "componentId": "app-confirm-dialog", "props": { "title": "Confirm?", "message": "Are you sure?", "confirmText": "Yes", "cancelText": "No", "open": false } },
+            { "id": "empty-state-demo", "componentId": "app-empty-state", "props": { "title": "No Data", "message": "Nothing to show here." } }
+          ]
+        },
+        {
+          "id": "section-data",
+          "componentId": "app-card",
+          "props": {
+            "title": "Data Components"
+          },
+          "children": [
+            { "id": "stats-card-demo", "componentId": "app-stats-card", "props": { "title": "Revenue", "value": "$12,450", "change": "+8.2%", "trend": "up" } },
+            { "id": "table-view-demo", "componentId": "app-table-view" },
+            { "id": "data-table-demo", "componentId": "app-data-table", "props": { "selectable": true } },
+            { "id": "json-view-demo", "componentId": "app-json-view" }
+          ]
+        },
+        {
+          "id": "section-nav",
+          "componentId": "app-card",
+          "props": {
+            "title": "Navigation Components"
+          },
+          "children": [
+            { "id": "segment-demo", "componentId": "app-segment-selector", "props": { "options": ["Day", "Week", "Month"], "selected": "Week" } }
+          ]
+        },
+        {
+          "id": "section-translator",
+          "componentId": "app-card",
+          "props": {
+            "title": "Translator Components"
+          },
+          "children": [
+            { "id": "language-selector-demo", "componentId": "app-language-selector" },
+            { "id": "swap-btn-demo", "componentId": "app-swap-button" },
+            { "id": "text-input-demo", "componentId": "app-text-input", "props": { "placeholder": "Type translation..." } },
+            { "id": "translation-output-demo", "componentId": "app-translation-output" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "not-found-page",
+      "name": "Not Found",
+      "route": "/404",
+      "meta": {
+        "title": "404 - Not Found",
+        "icon": "alert-triangle",
+        "breadcrumb": ["Not Found"]
+      },
+      "canvasElements": [
+        {
+          "id": "not-found-empty-state",
+          "componentId": "app-empty-state",
+          "props": {
+            "title": "Page Not Found",
+            "message": "The page you're looking for doesn't exist."
+          }
+        },
+        {
+          "id": "go-home-button",
+          "componentId": "app-button",
+          "props": {
+            "label": "Go Home",
+            "variant": "primary"
+          },
+          "events": {
+            "click": "navigateHome"
+          }
+        }
+      ]
+    },
+    {
+      "id": "schema-error-page",
+      "name": "Schema Error",
+      "route": "/schema-error",
+      "meta": {
+        "title": "Schema Error",
+        "icon": "alert-triangle",
+        "breadcrumb": ["Schema Error"]
+      },
+      "canvasElements": [
+        {
+          "id": "schema-error-empty-state",
+          "componentId": "app-empty-state",
+          "props": {
+            "title": "Schema Not Found",
+            "message": "The schema could not be loaded."
+          }
+        },
+        {
+          "id": "reload-button",
+          "componentId": "app-button",
+          "props": {
+            "label": "Reload",
+            "variant": "primary"
+          },
+          "events": {
+            "click": "reloadSchema"
+          }
+        }
+      ]
+    }
+  ],
+  "handlers": {
+    "navigateHome": {
+      "navigate": "/"
+    },
+    "reloadSchema": {
+      "call": "reloadSchema"
+    }
+  }
+}

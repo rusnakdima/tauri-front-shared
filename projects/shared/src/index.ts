@@ -5,6 +5,14 @@
 // MUST be imported before any schema rendering
 import "./register-components";
 
+// Component arrays for designer use
+export {
+  uiComponents,
+  layoutComponents,
+  feedbackComponents,
+  dataComponents,
+} from "./components";
+
 // Core SDUI services (core/lib/)
 export { BaseDestroyableComponent } from "./core/lib/base-destroyable.component";
 export { SchemaRendererService } from "./core/lib/schema-renderer/schema-renderer.service";
@@ -36,6 +44,7 @@ export { SignalLoggerService } from "./core/lib/signal-logger/signal-logger.serv
 export { DataPatchService } from "./core/lib/data-patch/data-patch.service";
 export { ToastService } from "./core/lib/toast/toast.service";
 export { SchemaElementComponent } from "./core/lib/schema-router/schema-element.component";
+export { SCHEMA_COMPONENT_MAP, registerSchemaComponent } from "./core/lib/schema-component.registry";
 
 // Storage services
 export { StorageService } from "./storage/storage.service";

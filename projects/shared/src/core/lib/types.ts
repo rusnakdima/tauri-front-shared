@@ -67,7 +67,7 @@ export interface SharedComponentDef {
   id: string;
   name: string;
   selector: string;
-  packageType: "ui" | "feedback" | "data" | "layout";
+  packageType: "ui" | "feedback" | "data" | "layout" | "shared";
   category: string;
   icon?: string;
   defaultClasses?: string;
@@ -83,6 +83,12 @@ export interface GridPosition {
   rowSpan?: number;
   colStart?: number;
   rowStart?: number;
+  /** Responsive override for screens < 640px */
+  sm?: Partial<GridPosition>;
+  /** Responsive override for screens 640–1023px */
+  md?: Partial<GridPosition>;
+  /** Responsive override for screens >= 1024px */
+  lg?: Partial<GridPosition>;
 }
 
 export interface ComponentDef {

@@ -1,12 +1,115 @@
-import { Component, OnInit, signal, ViewChild, ElementRef } from "@angular/core";
+import { Component, OnInit, signal, Type, input } from "@angular/core";
+import { NgComponentOutlet, NgIf } from "@angular/common";
 import { ShowcaseComponent } from "./showcase/showcase.component";
 import { AlgorithmsDemoComponent } from "./algorithms-demo/algorithms-demo.component";
-import { loadStyleVariant, setCurrentStyle, getAllStyleVariants, StyleThemeService, type StyleVariant } from "@tauri-front/shared";
+import {
+  loadStyleVariant,
+  setCurrentStyle,
+  getAllStyleVariants,
+  StyleThemeService,
+  SCHEMA_COMPONENT_MAP,
+  type StyleVariant,
+} from "@tauri-front/shared";
+
+interface ModalPropDef {
+  key: string;
+  label: string;
+  type: "text" | "number" | "boolean" | "select";
+  options?: string[];
+  default: any;
+}
+
+const COMPONENT_PROPS: Record<string, ModalPropDef[]> = {
+  "app-card": [
+    { key: "title", label: "Title", type: "text", default: "Card Title" },
+    {
+      key: "description",
+      label: "Description",
+      type: "text",
+      default: "Card description text",
+    },
+    {
+      key: "variant",
+      label: "Variant",
+      type: "select",
+      options: ["elevated", "outlined", "flat"],
+      default: "elevated",
+    },
+  ],
+  "app-button": [
+    {
+      key: "variant",
+      label: "Variant",
+      type: "select",
+      options: ["filled", "outlined", "text"],
+      default: "filled",
+    },
+    {
+      key: "size",
+      label: "Size",
+      type: "select",
+      options: ["sm", "md", "lg"],
+      default: "md",
+    },
+  ],
+  "app-input": [
+    {
+      key: "placeholder",
+      label: "Placeholder",
+      type: "text",
+      default: "Enter text...",
+    },
+    { key: "value", label: "Value", type: "text", default: "Sample text" },
+    { key: "label", label: "Label", type: "text", default: "Input Label" },
+  ],
+  "app-checkbox": [
+    { key: "label", label: "Label", type: "text", default: "Checkbox label" },
+    { key: "checked", label: "Checked", type: "boolean", default: false },
+  ],
+  "app-badge": [
+    { key: "text", label: "Text", type: "text", default: "Badge" },
+    {
+      key: "variant",
+      label: "Variant",
+      type: "select",
+      options: ["primary", "secondary", "success", "warning", "error"],
+      default: "primary",
+    },
+  ],
+  "app-avatar": [
+    { key: "alt", label: "Alt text", type: "text", default: "User Avatar" },
+    {
+      key: "size",
+      label: "Size",
+      type: "select",
+      options: ["sm", "md", "lg", "xl"],
+      default: "lg",
+    },
+  ],
+};
+
+// Wrapper component that uses ngComponentOutlet to avoid Angular DI issues
+@Component({
+  selector: "app-modal-preview",
+  standalone: true,
+  imports: [NgComponentOutlet, NgIf],
+  template: `
+    @if (componentType) {
+      <ng-container
+        *ngComponentOutlet="componentType; inputs: props"
+      ></ng-container>
+    }
+  `,
+})
+export class ModalPreviewComponent {
+  componentType = input<Type<any> | null>(null);
+  props = input<Record<string, any>>({});
+}
 
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [ShowcaseComponent, AlgorithmsDemoComponent],
+  imports: [ShowcaseComponent, AlgorithmsDemoComponent, ModalPreviewComponent],
   template: `
     <div class="shell">
       <header class="header">
@@ -18,17 +121,23 @@ import { loadStyleVariant, setCurrentStyle, getAllStyleVariants, StyleThemeServi
               class="theme-btn"
               [class.active]="currentMode() === 'light'"
               (click)="setColorMode('light')"
-            >Light</button>
+            >
+              Light
+            </button>
             <button
               class="theme-btn"
               [class.active]="currentMode() === 'dark'"
               (click)="setColorMode('dark')"
-            >Dark</button>
+            >
+              Dark
+            </button>
             <button
               class="theme-btn"
               [class.active]="currentMode() === 'system'"
               (click)="setColorMode('system')"
-            >System</button>
+            >
+              System
+            </button>
           </div>
           <span class="divider"></span>
           <span class="group-label">View</span>
@@ -37,12 +146,16 @@ import { loadStyleVariant, setCurrentStyle, getAllStyleVariants, StyleThemeServi
               class="theme-btn"
               [class.active]="currentView() === 'showcase'"
               (click)="setView('showcase')"
-            >Components</button>
+            >
+              Components
+            </button>
             <button
               class="theme-btn"
               [class.active]="currentView() === 'algorithms'"
               (click)="setView('algorithms')"
-            >Algorithms</button>
+            >
+              Algorithms
+            </button>
           </div>
           <span class="divider"></span>
           <span class="group-label">Style</span>
@@ -52,13 +165,15 @@ import { loadStyleVariant, setCurrentStyle, getAllStyleVariants, StyleThemeServi
                 class="style-btn"
                 [class.active]="currentVariant() === variant.id"
                 (click)="setStyleVariant(variant.id)"
-              >{{ variant.name }}</button>
+              >
+                {{ variant.name }}
+              </button>
             }
           </div>
         </div>
       </header>
       <main class="main">
-        @if (currentView() === 'showcase') {
+        @if (currentView() === "showcase") {
           <app-showcase (componentSelected)="openModal($event)"></app-showcase>
         } @else {
           <app-algorithms-demo></app-algorithms-demo>
@@ -73,72 +188,336 @@ import { loadStyleVariant, setCurrentStyle, getAllStyleVariants, StyleThemeServi
             <span class="modal-title">{{ selectedComponent() }}</span>
             <button class="modal-close" (click)="closeModal()">×</button>
           </div>
-          <div class="modal-body" #modalBody></div>
+          <div class="modal-body">
+            <div class="split-panel">
+              <div class="preview-pane">
+                <app-modal-preview
+                  [componentType]="selectedComponentType()"
+                  [props]="currentProps()"
+                >
+                </app-modal-preview>
+              </div>
+              <div class="properties-pane">
+                <h4 class="props-title">Properties</h4>
+                @for (prop of getComponentProps(); track prop.key) {
+                  <div class="prop-row">
+                    <label class="prop-label">{{ prop.label }}</label>
+                    @if (prop.type === "text") {
+                      <input
+                        type="text"
+                        class="prop-input"
+                        [value]="getPropValue(prop.key)"
+                        (input)="
+                          updateProp(prop.key, $any($event.target).value)
+                        "
+                      />
+                    } @else if (prop.type === "number") {
+                      <input
+                        type="number"
+                        class="prop-input"
+                        [value]="getPropValue(prop.key)"
+                        (input)="
+                          updateProp(prop.key, +$any($event.target).value)
+                        "
+                      />
+                    } @else if (prop.type === "boolean") {
+                      <input
+                        type="checkbox"
+                        class="prop-checkbox"
+                        [checked]="getPropValue(prop.key)"
+                        (change)="
+                          updateProp(prop.key, $any($event.target).checked)
+                        "
+                      />
+                    } @else if (prop.type === "select") {
+                      <select
+                        class="prop-select"
+                        [value]="getPropValue(prop.key)"
+                        (change)="
+                          updateProp(prop.key, $any($event.target).value)
+                        "
+                      >
+                        @for (opt of prop.options; track opt) {
+                          <option [value]="opt">{{ opt }}</option>
+                        }
+                      </select>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+            <!-- Properties editor -->
+            <div class="props-panel">
+              <h4 class="props-panel-title">Properties</h4>
+
+              <div class="prop-row">
+                <label class="prop-label">variant</label>
+                <select
+                  class="prop-input"
+                  [value]="getCurrentVariant()"
+                  (change)="onVariantChange($event)"
+                >
+                  <option value="solid">solid</option>
+                  <option value="outlined">outlined</option>
+                  <option value="text">text</option>
+                  <option value="tonal">tonal</option>
+                </select>
+              </div>
+
+              <div class="prop-row">
+                <label class="prop-label">size</label>
+                <select
+                  class="prop-input"
+                  [value]="getCurrentSize()"
+                  (change)="onSizeChange($event)"
+                >
+                  <option value="sm">sm</option>
+                  <option value="md">md</option>
+                  <option value="lg">lg</option>
+                </select>
+              </div>
+
+              <div class="prop-row">
+                <label class="prop-label">
+                  <input type="checkbox" (change)="onDisabledChange($event)" />
+                  disabled
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     }
   `,
-  styles: [`
-    :host { display: block; width: 100%; }
-    .shell { display: flex; flex-direction: column; width: 100%; min-height: 100vh; background: var(--bg-primary, #f8f9fa); color: var(--text-primary, #1a1a1a); }
-    .header {
-      position: sticky; top: 0; z-index: 10;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.625rem 1.5rem;
-      background: var(--bg-elevated, #ffffff);
-      border-bottom: 1px solid var(--border-color, #e5e7eb);
-      min-height: 52px; flex-shrink: 0; gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .header-title { font-size: 0.9375rem; font-weight: 700; color: var(--text-primary, #1a1a1a); letter-spacing: -0.01em; }
-    .header-group { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-    .group-label { font-size: 0.6875rem; font-weight: 600; color: var(--text-muted, #9ca3af); text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.25rem; }
-    .divider { width: 1px; height: 20px; background: var(--border-color, #e5e7eb); margin: 0 0.25rem; }
-    .btn-group { display: flex; align-items: center; gap: 0.125rem; }
-    .theme-btn, .style-btn {
-      padding: 0.3125rem 0.625rem; border-radius: 0.3125rem;
-      border: 1px solid var(--border-color, #e5e7eb);
-      background: transparent;
-      color: var(--text-secondary, #6b7280);
-      font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.15s;
-    }
-    .theme-btn:hover, .style-btn:hover { background: var(--bg-hover, #f3f4f6); color: var(--text-primary, #1a1a1a); }
-    .theme-btn.active { background: #7c3aed; border-color: #7c3aed; color: #ffffff; }
-    .style-btn.active { background: var(--accent, #3b82f6); border-color: var(--accent, #3b82f6); color: #ffffff; }
-    .main { flex: 1; overflow: visible; }
-    /* Modal overlay */
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 100;
-      background: rgba(0,0,0,0.5);
-      display: flex; align-items: center; justify-content: center;
-      backdrop-filter: blur(4px);
-    }
-    .modal-content {
-      background: var(--bg-elevated, #ffffff);
-      border-radius: 1rem;
-      padding: 2rem;
-      max-width: 600px;
-      width: 90%;
-      max-height: 80vh;
-      overflow: auto;
-      position: relative;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-    }
-    .modal-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 1.5rem;
-    }
-    .modal-title { font-size: 1.125rem; font-weight: 700; color: var(--text-primary); }
-    .modal-close {
-      width: 2rem; height: 2rem; border-radius: 50%;
-      border: 1px solid var(--border-color, #e5e7eb);
-      background: transparent; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.25rem; color: var(--text-secondary);
-    }
-    .modal-close:hover { background: var(--bg-hover, #f3f4f6); }
-    .modal-body { display: flex; align-items: center; justify-content: center; min-height: 120px; }
-  `],
+  styles: [
+    `
+      :host {
+        display: block;
+        width: 100%;
+      }
+      .shell {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        min-height: 100vh;
+        background: var(--bg-primary, #f8f9fa);
+        color: var(--text-primary, #1a1a1a);
+      }
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.625rem 1.5rem;
+        background: var(--bg-elevated, #ffffff);
+        border-bottom: 1px solid var(--border-color, #e5e7eb);
+        min-height: 52px;
+        flex-shrink: 0;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .header-title {
+        font-size: 0.9375rem;
+        font-weight: 700;
+        color: var(--text-primary, #1a1a1a);
+        letter-spacing: -0.01em;
+      }
+      .header-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .group-label {
+        font-size: 0.6875rem;
+        font-weight: 600;
+        color: var(--text-muted, #9ca3af);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-right: 0.25rem;
+      }
+      .divider {
+        width: 1px;
+        height: 20px;
+        background: var(--border-color, #e5e7eb);
+        margin: 0 0.25rem;
+      }
+      .btn-group {
+        display: flex;
+        align-items: center;
+        gap: 0.125rem;
+      }
+      .theme-btn,
+      .style-btn {
+        padding: 0.3125rem 0.625rem;
+        border-radius: 0.3125rem;
+        border: 1px solid var(--border-color, #e5e7eb);
+        background: transparent;
+        color: var(--text-secondary, #6b7280);
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .theme-btn:hover,
+      .style-btn:hover {
+        background: var(--bg-hover, #f3f4f6);
+        color: var(--text-primary, #1a1a1a);
+      }
+      .theme-btn.active {
+        background: #7c3aed;
+        border-color: #7c3aed;
+        color: #ffffff;
+      }
+      .style-btn.active {
+        background: var(--accent, #3b82f6);
+        border-color: var(--accent, #3b82f6);
+        color: #ffffff;
+      }
+      .main {
+        flex: 1;
+        overflow: visible;
+      }
+      /* Modal overlay */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+      }
+      .modal-content {
+        background: var(--bg-elevated, #ffffff);
+        border-radius: 1rem;
+        padding: 2rem;
+        max-width: 800px;
+        width: 90%;
+        max-height: 80vh;
+        overflow: auto;
+        position: relative;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+      }
+      .modal-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      .modal-close {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        border: 1px solid var(--border-color, #e5e7eb);
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+      }
+      .modal-close:hover {
+        background: var(--bg-hover, #f3f4f6);
+      }
+      .modal-body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 120px;
+      }
+      /* Split panel */
+      .split-panel {
+        display: flex;
+        gap: 2rem;
+        width: 100%;
+      }
+      .preview-pane {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 200px;
+        background: var(--bg-primary, #f8f9fa);
+        border-radius: 0.5rem;
+        padding: 1rem;
+      }
+      .properties-pane {
+        width: 240px;
+        flex-shrink: 0;
+      }
+      .props-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 1rem 0;
+      }
+      .prop-row {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        margin-bottom: 0.75rem;
+      }
+      .prop-label {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
+      .prop-input,
+      .prop-select {
+        padding: 0.375rem 0.5rem;
+        border: 1px solid var(--border-color, #e5e7eb);
+        border-radius: 0.25rem;
+        font-size: 0.8125rem;
+        background: var(--bg-primary, #ffffff);
+        color: var(--text-primary, #1a1a1a);
+      }
+      .prop-checkbox {
+        width: 1rem;
+        height: 1rem;
+      }
+      .props-panel {
+        border-top: 1px solid var(--border-color, #e5e7eb);
+        padding: 1rem;
+        background: var(--bg-elevated, #f9fafb);
+        margin-top: 1rem;
+        border-radius: 0.5rem;
+      }
+      .props-panel-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin: 0 0 0.75rem 0;
+        color: var(--text-secondary, #6b7280);
+      }
+      .props-panel .prop-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .props-panel .prop-label {
+        font-size: 0.75rem;
+        min-width: 60px;
+        color: var(--text-secondary, #6b7280);
+      }
+      .props-panel .prop-input {
+        flex: 1;
+        padding: 0.25rem 0.5rem;
+        border: 1px solid var(--border-color, #e5e7eb);
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        background: white;
+      }
+    `,
+  ],
 })
 export class AppComponent implements OnInit {
   readonly currentMode = signal<string>("light");
@@ -146,10 +525,10 @@ export class AppComponent implements OnInit {
   readonly currentView = signal<"showcase" | "algorithms">("showcase");
   readonly styleVariants = getAllStyleVariants();
   readonly selectedComponent = signal<string | null>(null);
+  readonly selectedComponentType = signal<Type<any> | null>(null);
+  readonly currentProps = signal<Record<string, any>>({});
 
-  @ViewChild("modalBody") modalBodyRef!: ElementRef<HTMLElement>;
-
-  private themeService: StyleThemeService;
+  themeService: StyleThemeService;
 
   constructor() {
     this.themeService = new StyleThemeService();
@@ -157,7 +536,10 @@ export class AppComponent implements OnInit {
 
   async ngOnInit() {
     await loadStyleVariant("material-design-v3");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    setCurrentStyle("material-design-v3");
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
     this.themeService.setDarkMode(prefersDark);
     this.currentMode.set(prefersDark ? "dark" : "light");
     this.currentVariant.set("material-design-v3" as StyleVariant);
@@ -165,71 +547,65 @@ export class AppComponent implements OnInit {
 
   openModal(selector: string) {
     this.selectedComponent.set(selector);
-    // Render after the @if block is rendered (next macrotask)
-    setTimeout(() => this.renderModalComponent(selector), 0);
+    // Get component type from registry
+    const componentType = SCHEMA_COMPONENT_MAP.get(selector) || null;
+    this.selectedComponentType.set(componentType);
+    // Initialize props for this component
+    this.currentProps.set(this.getDefaultProps(selector));
   }
 
   closeModal() {
     this.selectedComponent.set(null);
+    this.selectedComponentType.set(null);
+    this.currentProps.set({});
   }
 
-  private async renderModalComponent(selector: string) {
-    const container = this.modalBodyRef?.nativeElement;
-    if (!container) return;
-    container.innerHTML = "";
-    try {
-      await customElements.whenDefined(selector);
-      const el = document.createElement(selector) as HTMLElement;
-      this.setModalProps(el, selector);
-      container.appendChild(el);
-      // Set textContent AFTER append for slot-based components (button, chip, etc.)
-      this.setModalContent(el, selector);
-    } catch { /* ignore */ }
+  private getDefaultProps(selector: string): Record<string, any> {
+    const props = COMPONENT_PROPS[selector];
+    if (!props) return {};
+    return props.reduce((acc, p) => ({ ...acc, [p.key]: p.default }), {});
   }
 
-  private setModalProps(el: HTMLElement, selector: string) {
-    switch (selector) {
-      case "app-avatar": (el as any).alt = "User Avatar"; (el as any).size = "lg"; break;
-      case "app-badge": (el as any).variant = "primary"; (el as any).text = "Badge"; break;
-      case "app-button": (el as any).variant = "filled"; break;
-      case "app-card": (el as any).title = "Card Title"; (el as any).description = "Card description text"; break;
-      case "app-checkbox": (el as any).label = "Checkbox label"; break;
-      case "app-chip": (el as any).text = "Chip Text"; break;
-      case "app-input": (el as any).placeholder = "Enter text..."; (el as any).value = "Sample text"; break;
-      case "app-textarea": (el as any).placeholder = "Enter text..."; (el as any).value = "Sample textarea content"; break;
-      case "app-select": (el as any).placeholder = "Select an option"; break;
-      case "app-slider": (el as any).value = 50; break;
-      case "app-switch": (el as any).checked = false; break;
-      case "app-radio": (el as any).label = "Radio option"; break;
-      case "app-tabs": (el as any).tabs = JSON.stringify([{"label":"Tab 1"},{"label":"Tab 2"},{"label":"Tab 3"}]); break;
-      case "app-progress-bar": (el as any).value = 60; break;
-      case "app-pagination": (el as any).page = 1; (el as any).total = 10; break;
-      case "app-dialog": case "app-modal": case "app-confirm-dialog": (el as any).open = true; break;
-      case "app-toast": (el as any).type = "info"; (el as any).message = "Toast notification"; break;
-      case "app-json-view": (el as any).data = JSON.stringify({"name":"John","age":30,"active":true}); break;
-      case "app-stats-card": (el as any).title = "Total Users"; (el as any).value = "1,234"; break;
-      case "app-empty-state": (el as any).title = "No Data"; (el as any).description = "Nothing to show here yet."; break;
-      case "app-segment-selector": (el as any).options = JSON.stringify(["Option 1","Option 2","Option 3"]); break;
-      case "app-data-table": (el as any).columns = JSON.stringify(["Name","Status","Age"]); (el as any).data = JSON.stringify([["John","Active",25],["Jane","Inactive",30]]); break;
-      case "app-loading": case "app-spinner": (el as any).size = "lg"; break;
-      case "app-tooltip": (el as any).text = "Tooltip content"; break;
-      case "app-snackbar": (el as any).message = "Snackbar message"; (el as any).open = true; (el as any).duration = 6000; break;
-      case "app-divider": (el as any).orientation = "horizontal"; break;
-      case "app-tree": (el as any).nodes = JSON.stringify([{"id":"root","label":"Root","children":[{"id":"a","label":"Child A"},{"id":"b","label":"Child B"}]}]); break;
-      case "app-form": (el as any).heading = "Form"; break;
-    }
+  getComponentProps(): ModalPropDef[] {
+    const selector = this.selectedComponent();
+    return selector ? COMPONENT_PROPS[selector] || [] : [];
   }
 
-  /** Set light-DOM textContent for slot-based components (after appendChild) */
-  private setModalContent(el: HTMLElement, selector: string) {
-    switch (selector) {
-      case "app-button": el.textContent = "Click Me"; break;
-      case "app-chip": el.textContent = "Chip Text"; break;
-      case "app-tree": {
-        // Tree doesn't need textContent
-        break;
-      }
-    }
+  getPropValue(key: string): any {
+    return this.currentProps()[key];
+  }
+
+  updateProp(key: string, value: any) {
+    const props = { ...this.currentProps(), [key]: value };
+    this.currentProps.set(props);
+  }
+
+  getCurrentVariant(): string {
+    const props = this.currentProps();
+    return (props?.["variant"] as string) || "solid";
+  }
+
+  getCurrentSize(): string {
+    const props = this.currentProps();
+    return (props?.["size"] as string) || "md";
+  }
+
+  onVariantChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    const props = { ...this.currentProps(), variant: value };
+    this.currentProps.set(props);
+  }
+
+  onSizeChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    const props = { ...this.currentProps(), size: value };
+    this.currentProps.set(props);
+  }
+
+  onDisabledChange(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    const props = { ...this.currentProps(), disabled: checked };
+    this.currentProps.set(props);
   }
 
   setColorMode(mode: string) {
@@ -238,7 +614,9 @@ export class AppComponent implements OnInit {
     } else if (mode === "light") {
       this.themeService.setDarkMode(false);
     } else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      ).matches;
       this.themeService.setDarkMode(prefersDark);
     }
     this.currentMode.set(mode);
@@ -248,10 +626,13 @@ export class AppComponent implements OnInit {
     await loadStyleVariant(variant);
     setCurrentStyle(variant);
     this.currentVariant.set(variant);
+    // Re-inject dark mode if currently in dark mode
+    if (this.themeService.isDarkMode()) {
+      this.themeService.setDarkMode(true);
+    }
   }
 
   setView(view: "showcase" | "algorithms") {
     this.currentView.set(view);
   }
-
 }

@@ -28,6 +28,7 @@
       "version": "0.1.0",
       "devDependencies": {
         "@tauri-apps/api": "^2.11.1",
+        "ansi-colors": "^4.1.3",
         "ng-packagr": "^19.0.0",
       },
       "peerDependencies": {

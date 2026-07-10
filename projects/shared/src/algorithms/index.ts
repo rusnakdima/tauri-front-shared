@@ -1,11 +1,4 @@
 /**
- * Algorithm suite for @tauri-front/shared.
- * All algorithms are pure functions with no side effects.
+ * Algorithms removed - were not used internally.
+ * If needed, extract to a separate library per AGENTS.md rule 0.1.
  */
-
-export * from "./searching";
-export * from "./string";
-export * from "./math";
-export * from "./array";
-export * from "./graph";
-export * from "./treelib";

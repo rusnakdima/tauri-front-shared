@@ -1,0 +1,84 @@
+/**
+ * Neumorphism Design Tokens
+ * Light mode + Dark mode
+ */
+
+/* Neumorphic base colors */
+:root {
+  --color-neu-base: #e0e5ec;
+  --color-neu-base-dark: #c8ccd4;
+  --color-neu-base-light: #f8fafc;
+  --color-neu-shadow-dark: #a3b1c6;
+  --color-neu-shadow-light: #ffffff;
+  --color-neu-shadow-dark-strong: #8a9bb0;
+  --color-neu-shadow-light-strong: #ffffff;
+  --color-neu-accent: #6d5dfc;
+  --color-neu-accent-muted: #8b7cf7;
+  --color-neu-text: #4a5568;
+  --color-neu-text-light: #718096;
+  --color-neu-text-dark: #2d3748;
+
+  /* Gradient color stops */
+  --gradient-neu-light: #f0f5fc;
+  --gradient-neu-dark: #d4d9e4;
+
+  /* Radius tokens */
+  --radius-neu-sm: 8px;
+  --radius-neu-md: 12px;
+  --radius-neu-lg: 16px;
+  --radius-neu-xl: 24px;
+
+  /* Shadow presets */
+  --shadow-neu-outset:
+    6px 6px 12px var(--color-neu-shadow-dark),
+    -6px -6px 12px var(--color-neu-shadow-light);
+  --shadow-neu-outset-strong:
+    10px 10px 20px var(--color-neu-shadow-dark-strong),
+    -10px -10px 20px var(--color-neu-shadow-light-strong);
+  --shadow-neu-inset:
+    inset 6px 6px 12px var(--color-neu-shadow-dark),
+    inset -6px -6px 12px var(--color-neu-shadow-light);
+  --shadow-neu-inset-strong:
+    inset 8px 8px 16px var(--color-neu-shadow-dark),
+    inset -8px -8px 16px var(--color-neu-shadow-light);
+
+  /* Semantic tokens */
+  --accent: var(--color-neu-accent);
+  --accent-hover: #5a4cdb;
+  --text-on-accent: #ffffff;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --text-muted: #a0aec0;
+  --text-on-error: #ffffff;
+  --text-on-warning: #ffffff;
+  --text-on-success: #ffffff;
+  --bg-elevated: #e8ecf4;
+  --border-color: #a3b1c6;
+  --error: #e53e3e;
+  --warning: #ff9800;
+  --success: #48bb78;
+  --info: #4299e1;
+  --bg-primary: #e0e5ec;
+}
+
+/* Dark mode */
+:root.dark {
+  --color-neu-base: #2d3748;
+  --color-neu-base-dark: #1a202c;
+  --color-neu-base-light: #4a5568;
+  --color-neu-shadow-dark: #1a202c;
+  --color-neu-shadow-light: #4a5568;
+  --color-neu-shadow-dark-strong: #0f172a;
+  --color-neu-shadow-light-strong: #5a6578;
+  --color-neu-text: #e2e8f0;
+  --color-neu-text-light: #a0aec0;
+  --color-neu-text-dark: #f8fafc;
+  --gradient-neu-light: #4a5568;
+  --gradient-neu-dark: #2d3748;
+  --text-primary: #f8fafc;
+  --text-secondary: #a0aec0;
+  --text-muted: #718096;
+  --bg-elevated: #2d3748;
+  --border-color: #4a5568;
+  --bg-primary: #2d3748;
+}

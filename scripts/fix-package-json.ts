@@ -69,6 +69,10 @@ function fixPaths(pkg: Pkg): void {
       }
     }
   }
+  // Ensure ./styles/* subpath export exists for CSS imports
+  if (!pkg.exports["./styles/*"]) {
+    (pkg.exports as Record<string, unknown>)["./styles/*"] = { "default": "./styles/*" };
+  }
 }
 
 function main(): void {

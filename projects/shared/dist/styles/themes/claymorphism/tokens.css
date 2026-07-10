@@ -1,0 +1,68 @@
+/**
+ * Claymorphism Design Tokens
+ * Light mode (default) + Dark mode via :root.dark
+ */
+
+/* Base colors */
+:root {
+  --color-clay-base: #e0e5ec;
+  --color-clay-raised: #e0e5ec;
+  --color-clay-inset: #d1d9e6;
+  --color-clay-accent: #6d5dfc;
+  --color-clay-accent-hover: #5a4cdb;
+  --color-clay-shadow-light: rgba(255, 255, 255, 0.8);
+  --color-clay-shadow-dark: rgba(163, 177, 198, 0.6);
+  --color-clay-shadow-dark-strong: rgba(94, 108, 132, 0.4);
+
+  /* Radius tokens */
+  --radius-clay-sm: 12px;
+  --radius-clay-md: 20px;
+  --radius-clay-lg: 24px;
+  --radius-clay-xl: 32px;
+
+  /* Semantic tokens */
+  --accent: var(--color-clay-accent);
+  --accent-hover: var(--color-clay-accent-hover);
+  --text-on-accent: #ffffff;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --text-muted: #a0aec0;
+  --text-on-error: #ffffff;
+  --text-on-warning: #ffffff;
+  --text-on-success: #ffffff;
+  --bg-elevated: #e8ecf4;
+  --bg-primary: #e0e5ec;
+  --bg-secondary: #d1d9e6;
+  --bg-tertiary: #c8ccd4;
+  --border-color: #a3b1c6;
+  --border-subtle: #a3b1c6;
+  --error: #e53e3e;
+  --warning: #ff9800;
+  --success: #48bb78;
+  --info: #4299e1;
+
+  /* Gradient color stops for raised/inset surfaces */
+  --gradient-clay-light: #f0f5fc;
+  --gradient-clay-dark: #d4d9e4;
+}
+
+/* Dark mode */
+:root.dark {
+  --color-clay-base: #1a1a2e;
+  --color-clay-raised: #252540;
+  --color-clay-inset: #1a1a2e;
+  --color-clay-accent: #8b7cf7;
+  --color-clay-accent-hover: #6d5dfc;
+  --color-clay-shadow-light: rgba(255, 255, 255, 0.1);
+  --color-clay-shadow-dark: rgba(0, 0, 0, 0.4);
+  --color-clay-shadow-dark-strong: rgba(0, 0, 0, 0.6);
+  --text-primary: #e2e8f0;
+  --text-secondary: #a0aec0;
+  --text-muted: #718096;
+  --bg-elevated: #252540;
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #252540;
+  --bg-tertiary: #1a1a2e;
+  --border-color: #4a5568;
+  --border-subtle: #4a5568;
+}

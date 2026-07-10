@@ -13,6 +13,9 @@
     },
     "./package.json": {
       "default": "./package.json"
+    },
+    "./styles/*": {
+      "default": "./styles/*"
     }
   },
   "peerDependencies": {

@@ -1,0 +1,62 @@
+/**
+ * Brutalism Design Tokens
+ * Light mode + Dark mode
+ */
+
+:root {
+  --color-brut-base: #f5f5f0;
+  --color-brut-ink: #0a0a0a;
+  --color-brut-accent: #ff3b30;
+  --color-brut-accent-2: #ffd60a;
+  --color-brut-success: #00c853;
+  --color-brut-border: var(--color-brut-ink);
+
+  /* Shadow presets — key for brutalism */
+  --shadow-brut-sm: 4px 4px 0 0 var(--color-brut-ink);
+  --shadow-brut-md: 6px 6px 0 0 var(--color-brut-ink);
+  --shadow-brut-lg: 8px 8px 0 0 var(--color-brut-ink);
+
+  /* Font families */
+  --font-brut-mono: "JetBrains Mono", "Courier New", monospace;
+  --font-brut-sans: "Inter", "Arial Black", sans-serif;
+
+  /* Semantic tokens */
+  --accent: var(--color-brut-accent);
+  --accent-hover: #d62b22;
+  --text-on-accent: #ffffff;
+  --text-primary: var(--color-brut-ink);
+  --text-secondary: #3d3d3d;
+  --text-muted: #6b6b6b;
+  --text-on-error: #ffffff;
+  --text-on-warning: #0a0a0a;
+  --text-on-success: #ffffff;
+  --bg-primary: var(--color-brut-base);
+  --bg-elevated: #ffffff;
+  --bg-hover: #e8e8e3;
+  --bg-tertiary: #d4d4cf;
+  --border-color: var(--color-brut-ink);
+  --border-subtle: var(--color-brut-ink);
+  --error: var(--color-brut-accent);
+  --warning: var(--color-brut-accent-2);
+  --success: var(--color-brut-success);
+  --info: #0066ff;
+}
+
+/* Dark mode */
+:root.dark {
+  --color-brut-base: #1a1a1a;
+  --color-brut-ink: #f5f5f0;
+  --color-brut-accent: #ff453a;
+  --color-brut-accent-2: #ffd60a;
+  --color-brut-success: #00e676;
+  --text-primary: #f5f5f0;
+  --text-secondary: #c0c0c0;
+  --text-muted: #909090;
+  --bg-primary: #1a1a1a;
+  --bg-elevated: #2a2a2a;
+  --bg-hover: #3a3a3a;
+  --bg-tertiary: #404040;
+  --border-color: #f5f5f0;
+  --border-subtle: #c0c0c0;
+  --error: #ff453a;
+}

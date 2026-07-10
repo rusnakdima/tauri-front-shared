@@ -1,7 +1,6 @@
-import { Component, OnInit, signal, Type, input } from "@angular/core";
-import { NgComponentOutlet, NgIf } from "@angular/common";
+import { Component, OnInit, signal, Type, inject, AfterViewInit, ComponentRef, ViewContainerRef, Input, ViewChild, ApplicationRef, OnChanges, SimpleChanges } from "@angular/core";
+import { NgIf } from "@angular/common";
 import { ShowcaseComponent } from "./showcase/showcase.component";
-import { AlgorithmsDemoComponent } from "./algorithms-demo/algorithms-demo.component";
 import {
   loadStyleVariant,
   setCurrentStyle,
@@ -88,28 +87,72 @@ const COMPONENT_PROPS: Record<string, ModalPropDef[]> = {
   ],
 };
 
-// Wrapper component that uses ngComponentOutlet to avoid Angular DI issues
+// Wrapper component that uses createComponent (NOT NgComponentOutlet) to properly
+// propagate ElementRef/Injector to deeply nested sub-components (e.g. MatIcon inside Chip).
+// NgComponentOutlet with injector input does NOT propagate ElementRef correctly.
 @Component({
   selector: "app-modal-preview",
   standalone: true,
-  imports: [NgComponentOutlet, NgIf],
+  imports: [NgIf],
   template: `
-    @if (componentType) {
-      <ng-container
-        *ngComponentOutlet="componentType; inputs: props"
-      ></ng-container>
-    }
+    <ng-container #dynamicHost></ng-container>
   `,
 })
-export class ModalPreviewComponent {
-  componentType = input<Type<any> | null>(null);
-  props = input<Record<string, any>>({});
+export class ModalPreviewComponent implements AfterViewInit, OnChanges {
+  // Use ApplicationRef.injector for proper ElementRef propagation to deeply nested
+  // sub-components. Component-level injector does not work correctly.
+  private readonly appRef = inject(ApplicationRef);
+  private readonly injector = this.appRef.injector;
+  @Input() componentType: Type<any> | null = null;
+  @Input() props: Record<string, any> = {};
+
+  @ViewChild("dynamicHost", { read: ViewContainerRef })
+  private dynamicHost!: ViewContainerRef;
+  private componentRef: ComponentRef<any> | null = null;
+
+  ngAfterViewInit() {
+    this.createDynamicComponent();
+  }
+
+  ngOnChanges(_changes: SimpleChanges) {
+    // Re-create component when inputs change (after view is initialized)
+    if (this.dynamicHost) {
+      this.createDynamicComponent();
+    }
+  }
+
+  private createDynamicComponent() {
+    if (!this.dynamicHost) return;
+
+    // Destroy previous component
+    if (this.componentRef) {
+      this.componentRef.destroy();
+      this.componentRef = null;
+    }
+
+    if (!this.componentType) return;
+
+    // Angular 20: set inputs directly on component instance after creation
+    this.componentRef = this.dynamicHost.createComponent(this.componentType, {
+      injector: this.injector,
+    });
+
+    // Set inputs directly on instance - must be done before detectChanges
+    const instance = this.componentRef.instance;
+    if (this.props) {
+      Object.entries(this.props).forEach(([key, value]) => {
+        (instance as any)[key] = value;
+      });
+    }
+
+    this.componentRef.changeDetectorRef.detectChanges();
+  }
 }
 
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [ShowcaseComponent, AlgorithmsDemoComponent, ModalPreviewComponent],
+  imports: [ShowcaseComponent, ModalPreviewComponent],
   template: `
     <div class="shell">
       <header class="header">
@@ -140,24 +183,6 @@ export class ModalPreviewComponent {
             </button>
           </div>
           <span class="divider"></span>
-          <span class="group-label">View</span>
-          <div class="btn-group">
-            <button
-              class="theme-btn"
-              [class.active]="currentView() === 'showcase'"
-              (click)="setView('showcase')"
-            >
-              Components
-            </button>
-            <button
-              class="theme-btn"
-              [class.active]="currentView() === 'algorithms'"
-              (click)="setView('algorithms')"
-            >
-              Algorithms
-            </button>
-          </div>
-          <span class="divider"></span>
           <span class="group-label">Style</span>
           <div class="btn-group">
             @for (variant of styleVariants; track variant.id) {
@@ -173,11 +198,7 @@ export class ModalPreviewComponent {
         </div>
       </header>
       <main class="main">
-        @if (currentView() === "showcase") {
-          <app-showcase (componentSelected)="openModal($event)"></app-showcase>
-        } @else {
-          <app-algorithms-demo></app-algorithms-demo>
-        }
+        <app-showcase (componentSelected)="openModal($event)"></app-showcase>
       </main>
     </div>
 
@@ -522,7 +543,6 @@ export class ModalPreviewComponent {
 export class AppComponent implements OnInit {
   readonly currentMode = signal<string>("light");
   readonly currentVariant = signal<StyleVariant>("material-design-v3");
-  readonly currentView = signal<"showcase" | "algorithms">("showcase");
   readonly styleVariants = getAllStyleVariants();
   readonly selectedComponent = signal<string | null>(null);
   readonly selectedComponentType = signal<Type<any> | null>(null);
@@ -632,7 +652,4 @@ export class AppComponent implements OnInit {
     }
   }
 
-  setView(view: "showcase" | "algorithms") {
-    this.currentView.set(view);
-  }
 }

@@ -6,6 +6,8 @@ import {
   EventEmitter,
   OnInit,
   Type,
+  ApplicationRef,
+  inject,
 } from "@angular/core";
 import { NgComponentOutlet, NgIf } from "@angular/common";
 import { FormsModule } from "@angular/forms";
@@ -158,159 +160,14 @@ const PREVIEW_CONFIG: Record<string, PreviewConfig> = {
                 class="preview-wrapper"
                 [class]="'preview-' + getPreviewType(comp.selector)"
               >
-                @switch (getPreviewType(comp.selector)) {
-                  @case ("button") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @case ("input") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @case ("card") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @case ("badge") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @case ("chip") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @case ("avatar") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @case ("checkbox") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @case ("toggle") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @case ("tabs") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @case ("text") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @case ("progress") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @case ("spinner") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @case ("divider") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @case ("select") {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    }
-                  }
-                  @default {
-                    @if (getComponentType(comp.selector); as compType) {
-                      <ng-container
-                        *ngComponentOutlet="
-                          compType;
-                          inputs: getDefaultProps(comp.selector)
-                        "
-                      ></ng-container>
-                    } @else {
-                      <div class="preview-placeholder">{{ comp.label }}</div>
-                    }
-                  }
+                @if (getComponentType(comp.selector); as compType) {
+                  <ng-container
+                    *ngComponentOutlet="
+                      compType;
+                      inputs: getDefaultProps(comp.selector);
+                      injector: myInjector
+                    "
+                  ></ng-container>
                 }
               </div>
             </div>
@@ -547,6 +404,12 @@ export class ShowcaseComponent implements OnInit {
 
   readonly currentVariant = signal<string>("material-design-v3");
 
+  // Use ApplicationRef.injector instead of component's Injector to properly
+  // propagate ElementRef to deeply nested sub-components (e.g. MatIcon).
+  // NgComponentOutlet with component-level injector does NOT propagate ElementRef correctly.
+  private readonly appRef = inject(ApplicationRef);
+  readonly myInjector = this.appRef.injector;
+
   searchQuery = signal("");
 
   async ngOnInit() {
@@ -604,7 +467,7 @@ export class ShowcaseComponent implements OnInit {
         label: "Textarea",
       },
       "app-badge": { label: "NEW", variant: "primary" },
-      "app-chip": { label: "Design", closeable: false },
+      "app-chip": { label: "Design", removable: false },
       "app-avatar": { name: "User", size: "md" },
       "app-checkbox": { label: "Remember me", checked: false },
       "app-switch": { checked: false, label: "Toggle" },

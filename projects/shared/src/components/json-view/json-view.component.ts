@@ -1,44 +1,14 @@
 import { Component, Input, inject } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
+import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 @Component({
   selector: "app-json-view",
   standalone: true,
-  template: `<div class="json-container" [innerHTML]="safeHtml"></div>`,
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-      .json-container {
-        background-color: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: 0.5rem;
-        padding: 1rem;
-        font-family: monospace;
-        font-size: 0.875rem;
-        overflow-x: auto;
-        white-space: pre-wrap;
-        word-break: break-word;
-      }
-      .json-key {
-        color: var(--accent);
-      }
-      .json-string {
-        color: var(--success);
-      }
-      .json-number {
-        color: var(--warning);
-      }
-      .json-boolean {
-        color: var(--error);
-      }
-      .json-null {
-        color: var(--text-muted);
-      }
-    `,
-  ],
+  imports: [ApplyThemeDirective],
+  templateUrl: "./json-view.component.html",
+  styleUrls: ["./json-view.component.css"],
 })
 export class JsonViewComponent {
   @Input() data: unknown = {};

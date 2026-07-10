@@ -1,142 +1,124 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Component, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
+import { DesignerCanvasService } from "../../core/lib/designer/designer-canvas.service";
+import type { CanvasElement } from "../../core/lib/types";
+import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
-interface CanvasElementDef {
-  id: string;
-  componentId: string;
-  name?: string;
-  icon?: string;
-  gridPosition?: {
-    column: number;
-    row: number;
-    colSpan?: number;
-    rowSpan?: number;
-  };
+interface DropIndicator {
+  parentId: string | null;
+  index: number;
+  y: number;
 }
 
 @Component({
   selector: "app-canvas",
   standalone: true,
-  template: `
-    <div class="canvas-area" [style.--grid-cols]="gridColumns">
-      @if (showGrid) {
-        <div class="grid visible">
-          @for (cell of gridCells; track cell) {
-            <div class="grid-cell"></div>
-          }
-        </div>
-      }
-      @if (parsedElements.length > 0) {
-        @for (el of parsedElements; track el.id) {
-          <div
-            class="canvas-element"
-            [class.selected]="selectedId === el.id"
-            [style.gridColumn]="
-              (el.gridPosition?.column || 1) +
-              ' / span ' +
-              (el.gridPosition?.colSpan || 1)
-            "
-            [style.gridRow]="
-              (el.gridPosition?.row || 1) +
-              ' / span ' +
-              (el.gridPosition?.rowSpan || 1)
-            "
-            (click)="selectElement(el.id)"
-          >
-            <span>{{ el.icon || "⊡" }}</span>
-            <span>{{ el.name || el.componentId }}</span>
-          </div>
-        }
-      } @else {
-        <div class="canvas-placeholder">
-          <ng-content></ng-content>
-        </div>
-      }
-    </div>
-  `,
-  styles: [
-    `
-      :host {
-        display: block;
-        width: 100%;
-        height: 100%;
-        background-color: var(--bg-primary);
-        position: relative;
-        overflow: auto;
-      }
-      .canvas-area {
-        min-width: 100%;
-        min-height: 100%;
-        position: relative;
-        display: grid;
-        grid-template-columns: repeat(var(--grid-cols, 12), 1fr);
-      }
-      .grid {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        pointer-events: none;
-        display: grid;
-        grid-template-columns: repeat(var(--grid-cols), 1fr);
-        gap: 0;
-      }
-      .grid-cell {
-        border-right: 1px solid var(--border-color);
-        border-bottom: 1px solid var(--border-color);
-        min-height: 4rem;
-      }
-      .canvas-element {
-        border: 2px dashed transparent;
-        border-radius: 0.5rem;
-        padding: 0.5rem;
-        cursor: move;
-        transition: border-color 0.15s;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .canvas-element:hover {
-        border-color: var(--accent);
-      }
-      .canvas-element.selected {
-        border-color: var(--accent);
-        border-style: solid;
-        box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 99, 102, 241), 0.2);
-      }
-      .canvas-placeholder {
-        border: 2px dashed var(--border-color);
-        border-radius: 0.5rem;
-        background-color: var(--bg-secondary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-muted);
-        font-size: 0.875rem;
-        min-height: 200px;
-      }
-    `,
-  ],
+  imports: [CommonModule, ApplyThemeDirective],
+  templateUrl: "./canvas.component.html",
+  styleUrls: ["./canvas.component.css"],
 })
 export class CanvasComponent {
-  @Input() elements: CanvasElementDef[] | null = null;
-  @Input() gridColumns = 12;
-  @Input() showGrid = false;
-  @Input() selectedId: string | null = null;
-  @Output() elementSelected = new EventEmitter<string>();
+  protected designer = inject(DesignerCanvasService);
 
-  get parsedElements(): CanvasElementDef[] {
-    return this.elements || [];
+  get elements(): CanvasElement[] {
+    return this.designer.elements();
   }
 
   get gridCells(): number[] {
-    return Array(this.gridColumns * 6).fill(0);
+    return Array(this.designer.gridColumns * 6).fill(0);
   }
 
-  selectElement(id: string) {
-    this.selectedId = id;
-    this.elementSelected.emit(id);
+  protected dropIndicator: DropIndicator | null = null;
+
+  getGridColumn(el: CanvasElement): string {
+    const gp = el.gridPosition;
+    if (!gp) return "auto";
+    return `${gp.column || 1} / span ${gp.colSpan || 1}`;
+  }
+
+  getGridRow(el: CanvasElement): string {
+    const gp = el.gridPosition;
+    if (!gp) return "auto";
+    return `${gp.row || 1} / span ${gp.rowSpan || 1}`;
+  }
+
+  getIcon(_el: CanvasElement): string {
+    const icons: Record<string, string> = {
+      "app-button": "▣",
+      "app-text": "A",
+      "app-block": "⊞",
+      "app-icon": "◇",
+      "app-text-input": "✎",
+      "app-translation-output": "📄",
+      "app-language-selector": "🌐",
+    };
+    return icons[_el.componentId] || "⊡";
+  }
+
+  deleteElement(e: Event, id: string) {
+    e.stopPropagation();
+    this.designer.deleteElement(id);
+  }
+
+  editElement(el: CanvasElement) {
+    this.designer.selectElement(el.id);
+  }
+
+  onElementDragStart(e: DragEvent, el: CanvasElement) {
+    e.dataTransfer?.setData(
+      "text/plain",
+      JSON.stringify({ type: "move", id: el.id }),
+    );
+    if (e.dataTransfer) e.dataTransfer.effectAllowed = "move";
+  }
+
+  onDragOver(e: DragEvent) {
+    e.preventDefault();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+  }
+
+  onDragLeave() {
+    this.dropIndicator = null;
+  }
+
+  onElementDragOver(e: DragEvent, el: CanvasElement) {
+    e.preventDefault();
+    e.stopPropagation();
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const y = e.clientY - rect.top;
+    const index = y > rect.height / 2 ? 1 : 0;
+    this.dropIndicator = { parentId: el.id, index, y: 0 };
+  }
+
+  onElementDragLeave(_el: CanvasElement) {
+    if (this.dropIndicator?.parentId === _el.id) {
+      this.dropIndicator = null;
+    }
+  }
+
+  onDrop(e: DragEvent) {
+    e.preventDefault();
+    const raw = e.dataTransfer?.getData("text/plain");
+    if (!raw) return;
+    try {
+      const data = JSON.parse(raw);
+      if (data.type === "component") {
+        this.designer.addElement(
+          data.componentId,
+          this.dropIndicator?.parentId ?? null,
+        );
+      } else if (data.type === "move" && data.id) {
+        this.designer.moveElement(
+          data.id,
+          this.dropIndicator?.parentId ?? null,
+          this.dropIndicator?.index,
+        );
+      }
+    } catch {
+      /* ignore parse errors */
+    }
+    this.dropIndicator = null;
   }
 }
 

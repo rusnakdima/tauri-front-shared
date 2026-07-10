@@ -6,12 +6,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
 } from "@angular/core";
-import { MatIconModule } from "@angular/material/icon";
 @Component({
   selector: "app-pagination",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatIconModule],
+  imports: [],
   templateUrl: "./pagination.component.html",
 })
 export class PaginationComponent {

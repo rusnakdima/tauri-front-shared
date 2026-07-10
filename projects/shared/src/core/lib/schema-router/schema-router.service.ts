@@ -1,6 +1,7 @@
 import { Injectable, signal, computed, inject, Optional } from "@angular/core";
 import type { UiSchema, Page, Layout } from "../types";
 import { GuardService } from "./guard.service";
+import { logger } from "../../../utils/logger";
 
 export interface RouteConfig {
   path: string;
@@ -42,7 +43,7 @@ export class SchemaRouterService {
   );
 
   setSchema(schema: UiSchema): void {
-    console.log(
+    logger.log(
       "[SchemaRouter] setSchema() called, pages:",
       schema?.pages?.length ?? 0,
       "layouts:",
@@ -68,7 +69,7 @@ export class SchemaRouterService {
     this._error.set(null);
 
     try {
-      console.log(`[SchemaRouter] navigate("${route}") attempting...`);
+      logger.log(`[SchemaRouter] navigate("${route}") attempting...`);
       let matched = this.resolveRoute(route);
       if (!matched) {
         // Fall back to /404 page if route not found
@@ -78,7 +79,7 @@ export class SchemaRouterService {
         }
       }
       if (!matched) {
-        console.warn(
+        logger.warn(
           `[SchemaRouter] navigate("${route}") - route NOT FOUND, falling back to /404`,
         );
         this._error.set(`Route not found: ${route}`);
@@ -114,7 +115,7 @@ export class SchemaRouterService {
       this._params.set(params);
 
       if (page) {
-        console.log(
+        logger.log(
           `[SchemaRouter] navigate("${route}") - SUCCESS, page="${page.name}", id="${page.id}"`,
         );
         this._currentPage.set(page);
@@ -125,12 +126,12 @@ export class SchemaRouterService {
             (l) => l.id === page.layout,
           );
           this._currentLayout.set(layout ?? null);
-          console.log(
+          logger.log(
             `[SchemaRouter] page "${page.name}" has layout="${page.layout}", found=${!!layout}`,
           );
         } else {
           this._currentLayout.set(null);
-          console.log(`[SchemaRouter] page "${page.name}" has NO layout`);
+          logger.log(`[SchemaRouter] page "${page.name}" has NO layout`);
         }
       }
 

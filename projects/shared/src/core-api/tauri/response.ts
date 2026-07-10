@@ -1,3 +1,8 @@
+// Note: Response.data uses T | null (not Option<T>).
+// Rust's Option<T> serializes as null in JSON for None values,
+// which TypeScript correctly interprets as T | null.
+// This avoids breaking changes for TypeScript consumers.
+
 export enum ResponseStatus {
   Success = "success",
   Created = "created",
@@ -8,6 +13,9 @@ export enum ResponseStatus {
   NotFound = "notFound",
   Unauthorized = "unauthorized",
   Forbidden = "forbidden",
+  Info = "info",
+  Warning = "warning",
+  Duplicate = "duplicate",
 }
 
 export interface Response<T = unknown> {

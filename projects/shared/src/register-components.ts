@@ -57,6 +57,7 @@ import "./components/canvas-toolbar/canvas-toolbar.component";
 import "./components/designer-sidebar/designer-sidebar.component";
 import "./components/main-editor/main-editor.component";
 import "./components/command-palette/command-palette.component";
+import "./components/designer-tree/designer-tree.component";
 
 // Translator-specific Components
 import "./components/language-selector/language-selector.component";
@@ -65,3 +66,7 @@ import "./components/text-input/text-input.component";
 import "./components/translation-output/translation-output.component";
 import "./components/theme-toggle/theme-toggle.component";
 import "./components/shortcuts-overlay/shortcuts-overlay.component";
+
+// Layout/Text Components
+import "./components/block/block.component";
+import "./components/text/text.component";

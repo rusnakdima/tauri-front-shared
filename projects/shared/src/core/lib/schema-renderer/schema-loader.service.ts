@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import type { UiSchema, ValidationResult, ValidationError } from "./types";
+import { logger } from "../../../../utils/logger";
 
 @Injectable({ providedIn: "root" })
 export class SchemaLoaderService {
@@ -87,11 +88,11 @@ export class SchemaLoaderService {
         },
       );
       if (cached?.status === "success" && cached.data) {
-        console.log("[SchemaLoader] Loaded from local cache");
+        logger.log("[SchemaLoader] Loaded from local cache");
         return cached.data;
       }
     } catch (e) {
-      console.warn("[SchemaLoader] Local cache read failed:", e);
+      logger.warn("[SchemaLoader] Local cache read failed:", e);
     }
 
     if (designerEndpoint) {
@@ -104,7 +105,7 @@ export class SchemaLoaderService {
           },
         );
         if (cloud?.status === "success" && cloud.data) {
-          console.log("[SchemaLoader] Synced from cloud via Designer");
+          logger.log("[SchemaLoader] Synced from cloud via Designer");
           await invoke("save_schema_local", {
             appId: this.appId,
             schema: cloud.data,
@@ -112,11 +113,11 @@ export class SchemaLoaderService {
           return cloud.data;
         }
       } catch (e) {
-        console.warn("[SchemaLoader] Cloud sync failed:", e);
+        logger.warn("[SchemaLoader] Cloud sync failed:", e);
       }
     }
 
-    console.warn("[SchemaLoader] Using embedded fallback schema");
+    logger.warn("[SchemaLoader] Using embedded fallback schema");
     return this.loadEmbedded();
   }
 

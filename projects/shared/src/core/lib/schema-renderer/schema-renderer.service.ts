@@ -15,6 +15,7 @@ import { ComponentRegistryService } from "../component-registry.service";
 import { DataBindingResolverService } from "./data-binding-resolver";
 import { LayoutEngineService, GridTemplate } from "./layout-engine";
 import { I18nService } from "../i18n/i18n.service";
+import { logger } from "../../../utils/logger";
 import {
   StyleVariant,
   getStyleClassPrefix,
@@ -52,8 +53,7 @@ export class SchemaRendererService {
   ) {}
 
   private componentResolver:
-    | ((selector: string) => ComponentDef | undefined)
-    | null = null;
+    ((selector: string) => ComponentDef | undefined) | null = null;
   private routeResolver: ((route: string) => string | null) | null = null;
 
   // Schema-level handlers and stores
@@ -80,10 +80,9 @@ export class SchemaRendererService {
 
   loadSchema(
     schema:
-      | AppSchema
-      | { pages: Page[]; app?: { variant?: string; size?: string } },
+      AppSchema | { pages: Page[]; app?: { variant?: string; size?: string } },
   ): void {
-    console.log(
+    logger.log(
       "[SchemaRenderer] loadSchema() called, pages:",
       schema?.pages?.length ?? 0,
     );
@@ -281,10 +280,7 @@ export class SchemaRendererService {
                 ),
               ]);
             } catch (e) {
-              console.warn(
-                `[SchemaRenderer] Element not ready: ${selector}`,
-                e,
-              );
+              logger.warn(`[SchemaRenderer] Element not ready: ${selector}`, e);
             }
           }
           const el = document.createElement(selector);
@@ -386,7 +382,7 @@ export class SchemaRendererService {
           ),
         ]);
       } catch (e) {
-        console.warn(`[SchemaRenderer] Element not ready: ${finalSelector}`, e);
+        logger.warn(`[SchemaRenderer] Element not ready: ${finalSelector}`, e);
       }
     }
 
@@ -568,7 +564,7 @@ export class SchemaRendererService {
     pageSchema: PageSchema,
     currentRoute?: string,
   ): Promise<void> {
-    console.log(
+    logger.log(
       `[SchemaRenderer] render() called: page="${pageSchema?.name}", elements=${pageSchema?.elements?.length ?? 0}, currentRoute="${currentRoute}"`,
     );
     container.innerHTML = "";
@@ -633,7 +629,7 @@ export class SchemaRendererService {
 
     const region = this._layoutRegions().find((r) => r.id === regionId);
     if (!region) {
-      console.warn(`Layout region not found: ${regionId}`);
+      logger.warn(`Layout region not found: ${regionId}`);
       return;
     }
 
@@ -960,8 +956,7 @@ export class SchemaRendererService {
 
     // 31. Responsive breakpoints (sm:, md:, lg:)
     const responsive = props["responsive"] as
-      | Record<string, Record<string, unknown>>
-      | undefined;
+      Record<string, Record<string, unknown>> | undefined;
     if (responsive) {
       const gapMap: Record<string, string> = {
         xs: "1",

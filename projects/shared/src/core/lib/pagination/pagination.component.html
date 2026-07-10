@@ -30,7 +30,7 @@
       (click)="firstPage()"
       title="First page"
     >
-      <mat-icon fontIcon="first_page" class="!text-base"></mat-icon>
+      <i class="fa fa-angles-left" style="font-size: 14px"></i>
     </button>
     <button
       class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"
@@ -38,7 +38,7 @@
       (click)="prevPage()"
       title="Previous page"
     >
-      <mat-icon fontIcon="chevron_left" class="!text-base"></mat-icon>
+      <i class="fa fa-chevron-left" style="font-size: 14px"></i>
     </button>
     <span class="px-3 text-sm text-[var(--text-dim)]"
       >Page {{ currentPage + 1 }} of {{ totalPages || 1 }}</span
@@ -49,7 +49,7 @@
       (click)="nextPage()"
       title="Next page"
     >
-      <mat-icon fontIcon="chevron_right" class="!text-base"></mat-icon>
+      <i class="fa fa-chevron-right" style="font-size: 14px"></i>
     </button>
     <button
       class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"
@@ -57,7 +57,7 @@
       (click)="lastPage()"
       title="Last page"
     >
-      <mat-icon fontIcon="last_page" class="!text-base"></mat-icon>
+      <i class="fa fa-angles-right" style="font-size: 14px"></i>
     </button>
   </div>
 </div>

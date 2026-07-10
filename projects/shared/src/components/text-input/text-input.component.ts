@@ -8,86 +8,14 @@ import {
   AfterViewInit,
 } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
+import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 @Component({
   selector: "app-text-input",
   standalone: true,
-  template: `
-    <div class="text-input-wrapper">
-      <textarea
-        #textareaEl
-        [placeholder]="placeholder"
-        [value]="value"
-        [attr.maxlength]="maxChars || null"
-        (input)="handleInput($event)"
-        (focus)="focused = true"
-        (blur)="focused = false"
-        class="text-input"
-        [class.focused]="focused"
-      ></textarea>
-      @if (clearable && value) {
-        <button class="clear-btn" (click)="clear()" aria-label="Clear">
-          &times;
-        </button>
-      }
-      @if (maxChars) {
-        <span class="char-count">{{ value.length }}/{{ maxChars }}</span>
-      }
-    </div>
-  `,
-  styles: [
-    `
-      :host {
-        display: block;
-        position: relative;
-      }
-      .text-input-wrapper {
-        position: relative;
-      }
-      .text-input {
-        width: 100%;
-        padding: 0.5rem 0.75rem;
-        border-radius: 0.5rem;
-        border: 1px solid var(--border-color);
-        background-color: var(--bg-primary);
-        color: var(--text-primary);
-        box-sizing: border-box;
-        outline: none;
-        font-family: inherit;
-        resize: none;
-        min-height: 40px;
-      }
-      .text-input:focus,
-      .text-input.focused {
-        border-color: var(--accent);
-      }
-      .text-input::placeholder {
-        color: var(--text-muted);
-      }
-      .clear-btn {
-        position: absolute;
-        right: 0.5rem;
-        top: 0.5rem;
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: var(--text-secondary);
-        font-size: 1.25rem;
-        padding: 0;
-        line-height: 1;
-      }
-      .clear-btn:hover {
-        color: var(--text-primary);
-      }
-      .char-count {
-        position: absolute;
-        right: 0.5rem;
-        bottom: 0.25rem;
-        font-size: 0.6875rem;
-        color: var(--text-muted);
-      }
-    `,
-  ],
+  imports: [ApplyThemeDirective],
+  templateUrl: "./text-input.component.html",
+  styleUrls: ["./text-input.component.css"],
 })
 export class TextInputComponent implements AfterViewInit {
   @ViewChild("textareaEl") textareaEl!: ElementRef<HTMLTextAreaElement>;
@@ -103,6 +31,7 @@ export class TextInputComponent implements AfterViewInit {
   @Input() width = "";
   @Output() input = new EventEmitter<string>();
   focused = false;
+  hovered = false;
 
   ngAfterViewInit() {
     if (this.autofocus) {

@@ -1,187 +1,267 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges,
-  SimpleChanges,
-} from "@angular/core";
+import { Component, inject, computed, signal } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
+import { DesignerCanvasService } from "../../core/lib/designer/designer-canvas.service";
+import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
-export interface ElementProperty {
-  key: string;
-  label: string;
-  value: unknown;
-  type: "string" | "number" | "boolean" | "select";
-  options?: string[];
-}
-
-interface ParsedElement {
-  id: string;
-  properties: ElementProperty[];
-}
+type Tab = "props" | "style" | "events";
 
 @Component({
   selector: "app-properties-panel",
   standalone: true,
-  template: `
-    <div class="panel-header">
-      <div class="panel-title">Properties</div>
-      @if (elementId) {
-        <div class="element-id">{{ elementId }}</div>
-      }
-    </div>
-    @if (properties.length > 0) {
-      <div class="properties-section">
-        <div class="section-title">Properties</div>
-        @for (prop of properties; track prop.key) {
-          <div class="property-row">
-            <label class="property-label">{{ prop.label }}</label>
-            @if (prop.type === "boolean") {
-              <input
-                type="checkbox"
-                class="property-input"
-                [checked]="prop.value"
-                (change)="handleChange(prop.key, $event)"
-              />
-            } @else if (prop.type === "select") {
-              <select
-                class="property-input"
-                [value]="prop.value"
-                (change)="handleChange(prop.key, $event)"
-              >
-                @for (opt of prop.options || []; track opt) {
-                  <option [value]="opt" [selected]="opt === prop.value">
-                    {{ opt }}
-                  </option>
-                }
-              </select>
-            } @else {
-              <input
-                [type]="prop.type === 'number' ? 'number' : 'text'"
-                class="property-input"
-                [value]="prop.value"
-                (input)="handleInputChange(prop, $event)"
-              />
-            }
-          </div>
-        }
-      </div>
-    } @else {
-      <div class="empty-state">No element selected</div>
-    }
-  `,
-  styles: [
-    `
-      :host {
-        display: block;
-        background-color: var(--bg-elevated);
-        border-left: 1px solid var(--border-color);
-        height: 100%;
-        overflow-y: auto;
-      }
-      .panel-header {
-        padding: 1rem;
-        border-bottom: 1px solid var(--border-color);
-      }
-      .panel-title {
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 0.25rem;
-      }
-      .element-id {
-        font-size: 0.75rem;
-        color: var(--text-muted);
-        font-family: monospace;
-      }
-      .properties-section {
-        padding: 1rem;
-      }
-      .section-title {
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: var(--text-secondary);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-bottom: 0.75rem;
-      }
-      .property-row {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        margin-bottom: 0.75rem;
-      }
-      .property-label {
-        font-size: 0.875rem;
-        color: var(--text-primary);
-      }
-      .property-input {
-        padding: 0.5rem 0.75rem;
-        border: 1px solid var(--border-color);
-        border-radius: 0.5rem;
-        background-color: var(--bg-primary);
-        color: var(--text-primary);
-        font-size: 0.875rem;
-      }
-      .property-input:focus {
-        outline: none;
-        border-color: var(--accent);
-      }
-      .property-input[type="checkbox"] {
-        width: 1rem;
-        height: 1rem;
-      }
-      select.property-input {
-        cursor: pointer;
-      }
-      .empty-state {
-        padding: 2rem 1rem;
-        text-align: center;
-        color: var(--text-muted);
-        font-size: 0.875rem;
-      }
-    `,
-  ],
+  imports: [CommonModule, ApplyThemeDirective],
+  templateUrl: "./properties-panel.component.html",
+  styleUrls: ["./properties-panel.component.css"],
 })
-export class PropertiesPanelComponent implements OnChanges {
-  @Input() element = "";
-  @Output() propertyChange = new EventEmitter<{
-    key: string;
-    value: unknown;
-  }>();
+export class PropertiesPanelComponent {
+  protected designer = inject(DesignerCanvasService);
+  activeTab: Tab = "props";
+  readonly tabs: Tab[] = ["props", "style", "events"];
+  readonly tabLabels: Record<Tab, string> = {
+    props: "Props",
+    style: "Style",
+    events: "Events",
+  };
+  readonly availableStates = ["hover", "focus", "disabled"];
 
-  elementId: string | null = null;
-  properties: ElementProperty[] = [];
+  readonly el = computed(() => this.designer.selectedElement());
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes["element"]) {
-      this.parseElement();
-    }
+  get propEntries(): { key: string; value: unknown }[] {
+    const el = this.el();
+    if (!el?.props) return [];
+    return Object.entries(el.props).map(([key, value]) => ({ key, value }));
   }
 
-  private parseElement() {
-    try {
-      const parsed: ParsedElement = JSON.parse(this.element);
-      this.elementId = parsed.id || null;
-      this.properties = parsed.properties || [];
-    } catch {
-      this.properties = [];
-      this.elementId = null;
-    }
+  asString(value: unknown): string {
+    return value != null ? String(value) : "";
   }
 
-  handleChange(key: string, e: Event) {
-    const checked = (e.target as HTMLInputElement).checked;
-    this.propertyChange.emit({ key, value: checked });
+  get styleEntries(): { key: string; value: string }[] {
+    const styles = this.el()?.styles?.custom;
+    if (!styles) return [];
+    return Object.entries(styles).map(([key, value]) => ({ key, value }));
   }
 
-  handleInputChange(prop: ElementProperty, e: Event) {
-    const input = e.target as HTMLInputElement;
-    this.propertyChange.emit({
-      key: prop.key,
-      value: prop.type === "number" ? Number(input.value) : input.value,
+  get stateKeys(): string[] {
+    const states = this.el()?.styles?.states;
+    if (!states) return [];
+    return Object.keys(states);
+  }
+
+  getStateRules(state: string): { key: string; value: string }[] {
+    const el = this.el();
+    const states = el?.styles?.states;
+    if (!states) return [];
+    const rules = states[state as keyof typeof states];
+    if (!rules) return [];
+    return Object.entries(rules).map(([key, value]) => ({
+      key,
+      value: String(value ?? ""),
+    }));
+  }
+
+  get eventEntries(): { event: string; handler: string }[] {
+    const events = this.el()?.events;
+    if (!events) return [];
+    return Object.entries(events).map(([event, handler]) => ({
+      event,
+      handler,
+    }));
+  }
+
+  updateField(key: string, value: string) {
+    const id = this.designer.selectedId();
+    if (!id) return;
+    this.designer.updateElement(id, { [key]: value });
+  }
+
+  updateProp(key: string, value: string) {
+    const id = this.designer.selectedId();
+    if (!id) return;
+    const el = this.designer.selectedElement();
+    if (!el) return;
+    const props = { ...(el.props ?? {}), [key]: value };
+    this.designer.updateElement(id, { props });
+  }
+
+  addStyle() {
+    const id = this.designer.selectedId();
+    const el = this.designer.selectedElement();
+    if (!id || !el) return;
+    const custom = { ...(el.styles?.custom ?? {}), "": "" };
+    this.designer.updateElement(id, {
+      styles: { ...(el.styles ?? {}), custom },
     });
+  }
+
+  updateStyleKey(index: number, key: string) {
+    const id = this.designer.selectedId();
+    const el = this.designer.selectedElement();
+    if (!id || !el?.styles?.custom) return;
+    const entries = Object.entries(el.styles.custom);
+    if (index >= entries.length) return;
+    const [oldKey, val] = entries[index];
+    const newCustom: Record<string, string> = {};
+    for (const [k, v] of Object.entries(el.styles.custom)) {
+      newCustom[k === oldKey ? key : k] = k === oldKey ? val : v;
+    }
+    if (oldKey !== key) delete newCustom[oldKey];
+    this.designer.updateElement(id, {
+      styles: { ...(el.styles ?? {}), custom: newCustom },
+    });
+  }
+
+  updateStyleVal(index: number, value: string) {
+    const id = this.designer.selectedId();
+    const el = this.designer.selectedElement();
+    if (!id || !el?.styles?.custom) return;
+    const entries = Object.entries(el.styles.custom);
+    if (index >= entries.length) return;
+    const [key] = entries[index];
+    const newCustom = { ...el.styles.custom, [key]: value };
+    this.designer.updateElement(id, {
+      styles: { ...(el.styles ?? {}), custom: newCustom },
+    });
+  }
+
+  removeStyle(index: number) {
+    const id = this.designer.selectedId();
+    const el = this.designer.selectedElement();
+    if (!id || !el?.styles?.custom) return;
+    const entries = Object.entries(el.styles.custom);
+    if (index >= entries.length) return;
+    const [key] = entries[index];
+    const newCustom = { ...el.styles.custom };
+    delete newCustom[key];
+    this.designer.updateElement(id, {
+      styles: { ...(el.styles ?? {}), custom: newCustom },
+    });
+  }
+
+  addState(state: string) {
+    const id = this.designer.selectedId();
+    const el = this.designer.selectedElement();
+    if (!id || !el) return;
+    const states = { ...(el.styles?.states ?? {}), [state]: {} };
+    this.designer.updateElement(id, {
+      styles: { ...(el.styles ?? {}), states },
+    });
+  }
+
+  addStateRule(state: string) {
+    const id = this.designer.selectedId();
+    const el = this.designer.selectedElement();
+    if (!id || !el?.styles?.states) return;
+    const stateRules = {
+      ...el.styles.states[state as keyof typeof el.styles.states],
+      "": "",
+    };
+    const states = { ...el.styles.states, [state]: stateRules };
+    this.designer.updateElement(id, {
+      styles: { ...(el.styles ?? {}), states },
+    });
+  }
+
+  updateStateRule(
+    state: string,
+    index: number,
+    target: "key" | "val",
+    value: string,
+  ) {
+    const id = this.designer.selectedId();
+    const el = this.designer.selectedElement();
+    if (!id || !el?.styles?.states) return;
+    const stateKey = state as keyof typeof el.styles.states;
+    const rules = el.styles.states[stateKey];
+    if (!rules) return;
+    const entries = Object.entries(rules);
+    if (index >= entries.length) return;
+    const [oldKey, oldVal] = entries[index];
+    const newRules: Record<string, string> = {};
+    for (const [k, v] of Object.entries(rules)) {
+      if (target === "key") {
+        newRules[k === oldKey ? value : k] = k === oldKey ? oldVal : v;
+      } else {
+        newRules[k === oldKey ? k : k] = k === oldKey ? value : v;
+      }
+    }
+    if (target === "key" && oldKey !== value) delete newRules[oldKey];
+    const states = { ...el.styles.states, [stateKey]: newRules };
+    this.designer.updateElement(id, {
+      styles: { ...(el.styles ?? {}), states },
+    });
+  }
+
+  removeStateRule(state: string, index: number) {
+    const id = this.designer.selectedId();
+    const el = this.designer.selectedElement();
+    if (!id || !el?.styles?.states) return;
+    const stateKey = state as keyof typeof el.styles.states;
+    const rules = el.styles.states[stateKey];
+    if (!rules) return;
+    const entries = Object.entries(rules);
+    if (index >= entries.length) return;
+    const [key] = entries[index];
+    const newRules = { ...rules };
+    delete newRules[key];
+    const states = { ...el.styles.states, [stateKey]: newRules };
+    this.designer.updateElement(id, {
+      styles: { ...(el.styles ?? {}), states },
+    });
+  }
+
+  addEvent() {
+    const id = this.designer.selectedId();
+    const el = this.designer.selectedElement();
+    if (!id || !el) return;
+    const events = { ...(el.events ?? {}), "": "" };
+    this.designer.updateElement(id, { events });
+  }
+
+  updateEventName(index: number, event: string) {
+    const id = this.designer.selectedId();
+    const el = this.designer.selectedElement();
+    if (!id || !el?.events) return;
+    const entries = Object.entries(el.events);
+    if (index >= entries.length) return;
+    const [oldEvent, handler] = entries[index];
+    const newEvents: Record<string, string> = {};
+    for (const [k, v] of Object.entries(el.events)) {
+      newEvents[k === oldEvent ? event : k] = k === oldEvent ? handler : v;
+    }
+    if (oldEvent !== event) delete newEvents[oldEvent];
+    this.designer.updateElement(id, { events: newEvents });
+  }
+
+  updateEventHandler(index: number, handler: string) {
+    const id = this.designer.selectedId();
+    const el = this.designer.selectedElement();
+    if (!id || !el?.events) return;
+    const entries = Object.entries(el.events);
+    if (index >= entries.length) return;
+    const [event] = entries[index];
+    const newEvents = { ...el.events, [event]: handler };
+    this.designer.updateElement(id, { events: newEvents });
+  }
+
+  removeEvent(index: number) {
+    const id = this.designer.selectedId();
+    const el = this.designer.selectedElement();
+    if (!id || !el?.events) return;
+    const entries = Object.entries(el.events);
+    if (index >= entries.length) return;
+    const [event] = entries[index];
+    const newEvents = { ...el.events };
+    delete newEvents[event];
+    this.designer.updateElement(id, { events: newEvents });
+  }
+
+  updateBind(key: "store" | "field", value: string) {
+    const id = this.designer.selectedId();
+    const el = this.designer.selectedElement();
+    if (!id || !el) return;
+    const bind = { ...(el.bind ?? {}), [key]: value };
+    this.designer.updateElement(id, { bind });
   }
 }
 

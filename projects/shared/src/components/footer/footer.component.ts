@@ -1,39 +1,13 @@
 import { Component, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
+import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 @Component({
   selector: "app-footer",
   standalone: true,
-  template: `
-    <footer>
-      @if (text) {
-        <p class="footer-text">{{ text }}</p>
-      }
-      <ng-content></ng-content>
-    </footer>
-  `,
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-      footer {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 1rem;
-        background: var(--bg-elevated);
-        border-top: 1px solid var(--border-color);
-        min-height: 48px;
-      }
-      .footer-text {
-        margin: 0;
-        font-size: 0.875rem;
-        color: var(--text-secondary);
-        text-align: center;
-      }
-    `,
-  ],
+  imports: [ApplyThemeDirective],
+  templateUrl: "./footer.component.html",
+  styleUrls: ["./footer.component.css"],
 })
 export class FooterComponent {
   @Input() text = "";

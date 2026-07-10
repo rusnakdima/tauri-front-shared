@@ -71,9 +71,9 @@ export interface SharedComponentDef {
   category: string;
   icon?: string;
   defaultClasses?: string;
-  props: SharedPropDef[];
-  template: string;
-  css: string;
+  props?: SharedPropDef[];
+  template?: string;
+  css?: string;
 }
 
 export interface GridPosition {
@@ -190,6 +190,14 @@ export interface CanvasElement {
   position?: { x: number; y: number; width: number; height: number };
   zIndex?: number;
   dataBinding?: { entity: string; field: string };
+  styles?: {
+    custom?: Record<string, string>;
+    states?: {
+      hover?: Record<string, string>;
+      focus?: Record<string, string>;
+      disabled?: Record<string, string>;
+    };
+  };
 }
 
 export type RegionType =
@@ -221,6 +229,14 @@ export interface LayoutElement {
   visible?: boolean | { when?: string; equals?: unknown };
   bind?: { store?: string; field?: string };
   events?: Record<string, string>;
+  styles?: {
+    custom?: Record<string, string>;
+    states?: {
+      hover?: Record<string, string>;
+      focus?: Record<string, string>;
+      disabled?: Record<string, string>;
+    };
+  };
 }
 
 // Root app schema with layout regions

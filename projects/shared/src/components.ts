@@ -8,26 +8,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-avatar",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "src",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "alt",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "size",
-        type: "string",
-        default: "md",
-      },
-    ],
-    template:
-      '<div class="avatar ${sizeClass}">\n          <img src="${this.src}" alt="${this.alt}" @error="${this._handleImageError}" />\n        </div>',
-    css: ":host {\n      display: inline-flex;\n    }\n\n    .avatar {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      border-radius: 50%;\n      overflow: hidden;\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n    }\n\n    .avatar-sm {\n      width: 2rem;\n      height: 2rem;\n      font-size: 0.75rem;\n    }\n\n    .avatar-md {\n      width: 2.5rem;\n      height: 2.5rem;\n      font-size: 0.875rem;\n    }\n\n    .avatar-lg {\n      width: 3.5rem;\n      height: 3.5rem;\n      font-size: 1.25rem;\n    }\n\n    img {\n      width: 100%;\n      height: 100%;\n      object-fit: cover;\n    }\n\n    .initials {\n      font-weight: 600;\n      color: var(--text-secondary);\n      text-transform: uppercase;\n    }",
   },
   {
     id: "badge",
@@ -35,26 +15,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-badge",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "variant",
-        type: "string",
-        default: "default",
-      },
-      {
-        name: "size",
-        type: "string",
-        default: "md",
-      },
-      {
-        name: "label",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<span class="badge badge-${this.variant} badge-${this.size}">${this.label}</span>',
-    css: ":host {\n      display: inline-flex;\n    }\n\n    .badge {\n      display: inline-flex;\n      align-items: center;\n      border-radius: 0.25rem;\n      font-weight: 500;\n      line-height: 1;\n    }\n\n    .badge-default {\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      border: 1px solid var(--border-color);\n    }\n\n    .badge-primary {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .badge-success {\n      background-color: var(--success);\n      color: var(--text-on-success);\n    }\n\n    .badge-warning {\n      background-color: var(--warning);\n      color: var(--text-on-warning);\n    }\n\n    .badge-danger {\n      background-color: var(--error);\n      color: var(--text-on-error);\n    }\n\n    .badge-sm {\n      padding: 0.125rem 0.25rem;\n      font-size: 0.625rem;\n    }\n\n    .badge-md {\n      padding: 0.25rem 0.5rem;\n      font-size: 0.75rem;\n    }\n\n    .badge-lg {\n      padding: 0.375rem 0.75rem;\n      font-size: 0.875rem;\n    }",
   },
   {
     id: "bottom-panel",
@@ -62,41 +22,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-bottom-panel",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "tabs",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "activeTab",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "position",
-        type: "string",
-        default: "bottom",
-      },
-      {
-        name: "fullWidth",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "floating",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "borderRadius",
-        type: "number",
-        default: 0,
-      },
-    ],
-    template:
-      '<div class="panel-tabs">\n        ${tabsList.map(\n          (tab) => html',
-    css: ":host {\n      display: flex;\n      flex-direction: column;\n      background-color: var(--bg-elevated);\n      border-top: 1px solid var(--border-color);\n      height: 100%;\n    }\n\n    .panel-tabs {\n      display: flex;\n      gap: 0;\n      border-bottom: 1px solid var(--border-color);\n      padding: 0 0.5rem;\n    }\n\n    .panel-tab {\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-secondary);\n      cursor: pointer;\n      border-bottom: 2px solid transparent;\n      margin-bottom: -1px;\n      transition: all 0.15s;\n    }\n\n    .panel-tab:hover {\n      color: var(--text-primary);\n    }\n\n    .panel-tab.active {\n      color: var(--accent);\n      border-bottom-color: var(--accent);\n    }\n\n    .panel-content {\n      flex: 1;\n      overflow: auto;\n      padding: 1rem;\n    }\n\n    .empty-state {\n      color: var(--text-muted);\n      font-size: 0.875rem;\n      text-align: center;\n      padding: 2rem;\n    }",
   },
   {
     id: "button",
@@ -104,46 +29,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-button",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "variant",
-        type: "string",
-        default: "primary",
-      },
-      {
-        name: "buttonStyle",
-        type: "string",
-        default: "solid",
-      },
-      {
-        name: "size",
-        type: "string",
-        default: "md",
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "loading",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "fullWidth",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "label",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<button\n        type="${this.type}"\n        class="${classes}"\n        ?disabled="${this.disabled || this.loading}"\n        @click="${this._handleClick}"\n      >\n        ${this.loading\n          ? html`<span class="app-btn-spinner"></span>',
-    css: ":host {\n      display: inline-flex;\n    }\n\n    button {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      gap: 0.5rem;\n      border-radius: 0.5rem;\n      border: 1px solid;\n      padding: 0.5rem 1rem;\n      text-align: center;\n      font-weight: 500;\n      transition: all 0.15s;\n      cursor: pointer;\n      border-width: 1px;\n    }\n\n    button:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n\n    .app-btn-primary {\n      border-color: var(--accent);\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n    .app-btn-primary:hover {\n      background-color: var(--accent-hover);\n      border-color: var(--accent-hover);\n    }\n\n    .app-btn-secondary {\n      border-color: var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n    }\n    .app-btn-secondary:hover {\n      background-color: var(--bg-hover);\n    }\n\n    .app-btn-danger {\n      border-color: var(--error);\n      background-color: var(--error);\n      color: var(--text-on-error);\n    }\n    .app-btn-danger:hover {\n      opacity: 0.9;\n    }\n\n    .app-btn-warning {\n      border-color: var(--warning);\n      background-color: var(--warning);\n      color: var(--text-on-warning);\n    }\n    .app-btn-warning:hover {\n      opacity: 0.9;\n    }\n\n    .app-btn-success {\n      border-color: var(--success);\n      background-color: var(--success);\n      color: var(--text-on-success);\n    }\n    .app-btn-success:hover {\n      opacity: 0.9;\n    }\n\n    .app-btn-ghost {\n      border-color: transparent;\n      background-color: transparent;\n      color: var(--text-secondary);\n    }\n    .app-btn-ghost:hover {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .app-btn-sm {\n      padding: 0.25rem 0.5rem;\n      font-size: 0.875rem;\n    }\n\n    .app-btn-md {\n      padding: 0.5rem 1rem;\n      font-size: 1rem;\n    }\n\n    .app-btn-lg {\n      padding: 0.75rem 1.5rem;\n      font-size: 1.125rem;\n    }\n\n    .app-btn-full {\n      width: 100%;\n    }\n\n    .app-btn-icon {\n      font-size: 1.25rem;\n    }\n\n    .app-btn-spinner {\n      width: 1rem;\n      height: 1rem;\n      border: 2px solid currentColor;\n      border-top-color: transparent;\n      border-radius: 50%;\n      animation: spin 0.6s linear infinite;\n    }\n\n    @keyframes spin {\n      to {\n        transform: rotate(360deg);\n      }\n    }",
   },
   {
     id: "canvas",
@@ -151,21 +36,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-canvas",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "gridColumns",
-        type: "number",
-        default: 12,
-      },
-      {
-        name: "showGrid",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template:
-      '<div class="canvas-area" style="${gridStyle}">\n        ${this.showGrid\n          ? html',
-    css: ":host {\n      display: block;\n      width: 100%;\n      height: 100%;\n      background-color: var(--bg-primary);\n      position: relative;\n      overflow: auto;\n    }\n\n    .canvas-area {\n      min-width: 100%;\n      min-height: 100%;\n      position: relative;\n    }\n\n    .grid {\n      position: absolute;\n      top: 0;\n      left: 0;\n      right: 0;\n      bottom: 0;\n      pointer-events: none;\n      display: grid;\n      grid-template-columns: repeat(var(--grid-cols), 1fr);\n      gap: 0;\n    }\n\n    .grid-cell {\n      border-right: 1px solid var(--border-color);\n      border-bottom: 1px solid var(--border-color);\n      min-height: 4rem;\n    }\n\n    .grid.visible {\n      background-color: rgba(0, 0, 0, 0.02);\n    }\n\n    .canvas-drop-zone {\n      position: absolute;\n      top: 0;\n      left: 0;\n      right: 0;\n      bottom: 0;\n    }\n\n    .canvas-element {\n      position: absolute;\n      border: 2px dashed transparent;\n      border-radius: 0.5rem;\n      padding: 0.5rem;\n      cursor: move;\n      transition: border-color 0.15s;\n    }\n\n    .canvas-element:hover {\n      border-color: var(--accent);\n    }\n\n    .canvas-element.selected {\n      border-color: var(--accent);\n      border-style: solid;\n      box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 99, 102, 241), 0.2);\n    }\n\n    .canvas-placeholder {\n      border: 2px dashed var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-secondary);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      color: var(--text-muted);\n      font-size: 0.875rem;\n    }",
   },
   {
     id: "card",
@@ -173,36 +43,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-card",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "title",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "content",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "elevated",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "borderRadius",
-        type: "number",
-        default: 8,
-      },
-      {
-        name: "padding",
-        type: "number",
-        default: 16,
-      },
-    ],
-    template:
-      '<div class="card ${this.elevated ? "card-elevated" : ""}">\n        ${this.title\n          ? html',
-    css: ":host {\n      display: block;\n    }\n\n    .card {\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      overflow: hidden;\n      transition: box-shadow 0.15s;\n    }\n\n    .card-elevated {\n      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),\n        0 2px 4px -1px rgba(0, 0, 0, 0.06);\n    }\n\n    .card-header {\n      padding: 1rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .card-title {\n      margin: 0;\n      font-size: 1rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .card-content {\n      padding: 1rem;\n      color: var(--text-secondary);\n      font-size: 0.875rem;\n      line-height: 1.5;\n    }",
   },
   {
     id: "checkbox",
@@ -210,26 +50,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-checkbox",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "checked",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "label",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template:
-      '<label>\n        <input\n          type="checkbox"\n          .checked="${this.checked}"\n          ?disabled="${this.disabled}"\n          @change="${this._handleChange}"\n        />\n        <span class="checkbox-label">${this.label}</span>\n      </label>',
-    css: ':host {\n      display: inline-flex;\n      align-items: center;\n    }\n\n    label {\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n      cursor: pointer;\n    }\n\n    input[type="checkbox"] {\n      width: 1rem;\n      height: 1rem;\n      accent-color: var(--accent);\n      cursor: pointer;\n    }\n\n    input[type="checkbox"]:disabled {\n      cursor: not-allowed;\n      opacity: 0.5;\n    }\n\n    .checkbox-label {\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      user-select: none;\n    }\n\n    :host([disabled]) .checkbox-label {\n      color: var(--text-secondary);\n      cursor: not-allowed;\n    }',
   },
   {
     id: "chip",
@@ -237,21 +57,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-chip",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "label",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "removable",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template:
-      '<span class="chip">\n        ${this.icon ? html`<i class="material-icons chip-icon">${this.icon}</i>` : ""}\n        <span>${this.label}</span>\n        ${this.removable\n          ? html`<button class="remove-btn" @click="${this._handleRemove}" aria-label="Remove">×</button>',
-    css: ":host {\n      display: inline-flex;\n    }\n\n    .chip {\n      display: inline-flex;\n      align-items: center;\n      gap: 0.375rem;\n      padding: 0.25rem 0.75rem;\n      border-radius: 1rem;\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      font-weight: 500;\n      transition: background-color 0.15s;\n    }\n\n    .chip:hover {\n      background-color: var(--bg-hover);\n    }\n\n    .chip-icon {\n      font-size: 1rem;\n    }\n\n    .remove-btn {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1rem;\n      height: 1rem;\n      padding: 0;\n      border: none;\n      background: transparent;\n      color: var(--text-secondary);\n      cursor: pointer;\n      border-radius: 50%;\n      transition: background-color 0.15s;\n      margin-left: 0.125rem;\n    }\n\n    .remove-btn:hover {\n      background-color: var(--border-color);\n      color: var(--text-primary);\n    }",
   },
   {
     id: "component-palette",
@@ -259,21 +64,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-component-palette",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "categories",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "searchable",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template:
-      '<div class="palette-header">\n        <div class="palette-title">Components</div>\n        ${this.searchable\n          ? html',
-    css: ":host {\n      display: block;\n      background-color: var(--bg-elevated);\n      border-right: 1px solid var(--border-color);\n      height: 100%;\n      overflow-y: auto;\n    }\n\n    .palette-header {\n      padding: 1rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .palette-title {\n      font-size: 0.875rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      margin-bottom: 0.75rem;\n    }\n\n    .search-input {\n      width: 100%;\n      padding: 0.5rem 0.75rem;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-primary);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      box-sizing: border-box;\n    }\n\n    .search-input::placeholder {\n      color: var(--text-muted);\n    }\n\n    .search-input:focus {\n      outline: none;\n      border-color: var(--accent);\n    }\n\n    .category {\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .category-header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 0.75rem 1rem;\n      cursor: pointer;\n      color: var(--text-primary);\n      font-weight: 500;\n      font-size: 0.875rem;\n    }\n\n    .category-header:hover {\n      background-color: var(--bg-hover);\n    }\n\n    .category-arrow {\n      transition: transform 0.2s;\n      font-size: 0.75rem;\n    }\n\n    .category-arrow.collapsed {\n      transform: rotate(-90deg);\n    }\n\n    .category-items {\n      padding: 0 1rem 0.75rem;\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .category-items.collapsed {\n      display: none;\n    }\n\n    .component-item {\n      padding: 0.5rem 0.75rem;\n      border-radius: 0.375rem;\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n      cursor: grab;\n    }\n\n    .component-item:hover {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .component-item:active {\n      cursor: grabbing;\n    }",
   },
   {
     id: "confirm-dialog",
@@ -281,35 +71,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-confirm-dialog",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "open",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "title",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "message",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "confirmText",
-        type: "string",
-        default: "Confirm",
-      },
-      {
-        name: "cancelText",
-        type: "string",
-        default: "Cancel",
-      },
-    ],
-    template: "",
-    css: ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.6);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .dialog {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 1rem;\n      width: 400px;\n      max-width: 90vw;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1.25rem 1.5rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    header h2 {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem;\n      border-radius: 0.25rem;\n      color: var(--text-secondary);\n      font-size: 1.25rem;\n      line-height: 1;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.5rem;\n      color: var(--text-secondary);\n      font-size: 0.9375rem;\n      line-height: 1.5;\n    }\n\n    footer {\n      display: flex;\n      gap: 0.75rem;\n      padding: 1rem 1.5rem;\n      border-top: 1px solid var(--border-color);\n      justify-content: flex-end;\n    }\n\n    button {\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid;\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n    }\n\n    .cancel-btn {\n      background: transparent;\n      border-color: var(--border-color);\n      color: var(--text-secondary);\n    }\n\n    .cancel-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .confirm-btn {\n      background: var(--accent);\n      border-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .confirm-btn:hover {\n      opacity: 0.9;\n    }\n\n    .danger-btn {\n      background: var(--error);\n      border-color: var(--error);\n      color: var(--text-on-error);\n    }\n\n    .danger-btn:hover {\n      opacity: 0.9;\n    }",
   },
   {
     id: "data-table",
@@ -317,26 +78,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-data-table",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "columns",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "data",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "selectable",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template:
-      '<table>\n        <thead>\n          <tr>\n            ${this.selectable ? html`<th class="radio-cell"></th>` : ""}\n            ${cols.map((col) => html`<th>${col.name}</th>`)}\n          </tr>\n        </thead>\n        <tbody>\n          ${rows.map(\n            (row, index) => html',
-    css: ":host {\n      display: block;\n      overflow-x: auto;\n    }\n\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      font-size: 0.875rem;\n    }\n\n    th {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      background-color: var(--bg-secondary);\n      color: var(--text-primary);\n      font-weight: 600;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    td {\n      padding: 0.75rem 1rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    tr {\n      cursor: default;\n    }\n\n    tr:hover td {\n      background-color: var(--bg-hover);\n    }\n\n    tr.selected td {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    tr.selectable {\n      cursor: pointer;\n    }\n\n    .radio-cell {\n      width: 2rem;\n    }\n\n    .radio {\n      width: 1rem;\n      height: 1rem;\n      border: 2px solid var(--border-color);\n      border-radius: 50%;\n      display: inline-block;\n    }\n\n    tr.selected .radio {\n      border-color: var(--text-on-accent);\n      background-color: var(--text-on-accent);\n    }",
   },
   {
     id: "dialog",
@@ -344,35 +85,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-dialog",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "open",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "title",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "size",
-        type: "string",
-        default: "md",
-      },
-      {
-        name: "showHeader",
-        type: "boolean",
-        default: true,
-      },
-      {
-        name: "showFooter",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template: "",
-    css: ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.6);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .dialog {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 1rem;\n      min-width: 360px;\n      max-height: 90vh;\n      display: flex;\n      flex-direction: column;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);\n    }\n\n    .dialog-sm {\n      width: 360px;\n    }\n\n    .dialog-md {\n      width: 520px;\n    }\n\n    .dialog-lg {\n      width: 720px;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1.25rem 1.5rem;\n      border-bottom: 2px solid var(--border-color);\n      background: var(--bg-elevated);\n      border-radius: 1rem 1rem 0 0;\n    }\n\n    header h2 {\n      margin: 0;\n      font-size: 1.25rem;\n      font-weight: 700;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem 0.5rem;\n      border-radius: 0.375rem;\n      color: var(--text-secondary);\n      font-size: 1.5rem;\n      line-height: 1;\n      font-weight: 300;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.5rem;\n      overflow-y: auto;\n      color: var(--text-primary);\n    }",
   },
   {
     id: "empty-state",
@@ -380,21 +92,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-empty-state",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "title",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "message",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<div class="icon-container ${this.variant}">\n        ${this.icon\n          ? html`<span class="icon">${this.icon}</span>',
-    css: ":host {\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      text-align: center;\n      padding: 2rem;\n      gap: 1rem;\n    }\n\n    .icon-container {\n      width: 64px;\n      height: 64px;\n      border-radius: 50%;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      background: var(--bg-elevated);\n      border: 2px solid var(--border-color);\n    }\n\n    .icon-container.danger {\n      background: var(--error);\n      border-color: var(--error);\n    }\n\n    .icon-container.success {\n      background: var(--success);\n      border-color: var(--success);\n    }\n\n    .icon {\n      font-size: 2rem;\n      width: 2rem;\n      height: 2rem;\n    }\n\n    .icon-container.danger .icon,\n    .icon-container.success .icon {\n      color: var(--text-on-error);\n    }\n\n    .title {\n      font-size: 1.5rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      margin: 0;\n    }\n\n    .message {\n      font-size: 1rem;\n      color: var(--text-secondary);\n      margin: 0;\n      max-width: 400px;\n    }\n\n    .action {\n      margin-top: 0.5rem;\n    }\n\n    button {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      gap: 0.5rem;\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--accent);\n      background: var(--accent);\n      color: var(--text-on-accent);\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n    }\n\n    button:hover {\n      background: var(--accent-hover);\n      border-color: var(--accent-hover);\n    }",
   },
   {
     id: "footer",
@@ -402,16 +99,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-footer",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "text",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<footer>\n        <p class="footer-text">${this.text}</p>\n        <slot></slot>\n      </footer>',
-    css: ":host {\n      display: block;\n    }\n\n    footer {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      padding: 1rem;\n      background: var(--bg-elevated);\n      border-top: 1px solid var(--border-color);\n      min-height: 48px;\n    }\n\n    .footer-text {\n      margin: 0;\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n      text-align: center;\n    }",
   },
   {
     id: "header",
@@ -419,25 +106,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-header",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "title",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "showBack",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "breadcrumbs",
-        type: "string",
-        default: "[]",
-      },
-    ],
-    template: "<header>\n        ${this.showBack\n          ? html",
-    css: ":host {\n      display: block;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      padding: 1rem 1.5rem;\n      background: var(--bg-header, var(--bg-elevated));\n      border-bottom: 1px solid var(--border-color);\n      min-height: 56px;\n      gap: 1rem;\n    }\n\n    .back-btn {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 36px;\n      height: 36px;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background: var(--bg-elevated);\n      color: var(--text-primary);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n      font-size: 1.25rem;\n    }\n\n    .back-btn:hover {\n      background: var(--bg-hover);\n    }\n\n    .title-area {\n      flex: 1;\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    h1 {\n      margin: 0;\n      font-size: 1.25rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .breadcrumbs {\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n    }\n\n    .breadcrumb-separator {\n      color: var(--text-secondary);\n      opacity: 0.5;\n    }",
   },
   {
     id: "input",
@@ -445,26 +113,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-input",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "type",
-        type: "string",
-        default: "text",
-      },
-      {
-        name: "placeholder",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template:
-      '<div class="app-input-wrapper">\n        ${this.label\n          ? html`<label class="app-input-label">${this.label}</label>',
-    css: ":host {\n      display: block;\n    }\n\n    .app-input-wrapper {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .app-input-label {\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-primary);\n    }\n\n    .app-input-container {\n      position: relative;\n      display: flex;\n      align-items: center;\n    }\n\n    .app-input {\n      width: 100%;\n      padding: 0.5rem 0.75rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-primary);\n      color: var(--text-primary);\n      box-sizing: border-box;\n      transition: all 0.15s;\n      outline: none;\n    }\n\n    .app-input::placeholder {\n      color: var(--text-muted);\n    }\n\n    .app-input:focus {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    .app-input-default:focus {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    .app-input-error {\n      border-color: var(--error);\n      box-shadow: 0 0 0 1px var(--error);\n    }\n\n    .app-input-with-icon {\n      padding-left: 2.5rem;\n    }\n\n    .app-input-icon {\n      position: absolute;\n      left: 0.75rem;\n      font-size: 1.25rem;\n      color: var(--text-muted);\n    }\n\n    .app-input-focused .app-input-icon {\n      color: var(--accent);\n    }\n\n    .app-input:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n      background-color: var(--bg-tertiary);\n    }\n\n    .app-input-error-text {\n      font-size: 0.75rem;\n      color: var(--error);\n    }",
   },
   {
     id: "json-view",
@@ -472,10 +120,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-json-view",
     packageType: "shared",
     category: "layout",
-    props: [],
-    template:
-      '<div class="json-container">\n        ${this._syntaxHighlight(formatted)}\n      </div>',
-    css: ":host {\n      display: block;\n    }\n\n    .json-container {\n      background-color: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      padding: 1rem;\n      font-family: monospace;\n      font-size: 0.875rem;\n      overflow-x: auto;\n      white-space: pre-wrap;\n      word-break: break-word;\n    }\n\n    .json-key {\n      color: var(--accent);\n    }\n\n    .json-string {\n      color: var(--success);\n    }\n\n    .json-number {\n      color: var(--warning);\n    }\n\n    .json-boolean {\n      color: var(--error);\n    }\n\n    .json-null {\n      color: var(--text-muted);\n    }",
   },
   {
     id: "loading",
@@ -483,15 +127,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-loading",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "size",
-        type: "string",
-        default: "md",
-      },
-    ],
-    template: '<div class="spinner spinner-${this.size}"></div>',
-    css: ":host {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n    }\n\n    .spinner {\n      border: 2px solid var(--border-color);\n      border-top-color: var(--accent);\n      border-radius: 50%;\n      animation: spin 0.7s linear infinite;\n    }\n\n    .spinner-sm {\n      width: 16px;\n      height: 16px;\n      border-width: 2px;\n    }\n\n    .spinner-md {\n      width: 32px;\n      height: 32px;\n      border-width: 3px;\n    }\n\n    .spinner-lg {\n      width: 48px;\n      height: 48px;\n      border-width: 4px;\n    }\n\n    @keyframes spin {\n      to {\n        transform: rotate(360deg);\n      }\n    }",
   },
   {
     id: "modal",
@@ -499,25 +134,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-modal",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "open",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "title",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "size",
-        type: "string",
-        default: "md",
-      },
-    ],
-    template: "",
-    css: ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      background: rgba(0, 0, 0, 0.5);\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      z-index: 1000;\n    }\n\n    .modal {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.75rem;\n      min-width: 320px;\n      max-height: 90vh;\n      display: flex;\n      flex-direction: column;\n      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);\n    }\n\n    .modal-sm {\n      width: 320px;\n    }\n\n    .modal-md {\n      width: 480px;\n    }\n\n    .modal-lg {\n      width: 640px;\n    }\n\n    header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1rem 1.25rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    header h3 {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .close-btn {\n      background: transparent;\n      border: none;\n      cursor: pointer;\n      padding: 0.25rem;\n      border-radius: 0.25rem;\n      color: var(--text-secondary);\n      font-size: 1.25rem;\n      line-height: 1;\n    }\n\n    .close-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .content {\n      padding: 1.25rem;\n      overflow-y: auto;\n      color: var(--text-primary);\n    }",
   },
   {
     id: "page-container",
@@ -525,15 +141,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-page-container",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "title",
-        type: "string",
-        default: "",
-      },
-    ],
-    template: "${this.title\n        ? html",
-    css: ":host {\n      display: flex;\n      flex-direction: column;\n      height: 100%;\n    }\n\n    .page-header {\n      display: flex;\n      align-items: center;\n      padding: 1rem 1.5rem;\n      background: var(--bg-elevated);\n      border-bottom: 1px solid var(--border-color);\n      min-height: 56px;\n      gap: 1rem;\n    }\n\n    .page-title {\n      margin: 0;\n      font-size: 1.25rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .page-header-actions {\n      margin-left: auto;\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n    }\n\n    .page-content {\n      flex: 1;\n      overflow: auto;\n      padding: 1.5rem;\n    }",
   },
   {
     id: "page-toolbar",
@@ -541,21 +148,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-page-toolbar",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "title",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "actions",
-        type: "string",
-        default: "[]",
-      },
-    ],
-    template:
-      '<div class="toolbar">\n        <div class="toolbar-title-area">\n          <h2 class="toolbar-title">${this.title}</h2>\n          <slot name="subtitle"></slot>\n        </div>\n        <div class="toolbar-actions">\n          ${parsedActions.map(\n            (action) => html',
-    css: ":host {\n      display: block;\n    }\n\n    .toolbar {\n      display: flex;\n      align-items: center;\n      padding: 1rem 1.5rem;\n      background: var(--bg-elevated);\n      border-bottom: 1px solid var(--border-color);\n      gap: 1rem;\n      flex-wrap: wrap;\n    }\n\n    .toolbar-title-area {\n      flex: 1;\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n      min-width: 200px;\n    }\n\n    .toolbar-title {\n      margin: 0;\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n    }\n\n    .toolbar-subtitle {\n      margin: 0;\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n    }\n\n    .toolbar-actions {\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n      flex-wrap: wrap;\n    }\n\n    .action-btn {\n      display: inline-flex;\n      align-items: center;\n      gap: 0.5rem;\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background: var(--bg-elevated);\n      color: var(--text-primary);\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n      font-size: 0.875rem;\n    }\n\n    .action-btn:hover {\n      background: var(--bg-hover);\n    }\n\n    .action-btn.primary {\n      border-color: var(--accent);\n      background: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .action-btn.primary:hover {\n      background: var(--accent-hover);\n      border-color: var(--accent-hover);\n    }\n\n    .action-btn.danger {\n      border-color: var(--error);\n      background: var(--error);\n      color: var(--text-on-error);\n    }\n\n    .action-btn.ghost {\n      border-color: transparent;\n      background: transparent;\n      color: var(--text-secondary);\n    }\n\n    .action-btn.ghost:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .action-icon {\n      font-size: 1.125rem;\n    }",
   },
   {
     id: "pagination",
@@ -563,25 +155,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-pagination",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "page",
-        type: "number",
-        default: 1,
-      },
-      {
-        name: "total",
-        type: "number",
-        default: 1,
-      },
-      {
-        name: "pageSize",
-        type: "number",
-        default: 10,
-      },
-    ],
-    template: "",
-    css: ":host {\n      display: block;\n    }\n\n    .pagination {\n      display: inline-flex;\n      align-items: center;\n      gap: 0.25rem;\n    }\n\n    button {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      min-width: 2rem;\n      height: 2rem;\n      padding: 0 0.5rem;\n      border: 1px solid var(--border-color);\n      border-radius: 0.375rem;\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      cursor: pointer;\n      transition: background-color 0.15s;\n    }\n\n    button:hover:not(:disabled) {\n      background-color: var(--bg-hover);\n    }\n\n    button:disabled {\n      opacity: 0.4;\n      cursor: not-allowed;\n    }\n\n    button.active {\n      background-color: var(--accent);\n      border-color: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .ellipsis {\n      padding: 0 0.25rem;\n      color: var(--text-secondary);\n    }",
   },
   {
     id: "progress-bar",
@@ -589,21 +162,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-progress-bar",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "value",
-        type: "number",
-        default: 0,
-      },
-      {
-        name: "max",
-        type: "number",
-        default: 100,
-      },
-    ],
-    template:
-      '<div class="progress-container">\n        <div\n          class="progress-fill ${this._getFillClass()}"\n          style="width: ${this._percentage}%"\n        ></div>\n      </div>',
-    css: ":host {\n      display: block;\n    }\n\n    .progress-container {\n      width: 100%;\n      height: 0.5rem;\n      background-color: var(--bg-elevated);\n      border-radius: 0.25rem;\n      overflow: hidden;\n      border: 1px solid var(--border-color);\n    }\n\n    .progress-fill {\n      height: 100%;\n      border-radius: 0.25rem;\n      transition: width 0.3s ease;\n    }\n\n    .progress-fill.low {\n      background-color: var(--warning);\n    }\n\n    .progress-fill.medium {\n      background-color: var(--accent);\n    }\n\n    .progress-fill.high {\n      background-color: var(--success);\n    }",
   },
   {
     id: "properties-panel",
@@ -611,16 +169,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-properties-panel",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "element",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<div class="panel-header">\n        <div class="panel-title">Properties</div>\n        ${this._elementId\n          ? html`<div class="element-id">${this._elementId}</div>',
-    css: ':host {\n      display: block;\n      background-color: var(--bg-elevated);\n      border-left: 1px solid var(--border-color);\n      height: 100%;\n      overflow-y: auto;\n    }\n\n    .panel-header {\n      padding: 1rem;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .panel-title {\n      font-size: 0.875rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      margin-bottom: 0.25rem;\n    }\n\n    .element-id {\n      font-size: 0.75rem;\n      color: var(--text-muted);\n      font-family: monospace;\n    }\n\n    .properties-section {\n      padding: 1rem;\n    }\n\n    .section-title {\n      font-size: 0.75rem;\n      font-weight: 600;\n      color: var(--text-secondary);\n      text-transform: uppercase;\n      letter-spacing: 0.05em;\n      margin-bottom: 0.75rem;\n    }\n\n    .property-row {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n      margin-bottom: 0.75rem;\n    }\n\n    .property-label {\n      font-size: 0.875rem;\n      color: var(--text-primary);\n    }\n\n    .property-input {\n      padding: 0.5rem 0.75rem;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-primary);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n    }\n\n    .property-input:focus {\n      outline: none;\n      border-color: var(--accent);\n    }\n\n    .property-input[type="checkbox"] {\n      width: 1rem;\n      height: 1rem;\n    }\n\n    select.property-input {\n      cursor: pointer;\n    }\n\n    .empty-state {\n      padding: 2rem 1rem;\n      text-align: center;\n      color: var(--text-muted);\n      font-size: 0.875rem;\n    }',
   },
   {
     id: "radio",
@@ -628,31 +176,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-radio",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "name",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "value",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "checked",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template:
-      '<label>\n        <input\n          type="radio"\n          name="${this.name}"\n          value="${this.value}"\n          .checked="${this.checked}"\n          ?disabled="${this.disabled}"\n          @change="${this._handleChange}"\n        />\n        <span class="radio-label"><slot></slot></span>\n      </label>',
-    css: ':host {\n      display: inline-flex;\n      align-items: center;\n    }\n\n    label {\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n      cursor: pointer;\n    }\n\n    input[type="radio"] {\n      width: 1rem;\n      height: 1rem;\n      accent-color: var(--accent);\n      cursor: pointer;\n    }\n\n    input[type="radio"]:disabled {\n      cursor: not-allowed;\n      opacity: 0.5;\n    }\n\n    .radio-label {\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      user-select: none;\n    }\n\n    :host([disabled]) .radio-label {\n      color: var(--text-secondary);\n      cursor: not-allowed;\n    }',
   },
   {
     id: "segment-selector",
@@ -660,21 +183,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-segment-selector",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "options",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "selected",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<div class="segment-container">\n        ${options.map(\n          (opt) => html',
-    css: ":host {\n      display: inline-flex;\n    }\n\n    .segment-container {\n      display: inline-flex;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      overflow: hidden;\n      background-color: var(--bg-elevated);\n    }\n\n    .segment {\n      padding: 0.5rem 1rem;\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-secondary);\n      cursor: pointer;\n      transition: background-color 0.15s, color 0.15s;\n      border-right: 1px solid var(--border-color);\n    }\n\n    .segment:last-child {\n      border-right: none;\n    }\n\n    .segment:hover:not(.selected) {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .segment.selected {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n    }",
   },
   {
     id: "select",
@@ -682,31 +190,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-select",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "options",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "value",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "placeholder",
-        type: "string",
-        default: "Select an option",
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template:
-      '<select\n        .value="${this.value}"\n        ?disabled="${this.disabled}"\n        placeholder="${this.placeholder}"\n        @change="${this._handleChange}"\n      >\n        <option value="" disabled selected hidden>${this.placeholder}</option>\n        ${parsedOptions.map(\n          (option) => html`<option value="${option}">${option}</option>`,\n        )}\n      </select>',
-    css: ":host {\n      display: inline-flex;\n    }\n\n    select {\n      display: inline-flex;\n      align-items: center;\n      padding: 0.5rem 1rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      font-size: 1rem;\n      font-weight: 500;\n      cursor: pointer;\n      transition: all 0.15s;\n      min-width: 150px;\n    }\n\n    select:hover:not(:disabled) {\n      background-color: var(--bg-hover);\n    }\n\n    select:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n\n    select:focus {\n      outline: none;\n      border-color: var(--accent);\n    }",
   },
   {
     id: "sidebar",
@@ -714,31 +197,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-sidebar",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "collapsed",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "items",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "width",
-        type: "number",
-        default: 240,
-      },
-      {
-        name: "collapsedWidth",
-        type: "number",
-        default: 64,
-      },
-    ],
-    template:
-      '<li>\n        <div\n          class="nav-item ${depth > 0 ? "nav-item-child" : ""}"\n          @click="${() => this._handleItemClick(item)}"\n        >\n          ${item.icon\n            ? html`<span class="nav-item-icon">${item.icon}</span>',
-    css: ":host {\n      display: block;\n    }\n\n    aside {\n      display: flex;\n      flex-direction: column;\n      width: var(--sidebar-width, 240px);\n      min-width: var(--sidebar-width, 240px);\n      height: 100%;\n      background: var(--bg-elevated);\n      border-right: 1px solid var(--border-color);\n      transition: width 0.2s, min-width 0.2s;\n      overflow: hidden;\n    }\n\n    aside.collapsed {\n      width: 64px;\n      min-width: 64px;\n    }\n\n    .sidebar-header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 1rem;\n      border-bottom: 1px solid var(--border-color);\n      min-height: 56px;\n    }\n\n    .collapse-btn {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 32px;\n      height: 32px;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background: transparent;\n      color: var(--text-secondary);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n      font-size: 1.25rem;\n    }\n\n    .collapse-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    nav {\n      flex: 1;\n      overflow-y: auto;\n      overflow-x: hidden;\n      padding: 0.5rem;\n    }\n\n    .nav-section {\n      margin-bottom: 0.5rem;\n    }\n\n    .nav-section-title {\n      padding: 0.5rem 0.75rem;\n      font-size: 0.75rem;\n      font-weight: 600;\n      color: var(--text-secondary);\n      text-transform: uppercase;\n      letter-spacing: 0.05em;\n    }\n\n    ul {\n      list-style: none;\n      margin: 0;\n      padding: 0;\n    }\n\n    li {\n      margin: 0;\n    }\n\n    .nav-item {\n      display: flex;\n      align-items: center;\n      gap: 0.75rem;\n      padding: 0.625rem 0.75rem;\n      border-radius: 0.5rem;\n      color: var(--text-secondary);\n      text-decoration: none;\n      cursor: pointer;\n      transition: all 0.15s;\n      white-space: nowrap;\n      overflow: hidden;\n    }\n\n    .nav-item:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .nav-item.active {\n      background: var(--accent);\n      color: var(--text-on-accent);\n    }\n\n    .nav-item-icon {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 20px;\n      height: 20px;\n      font-size: 1.25rem;\n      flex-shrink: 0;\n    }\n\n    .nav-item-label {\n      flex: 1;\n      overflow: hidden;\n      text-overflow: ellipsis;\n    }\n\n    .nav-item-children {\n      margin-left: 1.25rem;\n      border-left: 1px solid var(--border-color);\n      padding-left: 0.5rem;\n    }",
   },
   {
     id: "slider",
@@ -746,36 +204,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-slider",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "min",
-        type: "number",
-        default: 0,
-      },
-      {
-        name: "max",
-        type: "number",
-        default: 100,
-      },
-      {
-        name: "value",
-        type: "number",
-        default: 0,
-      },
-      {
-        name: "step",
-        type: "number",
-        default: 1,
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template:
-      '<div class="slider-wrapper">\n        <input\n          type="range"\n          .value="${String(this.value)}"\n          min="${String(this.min)}"\n          max="${String(this.max)}"\n          step="${String(this.step)}"\n          ?disabled="${this.disabled}"\n          @input="${this._handleInput}"\n        />\n      </div>',
-    css: ':host {\n      display: block;\n      width: 100%;\n    }\n\n    .slider-wrapper {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .slider-label {\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-primary);\n    }\n\n    input[type="range"] {\n      width: 100%;\n      height: 0.5rem;\n      border-radius: 0.25rem;\n      background-color: var(--border-color);\n      outline: none;\n      cursor: pointer;\n      -webkit-appearance: none;\n      appearance: none;\n    }\n\n    input[type="range"]::-webkit-slider-thumb {\n      -webkit-appearance: none;\n      appearance: none;\n      width: 1.25rem;\n      height: 1.25rem;\n      border-radius: 50%;\n      background-color: var(--accent);\n      cursor: pointer;\n      border: none;\n      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n      transition: transform 0.1s;\n    }\n\n    input[type="range"]::-webkit-slider-thumb:hover {\n      transform: scale(1.1);\n    }\n\n    input[type="range"]::-moz-range-thumb {\n      width: 1.25rem;\n      height: 1.25rem;\n      border-radius: 50%;\n      background-color: var(--accent);\n      cursor: pointer;\n      border: none;\n      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n    }\n\n    input[type="range"]:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n\n    input[type="range"]:focus {\n      outline: none;\n    }\n\n    input[type="range"]:focus::-webkit-slider-thumb {\n      box-shadow: 0 0 0 2px var(--accent);\n    }\n\n    .slider-value {\n      font-size: 0.75rem;\n      color: var(--text-secondary);\n      text-align: right;\n    }',
   },
   {
     id: "split-view",
@@ -783,26 +211,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-split-view",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "split",
-        type: "number",
-        default: 50,
-      },
-      {
-        name: "minFirst",
-        type: "number",
-        default: 20,
-      },
-      {
-        name: "minSecond",
-        type: "number",
-        default: 20,
-      },
-    ],
-    template:
-      '<div class="split-container ${this.direction}">\n        <div\n          class="split-pane first"\n          style="${firstSize}: ${this.split}%; flex-grow: 0;"\n        >\n          <slot name="first"></slot>\n        </div>\n        <div\n          class="split-divider ${this._isDragging ? "dragging" : ""}"\n          @mousedown="${this._onDividerMouseDown}"\n        ></div>\n        <div class="split-pane second" style="${secondSize}: auto; flex: 1;">\n          <slot name="second"></slot>\n        </div>\n      </div>',
-    css: ':host {\n      display: block;\n      height: 100%;\n    }\n\n    .split-container {\n      display: flex;\n      height: 100%;\n      width: 100%;\n      overflow: hidden;\n    }\n\n    .split-container.vertical {\n      flex-direction: column;\n    }\n\n    .split-pane {\n      overflow: auto;\n      min-width: 0;\n      min-height: 0;\n    }\n\n    .split-pane.first {\n      flex-shrink: 0;\n    }\n\n    .split-container.horizontal .split-pane.first {\n      height: 100%;\n    }\n\n    .split-container.vertical .split-pane.first {\n      width: 100%;\n    }\n\n    .split-divider {\n      flex-shrink: 0;\n      background: var(--border-color);\n      transition: background 0.15s;\n      position: relative;\n      z-index: 1;\n    }\n\n    .split-container.horizontal .split-divider {\n      width: 6px;\n      cursor: col-resize;\n    }\n\n    .split-container.vertical .split-divider {\n      height: 6px;\n      cursor: row-resize;\n    }\n\n    .split-divider:hover,\n    .split-divider.dragging {\n      background: var(--accent);\n    }\n\n    .split-divider::after {\n      content: "";\n      position: absolute;\n      background: transparent;\n    }\n\n    .horizontal .split-divider::after {\n      top: 0;\n      bottom: 0;\n      left: -4px;\n      right: -4px;\n    }\n\n    .vertical .split-divider::after {\n      left: 0;\n      right: 0;\n      top: -4px;\n      bottom: -4px;\n    }',
   },
   {
     id: "spinner",
@@ -810,26 +218,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-spinner",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "size",
-        type: "string",
-        default: "md",
-      },
-      {
-        name: "color",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "label",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<span class="ring ${this.size}" style=${this.color ? `border-top-color: ${this.color}` : ""} role="status"></span>\n      ${this.label ? html`<span class="label">${this.label}</span>` : ""}',
-    css: ":host {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      gap: 0.5rem;\n    }\n    .ring {\n      display: inline-block;\n      border-style: solid;\n      border-color: var(--border-color, #e5e7eb);\n      border-top-color: var(--accent, #3b82f6);\n      border-radius: 50%;\n      animation: spin 0.7s linear infinite;\n      box-sizing: border-box;\n    }\n    .ring.sm { width: 16px; height: 16px; border-width: 2px; }\n    .ring.md { width: 28px; height: 28px; border-width: 3px; }\n    .ring.lg { width: 44px; height: 44px; border-width: 4px; }\n    .ring.xl { width: 64px; height: 64px; border-width: 5px; }\n    .label { font-size: 0.875rem; color: var(--text-secondary, #6b7280); }\n    @keyframes spin { to { transform: rotate(360deg); } }",
   },
   {
     id: "stats-card",
@@ -837,26 +225,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-stats-card",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "label",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "value",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "icon",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<div class="stats-card">\n        ${this.icon\n          ? html`<div class="stats-icon">${this.icon}</div>',
-    css: ":host {\n      display: block;\n    }\n\n    .stats-card {\n      display: flex;\n      align-items: center;\n      gap: 1rem;\n      padding: 1rem;\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n    }\n\n    .stats-icon {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 3rem;\n      height: 3rem;\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n      border-radius: 0.5rem;\n      font-size: 1.5rem;\n    }\n\n    .stats-info {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .stats-value {\n      font-size: 1.5rem;\n      font-weight: 700;\n      color: var(--text-primary);\n      line-height: 1;\n    }\n\n    .stats-label {\n      font-size: 0.875rem;\n      color: var(--text-muted);\n      font-weight: 500;\n    }",
   },
   {
     id: "switch",
@@ -864,21 +232,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-switch",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "checked",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template:
-      '<label class="switch-container">\n        <input\n          type="checkbox"\n          class="switch-input"\n          .checked="${this.checked}"\n          ?disabled="${this.disabled}"\n          @change="${this._handleChange}"\n          role="switch"\n          aria-checked="${this.checked}"\n        />\n        <span class="switch-slider"></span>\n      </label>',
-    css: ':host {\n      display: inline-flex;\n      align-items: center;\n    }\n\n    .switch-container {\n      position: relative;\n      display: inline-flex;\n      align-items: center;\n      cursor: pointer;\n    }\n\n    .switch-input {\n      position: absolute;\n      opacity: 0;\n      width: 0;\n      height: 0;\n    }\n\n    .switch-slider {\n      position: relative;\n      width: 2.75rem;\n      height: 1.5rem;\n      background-color: var(--border-color);\n      border-radius: 1rem;\n      transition: background-color 0.2s;\n    }\n\n    .switch-slider::before {\n      content: "";\n      position: absolute;\n      top: 0.125rem;\n      left: 0.125rem;\n      width: 1.25rem;\n      height: 1.25rem;\n      background-color: white;\n      border-radius: 50%;\n      transition: transform 0.2s;\n      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n    }\n\n    .switch-input:checked + .switch-slider {\n      background-color: var(--accent);\n    }\n\n    .switch-input:checked + .switch-slider::before {\n      transform: translateX(1.25rem);\n    }\n\n    .switch-input:disabled + .switch-slider {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n\n    .switch-input:focus + .switch-slider {\n      outline: 2px solid var(--accent);\n      outline-offset: 2px;\n    }',
   },
   {
     id: "table-view",
@@ -886,21 +239,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-table-view",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "columns",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "data",
-        type: "string",
-        default: "[]",
-      },
-    ],
-    template:
-      "<table>\n        <thead>\n          <tr>\n            ${cols.map((col) => html`<th>${col.name}</th>`)}\n          </tr>\n        </thead>\n        <tbody>\n          ${rows.map(\n            (row) => html",
-    css: ":host {\n      display: block;\n      overflow-x: auto;\n    }\n\n    table {\n      width: 100%;\n      border-collapse: collapse;\n      font-size: 0.875rem;\n    }\n\n    th {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      background-color: var(--bg-secondary);\n      color: var(--text-primary);\n      font-weight: 600;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    td {\n      padding: 0.75rem 1rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    tr:hover td {\n      background-color: var(--bg-hover);\n    }",
   },
   {
     id: "tabs",
@@ -908,21 +246,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-tabs",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "tabs",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "activeTab",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<div class="tabs">\n        ${tabs.map(\n          (tab) => html',
-    css: ":host {\n      display: block;\n    }\n\n    .tabs {\n      display: flex;\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .tab {\n      padding: 0.75rem 1.25rem;\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-secondary);\n      cursor: pointer;\n      border-bottom: 2px solid transparent;\n      margin-bottom: -1px;\n      transition: color 0.15s, border-color 0.15s;\n    }\n\n    .tab:hover {\n      color: var(--text-primary);\n    }\n\n    .tab.active {\n      color: var(--accent);\n      border-bottom-color: var(--accent);\n    }",
   },
   {
     id: "textarea",
@@ -930,31 +253,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-textarea",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "value",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "placeholder",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "rows",
-        type: "number",
-        default: 3,
-      },
-      {
-        name: "disabled",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template:
-      '<textarea\n        .value="${this.value}"\n        placeholder="${this.placeholder}"\n        rows="${this.rows}"\n        ?disabled="${this.disabled}"\n        @input="${this._handleInput}"\n      ></textarea>',
-    css: ":host {\n      display: block;\n    }\n\n    .textarea-wrapper {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .textarea-label {\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-primary);\n    }\n\n    textarea {\n      width: 100%;\n      padding: 0.5rem 0.75rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      box-sizing: border-box;\n      transition: all 0.15s;\n      outline: none;\n      resize: vertical;\n      font-family: inherit;\n      font-size: 0.875rem;\n      line-height: 1.5;\n    }\n\n    textarea::placeholder {\n      color: var(--text-muted);\n    }\n\n    textarea:focus {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    textarea:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n      background-color: var(--bg-tertiary);\n    }",
   },
   {
     id: "tooltip",
@@ -962,31 +260,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-tooltip",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "text",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "position",
-        type: "string",
-        default: "top",
-      },
-      {
-        name: "trigger",
-        type: "string",
-        default: "hover",
-      },
-      {
-        name: "delay",
-        type: "number",
-        default: 200,
-      },
-    ],
-    template:
-      '<div\n        class="trigger-wrapper"\n        @mouseenter=${this.trigger === "hover" ? this.show : undefined}\n        @mouseleave=${this.trigger === "hover" ? this.hide : undefined}\n        @click=${this.trigger === "click" ? this.toggle : undefined}\n        @focus=${this.trigger === "focus" ? this.show : undefined}\n        @blur=${this.trigger === "focus" ? this.hide : undefined}\n      >\n        <slot></slot>\n      </div>\n      <div class="bubble ${this.position} ${this.visible ? "visible" : ""}" role="tooltip">${this.text}</div>',
-    css: ":host {\n      position: relative;\n      display: inline-flex;\n    }\n    .bubble {\n      position: absolute;\n      background: var(--bg-elevated, #1f2937);\n      color: var(--text-on-accent, #ffffff);\n      padding: 0.375rem 0.625rem;\n      border-radius: 0.375rem;\n      font-size: 0.75rem;\n      line-height: 1.2;\n      white-space: nowrap;\n      z-index: 1000;\n      pointer-events: none;\n      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);\n      opacity: 0;\n      transform: scale(0.95);\n      transition: opacity 0.15s, transform 0.15s;\n    }\n    .bubble.visible {\n      opacity: 1;\n      transform: scale(1);\n    }\n    .bubble.top { bottom: calc(100% + 6px); left: 50%; transform-origin: bottom center; transform: translateX(-50%) scale(0.95); }\n    .bubble.top.visible { transform: translateX(-50%) scale(1); }\n    .bubble.bottom { top: calc(100% + 6px); left: 50%; transform-origin: top center; transform: translateX(-50%) scale(0.95); }\n    .bubble.bottom.visible { transform: translateX(-50%) scale(1); }\n    .bubble.left { right: calc(100% + 6px); top: 50%; transform-origin: right center; transform: translateY(-50%) scale(0.95); }\n    .bubble.left.visible { transform: translateY(-50%) scale(1); }\n    .bubble.right { left: calc(100% + 6px); top: 50%; transform-origin: left center; transform: translateY(-50%) scale(0.95); }\n    .bubble.right.visible { transform: translateY(-50%) scale(1); }",
   },
   {
     id: "theme-toggle",
@@ -994,10 +267,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-theme-toggle",
     packageType: "shared",
     category: "layout",
-    props: [],
-    template:
-      '<button\n        type="button"\n        @click="${this._handleToggle}"\n        title="${this.isDark ? "Switch to light" : "Switch to dark"}"\n      >\n        ${this.isDark\n          ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">\n          <circle cx="12" cy="12" r="5"></circle>\n          <line x1="12" y1="1" x2="12" y2="3"></line>\n          <line x1="12" y1="21" x2="12" y2="23"></line>\n          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>\n          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>\n          <line x1="1" y1="12" x2="3" y2="12"></line>\n          <line x1="21" y1="12" x2="23" y2="12"></line>\n          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>\n          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>\n        </svg>`\n          : html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">\n          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>\n        </svg>`}\n      </button>',
-    css: ":host {\n      display: inline-flex;\n    }\n\n    button {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 2.5rem;\n      height: 2.5rem;\n      border-radius: 50%;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n    }\n\n    button:hover {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n      border-color: var(--accent);\n    }\n\n    svg {\n      width: 1.25rem;\n      height: 1.25rem;\n    }",
   },
   {
     id: "icon",
@@ -1005,20 +274,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-icon",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "name",
-        type: "string",
-        default: "clear",
-      },
-      {
-        name: "svgClass",
-        type: "string",
-        default: "",
-      },
-    ],
-    template: "",
-    css: ":host {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1.25em;\n      height: 1.25em;\n    }\n\n    svg {\n      width: 100%;\n      height: 100%;\n      color: inherit;\n    }\n\n    .icon-spinner {\n      animation: icon-spin 1s linear infinite;\n    }\n\n    @keyframes icon-spin {\n      to {\n        transform: rotate(360deg);\n      }\n    }",
   },
   {
     id: "text-input",
@@ -1026,41 +281,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-text-input",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "value",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "placeholder",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "charCount",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "maxChars",
-        type: "number",
-        default: 0,
-      },
-      {
-        name: "id",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "clearable",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template:
-      '<div class="input-container">\n        <textarea\n          id="${this.id || ""}"\n          .value="${this.value || ""}"\n          placeholder="${this.placeholder || ""}"\n          @input="${this._handleInput}"\n          @textarea="${(e: Event) => this._autoResize(e.target as HTMLTextAreaElement)}"\n        ></textarea>\n        <div class="footer">\n          <span class="char-count">${displayCount}</span>\n          ${this.clearable\n            ? html`<button class="clear-btn" type="button" @click="${this._handleClear}">\n                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">\n                  <line x1="18" y1="6" x2="6" y2="18"></line>\n                  <line x1="6" y1="6" x2="18" y2="18"></line>\n                </svg>\n              </button>`\n            : ""}\n        </div>\n      </div>',
-    css: ":host {\n      display: flex;\n      flex-direction: column;\n      width: 100%;\n    }\n\n    .input-container {\n      display: flex;\n      flex-direction: column;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-elevated);\n      transition: border-color 0.15s;\n    }\n\n    .input-container:focus-within {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    textarea {\n      width: 100%;\n      min-height: 2.5rem;\n      padding: 0.5rem 0.75rem;\n      border: none;\n      background: transparent;\n      color: var(--text-primary);\n      font-family: inherit;\n      font-size: 0.875rem;\n      line-height: 1.5;\n      resize: none;\n      outline: none;\n      overflow: hidden;\n    }\n\n    textarea::placeholder {\n      color: var(--text-muted);\n    }\n\n    .footer {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 0.25rem 0.75rem 0.375rem;\n      border-top: 1px solid var(--border-color);\n    }\n\n    .char-count {\n      font-size: 0.75rem;\n      color: var(--text-muted);\n    }\n\n    .clear-btn {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1.5rem;\n      height: 1.5rem;\n      border-radius: 50%;\n      border: none;\n      background: transparent;\n      color: var(--text-muted);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n    }\n\n    .clear-btn:hover {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .clear-btn svg {\n      width: 0.875rem;\n      height: 0.875rem;\n    }",
   },
   {
     id: "language-selector",
@@ -1068,31 +288,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-language-selector",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "languages",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "value",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "label",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "labelId",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '${this.label\n        ? html`<span class="selector-label" id="${this.labelId || ""}">${this.label}</span>`\n        : ""}\n      <div class="select-wrapper">\n        <select\n          .value="${this.value || ""}"\n          @change="${this._handleChange}"\n        >\n          ${parsedLanguages.map(\n            (lang) => html`<option value="${lang}">${lang}</option>`\n          )}\n        </select>\n        <span class="chevron-icon">\n          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">\n            <polyline points="6 9 12 15 18 9"></polyline>\n          </svg>\n        </span>\n      </div>',
-    css: ":host {\n      display: inline-flex;\n      flex-direction: column;\n      gap: 0.25rem;\n    }\n\n    .selector-label {\n      font-size: 0.875rem;\n      font-weight: 500;\n      color: var(--text-primary);\n    }\n\n    .select-wrapper {\n      position: relative;\n      display: inline-flex;\n      align-items: center;\n    }\n\n    select {\n      appearance: none;\n      -webkit-appearance: none;\n      padding: 0.5rem 2rem 0.5rem 0.75rem;\n      border-radius: 0.5rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-primary);\n      font-size: 0.875rem;\n      font-family: inherit;\n      cursor: pointer;\n      outline: none;\n      transition: border-color 0.15s;\n    }\n\n    select:focus {\n      border-color: var(--accent);\n      box-shadow: 0 0 0 1px var(--accent);\n    }\n\n    .chevron-icon {\n      position: absolute;\n      right: 0.5rem;\n      pointer-events: none;\n      width: 1rem;\n      height: 1rem;\n      color: var(--text-muted);\n    }",
   },
   {
     id: "shortcuts-overlay",
@@ -1100,10 +295,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-shortcuts-overlay",
     packageType: "shared",
     category: "layout",
-    props: [],
-    template:
-      '<div class="overlay ${this.open ? "" : "hidden"}" @click="${this._handleBackdropClick}">\n        <div class="modal">\n          <div class="modal-header">\n            <h2 class="modal-title">Keyboard Shortcuts</h2>\n            <button class="close-btn" type="button" @click="${this._close}">\n              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">\n                <line x1="18" y1="6" x2="6" y2="18"></line>\n                <line x1="6" y1="6" x2="18" y2="18"></line>\n              </svg>\n            </button>\n          </div>\n          <ul class="shortcut-list">\n            ${shortcuts.map(\n              (s) => html`<li class="shortcut-item">\n                <span class="shortcut-desc">${s.description}</span>\n                <kbd>${s.keys.join(" ")}</kbd>\n              </li>`\n            )}\n          </ul>\n        </div>\n      </div>',
-    css: ":host {\n      display: block;\n    }\n\n    .overlay {\n      position: fixed;\n      inset: 0;\n      z-index: 10000;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      background-color: rgba(0, 0, 0, 0.5);\n      opacity: 1;\n      transition: opacity 0.2s ease;\n    }\n\n    .overlay.hidden {\n      opacity: 0;\n      pointer-events: none;\n    }\n\n    .modal {\n      background-color: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.75rem;\n      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);\n      width: 100%;\n      max-width: 28rem;\n      max-height: 80vh;\n      overflow-y: auto;\n      padding: 1.5rem;\n    }\n\n    .modal-header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      margin-bottom: 1rem;\n    }\n\n    .modal-title {\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      margin: 0;\n    }\n\n    .close-btn {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 2rem;\n      height: 2rem;\n      border-radius: 0.375rem;\n      border: none;\n      background: transparent;\n      color: var(--text-muted);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n    }\n\n    .close-btn:hover {\n      background-color: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .close-btn svg {\n      width: 1rem;\n      height: 1rem;\n    }\n\n    .shortcut-list {\n      display: flex;\n      flex-direction: column;\n      gap: 0.75rem;\n      list-style: none;\n      margin: 0;\n      padding: 0;\n    }\n\n    .shortcut-item {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      gap: 1rem;\n    }\n\n    .shortcut-desc {\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n    }\n\n    kbd {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      padding: 0.25rem 0.5rem;\n      background-color: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 0.375rem;\n      font-family: monospace;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n    }",
   },
   {
     id: "translation-output",
@@ -1111,26 +302,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-translation-output",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "value",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "placeholder",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "id",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<div class="output-container">\n        <textarea\n          id="${this.id || ""}"\n          .value="${this.value || ""}"\n          placeholder="${this.placeholder || ""}"\n          readonly\n        ></textarea>\n        <button class="copy-btn" type="button" @click="${this._handleCopy}" title="Copy to clipboard">\n          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">\n            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>\n            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>\n          </svg>\n        </button>\n      </div>',
-    css: ":host {\n      display: flex;\n      flex-direction: column;\n      width: 100%;\n    }\n\n    .output-container {\n      position: relative;\n      display: flex;\n      flex-direction: column;\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      background-color: var(--bg-elevated);\n    }\n\n    textarea {\n      width: 100%;\n      min-height: 2.5rem;\n      padding: 0.5rem 0.75rem;\n      padding-right: 2.5rem;\n      border: none;\n      background: transparent;\n      color: var(--text-primary);\n      font-family: inherit;\n      font-size: 0.875rem;\n      line-height: 1.5;\n      resize: none;\n      outline: none;\n      overflow: hidden;\n    }\n\n    textarea::placeholder {\n      color: var(--text-muted);\n    }\n\n    .copy-btn {\n      position: absolute;\n      top: 0.5rem;\n      right: 0.5rem;\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1.75rem;\n      height: 1.75rem;\n      border-radius: 0.375rem;\n      border: 1px solid var(--border-color);\n      background-color: var(--bg-elevated);\n      color: var(--text-muted);\n      cursor: pointer;\n      transition: all 0.15s;\n      padding: 0;\n    }\n\n    .copy-btn:hover {\n      background-color: var(--accent);\n      color: var(--text-on-accent);\n      border-color: var(--accent);\n    }\n\n    .copy-btn svg {\n      width: 0.875rem;\n      height: 0.875rem;\n    }",
   },
   {
     id: "tree",
@@ -1138,31 +309,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-tree",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "nodes",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "selectable",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "selected",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "expanded",
-        type: "string",
-        default: "[]",
-      },
-    ],
-    template:
-      '<ul role="tree">\n        ${flat.map(({ node, depth, expanded }) => {\n          const hasChildren = !!(node.children && node.children.length);\n          const isSelected = this.selectable && this.selectedId === node.id;\n          return html`<li role="treeitem" aria-expanded="${hasChildren ? expanded : undefined}">\n            <div\n              class="row ${isSelected ? "selected" : ""}"\n              style="padding-left: ${depth * 1.5}rem"\n              @click="${() => this._handleNodeClick(node)}"\n            >\n              <span class="toggle ${hasChildren ? (expanded ? "expanded" : "") : "empty"}">${hasChildren ? (expanded ? "▼" : "▶") : ""}</span>\n              ${node.icon ? html`<span class="icon">${node.icon}</span>` : ""}\n              <span class="label">${node.label}</span>\n            </div>\n            ${hasChildren && expanded ? html`<li class="children">${this._renderNodes(node.children, depth + 1)}</li>` : ""}\n          </li>`;\n        })}\n      </ul>',
-    css: ":host {\n      display: block;\n      font-size: 0.875rem;\n      color: var(--text-primary, #1f2937);\n    }\n\n    ul {\n      list-style: none;\n      margin: 0;\n      padding: 0;\n    }\n\n    li {\n      user-select: none;\n    }\n\n    .row {\n      display: flex;\n      align-items: center;\n      gap: 0.375rem;\n      padding: 0.375rem 0.5rem;\n      border-radius: 0.375rem;\n      cursor: pointer;\n      transition: background-color 0.1s;\n    }\n\n    .row:hover {\n      background: var(--bg-hover, #f3f4f6);\n    }\n\n    .row.selected {\n      background: var(--accent, #3b82f6);\n      color: var(--text-on-accent, #ffffff);\n    }\n\n    .toggle {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 1rem;\n      height: 1rem;\n      font-size: 0.75rem;\n      transition: transform 0.15s;\n    }\n\n    .toggle.expanded {\n      transform: rotate(90deg);\n    }\n\n    .toggle.empty {\n      visibility: hidden;\n    }\n\n    .icon {\n      font-size: 1rem;\n      width: 1rem;\n      text-align: center;\n    }\n\n    .label {\n      flex: 1;\n    }\n\n    .children {\n      padding-left: 1.25rem;\n    }",
   },
   {
     id: "divider",
@@ -1170,26 +316,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-divider",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "orientation",
-        type: "string",
-        default: "horizontal",
-      },
-      {
-        name: "spacing",
-        type: "string",
-        default: "md",
-      },
-      {
-        name: "color",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<div class="line" style=${this.color ? `background: ${this.color}` : ""} role="separator"></div>',
-    css: ':host {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n    }\n\n    :host([orientation="vertical"]) {\n      display: inline-flex;\n      align-items: stretch;\n      height: 100%;\n    }\n\n    .line {\n      background: var(--divider-color, var(--border-color, #e5e7eb));\n      width: 100%;\n      height: 1px;\n    }\n\n    :host([orientation="vertical"]) .line {\n      width: 1px;\n      height: 100%;\n    }\n\n    :host([spacing="none"]) {\n      margin: 0;\n    }\n\n    :host([spacing="sm"]) {\n      margin: 0.5rem 0;\n    }\n\n    :host([spacing="md"]) {\n      margin: 1rem 0;\n    }\n\n    :host([spacing="lg"]) {\n      margin: 1.5rem 0;\n    }\n\n    :host([spacing="xl"]) {\n      margin: 2.5rem 0;\n    }\n\n    :host([orientation="vertical"][spacing="none"]) {\n      margin: 0;\n    }\n\n    :host([orientation="vertical"][spacing="sm"]) {\n      margin: 0 0.5rem;\n    }\n\n    :host([orientation="vertical"][spacing="md"]) {\n      margin: 0 1rem;\n    }\n\n    :host([orientation="vertical"][spacing="lg"]) {\n      margin: 0 1.5rem;\n    }\n\n    :host([orientation="vertical"][spacing="xl"]) {\n      margin: 0 2.5rem;\n    }',
   },
   {
     id: "form",
@@ -1197,31 +323,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-form",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "heading",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "submitText",
-        type: "string",
-        default: "Submit",
-      },
-      {
-        name: "cancelText",
-        type: "string",
-        default: "Cancel",
-      },
-      {
-        name: "showActions",
-        type: "boolean",
-        default: true,
-      },
-    ],
-    template:
-      '${this.heading ? html`<h3 class="heading">${this.heading}</h3>` : ""}\n      <form @submit=${this.submit} novalidate>\n        <div class="fields"><slot></slot></div>\n        ${this.showActions\n          ? html`<div class="actions">\n              <button type="button" class="cancel-btn" @click="${this._handleCancel}">${this.cancelText}</button>\n              <button type="submit" class="submit-btn">${this.submitText}</button>\n            </div>`\n          : ""}\n      </form>',
-    css: ":host {\n      display: block;\n      background: var(--bg-elevated, #ffffff);\n      border: 1px solid var(--border-color, #e5e7eb);\n      border-radius: 0.5rem;\n      padding: 1.25rem;\n    }\n\n    .heading {\n      font-size: 1.125rem;\n      font-weight: 600;\n      color: var(--text-primary, #1f2937);\n      margin: 0 0 1rem;\n    }\n\n    .fields {\n      display: flex;\n      flex-direction: column;\n      gap: 0.75rem;\n    }\n\n    .actions {\n      display: flex;\n      justify-content: flex-end;\n      gap: 0.5rem;\n      margin-top: 1.25rem;\n      padding-top: 1rem;\n      border-top: 1px solid var(--border-color, #e5e7eb);\n    }\n\n    button {\n      padding: 0.5rem 1rem;\n      border-radius: 0.375rem;\n      border: 1px solid var(--border-color, #e5e7eb);\n      background: var(--bg-elevated, #ffffff);\n      color: var(--text-primary, #1f2937);\n      font-size: 0.875rem;\n      font-weight: 500;\n      cursor: pointer;\n      transition: background-color 0.15s;\n    }\n\n    button:hover {\n      background: var(--bg-hover, #f3f4f6);\n    }\n\n    button.primary,\n    button.submit-btn {\n      background: var(--accent, #3b82f6);\n      border-color: var(--accent, #3b82f6);\n      color: var(--text-on-accent, #ffffff);\n    }\n\n    button.primary:hover,\n    button.submit-btn:hover {\n      opacity: 0.9;\n    }",
   },
 ];
 
@@ -1233,31 +334,6 @@ export const layoutComponents: SharedComponentDef[] = [
     selector: "app-canvas-toolbar",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "zoomLevel",
-        type: "number",
-        default: 100,
-      },
-      {
-        name: "showGrid",
-        type: "boolean",
-        default: true,
-      },
-      {
-        name: "canUndo",
-        type: "boolean",
-        default: true,
-      },
-      {
-        name: "canRedo",
-        type: "boolean",
-        default: true,
-      },
-    ],
-    template:
-      '<div class="toolbar-group">\n        <button\n          class="toolbar-btn"\n          @click="${() => this._emit("undo")}"\n          ?disabled="${!this.canUndo}"\n          title="Undo"\n        >\n          <mat-icon>undo</mat-icon>\n        </button>\n        <button\n          class="toolbar-btn"\n          @click="${() => this._emit("redo")}"\n          ?disabled="${!this.canRedo}"\n          title="Redo"\n        >\n          <mat-icon>redo</mat-icon>\n        </button>\n      </div>\n      <div class="toolbar-group">\n        <button\n          class="toolbar-btn"\n          @click="${() => this._emit("zoom-out")}"\n          title="Zoom Out"\n        >\n          <mat-icon>remove</mat-icon>\n        </button>\n        <span class="zoom-label">${this.zoomLevel}%</span>\n        <button\n          class="toolbar-btn"\n          @click="${() => this._emit("zoom-in")}"\n          title="Zoom In"\n        >\n          <mat-icon>add</mat-icon>\n        </button>\n        <button\n          class="toolbar-btn"\n          @click="${() => this._emit("zoom-reset")}"\n          title="Reset Zoom"\n        >\n          <mat-icon>fit_screen</mat-icon>\n        </button>\n      </div>\n      <div class="toolbar-group">\n        <button\n          class="toolbar-btn ${this.showGrid ? "active" : ""}"\n          @click="${() => this._emit("toggle-grid")}"\n          title="Toggle Grid"\n        >\n          <mat-icon>grid_on</mat-icon>\n        </button>\n      </div>',
-    css: ":host {\n      display: inline-flex;\n      align-items: center;\n      gap: 4px;\n    }\n    .toolbar-group {\n      display: flex;\n      align-items: center;\n      gap: 2px;\n      padding: 0 4px;\n    }\n    .toolbar-group:not(:last-child) {\n      border-right: 1px solid var(--border-color);\n    }\n    .toolbar-btn {\n      display: inline-flex;\n      align-items: center;\n      justify-content: center;\n      width: 32px;\n      height: 32px;\n      border: none;\n      background: transparent;\n      border-radius: 6px;\n      cursor: pointer;\n      color: var(--text-secondary);\n      transition:\n        background-color 0.15s ease,\n        color 0.15s ease;\n    }\n    .toolbar-btn:hover {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n    .toolbar-btn:active {\n      background: var(--bg-tertiary);\n    }\n    .toolbar-btn.active {\n      background: var(--accent);\n      color: white;\n    }\n    .toolbar-btn[disabled] {\n      opacity: 0.4;\n      cursor: not-allowed;\n    }\n    .zoom-label {\n      font-size: 12px;\n      color: var(--text-secondary);\n      min-width: 48px;\n      text-align: center;\n    }\n    mat-icon {\n      font-size: 20px;\n      width: 20px;\n      height: 20px;\n    }",
   },
   {
     id: "designer-sidebar",
@@ -1265,21 +341,6 @@ export const layoutComponents: SharedComponentDef[] = [
     selector: "app-designer-sidebar",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "collapsed",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "header",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<div class="sidebar-wrapper">\n        <aside class="designer-sidebar ${this.collapsed ? "collapsed" : ""}">\n          <div class="sidebar-header">\n            <span class="sidebar-header-title">${this.header}</span>\n          </div>\n          <div class="sidebar-content">\n            <slot name="content"></slot>\n          </div>\n          <div class="sidebar-footer">\n            <slot name="footer"></slot>\n          </div>\n        </aside>\n        <div class="sidebar-toggle-container">\n          <button class="sidebar-toggle" @click=${this._toggleCollapse}>\n            ${this.collapsed\n              ? this.position === "left"\n                ? "▶"\n                : "◀"\n              : this.position === "left"\n                ? "◀"\n                : "▶"}\n          </button>\n        </div>\n      </div>',
-    css: ':host {\n      display: block;\n      height: 100%;\n    }\n\n    .sidebar-wrapper {\n      position: relative;\n      height: 100%;\n      display: flex;\n    }\n\n    .sidebar-toggle-container {\n      position: absolute;\n      top: 50%;\n      transform: translateY(-50%);\n      z-index: 10;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 24px;\n      height: 48px;\n      background: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 4px;\n      transition: all var(--transition-fast, 150ms);\n    }\n\n    .sidebar-toggle-container:hover {\n      background: var(--bg-hover);\n    }\n\n    :host([position="left"]) .sidebar-toggle-container {\n      right: -12px;\n    }\n\n    :host([position="right"]) .sidebar-toggle-container {\n      left: -12px;\n      right: auto;\n    }\n\n    .sidebar-toggle {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      width: 24px;\n      height: 28px;\n      padding: 0;\n      background: transparent;\n      border: none;\n      border-radius: 4px;\n      color: var(--text-secondary);\n      cursor: pointer;\n      transition: all var(--transition-fast, 150ms);\n    }\n\n    .sidebar-toggle:hover {\n      color: var(--text-primary);\n    }\n\n    .designer-sidebar {\n      display: flex;\n      flex-direction: column;\n      height: 100%;\n      background: var(--bg-secondary);\n      border-right: 1px solid var(--border-color);\n      transition:\n        width var(--transition-normal, 200ms) ease,\n        opacity var(--transition-normal, 200ms) ease;\n      overflow: hidden;\n      flex-shrink: 0;\n    }\n\n    :host([position="right"]) .designer-sidebar {\n      border-right: none;\n      border-left: 1px solid var(--border-color);\n    }\n\n    .designer-sidebar.collapsed {\n      width: 0;\n      visibility: hidden;\n    }\n\n    .sidebar-header {\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      padding: 0.75rem 1rem;\n      border-bottom: 1px solid var(--border-color);\n      min-height: 48px;\n      background: var(--bg-secondary);\n      flex-shrink: 0;\n    }\n\n    :host([position="right"]) .sidebar-header {\n      flex-direction: row-reverse;\n    }\n\n    .sidebar-header-title {\n      font-size: 0.875rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      white-space: nowrap;\n      overflow: hidden;\n      text-overflow: ellipsis;\n    }\n\n    .sidebar-content {\n      flex: 1;\n      overflow: auto;\n      min-height: 0;\n    }\n\n    .sidebar-footer {\n      padding: 0.75rem 1rem;\n      border-top: 1px solid var(--border-color);\n      flex-shrink: 0;\n    }',
   },
 ];
 
@@ -1291,21 +352,6 @@ export const feedbackComponents: SharedComponentDef[] = [
     selector: "app-command-palette",
     packageType: "shared",
     category: "feedback",
-    props: [
-      {
-        name: "open",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "commands",
-        type: "string",
-        default: "[]",
-      },
-    ],
-    template:
-      '<div class="command-palette"><input type="text" placeholder="Type a command..." /></div>',
-    css: ":host { display: block; }",
   },
   {
     id: "toast",
@@ -1313,25 +359,6 @@ export const feedbackComponents: SharedComponentDef[] = [
     selector: "app-toast",
     packageType: "shared",
     category: "feedback",
-    props: [
-      {
-        name: "message",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "type",
-        type: "string",
-        default: "info",
-      },
-      {
-        name: "duration",
-        type: "number",
-        default: 3000,
-      },
-    ],
-    template: '<div class="toast toast-${this.type}">${this.message}</div>',
-    css: ":host { display: block; }",
   },
   {
     id: "snackbar",
@@ -1339,183 +366,6 @@ export const feedbackComponents: SharedComponentDef[] = [
     selector: "app-snackbar",
     packageType: "shared",
     category: "forms",
-    props: [
-      {
-        name: "message",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "action",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "duration",
-        type: "number",
-        default: 4000,
-      },
-      {
-        name: "type",
-        type: "string",
-        default: "default",
-      },
-      {
-        name: "open",
-        type: "boolean",
-        default: false,
-      },
-    ],
-    template: "",
-    css: ":host {\n      position: fixed;\n      bottom: 1.5rem;\n      left: 50%;\n      transform: translateX(-50%);\n      z-index: 9999;\n      display: block;\n    }\n    .bar {\n      display: inline-flex;\n      align-items: center;\n      gap: 0.75rem;\n      padding: 0.75rem 1rem;\n      border-radius: 0.5rem;\n      background: var(--bg-elevated, #1f2937);\n      color: var(--text-on-accent, #ffffff);\n      font-size: 0.875rem;\n      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);\n      min-width: 280px;\n      max-width: 560px;\n      border-left: 4px solid var(--accent, #3b82f6);\n    }\n    .bar.success { border-left-color: var(--success, #10b981); }\n    .bar.error { border-left-color: var(--error, #ef4444); }\n    .bar.warning { border-left-color: var(--warning, #f59e0b); }\n    .bar.info { border-left-color: var(--info, #3b82f6); }\n    .message { flex: 1; }\n    .action-btn {\n      background: transparent;\n      border: none;\n      color: var(--accent, #3b82f6);\n      font-weight: 600;\n      cursor: pointer;\n      padding: 0.25rem 0.5rem;\n      border-radius: 0.25rem;\n      text-transform: uppercase;\n      font-size: 0.75rem;\n    }\n    .action-btn:hover { background: rgba(255, 255, 255, 0.1); }\n    .close-btn {\n      background: transparent;\n      border: none;\n      color: inherit;\n      cursor: pointer;\n      padding: 0.125rem 0.25rem;\n      opacity: 0.7;\n      font-size: 1.125rem;\n      line-height: 1;\n    }\n    .close-btn:hover { opacity: 1; }",
-  },
-];
-
-// Data Components
-export const dataComponents: SharedComponentDef[] = [
-  {
-    id: "data-data-table",
-    name: "data data table",
-    selector: "data-data-table",
-    packageType: "shared",
-    category: "forms",
-    props: [
-      {
-        name: "columns",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "data",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "selectable",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "selectedKey",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<div class="app-data-table">\n        <table class="app-data-table__table">\n          <thead class="app-data-table__head">\n            <tr>\n              ${this.selectable\n                ? html',
-    css: ":host {\n      display: block;\n    }\n\n    .app-data-table {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      overflow: hidden;\n    }\n\n    .app-data-table__table {\n      width: 100%;\n      border-collapse: collapse;\n    }\n\n    .app-data-table__head {\n      background: var(--bg-tertiary);\n    }\n\n    th {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      font-weight: 600;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    .app-data-table__th-check {\n      width: 2.5rem;\n      color: var(--text-muted);\n    }\n\n    td {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-subtle);\n    }\n\n    .app-data-table__body tr:last-child td {\n      border-bottom: none;\n    }\n\n    .app-data-table__body tr {\n      cursor: default;\n      transition: background 150ms ease;\n    }\n\n    .app-data-table__body tr:hover td {\n      background: var(--bg-hover);\n    }\n\n    .app-data-table__row--selected td {\n      background: color-mix(in srgb, var(--accent) 10%, transparent);\n    }\n\n    .app-data-table__row--selected:hover td {\n      background: color-mix(in srgb, var(--accent) 15%, transparent);\n    }\n\n    .app-data-table__td-check {\n      width: 2.5rem;\n      padding-right: 0;\n    }\n\n    .app-data-table__check-icon {\n      font-size: 1.25rem;\n      color: var(--accent);\n      cursor: pointer;\n    }\n\n    .app-data-table__empty {\n      text-align: center;\n      color: var(--text-muted);\n      padding: 2rem;\n    }",
-  },
-  {
-    id: "data-json-view",
-    name: "DataJsonView",
-    selector: "data-json-view",
-    packageType: "shared",
-    category: "forms",
-    props: [
-      {
-        name: "data",
-        type: "string",
-        default: "null",
-      },
-      {
-        name: "indent",
-        type: "number",
-        default: 2,
-      },
-    ],
-    template: '<pre class="app-json-view" .innerHTML=${highlighted}></pre>',
-    css: ':host {\n      display: block;\n    }\n\n    .app-json-view {\n      background: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      padding: 1rem;\n      margin: 0;\n      font-family: "Fira Code", "Cascadia Code", "JetBrains Mono", monospace;\n      font-size: 0.8125rem;\n      line-height: 1.6;\n      color: var(--text-primary);\n      overflow-x: auto;\n      white-space: pre;\n    }\n\n    .jv-key {\n      color: #9cdcfe;\n    }\n\n    .jv-string {\n      color: #ce9178;\n    }\n\n    .jv-number {\n      color: #b5cea8;\n    }\n\n    .jv-boolean {\n      color: #569cd6;\n    }\n\n    .jv-null {\n      color: #808080;\n    }',
-  },
-  {
-    id: "data-segment-selector",
-    name: "DataSegmentSelector",
-    selector: "data-segment-selector",
-    packageType: "shared",
-    category: "forms",
-    props: [
-      {
-        name: "segments",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "selected",
-        type: "string",
-        default: "",
-      },
-    ],
-    template:
-      '<div class="app-segment-selector">\n        ${this.segments.map(\n          (seg) => html',
-    css: ":host {\n      display: inline-block;\n    }\n\n    .app-segment-selector {\n      display: inline-flex;\n      background: var(--bg-secondary);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      padding: 0.25rem;\n      gap: 0.25rem;\n    }\n\n    .app-segment-selector__btn {\n      display: flex;\n      align-items: center;\n      gap: 0.375rem;\n      padding: 0.5rem 1rem;\n      border: none;\n      border-radius: 0.375rem;\n      background: transparent;\n      color: var(--text-secondary);\n      font-size: 0.875rem;\n      font-weight: 500;\n      cursor: pointer;\n      transition:\n        background 150ms ease,\n        color 150ms ease;\n      white-space: nowrap;\n    }\n\n    .app-segment-selector__btn:hover:not(.app-segment-selector__btn--active) {\n      background: var(--bg-hover);\n      color: var(--text-primary);\n    }\n\n    .app-segment-selector__btn--active {\n      background: var(--accent);\n      color: var(--accent-50);\n    }\n\n    .app-segment-selector__icon {\n      font-size: 1rem;\n    }",
-  },
-  {
-    id: "data-stats-card",
-    name: "DataStatsCard",
-    selector: "data-stats-card",
-    packageType: "shared",
-    category: "forms",
-    props: [
-      {
-        name: "label",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "value",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "icon",
-        type: "string",
-        default: "",
-      },
-      {
-        name: "iconBgClass",
-        type: "string",
-        default: "bg-accent",
-      },
-    ],
-    template:
-      '<div class="app-stats-card">\n        <div class="app-stats-card__icon-wrap ${this.iconBgClass}">\n          <span class="material-icons app-stats-card__icon">${this.icon}</span>\n        </div>\n        <div class="app-stats-card__content">\n          <p class="app-stats-card__label">${this.label}</p>\n          <p class="app-stats-card__value">${this.value}</p>\n        </div>\n      </div>',
-    css: ":host {\n      display: block;\n    }\n\n    .app-stats-card {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      padding: 1rem;\n      display: flex;\n      align-items: center;\n      gap: 1rem;\n    }\n\n    .app-stats-card__icon-wrap {\n      width: 3rem;\n      height: 3rem;\n      border-radius: 0.5rem;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      flex-shrink: 0;\n    }\n\n    .app-stats-card__icon {\n      font-size: 1.5rem;\n      color: var(--accent);\n    }\n\n    .app-stats-card__content {\n      display: flex;\n      flex-direction: column;\n      gap: 0.25rem;\n      min-width: 0;\n    }\n\n    .app-stats-card__label {\n      margin: 0;\n      font-size: 0.75rem;\n      font-weight: 500;\n      color: var(--text-muted);\n      text-transform: uppercase;\n      letter-spacing: 0.05em;\n    }\n\n    .app-stats-card__value {\n      margin: 0;\n      font-size: 1.5rem;\n      font-weight: 700;\n      color: var(--text-primary);\n      line-height: 1.2;\n    }",
-  },
-  {
-    id: "data-table-view",
-    name: "data table view",
-    selector: "data-table-view",
-    packageType: "shared",
-    category: "forms",
-    props: [
-      {
-        name: "columns",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "data",
-        type: "string",
-        default: "[]",
-      },
-      {
-        name: "sortable",
-        type: "boolean",
-        default: false,
-      },
-      {
-        name: "pageSize",
-        type: "number",
-        default: 10,
-      },
-      {
-        name: "total",
-        type: "number",
-        default: 0,
-      },
-    ],
-    template:
-      '<div class="app-table-view">\n        <table class="app-table-view__table">\n          <thead class="app-table-view__head">\n            <tr>\n              ${this.columns.map(\n                (col) => html',
-    css: ":host {\n      display: block;\n    }\n\n    .app-table-view {\n      background: var(--bg-elevated);\n      border: 1px solid var(--border-color);\n      border-radius: 0.5rem;\n      overflow: hidden;\n    }\n\n    .app-table-view__table {\n      width: 100%;\n      border-collapse: collapse;\n    }\n\n    .app-table-view__head {\n      background: var(--bg-tertiary);\n    }\n\n    .app-table-view__head tr {\n      border-bottom: 1px solid var(--border-color);\n    }\n\n    th {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-subtle);\n      font-weight: 600;\n    }\n\n    .app-table-view__th--sortable {\n      cursor: pointer;\n      user-select: none;\n    }\n\n    .app-table-view__th--sortable:hover {\n      background: var(--bg-hover);\n    }\n\n    .app-table-view__th-inner {\n      display: flex;\n      align-items: center;\n      gap: 0.25rem;\n    }\n\n    .app-table-view__sort-icon {\n      font-size: 1rem;\n      color: var(--text-muted);\n    }\n\n    td {\n      text-align: left;\n      padding: 0.75rem 1rem;\n      font-size: 0.875rem;\n      color: var(--text-primary);\n      border-bottom: 1px solid var(--border-subtle);\n    }\n\n    .app-table-view__body tr:last-child td {\n      border-bottom: none;\n    }\n\n    .app-table-view__body tr:hover td {\n      background: var(--bg-hover);\n    }\n\n    .app-table-view__empty {\n      text-align: center;\n      color: var(--text-muted);\n      padding: 2rem;\n    }\n\n    .app-table-view__pagination {\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      gap: 0.75rem;\n      padding: 0.75rem;\n      border-top: 1px solid var(--border-subtle);\n    }\n\n    .app-table-view__page-btn {\n      background: none;\n      border: 1px solid var(--border-color);\n      border-radius: 0.25rem;\n      width: 2rem;\n      height: 2rem;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      cursor: pointer;\n      color: var(--text-primary);\n      padding: 0;\n    }\n\n    .app-table-view__page-btn:hover:not(:disabled) {\n      background: var(--bg-hover);\n      border-color: var(--accent);\n    }\n\n    .app-table-view__page-btn:disabled {\n      opacity: 0.4;\n      cursor: not-allowed;\n    }\n\n    .app-table-view__page-info {\n      font-size: 0.875rem;\n      color: var(--text-secondary);\n    }",
   },
 ];
 

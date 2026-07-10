@@ -1,51 +1,13 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
+import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 @Component({
   selector: "app-checkbox",
   standalone: true,
-  template: `
-    <label>
-      <input
-        type="checkbox"
-        [checked]="checked"
-        [disabled]="disabled"
-        (change)="handleChange($event)"
-      />
-      @if (label) {
-        <span class="checkbox-label">{{ label }}</span>
-      }
-    </label>
-  `,
-  styles: [
-    `
-      :host {
-        display: inline-flex;
-        align-items: center;
-      }
-      label {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        cursor: pointer;
-      }
-      input[type="checkbox"] {
-        width: 1rem;
-        height: 1rem;
-        accent-color: var(--accent);
-        cursor: pointer;
-      }
-      input[type="checkbox"]:disabled {
-        cursor: not-allowed;
-        opacity: 0.5;
-      }
-      .checkbox-label {
-        color: var(--text-primary);
-        font-size: 0.875rem;
-        user-select: none;
-      }
-    `,
-  ],
+  imports: [ApplyThemeDirective],
+  templateUrl: "./checkbox.component.html",
+  styleUrls: ["./checkbox.component.css"],
 })
 export class CheckboxComponent {
   @Input() checked = false;

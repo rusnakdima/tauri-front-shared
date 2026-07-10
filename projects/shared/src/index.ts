@@ -10,7 +10,6 @@ export {
   uiComponents,
   layoutComponents,
   feedbackComponents,
-  dataComponents,
 } from "./components";
 
 // Core SDUI services (core/lib/)
@@ -24,24 +23,19 @@ export type { GridTemplate } from "./core/lib/schema-renderer/layout-engine";
 export { SchemaRouterService } from "./core/lib/schema-router/schema-router.service";
 export { SchemaRouteViewerComponent } from "./core/lib/schema-router/schema-route-viewer.component";
 export { SchemaShellComponent } from "./core/lib/schema-router/schema-shell.component";
-export { SchemaFetcherService } from "./core/lib/schema-fetcher/schema-fetcher.service";
 export { GuardService } from "./core/lib/schema-router/guard.service";
 export { EventBusService } from "./core/lib/events/event-bus.service";
-export { ShortcutService } from "./core/lib/shortcuts/shortcut.service";
-export type { Shortcut } from "./core/lib/shortcuts/shortcut.service";
 export { I18nService } from "./core/lib/i18n/i18n.service";
-export { GlobalStateService } from "./core/lib/global-state/global-state.service";
 export { ErrorHandlerService } from "./core/lib/error-handler/error-handler.service";
-export type {
-  ErrorLogEntry,
-  RetryConfig,
-} from "./core/lib/error-handler/error-handler.service";
+export { ApiException } from "./core/lib/api-exception";
+export {
+  HandlerExecutorService,
+  type HandlerDefinition,
+} from "./core/lib/handler-executor/handler-executor.service";
+
 
 // Missing services
 export { SignalStoreService } from "./core/lib/signal-store/signal-store.service";
-export { SignalSyncService } from "./core/lib/signal-sync/signal-sync.service";
-export { SignalLoggerService } from "./core/lib/signal-logger/signal-logger.service";
-export { DataPatchService } from "./core/lib/data-patch/data-patch.service";
 export { ToastService } from "./core/lib/toast/toast.service";
 export { SchemaElementComponent } from "./core/lib/schema-router/schema-element.component";
 export {
@@ -58,7 +52,6 @@ export { InvokeWrapperService } from "./core-api/invoke-wrapper.service";
 export { CrudService as RemoteCrudService } from "./core-crud/crud.service";
 
 // Core API types
-export { ResponseStatus } from "./core-api/tauri/response";
 export type { Response } from "./core-api/tauri/response";
 export {
   isSuccess,
@@ -87,7 +80,6 @@ export type {
   ElementConfig,
   ComponentBehavior,
   ToastNotification,
-  ThemeConfig,
 } from "./core/lib/types";
 
 // Invoke command wrappers
@@ -100,11 +92,7 @@ export {
 
 // Utilities
 export { sortBy } from "./utils/sorting";
-export { clamp } from "./utils/math";
-export { timeAgo } from "./utils/time";
-
-// Algorithms
-export * from "./algorithms";
+export * from "./utils/math";
 
 // Style system
 export {
@@ -122,17 +110,6 @@ export { ThemeToggleService } from "./styles/theme-toggle.service";
 
 // RBAC / Permission Service
 export { PermissionService } from "./core/lib/rbac/permission.service";
-export type {
-  Permission,
-  Role,
-  User,
-  PermissionCheckResult,
-  TodoPermissionContext,
-  FieldPermissionContext,
-} from "./core/lib/rbac/permission.service";
-export { TodoPermission } from "./core/lib/rbac/permission.service";
-export { rbacGuard, rbacRoleGuard } from "./core/lib/rbac/rbac.guard";
-export {
-  RbacHasPermissionDirective,
-  RbacHasRoleDirective,
-} from "./core/lib/rbac/rbac-has-permission.directive";
+
+// Components
+export { PaginationComponent } from "./components/pagination/pagination.component";

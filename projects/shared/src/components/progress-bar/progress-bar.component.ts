@@ -1,46 +1,13 @@
 import { Component, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
+import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 @Component({
   selector: "app-progress-bar",
   standalone: true,
-  template: `
-    <div class="progress-container">
-      <div
-        [class]="'progress-fill ' + fillClass"
-        [style.width.%]="percentage"
-      ></div>
-    </div>
-  `,
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-      .progress-container {
-        width: 100%;
-        height: 0.5rem;
-        background-color: var(--bg-elevated);
-        border-radius: 0.25rem;
-        overflow: hidden;
-        border: 1px solid var(--border-color);
-      }
-      .progress-fill {
-        height: 100%;
-        border-radius: 0.25rem;
-        transition: width 0.3s ease;
-      }
-      .progress-fill.low {
-        background-color: var(--warning);
-      }
-      .progress-fill.medium {
-        background-color: var(--accent);
-      }
-      .progress-fill.high {
-        background-color: var(--success);
-      }
-    `,
-  ],
+  imports: [ApplyThemeDirective],
+  templateUrl: "./progress-bar.component.html",
+  styleUrls: ["./progress-bar.component.css"],
 })
 export class ProgressBarComponent {
   @Input() value = 0;

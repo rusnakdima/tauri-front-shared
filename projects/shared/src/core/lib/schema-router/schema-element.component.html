@@ -1,4 +1,10 @@
-<div [id]="element.id" [class]="classes" [style]="gridStyle">
+<div
+  [id]="element.id"
+  [class]="classes"
+  [style]="gridStyle"
+  [attr.data-element-id]="element.id"
+  [ngStyle]="elementStyles"
+>
   @if (isNativeHtml && props["text"]) {
     <ng-container [ngSwitch]="tag">
       <h1 *ngSwitchCase="'h1'">{{ props["text"] }}</h1>
@@ -8,14 +14,14 @@
       <span *ngSwitchDefault>{{ props["text"] }}</span>
     </ng-container>
   } @else if (componentType) {
-    <ng-container
-      *ngComponentOutlet="componentType; inputs: props"
-    ></ng-container>
+    <ng-container #dynamicHost></ng-container>
   }
-  @for (child of childElements; track $index) {
-    <app-schema-element
-      [element]="child"
-      [elements]="elements"
-    ></app-schema-element>
+  @if (isNativeHtml) {
+    @for (child of childElements; track $index) {
+      <app-schema-element
+        [element]="child"
+        [elements]="elements"
+      ></app-schema-element>
+    }
   }
 </div>

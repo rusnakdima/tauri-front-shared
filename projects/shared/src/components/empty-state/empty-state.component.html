@@ -1,0 +1,44 @@
+<div
+  appApplyTheme="app-empty-state"
+  class="w-16 h-16 rounded-full flex items-center justify-center border-2"
+  [class]="variant"
+  [class]="
+    variant === 'danger'
+      ? 'bg-[var(--error)] border-[var(--error)]'
+      : variant === 'success'
+        ? 'bg-[var(--success)] border-[var(--success)]'
+        : 'bg-[var(--bg-elevated)] border-[var(--border-color)]'
+  "
+>
+  @if (icon) {
+    <span class="text-4xl size-8">{{ icon }}</span>
+  }
+</div>
+@if (title) {
+  <h3 class="text-2xl font-semibold m-0 text-[var(--text-primary)]">
+    {{ title }}
+  </h3>
+}
+@if (message) {
+  <p class="text-base m-0 max-w-[400px] mt-2 text-[var(--text-secondary)]">
+    {{ message }}
+  </p>
+}
+@if (action) {
+  <div class="mt-2">
+    <button
+      class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-150 bg-[var(--accent)] border-[var(--accent)] text-[var(--text-on-accent)]"
+      (mouseenter)="
+        $any($event.target).style.background = 'var(--accent-hover)';
+        $any($event.target).style.borderColor = 'var(--accent-hover)'
+      "
+      (mouseleave)="
+        $any($event.target).style.background = 'var(--accent)';
+        $any($event.target).style.borderColor = 'var(--accent)'
+      "
+      (click)="actionClicked.emit($event)"
+    >
+      {{ action }}
+    </button>
+  </div>
+}

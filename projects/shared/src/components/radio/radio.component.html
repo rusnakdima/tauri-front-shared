@@ -1,0 +1,15 @@
+<label appApplyTheme="app-radio" class="flex items-center gap-2 cursor-pointer">
+  <input
+    type="radio"
+    class="w-4 h-4 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+    [style.accentColor]="'var(--accent)'"
+    [name]="name"
+    [value]="value"
+    [checked]="checked"
+    [disabled]="disabled"
+    (change)="handleChange($event)"
+  />
+  <span class="text-sm select-none text-[var(--text-primary)]"
+    ><ng-content></ng-content
+  ></span>
+</label>

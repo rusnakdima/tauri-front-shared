@@ -1,0 +1,50 @@
+<div appApplyTheme="app-designer-sidebar" class="relative h-full flex">
+  <aside
+    class="flex flex-col h-full flex-shrink-0 transition-all duration-200 bg-[var(--bg-secondary)]"
+    [class.w-0]="collapsed"
+    [class.w-64]="!collapsed"
+    [class.invisible]="collapsed"
+    [class.overflow-hidden]="collapsed"
+    [style.border-right]="
+      position === 'left' ? '1px solid var(--border-color)' : 'none'
+    "
+    [style.border-left]="
+      position === 'right' ? '1px solid var(--border-color)' : 'none'
+    "
+  >
+    <div
+      class="flex items-center justify-between px-4 py-3 flex-shrink-0 min-h-12 border-b border-[var(--border-color)] bg-[var(--bg-secondary)]"
+      [style.flex-direction]="position === 'right' ? 'row-reverse' : 'row'"
+    >
+      <span class="text-sm font-semibold truncate text-[var(--text-primary)]">{{
+        header
+      }}</span>
+    </div>
+    <div class="flex-1 overflow-auto min-h-0">
+      <ng-content select="[slot=content]"></ng-content>
+    </div>
+    <div class="px-4 py-3 flex-shrink-0 border-t border-[var(--border-color)]">
+      <ng-content select="[slot=footer]"></ng-content>
+    </div>
+  </aside>
+  <div
+    class="absolute top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-6 h-12 rounded cursor-pointer transition-all duration-150 bg-[var(--bg-secondary)] border border-[var(--border-color)]"
+    [style.right]="position === 'left' ? '-12px' : 'auto'"
+    [style.left]="position === 'right' ? '-12px' : 'auto'"
+  >
+    <button
+      class="flex items-center justify-center w-6 h-7 p-0 bg-transparent border-none rounded cursor-pointer transition-all duration-150 text-[var(--text-secondary)]"
+      (click)="toggleCollapse()"
+    >
+      {{
+        collapsed
+          ? position === "left"
+            ? "▶"
+            : "◀"
+          : position === "left"
+            ? "◀"
+            : "▶"
+      }}
+    </button>
+  </div>
+</div>

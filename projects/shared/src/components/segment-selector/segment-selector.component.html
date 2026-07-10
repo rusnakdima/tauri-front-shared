@@ -1,0 +1,15 @@
+<div
+  appApplyTheme="app-segment-selector"
+  class="inline-flex border border-[var(--border-color)] rounded-lg overflow-hidden bg-[var(--bg-elevated)]"
+>
+  @for (opt of parsedOptions; track opt) {
+    <div
+      class="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] cursor-pointer transition-colors duration-150 border-r border-[var(--border-color)] last:border-r-0 hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"
+      [class.bg-[var(--accent)]]="opt === selected"
+      [class.text-[var(--text-on-accent)]]="opt === selected"
+      (click)="selectOption(opt)"
+    >
+      {{ opt }}
+    </div>
+  }
+</div>

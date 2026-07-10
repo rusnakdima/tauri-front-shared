@@ -1,0 +1,14 @@
+<div appApplyTheme="app-avatar">
+  @if (src && !imgError) {
+    <img
+      class="w-full h-full object-cover"
+      [src]="src"
+      [alt]="alt"
+      (error)="imgError = true"
+    />
+  } @else {
+    <span class="font-semibold text-[var(--text-secondary)] uppercase">{{
+      initials
+    }}</span>
+  }
+</div>

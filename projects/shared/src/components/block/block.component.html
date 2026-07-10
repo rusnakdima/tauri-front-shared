@@ -1,0 +1,21 @@
+<div
+  appApplyTheme="app-block"
+  class="box-border min-w-0 inline-flex"
+  [style.flexDirection]="direction"
+  [style.alignItems]="alignCss"
+  [style.justifyContent]="justifyCss"
+  [style.flexWrap]="wrap"
+  [style.gap]="gapCss"
+  [style.padding]="paddingCss"
+  [style.width]="widthCss"
+  [style.height]="heightCss"
+  [style.flex]="flex"
+  [style.overflow]="overflow"
+>
+  @for (child of children; track child.id) {
+    <app-schema-element
+      [element]="child"
+      [elements]="children"
+    ></app-schema-element>
+  }
+</div>

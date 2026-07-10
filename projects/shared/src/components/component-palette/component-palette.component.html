@@ -1,0 +1,61 @@
+<div
+  appApplyTheme="app-component-palette"
+  class="block h-full overflow-y-auto"
+  style="
+    background-color: var(--bg-elevated);
+    border-right: 1px solid var(--border-color);
+  "
+>
+  <div class="p-4" style="border-bottom: 1px solid var(--border-color)">
+    <div class="text-sm font-semibold mb-3" style="color: var(--text-primary)">
+      Components
+    </div>
+    @if (searchable) {
+      <input
+        type="text"
+        class="w-full px-3 py-2 text-sm border rounded-lg box-border"
+        style="
+          background-color: var(--bg-primary);
+          color: var(--text-primary);
+          border-color: var(--border-color);
+        "
+        placeholder="Search components..."
+        [value]="searchQuery"
+        (input)="onSearch($event)"
+      />
+    }
+  </div>
+  <div>
+    @for (cat of filteredCategories; track cat.name) {
+      <div style="border-bottom: 1px solid var(--border-color)">
+        <div
+          class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium"
+          style="color: var(--text-primary)"
+          (click)="toggleCategory(cat.name)"
+        >
+          <span>{{ cat.name }}</span>
+          <span
+            class="text-xs transition-transform duration-200"
+            [class.rotate-180]="!isCollapsed(cat.name)"
+            style="transform: rotate(-90deg)"
+            >▼</span
+          >
+        </div>
+        @if (!isCollapsed(cat.name)) {
+          <div class="px-4 pb-3 flex flex-col gap-1">
+            @for (comp of cat.components; track comp) {
+              <div
+                class="px-3 py-2 rounded text-sm cursor-grab"
+                style="color: var(--text-secondary)"
+                draggable="true"
+                (dragstart)="onDragStart($event, comp)"
+              >
+                {{ comp }}
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

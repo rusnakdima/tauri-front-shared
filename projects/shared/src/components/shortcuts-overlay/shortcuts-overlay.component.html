@@ -1,0 +1,45 @@
+@if (visible) {
+  <div
+    appApplyTheme="app-shortcuts-overlay"
+    class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-50"
+    (click)="close()"
+  >
+    <div
+      class="bg-[var(--bg-elevated)] border rounded-3xl w-[480px] max-w-[90vw] max-h-[80vh] overflow-y-auto shadow-2xl"
+      [style.--tw-border-color]="'var(--border-color)'"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center justify-between p-5 border-b">
+        <h3 class="m-0 text-lg font-semibold text-[var(--text-primary)]">
+          {{ title || "Keyboard Shortcuts" }}
+        </h3>
+        <button
+          class="bg-transparent border-none cursor-pointer p-1 rounded text-2xl leading-none"
+          [style.color]="
+            hovered ? 'var(--text-primary)' : 'var(--text-secondary)'
+          "
+          (mouseenter)="hovered = true"
+          (mouseleave)="hovered = false"
+          (click)="close()"
+          aria-label="Close"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="p-4">
+        @for (shortcut of parsedShortcuts; track shortcut.key) {
+          <div class="flex items-center gap-4 py-2">
+            <kbd
+              class="px-2 py-1 rounded border text-[var(--text-primary)] font-mono text-sm min-w-[60px] text-center border-[var(--border-color)] bg-[var(--bg-primary)]"
+              [style.--tw-border-color]="'var(--border-color)'"
+              >{{ shortcut.key }}</kbd
+            >
+            <span class="text-[var(--text-secondary)] text-sm">{{
+              shortcut.description
+            }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

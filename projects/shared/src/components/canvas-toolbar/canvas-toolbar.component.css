@@ -1,0 +1,12 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.toolbar-group:not(:last-child) {
+  border-right: 1px solid var(--border-color);
+}
+.toolbar-btn[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

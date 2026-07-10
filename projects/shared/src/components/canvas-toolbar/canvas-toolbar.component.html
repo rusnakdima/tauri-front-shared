@@ -1,0 +1,58 @@
+<div appApplyTheme="app-canvas-toolbar" class="inline-flex items-center gap-1">
+  <div class="flex items-center gap-0.5 px-1 toolbar-group">
+    <button
+      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]"
+      [disabled]="!canUndo"
+      (click)="emit('undo')"
+      title="Undo"
+    >
+      <span class="text-lg leading-none">↩</span>
+    </button>
+    <button
+      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]"
+      [disabled]="!canRedo"
+      (click)="emit('redo')"
+      title="Redo"
+    >
+      <span class="text-lg leading-none">↪</span>
+    </button>
+  </div>
+  <div class="flex items-center gap-0.5 px-1 toolbar-group">
+    <button
+      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"
+      (click)="emit('zoom-out')"
+      title="Zoom Out"
+    >
+      <span class="text-lg leading-none">−</span>
+    </button>
+    <span class="text-xs min-w-12 text-center text-[var(--text-secondary)]"
+      >{{ zoomLevel }}%</span
+    >
+    <button
+      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"
+      (click)="emit('zoom-in')"
+      title="Zoom In"
+    >
+      <span class="text-lg leading-none">+</span>
+    </button>
+    <button
+      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"
+      (click)="emit('zoom-reset')"
+      title="Reset Zoom"
+    >
+      <span class="text-lg leading-none">⊡</span>
+    </button>
+  </div>
+  <div class="flex items-center gap-0.5 px-1 toolbar-group">
+    <button
+      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150"
+      [class.bg-[var(--accent)]]="showGrid"
+      [class.text-white]="showGrid"
+      [class.text-[var(--text-secondary)]]="!showGrid"
+      (click)="emit('toggle-grid')"
+      title="Toggle Grid"
+    >
+      <span class="text-lg leading-none">▦</span>
+    </button>
+  </div>
+</div>

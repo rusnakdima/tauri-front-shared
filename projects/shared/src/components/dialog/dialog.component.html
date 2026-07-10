@@ -1,0 +1,32 @@
+@if (open) {
+  <div
+    appApplyTheme="app-dialog"
+    class="fixed inset-0 flex items-center justify-center z-[1000] bg-[var(--bg-overlay,rgba(0,0,0,0.5))]"
+    (click)="handleOverlayClick($event)"
+  >
+    <div
+      [class]="
+        'flex flex-col bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-3xl min-w-[360px] max-h-[90vh] shadow-2xl dialog-' +
+        size
+      "
+    >
+      <header
+        class="flex items-center justify-between px-5 py-4 border-b border-[var(--border-color)] bg-[var(--bg-elevated)] rounded-t-3xl"
+      >
+        <h2 class="m-0 text-xl font-bold text-[var(--text-primary)]">
+          {{ title }}
+        </h2>
+        <button
+          class="bg-transparent border-0 cursor-pointer px-2 py-1 rounded-md text-2xl leading-none font-light transition-colors duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          (click)="close()"
+          aria-label="Close"
+        >
+          &times;
+        </button>
+      </header>
+      <div class="px-6 py-5 overflow-y-auto text-[var(--text-primary)]">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+}

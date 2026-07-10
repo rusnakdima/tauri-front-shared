@@ -1,0 +1,18 @@
+@if (title) {
+  <div
+    class="flex items-center px-6 py-4 gap-4 border-b border-[var(--border-color)] min-h-[56px] bg-[var(--bg-elevated)]"
+  >
+    <h1 class="text-xl font-semibold m-0 text-[var(--text-primary)]">
+      {{ title }}
+    </h1>
+    <ng-content select="[slot=header-actions]"></ng-content>
+  </div>
+}
+<div
+  appApplyTheme="app-page-container"
+  class="flex-1 overflow-auto"
+  [style.padding.px]="padding"
+  [style.maxWidth]="maxWidth ? maxWidth + 'px' : null"
+>
+  <ng-content></ng-content>
+</div>

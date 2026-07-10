@@ -1,0 +1,18 @@
+<label
+  appApplyTheme="app-checkbox"
+  class="flex items-center gap-2 cursor-pointer"
+>
+  <input
+    type="checkbox"
+    class="w-4 h-4"
+    [style.accent-color]="'var(--accent)'"
+    [checked]="checked"
+    [disabled]="disabled"
+    (change)="handleChange($event)"
+  />
+  @if (label) {
+    <span class="text-sm select-none text-[var(--text-primary)]">{{
+      label
+    }}</span>
+  }
+</label>

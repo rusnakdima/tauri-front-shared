@@ -1,0 +1,15 @@
+:host([size="sm"]) {
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.75rem;
+}
+:host([size="md"]) {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 0.875rem;
+}
+:host([size="lg"]) {
+  width: 3.5rem;
+  height: 3.5rem;
+  font-size: 1.25rem;
+}

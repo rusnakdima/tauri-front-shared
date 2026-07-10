@@ -1,0 +1,14 @@
+<div
+  appApplyTheme="app-divider"
+  class="flex items-center justify-center"
+  [class.inline-flex]="orientation === 'vertical'"
+  [class.h-full]="orientation === 'vertical'"
+  role="separator"
+>
+  <div
+    class="w-full h-px"
+    [class.w-px]="orientation === 'vertical'"
+    [class.h-full]="orientation === 'vertical'"
+    [style.background]="color || 'var(--divider-color, var(--border-color))'"
+  ></div>
+</div>

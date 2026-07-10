@@ -1,0 +1,14 @@
+<div
+  appApplyTheme="app-stats-card"
+  class="flex flex-col gap-2 p-6 rounded-xl border bg-[color:var(--bg-elevated)] border-[color:var(--border-color)]"
+>
+  @if (icon) {
+    <div class="text-2xl text-[color:var(--accent)]">{{ icon }}</div>
+  }
+  <div class="text-2xl font-bold leading-none text-[color:var(--text-primary)]">
+    {{ value }}{{ unit }}
+  </div>
+  @if (label) {
+    <div class="text-sm text-[color:var(--text-secondary)]">{{ label }}</div>
+  }
+</div>

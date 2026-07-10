@@ -1,0 +1,12 @@
+<div
+  appApplyTheme="app-progress-bar"
+  class="w-full h-2 bg-[var(--bg-elevated)] rounded border border-[var(--border-color)] overflow-hidden"
+>
+  <div
+    class="h-full rounded transition-all duration-300"
+    [class.bg-[var(--warning)]]="fillClass === 'low'"
+    [class.bg-[var(--accent)]]="fillClass === 'medium'"
+    [class.bg-[var(--success)]]="fillClass === 'high'"
+    [style.width.%]="percentage"
+  ></div>
+</div>

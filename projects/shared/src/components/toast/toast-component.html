@@ -1,0 +1,31 @@
+<div [class]="toastClasses">
+  @if (type === "success") {
+  <i
+    class="fa fa-circle-check toast-icon flex-shrink-0"
+    style="font-size: 20px"
+  ></i>
+  } @else if (type === "error") {
+  <i
+    class="fa fa-circle-xmark toast-icon flex-shrink-0"
+    style="font-size: 20px"
+  ></i>
+  } @else if (type === "warning") {
+  <i
+    class="fa fa-triangle-exclamation toast-icon flex-shrink-0"
+    style="font-size: 20px"
+  ></i>
+  } @else {
+  <i
+    class="fa fa-circle-info toast-icon flex-shrink-0"
+    style="font-size: 20px"
+  ></i>
+  }
+  <span class="toast-message flex-1">{{ message }}</span>
+  <button
+    class="close-btn inline-flex items-center justify-center w-5 h-5 bg-transparent border-none cursor-pointer p-0 flex-shrink-0 text-[color:var(--text-muted)] hover:text-[color:var(--text-primary)]"
+    type="button"
+    (click)="handleClose()"
+  >
+    <i class="fa fa-xmark" style="font-size: 12px"></i>
+  </button>
+</div>

@@ -1,0 +1,68 @@
+/**
+ * Glassmorphism Design Tokens
+ * Light (dark-biased) mode + Dark mode
+ */
+
+/* Glass-specific variables */
+:root {
+  --color-glass-bg: rgba(255, 255, 255, 0.1);
+  --color-glass-bg-hover: rgba(255, 255, 255, 0.15);
+  --color-glass-bg-active: rgba(255, 255, 255, 0.2);
+  --color-glass-border: rgba(255, 255, 255, 0.45);
+  --color-glass-border-strong: rgba(255, 255, 255, 0.6);
+  --color-glass-white: rgba(255, 255, 255, 0.8);
+  --color-glass-blur: rgba(255, 255, 255, 0.05);
+  --color-glass-accent: #6d5dfc;
+  --color-glass-accent-hover: #8b7cf7;
+  --color-glass-dark: rgba(0, 0, 0, 0.3);
+  --color-glass-dark-strong: rgba(0, 0, 0, 0.5);
+
+  /* Radius tokens */
+  --radius-glass-sm: 8px;
+  --radius-glass-md: 12px;
+  --radius-glass-lg: 16px;
+  --radius-glass-xl: 24px;
+
+  /* Semantic tokens */
+  --accent: var(--color-glass-accent);
+  --accent-hover: var(--color-glass-accent-hover);
+  --text-on-accent: #ffffff;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --text-muted: #a0aec0;
+  --text-on-error: #ffffff;
+  --text-on-warning: #ffffff;
+  --text-on-success: #ffffff;
+  --bg-elevated: rgba(255, 255, 255, 0.15);
+  --border-color: rgba(255, 255, 255, 0.45);
+  --error: #e53e3e;
+  --warning: #ff9800;
+  --success: #48bb78;
+  --info: #4299e1;
+  --bg-primary: rgba(15, 15, 30, 0.9);
+  --bg-secondary: rgba(25, 25, 45, 0.75);
+  --bg-tertiary: rgba(10, 10, 20, 0.95);
+  --border-subtle: rgba(255, 255, 255, 0.15);
+}
+
+/* Dark mode — lighter glass surfaces for contrast */
+:root.dark {
+  --color-glass-bg: rgba(255, 255, 255, 0.08);
+  --color-glass-bg-hover: rgba(255, 255, 255, 0.12);
+  --color-glass-bg-active: rgba(255, 255, 255, 0.18);
+  --color-glass-border: rgba(255, 255, 255, 0.25);
+  --color-glass-border-strong: rgba(255, 255, 255, 0.35);
+  --color-glass-white: rgba(255, 255, 255, 0.6);
+  --color-glass-blur: rgba(255, 255, 255, 0.03);
+  --color-glass-dark: rgba(0, 0, 0, 0.5);
+  --color-glass-dark-strong: rgba(0, 0, 0, 0.7);
+  --text-primary: #e2e8f0;
+  --text-secondary: #c0c0c0;
+  --text-muted: #909090;
+  --bg-elevated: rgba(255, 255, 255, 0.1);
+  --border-color: rgba(255, 255, 255, 0.25);
+  --bg-primary: rgba(5, 5, 15, 0.95);
+  --bg-secondary: rgba(15, 15, 30, 0.85);
+  --bg-tertiary: rgba(10, 10, 20, 0.98);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+}

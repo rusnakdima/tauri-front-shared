@@ -1,0 +1,46 @@
+@if (open) {
+  <div
+    appApplyTheme="app-confirm-dialog"
+    class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]"
+    (click)="cancel()"
+  >
+    <div
+      class="dialog bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-2xl w-[400px] max-w-[90vw] shadow-2xl"
+      (click)="$event.stopPropagation()"
+    >
+      <header
+        class="flex items-center justify-between p-5 border-b border-[var(--border-color)]"
+      >
+        <h2 class="m-0 text-lg font-semibold text-[var(--text-primary)]">
+          {{ title || "Confirm" }}
+        </h2>
+        <button
+          class="bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"
+          (click)="cancel()"
+          aria-label="Close"
+        >
+          &times;
+        </button>
+      </header>
+      <div class="p-6 text-[var(--text-secondary)] text-[15px] leading-6">
+        {{ message }}
+      </div>
+      <footer
+        class="flex gap-3 p-4 border-t border-[var(--border-color)] justify-end"
+      >
+        <button
+          class="px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] font-medium cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"
+          (click)="cancel()"
+        >
+          {{ cancelText || "Cancel" }}
+        </button>
+        <button
+          class="px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]"
+          (click)="confirm()"
+        >
+          {{ confirmText || "Confirm" }}
+        </button>
+      </footer>
+    </div>
+  </div>
+}

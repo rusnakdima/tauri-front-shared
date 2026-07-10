@@ -1,0 +1,277 @@
+<div
+  appApplyTheme="app-properties-panel"
+  class="block h-full overflow-y-auto bg-[var(--bg-elevated)] border-l border-[var(--border-color)] text-[13px]"
+>
+  <div class="p-4 border-b border-[var(--border-color)]">
+    <div class="text-sm font-semibold text-[var(--text-primary)]">
+      Properties
+    </div>
+    @if (el(); as el) {
+      <div class="text-[11px] mt-1 font-mono text-[var(--text-muted)]">
+        {{ el.id }}
+      </div>
+    }
+  </div>
+
+  <div class="flex border-b border-[var(--border-color)]">
+    @for (tab of tabs; track tab) {
+      <button
+        class="flex-1 py-2 px-2 border-none bg-transparent cursor-pointer text-xs font-medium transition-all duration-150"
+        [class.text-[var(--accent)]]="activeTab === tab"
+        [class.text-[var(--text-secondary)]]="activeTab !== tab"
+        [class.font-semibold]="activeTab === tab"
+        [class.border-b-2]="activeTab === tab"
+        [class.border-b-transparent]="activeTab !== tab"
+        (click)="activeTab = tab"
+      >
+        {{ tabLabels[tab] }}
+      </button>
+    }
+  </div>
+
+  @if (el(); as el) {
+    <div class="p-3">
+      @switch (activeTab) {
+        @case ("props") {
+          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">
+            <div
+              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"
+            >
+              Component
+            </div>
+            <div class="flex flex-col gap-1 mb-2">
+              <label
+                class="text-[11px] font-medium text-[var(--text-secondary)]"
+                >Type</label
+              >
+              <input
+                [value]="el.componentId"
+                readonly
+                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"
+              />
+            </div>
+            <div class="flex flex-col gap-1 mb-2">
+              <label
+                class="text-[11px] font-medium text-[var(--text-secondary)]"
+                >ID</label
+              >
+              <input
+                [value]="el.id"
+                (input)="updateField('id', $any($event.target).value)"
+                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"
+              />
+            </div>
+            <div class="flex flex-col gap-1 mb-2">
+              <label
+                class="text-[11px] font-medium text-[var(--text-secondary)]"
+                >Classes</label
+              >
+              <input
+                [value]="el.classes || ''"
+                (input)="updateField('classes', $any($event.target).value)"
+                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"
+              />
+            </div>
+            @for (prop of propEntries; track prop.key) {
+              <div class="flex flex-col gap-1 mb-2">
+                <label
+                  class="text-[11px] font-medium text-[var(--text-secondary)]"
+                  >{{ prop.key }}</label
+                >
+                <input
+                  [value]="'' + (prop.value ?? '')"
+                  (input)="updateProp(prop.key, $any($event.target).value)"
+                  class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"
+                />
+              </div>
+            }
+          </div>
+        }
+        @case ("style") {
+          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">
+            <div
+              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"
+            >
+              Inline Styles
+            </div>
+            <div class="text-[11px] mb-2 text-[var(--text-muted)]">
+              CSS custom properties and inline styles
+            </div>
+            @for (style of styleEntries; track $index) {
+              <div class="flex gap-1.5 mb-1.5 items-center">
+                <input
+                  class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"
+                  [value]="style.key"
+                  placeholder="property"
+                  (input)="updateStyleKey($index, $any($event.target).value)"
+                />
+                <input
+                  class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"
+                  [value]="style.value"
+                  placeholder="value"
+                  (input)="updateStyleVal($index, $any($event.target).value)"
+                />
+                <button
+                  class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer"
+                  (click)="removeStyle($index)"
+                >
+                  ×
+                </button>
+              </div>
+            }
+            <button
+              class="py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer"
+              (click)="addStyle()"
+            >
+              + Add style
+            </button>
+          </div>
+          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">
+            <div
+              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"
+            >
+              States
+            </div>
+            @for (state of stateKeys; track state) {
+              <div class="p-2 rounded-md mb-3 bg-[var(--bg-primary)]">
+                <label
+                  class="text-[11px] font-semibold uppercase mb-1.5 block text-[var(--accent)]"
+                  >{{ state }}</label
+                >
+                @for (rule of getStateRules(state); track $index) {
+                  <div class="flex gap-1.5 mb-1.5 items-center">
+                    <input
+                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"
+                      [value]="rule.key"
+                      placeholder="property"
+                      (input)="
+                        updateStateRule(
+                          state,
+                          $index,
+                          'key',
+                          $any($event.target).value
+                        )
+                      "
+                    />
+                    <input
+                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"
+                      [value]="rule.value"
+                      placeholder="value"
+                      (input)="
+                        updateStateRule(
+                          state,
+                          $index,
+                          'val',
+                          $any($event.target).value
+                        )
+                      "
+                    />
+                    <button
+                      class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer"
+                      (click)="removeStateRule(state, $index)"
+                    >
+                      ×
+                    </button>
+                  </div>
+                }
+                <button
+                  class="py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer"
+                  (click)="addStateRule(state)"
+                >
+                  + Add rule
+                </button>
+              </div>
+            }
+            <div class="flex gap-1.5 flex-wrap">
+              @for (s of availableStates; track s) {
+                @if (!stateKeys.includes(s)) {
+                  <button
+                    class="py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer"
+                    (click)="addState(s)"
+                  >
+                    + {{ s }}
+                  </button>
+                }
+              }
+            </div>
+          </div>
+        }
+        @case ("events") {
+          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">
+            <div
+              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"
+            >
+              Event Handlers
+            </div>
+            <div class="text-[11px] mb-2 text-[var(--text-muted)]">
+              Map component @Output() events to schema handlers
+            </div>
+            @for (evt of eventEntries; track $index) {
+              <div class="flex gap-1.5 mb-1.5 items-center">
+                <input
+                  class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"
+                  [value]="evt.event"
+                  placeholder="event name"
+                  (input)="updateEventName($index, $any($event.target).value)"
+                />
+                <input
+                  class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"
+                  [value]="evt.handler"
+                  placeholder="handler name"
+                  (input)="
+                    updateEventHandler($index, $any($event.target).value)
+                  "
+                />
+                <button
+                  class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer"
+                  (click)="removeEvent($index)"
+                >
+                  ×
+                </button>
+              </div>
+            }
+            <button
+              class="py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer"
+              (click)="addEvent()"
+            >
+              + Add handler
+            </button>
+          </div>
+          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">
+            <div
+              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"
+            >
+              Data Binding
+            </div>
+            <div class="flex flex-col gap-1 mb-2">
+              <label
+                class="text-[11px] font-medium text-[var(--text-secondary)]"
+                >Store</label
+              >
+              <input
+                [value]="el.bind?.store || ''"
+                (input)="updateBind('store', $any($event.target).value)"
+                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"
+              />
+            </div>
+            <div class="flex flex-col gap-1 mb-2">
+              <label
+                class="text-[11px] font-medium text-[var(--text-secondary)]"
+                >Field</label
+              >
+              <input
+                [value]="el.bind?.field || ''"
+                (input)="updateBind('field', $any($event.target).value)"
+                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"
+              />
+            </div>
+          </div>
+        }
+      }
+    </div>
+  } @else {
+    <div class="p-8 text-center text-sm text-[var(--text-muted)]">
+      No element selected
+    </div>
+  }
+</div>

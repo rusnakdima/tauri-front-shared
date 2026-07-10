@@ -1,0 +1,24 @@
+<div
+  appApplyTheme="app-designer-tree"
+  class="flex flex-col h-full bg-[var(--bg-elevated)]"
+>
+  <div
+    class="px-4 py-3 text-xs font-semibold uppercase tracking-wide border-b text-[var(--text-secondary)] border-[var(--border-color)]"
+  >
+    Layers
+  </div>
+  <div class="flex-1 overflow-y-auto py-1 text-sm">
+    @for (node of treeNodes(); track node.id) {
+      <app-designer-tree-node
+        [node]="node"
+        [depth]="0"
+        (select)="selectNode($event)"
+      ></app-designer-tree-node>
+    }
+    @if (treeNodes().length === 0) {
+      <div class="px-4 py-3 text-center text-[var(--text-muted)]">
+        No elements
+      </div>
+    }
+  </div>
+</div>

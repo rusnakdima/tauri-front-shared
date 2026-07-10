@@ -1,0 +1,20 @@
+<div
+  appApplyTheme="app-tabs"
+  class="flex gap-0 border-b border-[var(--border-color)]"
+>
+  @for (tab of parsedTabs; track tab) {
+    <div
+      class="tab px-5 py-3 text-sm font-medium cursor-pointer -mb-px transition-all duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+      [class.active]="tab === activeTab"
+      [class.text-[var(--accent)]]="tab === activeTab"
+      [class.border-b-2]="tab === activeTab"
+      [class.border-b-transparent]="tab !== activeTab"
+      [style.--tw-border-color]="
+        tab === activeTab ? 'var(--accent)' : 'transparent'
+      "
+      (click)="selectTab(tab)"
+    >
+      {{ tab }}
+    </div>
+  }
+</div>

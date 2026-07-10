@@ -1,0 +1,10 @@
+<div appApplyTheme="app-spinner" class="inline-flex items-center gap-2">
+  <div
+    class="border-2 rounded-full animate-spin border-[var(--border-color)]"
+    [class]="'spinner-' + size"
+    [style.borderTopColor]="color || 'var(--accent)'"
+  ></div>
+  @if (label) {
+    <span class="text-sm text-[var(--text-secondary)]">{{ label }}</span>
+  }
+</div>

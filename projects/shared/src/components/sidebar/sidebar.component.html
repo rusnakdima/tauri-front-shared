@@ -1,0 +1,65 @@
+<aside
+  appApplyTheme="app-sidebar"
+  class="flex flex-col h-full border-r transition-[width,min-width] duration-200 overflow-hidden bg-[var(--bg-elevated)] border-[var(--border-color)]"
+  [class.w-16]="collapsed"
+  [class.min-w-16]="collapsed"
+  [style.width.px]="width"
+  [style.min-width.px]="width"
+>
+  <div
+    class="flex items-center justify-between px-4 py-3 border-b min-h-14 border-[var(--border-color)]"
+  >
+    <button
+      class="flex items-center justify-center w-8 h-8 border rounded-lg bg-transparent cursor-pointer text-xl transition-all duration-150 p-0 border-[var(--border-color)] text-[var(--text-secondary)]"
+      (click)="toggleCollapse()"
+      aria-label="Toggle sidebar"
+    >
+      {{ collapsed ? "→" : "←" }}
+    </button>
+  </div>
+  <nav class="flex-1 overflow-y-auto overflow-x-hidden p-2">
+    <ul class="list-none m-0 p-0">
+      @for (item of parsedItems; track item.label) {
+        <li class="m-0">
+          <div
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]"
+            (click)="handleItemClick(item)"
+          >
+            @if (item.icon) {
+              <span
+                class="flex items-center justify-center w-5 h-5 text-xl flex-shrink-0"
+                >{{ item.icon }}</span
+              >
+            }
+            <span class="flex-1 overflow-hidden text-ellipsis">{{
+              item.label
+            }}</span>
+          </div>
+          @if (item.children?.length) {
+            <ul class="ml-5 border-l pl-2">
+              @for (child of item.children; track child.label) {
+                <li>
+                  <div
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]"
+                    (click)="handleItemClick(child)"
+                  >
+                    @if (child.icon) {
+                      <span
+                        class="flex items-center justify-center w-5 h-5 text-xl flex-shrink-0"
+                        >{{ child.icon }}</span
+                      >
+                    }
+                    <span class="flex-1 overflow-hidden text-ellipsis">{{
+                      child.label
+                    }}</span>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </li>
+      }
+    </ul>
+  </nav>
+  <ng-content></ng-content>
+</aside>

@@ -5,10 +5,16 @@ import {
   OnInit,
   OnChanges,
   SimpleChanges,
-  AfterViewInit,
   Type,
+  Signal as Signal$1,
+  Provider,
+  EnvironmentProviders,
+  TemplateRef,
+  ViewContainerRef,
 } from "@angular/core";
 import { Subject, Observable } from "rxjs";
+import * as _angular_router from "@angular/router";
+import { Routes, Router, CanActivateFn } from "@angular/router";
 
 type ColorMode = "light" | "dark" | "system";
 interface Theme {
@@ -278,6 +284,7 @@ declare class PaginationComponent {
 declare const uiComponents: SharedComponentDef[];
 declare const layoutComponents: SharedComponentDef[];
 declare const feedbackComponents: SharedComponentDef[];
+declare const dataComponents: SharedComponentDef[];
 
 /**
  * Abstract base component that provides a destroy$ Subject for subscription cleanup.
@@ -367,7 +374,7 @@ interface StorageServiceInterface {
   get<T>(key: string): T | null;
   set(key: string, value: unknown): void;
 }
-interface CrudFilter {
+interface CrudFilter$1 {
   field: string;
   operator:
     | "eq"
@@ -382,7 +389,7 @@ interface CrudFilter {
   value: unknown;
 }
 interface CrudQuery {
-  filters?: CrudFilter[];
+  filters?: CrudFilter$1[];
   sortBy?: string;
   sortAsc?: boolean;
   limit?: number;
@@ -995,6 +1002,16 @@ declare class SchemaRouterService {
   getAllLayouts(): Layout[];
   updateQueryParams(params: Record<string, string>): void;
   reset(): void;
+  /**
+   * Convert all schema pages to Angular Routes.
+   * Each route points to SchemaRouteViewerComponent with page data in route data.
+   */
+  toAngularRoutes(): Routes;
+  /**
+   * Register all schema pages with Angular Router by calling router.resetConfig().
+   * Must be called AFTER setSchema().
+   */
+  registerAngularRoutes(router: _angular_router.Router): void;
   static ɵfac: i0.ɵɵFactoryDeclaration<
     SchemaRouterService,
     [{ optional: true }]
@@ -1006,11 +1023,22 @@ declare class SchemaRouteViewerComponent implements OnInit, OnChanges {
   private router;
   private renderer;
   route: string;
+  /** When true, renders schema layoutRegions (header, footer, bottom-nav, overlay) */
+  showLayoutRegions: boolean;
   readonly page: i0.Signal<Page>;
   /** CSS grid properties to apply via ngStyle */
   readonly gridStyles: i0.Signal<Record<string, string>>;
   /** CSS classes: schema-page + layout class */
   readonly containerClass: i0.Signal<string>;
+  /** All layout regions from the renderer, re-computed when route changes */
+  private readonly rawRegions;
+  private getRegionType;
+  private isRegionVisible;
+  private regionByType;
+  readonly headerRegion: i0.Signal<LayoutElement>;
+  readonly footerRegion: i0.Signal<LayoutElement>;
+  readonly bottomNavRegion: i0.Signal<LayoutElement>;
+  readonly overlayRegions: i0.Signal<LayoutElement[]>;
   constructor(router: SchemaRouterService, renderer: SchemaRendererService);
   ngOnInit(): void;
   ngOnChanges(changes: SimpleChanges): void;
@@ -1019,7 +1047,10 @@ declare class SchemaRouteViewerComponent implements OnInit, OnChanges {
     SchemaRouteViewerComponent,
     "lib-schema-route-viewer",
     never,
-    { route: { alias: "route"; required: false } },
+    {
+      route: { alias: "route"; required: false };
+      showLayoutRegions: { alias: "showLayoutRegions"; required: false };
+    },
     {},
     never,
     never,
@@ -1187,6 +1218,8 @@ declare class SchemaShellComponent implements OnInit, OnDestroy {
   defaultTheme: StyleVariant;
   initialRoute: string;
   errorFallbackCommandName: string;
+  /** When true, auto-renders app-toast-container and a full-screen loading overlay */
+  includeOverlays: boolean;
   readonly loading: i0.WritableSignal<boolean>;
   readonly error: i0.WritableSignal<string>;
   private themeSubscription?;
@@ -1246,6 +1279,7 @@ declare class SchemaShellComponent implements OnInit, OnDestroy {
         alias: "errorFallbackCommandName";
         required: false;
       };
+      includeOverlays: { alias: "includeOverlays"; required: false };
     },
     {},
     never,
@@ -1389,32 +1423,71 @@ declare class ApiException extends Error {
   constructor(message: string, code?: string, details?: unknown);
 }
 
-declare class SchemaElementComponent implements AfterViewInit, OnDestroy {
+type LogLevel = "debug" | "info" | "warn" | "error";
+interface LogEntry {
+  level: LogLevel;
+  message: string;
+  timestamp: string;
+  source?: string;
+  metadata?: unknown;
+}
+declare class SignalLoggerService {
+  private _entries;
+  private _minLevel;
+  private _maxEntries;
+  entries: i0.Signal<LogEntry[]>;
+  filteredEntries: i0.Signal<LogEntry[]>;
+  setMinLevel(level: LogLevel): void;
+  getMinLevel(): LogLevel;
+  setMaxEntries(max: number): void;
+  addEntry(entry: LogEntry): void;
+  debug(message: string, source?: string, metadata?: unknown): void;
+  info(message: string, source?: string, metadata?: unknown): void;
+  warn(message: string, source?: string, metadata?: unknown): void;
+  error(message: string, source?: string, metadata?: unknown): void;
+  clear(): void;
+  getEntriesByLevel(level: LogLevel): LogEntry[];
+  exportToJson(): string;
+  importFromJson(json: string): void;
+  static ɵfac: i0.ɵɵFactoryDeclaration<SignalLoggerService, never>;
+  static ɵprov: i0.ɵɵInjectableDeclaration<SignalLoggerService>;
+}
+
+type SyncStatus = "idle" | "syncing" | "error" | "offline";
+declare class SignalSyncService {
+  private http;
+  private _syncStatus;
+  private _lastSyncTime;
+  private _pendingChanges;
+  private _syncEndpoint;
+  syncStatus: i0.Signal<SyncStatus>;
+  lastSyncTime: i0.Signal<Date>;
+  pendingChanges: i0.Signal<number>;
+  syncEndpoint: i0.Signal<string>;
+  setEndpoint(endpoint: string): void;
+  setStatus(status: SyncStatus): void;
+  incrementPending(): void;
+  decrementPending(): void;
+  markSynced(): void;
+  markError(): void;
+  markOffline(): void;
+  syncToCloud(): Promise<void>;
+  private performSync;
+  static ɵfac: i0.ɵɵFactoryDeclaration<SignalSyncService, never>;
+  static ɵprov: i0.ɵɵInjectableDeclaration<SignalSyncService>;
+}
+
+declare class SchemaElementComponent {
   private renderer;
-  private renderer2;
-  private ngZone;
-  private eventBus;
-  private handlerExecutor;
-  private injector;
-  private componentRef;
-  private styleEl;
-  private dynamicHost;
   element: CanvasElement;
   elements: CanvasElement[];
-  ngAfterViewInit(): void;
-  ngOnDestroy(): void;
-  private injectStateStyles;
-  private removeStateStyles;
-  private destroyDynamicComponent;
-  private createDynamicComponent;
   get componentType(): i0.Type<any>;
   get tag(): string;
   get classes(): string;
   get childElements(): CanvasElement[];
   get props(): Record<string, unknown>;
-  get elementStyles(): Record<string, string>;
-  get elementStatesStyles(): string;
   get gridStyle(): Partial<CSSStyleDeclaration>;
+  get elementStyles(): Record<string, string>;
   get isNativeHtml(): boolean;
   static ɵfac: i0.ɵɵFactoryDeclaration<SchemaElementComponent, never>;
   static ɵcmp: i0.ɵɵComponentDeclaration<
@@ -1445,6 +1518,34 @@ declare abstract class StorageService {
   abstract remove(key: string): void;
   abstract clear(): void;
   abstract keys(): string[];
+  /**
+   * Checks if a key exists in storage.
+   * Optional for backward compatibility with implementations that don't need it.
+   */
+  has?(key: string): boolean;
+}
+
+type StorageValidator<T> = (value: unknown) => value is T;
+declare class LocalStorageService implements StorageService {
+  private prefix;
+  /**
+   * Configure a prefix for namespacing keys.
+   * Call before using get/set/remove/has with prefixed keys.
+   */
+  setPrefix(prefix: string): void;
+  private makeKey;
+  get<T>(
+    key: string,
+    defaultValue?: T,
+    validator?: StorageValidator<T>,
+  ): T | null;
+  set<T>(key: string, value: T): void;
+  remove(key: string): void;
+  clear(): void;
+  keys(): string[];
+  has(key: string): boolean;
+  static ɵfac: i0.ɵɵFactoryDeclaration<LocalStorageService, never>;
+  static ɵprov: i0.ɵɵInjectableDeclaration<LocalStorageService>;
 }
 
 type FilterOperator =
@@ -1465,6 +1566,48 @@ declare class UnifiedStorageService {
   set<T>(key: string, value: T): Promise<void>;
   find<T>(filter: QueryFilter[]): Promise<T[]>;
   remove(key: string): Promise<void>;
+}
+
+interface CacheEntry<T> {
+  value: T;
+  timestamp: number;
+  ttl?: number;
+}
+declare class StorageCacheService {
+  private cache;
+  private reactiveCache;
+  private cacheTimestamps;
+  private inFlightRequests;
+  private defaultTtl;
+  readonly cacheInvalidated: i0.WritableSignal<boolean>;
+  get<T>(key: string): T | null;
+  set<T>(key: string, value: T, ttl?: number): void;
+  setDefaultTtl(ttl: number): void;
+  invalidate(key: string): void;
+  invalidateAll(): void;
+  has(key: string): boolean;
+  delete(key: string): void;
+  clear(): void;
+  clearPattern(pattern: string): void;
+  hasCachedData(key: string): boolean;
+  getReactiveCache<T>(key: string): Signal$1<T> | undefined;
+  setReactiveCache<T>(key: string, value: Signal$1<T>): void;
+  getCacheTimestamp(key: string): number | undefined;
+  setCacheTimestamp(key: string, timestamp: number): void;
+  isCacheValid(key: string, ttlMs?: number): boolean;
+  isCacheFull(): boolean;
+  evictOldestCache(): void;
+  invalidateCache(): void;
+  clearAll(): void;
+  getOrFetch<T>(
+    key: string,
+    fetchFn: () => Promise<T>,
+    ttl?: number,
+  ): Promise<T>;
+  hasInFlightRequest(key: string): boolean;
+  getInFlightRequest<T>(key: string): Promise<T> | undefined;
+  static ɵfac: i0.ɵɵFactoryDeclaration<StorageCacheService, never>;
+  static ɵprov: i0.ɵɵInjectableDeclaration<StorageCacheService>;
 }
 
 declare abstract class CrudService {
@@ -1512,6 +1655,241 @@ declare function mapResponse<U, T>(
   response: Response<T>,
   mapper: (data: T) => U,
 ): Response<U>;
+
+/** Standard filter for CRUD operations matching Rust CrudFilter */
+interface CrudFilter {
+  field: string;
+  op: "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "contains" | "in";
+  value: unknown;
+}
+/**
+ * Unified CRUD service that maps to Rust define_crud_routes! commands.
+ *
+ * Naming convention: entity "connection" → Rust command `connection_get`, `connection_get_all`, etc.
+ * Custom commands: call `.custom('my_command', { arg: value })` for app-specific Tauri commands.
+ */
+declare class ApiCrudService {
+  private invoke;
+  /** Get a single entity by ID — calls `{entity}_get` */
+  get<T>(
+    entity: string,
+    id: string,
+    options?: InvokeOptions,
+  ): Promise<Response<T>>;
+  /** Get all entities with optional filtering/pagination — calls `{entity}_get_all` */
+  getAll<T>(
+    entity: string,
+    filter?: CrudFilter[],
+    skip?: number,
+    limit?: number,
+    sortBy?: string,
+    sortAsc?: boolean,
+  ): Promise<Response<T[]>>;
+  /** Create a new entity — calls `{entity}_create` */
+  create<T>(entity: string, data: unknown): Promise<Response<T>>;
+  /** Full update of an entity — calls `{entity}_update` */
+  update<T>(entity: string, id: string, data: unknown): Promise<Response<T>>;
+  /** Partial update of an entity — calls `{entity}_patch` */
+  patch<T>(entity: string, id: string, patch: unknown): Promise<Response<T>>;
+  /** Delete an entity — calls `{entity}_delete` */
+  delete(entity: string, id: string): Promise<Response<null>>;
+  /**
+   * Call any custom Tauri command not covered by standard CRUD.
+   * Use for app-specific commands that don't follow the `{entity}_{operation}` pattern.
+   */
+  custom<T>(command: string, args?: Record<string, unknown>): Promise<T>;
+  /** Get with automatic retry on failure */
+  getWithRetry<T>(
+    entity: string,
+    id: string,
+    retryOptions?: RetryOptions,
+  ): Promise<Response<T>>;
+  /** Custom command with automatic retry on failure */
+  customWithRetry<T>(
+    command: string,
+    args?: Record<string, unknown>,
+    retryOptions?: RetryOptions,
+  ): Promise<T>;
+  static ɵfac: i0.ɵɵFactoryDeclaration<ApiCrudService, never>;
+  static ɵprov: i0.ɵɵInjectableDeclaration<ApiCrudService>;
+}
+
+interface SchemaSetupOptions {
+  /** Initial route to navigate to after schema loads */
+  initialRoute?: string;
+  /** Tauri command name to load schema (default: 'get_ui_schema') */
+  commandName?: string;
+  /** Fallback command if primary fails */
+  errorFallbackCommandName?: string;
+  /** Theme variant to apply (default: 'material-design-v3') */
+  themeVariant?: StyleVariant;
+  /** Schema handler definitions */
+  handlers?: Record<string, HandlerDefinition>;
+  /** Whether to auto-register schema pages as Angular routes (default: false) */
+  autoRegisterRoutes?: boolean;
+  /** Called after schema loads successfully */
+  onSchemaLoaded?: (schema: UiSchema) => void;
+  /** Called if schema loading fails */
+  onError?: (error: Error) => void;
+}
+declare class SchemaSetupService {
+  private invokeWrapper;
+  private schemaRouter;
+  private renderer;
+  private themeService;
+  private fallbackService;
+  private handlerExecutor;
+  private router;
+  readonly schemaLoaded: i0.WritableSignal<boolean>;
+  readonly setupError: i0.WritableSignal<string>;
+  /**
+   * Complete schema setup: load, validate, register, navigate.
+   * This replaces per-app schema loading boilerplate.
+   */
+  setup(appId: string, options?: SchemaSetupOptions): Promise<UiSchema | null>;
+  /**
+   * Set the Angular Router instance for route registration.
+   * Called automatically if Router is available via DI.
+   */
+  setRouter(router: Router): void;
+  /**
+   * Register all schema pages as Angular Routes pointing to SchemaRouteViewerComponent.
+   * Must be called AFTER schema is loaded.
+   */
+  registerRouter(): void;
+  /**
+   * Convert all schema pages to Angular Routes.
+   * Each route points to SchemaRouteViewerComponent with page data in route data.
+   */
+  toAngularRoutes(): Routes;
+  private loadSchema;
+  private tryFallback;
+  private registerFunctions;
+  private applyTheme;
+  static ɵfac: i0.ɵɵFactoryDeclaration<SchemaSetupService, never>;
+  static ɵprov: i0.ɵɵInjectableDeclaration<SchemaSetupService>;
+}
+
+interface UnifiedAppConfig {
+  appId?: string;
+  enableAnimations?: boolean;
+  enableHttpClient?: boolean;
+  enableBrowserErrorListeners?: boolean;
+  enableZoneChangeDetection?: boolean;
+  extraProviders?: (Provider | EnvironmentProviders)[];
+}
+type AppProvider = Provider | EnvironmentProviders;
+/**
+ * Standardized Angular providers for all Tauri apps.
+ *
+ * Usage:
+ * ```typescript
+ * export const appConfig: ApplicationConfig = {
+ *   providers: [
+ *     ...provideUnifiedApp({ appId: 'my-app' }),
+ *     // App-specific providers only
+ *   ],
+ * };
+ * ```
+ */
+declare function provideUnifiedApp(config?: UnifiedAppConfig): AppProvider[];
+
+/** Angular-signal-compatible callable that reads/writes a key in the store */
+type Signal<T> = {
+  (): T;
+  set(value: T): void;
+  update(fn: (prev: T) => T): void;
+};
+
+interface BaseEntity {
+  id: string;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+}
+interface BaseServiceConfig<T extends BaseEntity> {
+  /** API endpoint name (e.g., 'scene', 'source', 'profile') */
+  endpoint: string;
+  /** Entity name for notifications (e.g., 'Scene', 'Source', 'Profile') */
+  entityName: string;
+  /** Default filter object for load operations */
+  defaultFilter?: Record<string, unknown>;
+  /** Whether to show success notifications on create/update/delete */
+  showNotifications?: boolean;
+  /** Custom error messages */
+  errorMessages?: {
+    load?: string;
+    create?: string;
+    update?: string;
+    delete?: string;
+  };
+}
+/** Minimal MainService interface for BaseCrudService */
+interface MainServiceForCrud {
+  invoke<T>(cmd: string, args?: Record<string, unknown>): Promise<T>;
+  getAll<T>(apiName: string, filter?: Record<string, unknown>): Promise<T>;
+  get<T>(apiName: string, filter?: Record<string, unknown>): Promise<T>;
+  create<T>(apiName: string, data: unknown): Promise<T>;
+  update<T>(apiName: string, id: string, data: unknown): Promise<T>;
+  patch<T>(apiName: string, id: string, data: unknown): Promise<T>;
+  delete(apiName: string, id: string): Promise<void>;
+}
+/** Minimal StorageCacheService interface for BaseCrudService */
+interface StorageCacheServiceForCrud {
+  isCacheValid(key: string, ttlMs?: number): boolean;
+  getReactiveCache<T>(key: string): (() => T) | undefined;
+  setCacheTimestamp(key: string, timestamp: number): void;
+  invalidateCache(): void;
+}
+/** Minimal StorageQueryService interface for BaseCrudService */
+interface StorageQueryServiceForCrud {}
+declare abstract class BaseCrudService<T extends BaseEntity> {
+  protected readonly config: BaseServiceConfig<T>;
+  protected readonly mainService: MainServiceForCrud;
+  protected readonly cacheService: StorageCacheServiceForCrud;
+  protected readonly queryService: StorageQueryServiceForCrud;
+  protected readonly entitiesSignal: Signal<T[]>;
+  protected readonly activeEntitySignal: Signal<T | null>;
+  protected readonly activeEntityIdSignal: Signal<string | null>;
+  /** Call as a function: entities() returns T[] */
+  readonly entities: () => T[];
+  readonly activeEntity: () => T | null;
+  readonly activeEntityId: () => string | null;
+  constructor(
+    config: BaseServiceConfig<T>,
+    mainService: MainServiceForCrud,
+    cacheService: StorageCacheServiceForCrud,
+    queryService: StorageQueryServiceForCrud,
+  );
+  protected getEntityName(): string;
+  protected getEndpoint(): string;
+  load(filter?: Record<string, unknown>): Promise<T[]>;
+  get(filter: Record<string, unknown>): Promise<T | null>;
+  create(
+    data: Omit<T, "id" | "createdAt" | "updatedAt">,
+    showSuccess?: boolean,
+  ): Promise<T | null>;
+  update(
+    id: string,
+    updates: Partial<T>,
+    showSuccess?: boolean,
+  ): Promise<T | null>;
+  patch(
+    id: string,
+    updates: Partial<T>,
+    showSuccess?: boolean,
+  ): Promise<T | null>;
+  delete(id: string, showSuccess?: boolean): Promise<boolean>;
+  setActiveEntityId(id: string | null): void;
+  private invalidateEndpointCache;
+  protected setEntities(entities: T[]): void;
+  protected addEntity(entity: T): void;
+  protected updateEntity(entity: T): void;
+  protected removeEntity(id: string): void;
+  protected setActiveEntity(entity: T | null): void;
+  updateOrder(items: T[]): Promise<void>;
+  static ɵfac: i0.ɵɵFactoryDeclaration<BaseCrudService<any>, never>;
+  static ɵprov: i0.ɵɵInjectableDeclaration<BaseCrudService<any>>;
+}
 
 interface InvokeOptionsWithRetry {
   timeout?: number;
@@ -1597,9 +1975,116 @@ declare function weightedRandom<T>(
 ): T;
 declare function randomPitchVariation(variation: number): number;
 declare function generatePeerId(): number;
+declare function lerpVector3D(
+  a: [number, number, number],
+  b: [number, number, number],
+  t: number,
+): [number, number, number];
+declare function lerpAngle(a: number, b: number, t: number): number;
+
+/**
+ * Route guard that checks resource-action permissions.
+ *
+ * Usage in route config:
+ * {
+ *   path: 'admin',
+ *   canActivate: [rbacGuard],
+ *   data: {
+ *     permissions: ['users.read', 'settings.write'],
+ *     requireAll: false  // OR logic (default), true = AND logic
+ *   }
+ * }
+ */
+declare const rbacGuard: CanActivateFn;
+/**
+ * Guard that checks for specific roles.
+ *
+ * Usage in route config:
+ * {
+ *   path: 'admin',
+ *   canActivate: [rbacRoleGuard],
+ *   data: {
+ *     roles: ['admin', 'moderator']
+ *   }
+ * }
+ */
+declare const rbacRoleGuard: CanActivateFn;
+
+/**
+ * Structural directive that shows/hides content based on permission.
+ *
+ * Usage:
+ * <button *rbacHasPermission="'users.write'">Edit Users</button>
+ * <div *rbacHasPermission="'users.delete'; else noPerm">Delete</div>
+ * <ng-template #noPerm>No permission</ng-template>
+ *
+ * Supports AND logic with multiple permissions:
+ * <button *rbacHasPermission="['users.write', 'users.admin']">Admin Action</button>
+ */
+declare class RbacHasPermissionDirective implements OnInit {
+  private permissionService;
+  private templateRef;
+  private viewContainer;
+  permission: string | string[];
+  constructor(
+    permissionService: PermissionService,
+    templateRef: TemplateRef<unknown>,
+    viewContainer: ViewContainerRef,
+  );
+  ngOnInit(): void;
+  private updateView;
+  private checkPermission;
+  static ɵfac: i0.ɵɵFactoryDeclaration<RbacHasPermissionDirective, never>;
+  static ɵdir: i0.ɵɵDirectiveDeclaration<
+    RbacHasPermissionDirective,
+    "[rbacHasPermission]",
+    never,
+    { permission: { alias: "rbacHasPermission"; required: false } },
+    {},
+    never,
+    never,
+    true,
+    never
+  >;
+}
+/**
+ * Structural directive that shows/hides content based on role membership.
+ *
+ * Usage:
+ * <button *rbacHasRole="'admin'">Admin Panel</button>
+ * <div *rbacHasRole="['editor', 'moderator']">Can Edit</div>
+ */
+declare class RbacHasRoleDirective implements OnInit {
+  private permissionService;
+  private templateRef;
+  private viewContainer;
+  role: string | string[];
+  constructor(
+    permissionService: PermissionService,
+    templateRef: TemplateRef<unknown>,
+    viewContainer: ViewContainerRef,
+  );
+  ngOnInit(): void;
+  private updateView;
+  private checkRole;
+  static ɵfac: i0.ɵɵFactoryDeclaration<RbacHasRoleDirective, never>;
+  static ɵdir: i0.ɵɵDirectiveDeclaration<
+    RbacHasRoleDirective,
+    "[rbacHasRole]",
+    never,
+    { role: { alias: "rbacHasRole"; required: false } },
+    {},
+    never,
+    never,
+    true,
+    never
+  >;
+}
 
 export {
+  ApiCrudService,
   ApiException,
+  BaseCrudService,
   BaseDestroyableComponent,
   ComponentRegistryService,
   DataBindingResolverService,
@@ -1611,24 +2096,33 @@ export {
   I18nService,
   InvokeWrapperService,
   LayoutEngineService,
+  LocalStorageService,
   PaginationComponent,
   PermissionService,
+  RbacHasPermissionDirective,
+  RbacHasRoleDirective,
   CrudService as RemoteCrudService,
   SCHEMA_COMPONENT_MAP,
   SchemaElementComponent,
   SchemaRendererService,
   SchemaRouteViewerComponent,
   SchemaRouterService,
+  SchemaSetupService,
   SchemaShellComponent,
+  SignalLoggerService,
   SignalStoreService,
+  SignalSyncService,
+  StorageCacheService,
   StorageService,
   StyleThemeService,
   StyleThemeService as ThemeService,
   ThemeToggleService,
   ToastService,
+  TodoPermission,
   UnifiedStorageService,
   calculateDistance3D,
   clamp,
+  dataComponents,
   easeInOutQuad,
   easeOutQuad,
   feedbackComponents,
@@ -1649,15 +2143,20 @@ export {
   isSuccess,
   layoutComponents,
   lerp,
+  lerpAngle,
+  lerpVector3D,
   loadStyleVariant,
   mapResponse,
   parseError,
+  provideUnifiedApp,
   randomChoice,
   randomChoice as randomElement,
   randomInt,
   randomInterval,
   randomPitchVariation,
   randomRange,
+  rbacGuard,
+  rbacRoleGuard,
   registerSchemaComponent,
   setCurrentStyle,
   sortBy,
@@ -1667,12 +2166,17 @@ export {
 };
 export type {
   AppError,
+  AppProvider,
   AppSchema,
+  BaseEntity,
+  BaseServiceConfig,
+  CacheEntry,
   CanvasElement,
   ColorMode,
   ComponentBehavior,
   ComponentDef,
   ComponentStyleMap,
+  CrudFilter,
   DataBinding,
   ElementConfig,
   ElementEvents,
@@ -1682,10 +2186,18 @@ export type {
   Layout,
   LayoutElement,
   Page,
+  Permission,
+  PermissionCheckResult,
   RenderContext,
   Response,
+  Role,
+  SchemaSetupOptions,
+  StorageValidator,
   StyleVariant,
   Theme,
   ToastNotification$1 as ToastNotification,
+  TodoPermissionContext,
   UiSchema,
+  UnifiedAppConfig,
+  User,
 };

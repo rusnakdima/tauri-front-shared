@@ -13,20 +13,25 @@ import {
   HostListener,
   computed,
   Injector,
-  NgZone,
-  ViewContainerRef,
   ViewChild,
   ChangeDetectionStrategy,
   CUSTOM_ELEMENTS_SCHEMA,
-  Optional,
   effect,
+  Optional,
+  input,
+  output,
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection,
 } from "@angular/core";
 import { BehaviorSubject, Subject } from "rxjs";
 import * as i1 from "@angular/common";
 import { CommonModule } from "@angular/common";
+import { DomSanitizer } from "@angular/platform-browser";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { DomSanitizer } from "@angular/platform-browser";
+import { HttpClient, provideHttpClient } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 
 const SCHEMA_COMPONENT_MAP = new Map();
 function registerSchemaComponent(selector, component) {
@@ -5638,7 +5643,7 @@ class IconComponent {
     inputs: { icon: "icon", size: "size" },
     ngImport: i0,
     template:
-      '<span class="inline-flex items-center justify-center icon-wrapper">\n  <i [class]="faClass" style="font-size: 16px; width: 1.2em; text-align: center;"></i>\n</span>\n',
+      '<span class="inline-flex items-center justify-center icon-wrapper">\n  <i\n    [class]="faClass"\n    style="font-size: 16px; width: 1.2em; text-align: center"\n  ></i>\n</span>\n',
     styles: [""],
   });
 }
@@ -5656,7 +5661,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [],
           template:
-            '<span class="inline-flex items-center justify-center icon-wrapper">\n  <i [class]="faClass" style="font-size: 16px; width: 1.2em; text-align: center;"></i>\n</span>\n',
+            '<span class="inline-flex items-center justify-center icon-wrapper">\n  <i\n    [class]="faClass"\n    style="font-size: 16px; width: 1.2em; text-align: center"\n  ></i>\n</span>\n',
         },
       ],
     },
@@ -5759,7 +5764,7 @@ class ButtonComponent {
     outputs: { clicked: "clicked" },
     ngImport: i0,
     template:
-      '    <button\n      appApplyTheme="app-button"\n      [themedVariant]="buttonStyle"\n      [themedSize]="size"\n      [attr.type]="type || \'button\'"\n      [class]="getButtonClass()"\n      [disabled]="disabled || loading"\n      (click)="handleClick($event)"\n      class="inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-center font-medium transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"\n    >\n      @if (loading) {\n        <span class="app-btn-spinner w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>\n      } @else {\n        @if (icon && iconPosition === "left") {\n          <app-icon class="app-btn-icon" [icon]="icon" [size]="20" />\n        }\n        @if (label) {\n          <span>{{ label }}</span>\n        } @else {\n          <ng-content></ng-content>\n        }\n        @if (icon && iconPosition === "right") {\n          <app-icon class="app-btn-icon" [icon]="icon" [size]="20" />\n        }\n      }\n    </button>\n',
+      '<button\n  appApplyTheme="app-button"\n  [themedVariant]="buttonStyle"\n  [themedSize]="size"\n  [attr.type]="type || \'button\'"\n  [class]="getButtonClass()"\n  [disabled]="disabled || loading"\n  (click)="handleClick($event)"\n  class="inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-center font-medium transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"\n>\n  @if (loading) {\n    <span\n      class="app-btn-spinner w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"\n    ></span>\n  } @else {\n    @if (icon && iconPosition === "left") {\n      <app-icon class="app-btn-icon" [icon]="icon" [size]="20" />\n    }\n    @if (label) {\n      <span>{{ label }}</span>\n    } @else {\n      <ng-content></ng-content>\n    }\n    @if (icon && iconPosition === "right") {\n      <app-icon class="app-btn-icon" [icon]="icon" [size]="20" />\n    }\n  }\n</button>\n',
     styles: [""],
     dependencies: [
       {
@@ -5791,7 +5796,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [IconComponent, ApplyThemeDirective],
           template:
-            '    <button\n      appApplyTheme="app-button"\n      [themedVariant]="buttonStyle"\n      [themedSize]="size"\n      [attr.type]="type || \'button\'"\n      [class]="getButtonClass()"\n      [disabled]="disabled || loading"\n      (click)="handleClick($event)"\n      class="inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-center font-medium transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"\n    >\n      @if (loading) {\n        <span class="app-btn-spinner w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>\n      } @else {\n        @if (icon && iconPosition === "left") {\n          <app-icon class="app-btn-icon" [icon]="icon" [size]="20" />\n        }\n        @if (label) {\n          <span>{{ label }}</span>\n        } @else {\n          <ng-content></ng-content>\n        }\n        @if (icon && iconPosition === "right") {\n          <app-icon class="app-btn-icon" [icon]="icon" [size]="20" />\n        }\n      }\n    </button>\n',
+            '<button\n  appApplyTheme="app-button"\n  [themedVariant]="buttonStyle"\n  [themedSize]="size"\n  [attr.type]="type || \'button\'"\n  [class]="getButtonClass()"\n  [disabled]="disabled || loading"\n  (click)="handleClick($event)"\n  class="inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-center font-medium transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"\n>\n  @if (loading) {\n    <span\n      class="app-btn-spinner w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"\n    ></span>\n  } @else {\n    @if (icon && iconPosition === "left") {\n      <app-icon class="app-btn-icon" [icon]="icon" [size]="20" />\n    }\n    @if (label) {\n      <span>{{ label }}</span>\n    } @else {\n      <ng-content></ng-content>\n    }\n    @if (icon && iconPosition === "right") {\n      <app-icon class="app-btn-icon" [icon]="icon" [size]="20" />\n    }\n  }\n</button>\n',
         },
       ],
     },
@@ -5942,7 +5947,7 @@ class InputComponent {
     outputs: { input: "input", blurred: "blurred" },
     ngImport: i0,
     template:
-      '<div appApplyTheme="app-input" class="flex flex-col gap-1">\n  @if (label) {\n    <label class="text-sm font-medium text-[var(--text-primary)]">{{ label }}</label>\n  }\n  <div class="relative flex items-center" [class.app-input-focused]="focused">\n    @if (icon) {\n      <app-icon class="absolute left-3 text-xl" [icon]="icon" [size]="20" [class]="focused ? \'text-[var(--accent)]\' : \'text-[var(--text-muted)]\'" />\n    }\n    <input\n      #inputEl\n      [attr.type]="type"\n      class="w-full px-3 py-2 rounded-lg border transition-all outline-none focus:shadow-[0_0_0_1px_var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed"\n      [class.ps-10]="!!icon"\n      [class.border-[var(--error)]]="error"\n      [class.border-[var(--accent)]]="!error && focused"\n      [class.border-[var(--border-color)]]="!error && !focused"\n      [class.bg-[var(--bg-tertiary)]]="disabled"\n      [class.bg-[var(--bg-primary)]]="!disabled"\n      [placeholder]="placeholder"\n      [disabled]="disabled"\n      [value]="value"\n      (input)="handleInput($event)"\n      (focus)="focused = true"\n      (blur)="focused = false"\n    />\n  </div>\n  @if (error) {\n    <span class="text-xs text-[var(--error)]">{{ error }}</span>\n  }\n</div>\n',
+      '<div appApplyTheme="app-input" class="flex flex-col gap-1">\n  @if (label) {\n    <label class="text-sm font-medium text-[var(--text-primary)]">{{\n      label\n    }}</label>\n  }\n  <div class="relative flex items-center" [class.app-input-focused]="focused">\n    @if (icon) {\n      <app-icon\n        class="absolute left-3 text-xl"\n        [icon]="icon"\n        [size]="20"\n        [class]="focused ? \'text-[var(--accent)]\' : \'text-[var(--text-muted)]\'"\n      />\n    }\n    <input\n      #inputEl\n      [attr.type]="type"\n      class="w-full px-3 py-2 rounded-lg border transition-all outline-none focus:shadow-[0_0_0_1px_var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed"\n      [class.ps-10]="!!icon"\n      [class.border-[var(--error)]]="error"\n      [class.border-[var(--accent)]]="!error && focused"\n      [class.border-[var(--border-color)]]="!error && !focused"\n      [class.bg-[var(--bg-tertiary)]]="disabled"\n      [class.bg-[var(--bg-primary)]]="!disabled"\n      [placeholder]="placeholder"\n      [disabled]="disabled"\n      [value]="value"\n      (input)="handleInput($event)"\n      (focus)="focused = true"\n      (blur)="focused = false"\n    />\n  </div>\n  @if (error) {\n    <span class="text-xs text-[var(--error)]">{{ error }}</span>\n  }\n</div>\n',
     styles: [""],
     dependencies: [
       {
@@ -5974,7 +5979,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [IconComponent, ApplyThemeDirective],
           template:
-            '<div appApplyTheme="app-input" class="flex flex-col gap-1">\n  @if (label) {\n    <label class="text-sm font-medium text-[var(--text-primary)]">{{ label }}</label>\n  }\n  <div class="relative flex items-center" [class.app-input-focused]="focused">\n    @if (icon) {\n      <app-icon class="absolute left-3 text-xl" [icon]="icon" [size]="20" [class]="focused ? \'text-[var(--accent)]\' : \'text-[var(--text-muted)]\'" />\n    }\n    <input\n      #inputEl\n      [attr.type]="type"\n      class="w-full px-3 py-2 rounded-lg border transition-all outline-none focus:shadow-[0_0_0_1px_var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed"\n      [class.ps-10]="!!icon"\n      [class.border-[var(--error)]]="error"\n      [class.border-[var(--accent)]]="!error && focused"\n      [class.border-[var(--border-color)]]="!error && !focused"\n      [class.bg-[var(--bg-tertiary)]]="disabled"\n      [class.bg-[var(--bg-primary)]]="!disabled"\n      [placeholder]="placeholder"\n      [disabled]="disabled"\n      [value]="value"\n      (input)="handleInput($event)"\n      (focus)="focused = true"\n      (blur)="focused = false"\n    />\n  </div>\n  @if (error) {\n    <span class="text-xs text-[var(--error)]">{{ error }}</span>\n  }\n</div>\n',
+            '<div appApplyTheme="app-input" class="flex flex-col gap-1">\n  @if (label) {\n    <label class="text-sm font-medium text-[var(--text-primary)]">{{\n      label\n    }}</label>\n  }\n  <div class="relative flex items-center" [class.app-input-focused]="focused">\n    @if (icon) {\n      <app-icon\n        class="absolute left-3 text-xl"\n        [icon]="icon"\n        [size]="20"\n        [class]="focused ? \'text-[var(--accent)]\' : \'text-[var(--text-muted)]\'"\n      />\n    }\n    <input\n      #inputEl\n      [attr.type]="type"\n      class="w-full px-3 py-2 rounded-lg border transition-all outline-none focus:shadow-[0_0_0_1px_var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed"\n      [class.ps-10]="!!icon"\n      [class.border-[var(--error)]]="error"\n      [class.border-[var(--accent)]]="!error && focused"\n      [class.border-[var(--border-color)]]="!error && !focused"\n      [class.bg-[var(--bg-tertiary)]]="disabled"\n      [class.bg-[var(--bg-primary)]]="!disabled"\n      [placeholder]="placeholder"\n      [disabled]="disabled"\n      [value]="value"\n      (input)="handleInput($event)"\n      (focus)="focused = true"\n      (blur)="focused = false"\n    />\n  </div>\n  @if (error) {\n    <span class="text-xs text-[var(--error)]">{{ error }}</span>\n  }\n</div>\n',
         },
       ],
     },
@@ -6060,7 +6065,7 @@ class EmptyStateComponent {
     outputs: { actionClicked: "actionClicked" },
     ngImport: i0,
     template:
-      '    <div\n      appApplyTheme="app-empty-state"\n      class="w-16 h-16 rounded-full flex items-center justify-center border-2"\n      [class]="variant"\n      [class]="variant === \'danger\' ? \'bg-[var(--error)] border-[var(--error)]\' : variant === \'success\' ? \'bg-[var(--success)] border-[var(--success)]\' : \'bg-[var(--bg-elevated)] border-[var(--border-color)]\'"\n    >\n      @if (icon) {\n        <span class="text-4xl size-8">{{ icon }}</span>\n      }\n    </div>\n    @if (title) {\n      <h3 class="text-2xl font-semibold m-0 text-[var(--text-primary)]">{{ title }}</h3>\n    }\n    @if (message) {\n      <p class="text-base m-0 max-w-[400px] mt-2 text-[var(--text-secondary)]">{{ message }}</p>\n    }\n    @if (action) {\n      <div class="mt-2">\n        <button\n          class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-150 bg-[var(--accent)] border-[var(--accent)] text-[var(--text-on-accent)]"\n          (mouseenter)="$any($event.target).style.background=\'var(--accent-hover)\'; $any($event.target).style.borderColor=\'var(--accent-hover)\'"\n          (mouseleave)="$any($event.target).style.background=\'var(--accent)\'; $any($event.target).style.borderColor=\'var(--accent)\'"\n          (click)="actionClicked.emit($event)"\n        >\n          {{ action }}\n        </button>\n      </div>\n    }\n',
+      '<div\n  appApplyTheme="app-empty-state"\n  class="w-16 h-16 rounded-full flex items-center justify-center border-2"\n  [class]="variant"\n  [class]="\n    variant === \'danger\'\n      ? \'bg-[var(--error)] border-[var(--error)]\'\n      : variant === \'success\'\n        ? \'bg-[var(--success)] border-[var(--success)]\'\n        : \'bg-[var(--bg-elevated)] border-[var(--border-color)]\'\n  "\n>\n  @if (icon) {\n    <span class="text-4xl size-8">{{ icon }}</span>\n  }\n</div>\n@if (title) {\n  <h3 class="text-2xl font-semibold m-0 text-[var(--text-primary)]">\n    {{ title }}\n  </h3>\n}\n@if (message) {\n  <p class="text-base m-0 max-w-[400px] mt-2 text-[var(--text-secondary)]">\n    {{ message }}\n  </p>\n}\n@if (action) {\n  <div class="mt-2">\n    <button\n      class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-150 bg-[var(--accent)] border-[var(--accent)] text-[var(--text-on-accent)]"\n      (mouseenter)="\n        $any($event.target).style.background = \'var(--accent-hover)\';\n        $any($event.target).style.borderColor = \'var(--accent-hover)\'\n      "\n      (mouseleave)="\n        $any($event.target).style.background = \'var(--accent)\';\n        $any($event.target).style.borderColor = \'var(--accent)\'\n      "\n      (click)="actionClicked.emit($event)"\n    >\n      {{ action }}\n    </button>\n  </div>\n}\n',
     styles: [""],
     dependencies: [
       {
@@ -6086,7 +6091,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <div\n      appApplyTheme="app-empty-state"\n      class="w-16 h-16 rounded-full flex items-center justify-center border-2"\n      [class]="variant"\n      [class]="variant === \'danger\' ? \'bg-[var(--error)] border-[var(--error)]\' : variant === \'success\' ? \'bg-[var(--success)] border-[var(--success)]\' : \'bg-[var(--bg-elevated)] border-[var(--border-color)]\'"\n    >\n      @if (icon) {\n        <span class="text-4xl size-8">{{ icon }}</span>\n      }\n    </div>\n    @if (title) {\n      <h3 class="text-2xl font-semibold m-0 text-[var(--text-primary)]">{{ title }}</h3>\n    }\n    @if (message) {\n      <p class="text-base m-0 max-w-[400px] mt-2 text-[var(--text-secondary)]">{{ message }}</p>\n    }\n    @if (action) {\n      <div class="mt-2">\n        <button\n          class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-150 bg-[var(--accent)] border-[var(--accent)] text-[var(--text-on-accent)]"\n          (mouseenter)="$any($event.target).style.background=\'var(--accent-hover)\'; $any($event.target).style.borderColor=\'var(--accent-hover)\'"\n          (mouseleave)="$any($event.target).style.background=\'var(--accent)\'; $any($event.target).style.borderColor=\'var(--accent)\'"\n          (click)="actionClicked.emit($event)"\n        >\n          {{ action }}\n        </button>\n      </div>\n    }\n',
+            '<div\n  appApplyTheme="app-empty-state"\n  class="w-16 h-16 rounded-full flex items-center justify-center border-2"\n  [class]="variant"\n  [class]="\n    variant === \'danger\'\n      ? \'bg-[var(--error)] border-[var(--error)]\'\n      : variant === \'success\'\n        ? \'bg-[var(--success)] border-[var(--success)]\'\n        : \'bg-[var(--bg-elevated)] border-[var(--border-color)]\'\n  "\n>\n  @if (icon) {\n    <span class="text-4xl size-8">{{ icon }}</span>\n  }\n</div>\n@if (title) {\n  <h3 class="text-2xl font-semibold m-0 text-[var(--text-primary)]">\n    {{ title }}\n  </h3>\n}\n@if (message) {\n  <p class="text-base m-0 max-w-[400px] mt-2 text-[var(--text-secondary)]">\n    {{ message }}\n  </p>\n}\n@if (action) {\n  <div class="mt-2">\n    <button\n      class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-150 bg-[var(--accent)] border-[var(--accent)] text-[var(--text-on-accent)]"\n      (mouseenter)="\n        $any($event.target).style.background = \'var(--accent-hover)\';\n        $any($event.target).style.borderColor = \'var(--accent-hover)\'\n      "\n      (mouseleave)="\n        $any($event.target).style.background = \'var(--accent)\';\n        $any($event.target).style.borderColor = \'var(--accent)\'\n      "\n      (click)="actionClicked.emit($event)"\n    >\n      {{ action }}\n    </button>\n  </div>\n}\n',
         },
       ],
     },
@@ -6162,7 +6167,7 @@ class ModalComponent {
     host: { listeners: { "window:keydown.escape": "onEscape()" } },
     ngImport: i0,
     template:
-      '    @if (open) {\n      <div appApplyTheme="app-modal" class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]" (click)="handleOverlayClick($event)">\n        <div [class]="\'modal modal-\' + size + \' bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-xl min-w-[320px] max-h-[90vh] flex flex-col shadow-2xl\'" [style.width]="size === \'sm\' ? \'320px\' : size === \'md\' ? \'480px\' : size === \'lg\' ? \'640px\' : \'480px\'">\n          <header class="flex items-center justify-between p-4 border-b border-[var(--border-color)]">\n            <h3 class="m-0 text-lg font-semibold text-[var(--text-primary)]">{{ title }}</h3>\n            <button class="bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]" (click)="close()" aria-label="Close">\n              &times;\n            </button>\n          </header>\n          <div class="p-5 overflow-y-auto text-[var(--text-primary)]">\n            <ng-content></ng-content>\n          </div>\n        </div>\n      </div>\n    }\n',
+      '@if (open) {\n  <div\n    appApplyTheme="app-modal"\n    class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]"\n    (click)="handleOverlayClick($event)"\n  >\n    <div\n      [class]="\n        \'modal modal-\' +\n        size +\n        \' bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-xl min-w-[320px] max-h-[90vh] flex flex-col shadow-2xl\'\n      "\n      [style.width]="\n        size === \'sm\'\n          ? \'320px\'\n          : size === \'md\'\n            ? \'480px\'\n            : size === \'lg\'\n              ? \'640px\'\n              : \'480px\'\n      "\n    >\n      <header\n        class="flex items-center justify-between p-4 border-b border-[var(--border-color)]"\n      >\n        <h3 class="m-0 text-lg font-semibold text-[var(--text-primary)]">\n          {{ title }}\n        </h3>\n        <button\n          class="bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n          (click)="close()"\n          aria-label="Close"\n        >\n          &times;\n        </button>\n      </header>\n      <div class="p-5 overflow-y-auto text-[var(--text-primary)]">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n',
     styles: [""],
     dependencies: [
       {
@@ -6188,7 +6193,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    @if (open) {\n      <div appApplyTheme="app-modal" class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]" (click)="handleOverlayClick($event)">\n        <div [class]="\'modal modal-\' + size + \' bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-xl min-w-[320px] max-h-[90vh] flex flex-col shadow-2xl\'" [style.width]="size === \'sm\' ? \'320px\' : size === \'md\' ? \'480px\' : size === \'lg\' ? \'640px\' : \'480px\'">\n          <header class="flex items-center justify-between p-4 border-b border-[var(--border-color)]">\n            <h3 class="m-0 text-lg font-semibold text-[var(--text-primary)]">{{ title }}</h3>\n            <button class="bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]" (click)="close()" aria-label="Close">\n              &times;\n            </button>\n          </header>\n          <div class="p-5 overflow-y-auto text-[var(--text-primary)]">\n            <ng-content></ng-content>\n          </div>\n        </div>\n      </div>\n    }\n',
+            '@if (open) {\n  <div\n    appApplyTheme="app-modal"\n    class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]"\n    (click)="handleOverlayClick($event)"\n  >\n    <div\n      [class]="\n        \'modal modal-\' +\n        size +\n        \' bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-xl min-w-[320px] max-h-[90vh] flex flex-col shadow-2xl\'\n      "\n      [style.width]="\n        size === \'sm\'\n          ? \'320px\'\n          : size === \'md\'\n            ? \'480px\'\n            : size === \'lg\'\n              ? \'640px\'\n              : \'480px\'\n      "\n    >\n      <header\n        class="flex items-center justify-between p-4 border-b border-[var(--border-color)]"\n      >\n        <h3 class="m-0 text-lg font-semibold text-[var(--text-primary)]">\n          {{ title }}\n        </h3>\n        <button\n          class="bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n          (click)="close()"\n          aria-label="Close"\n        >\n          &times;\n        </button>\n      </header>\n      <div class="p-5 overflow-y-auto text-[var(--text-primary)]">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n',
         },
       ],
     },
@@ -6268,7 +6273,7 @@ class DialogComponent {
     host: { listeners: { "window:keydown.escape": "onEscape()" } },
     ngImport: i0,
     template:
-      '@if (open) {\n  <div appApplyTheme="app-dialog" class="fixed inset-0 flex items-center justify-center z-[1000] bg-[var(--bg-overlay,rgba(0,0,0,0.5))]" (click)="handleOverlayClick($event)">\n    <div [class]="\'flex flex-col bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-3xl min-w-[360px] max-h-[90vh] shadow-2xl dialog-\' + size">\n      <header class="flex items-center justify-between px-5 py-4 border-b border-[var(--border-color)] bg-[var(--bg-elevated)] rounded-t-3xl">\n        <h2 class="m-0 text-xl font-bold text-[var(--text-primary)]">{{ title }}</h2>\n        <button class="bg-transparent border-0 cursor-pointer px-2 py-1 rounded-md text-2xl leading-none font-light transition-colors duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]" (click)="close()" aria-label="Close">\n          &times;\n        </button>\n      </header>\n      <div class="px-6 py-5 overflow-y-auto text-[var(--text-primary)]">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n',
+      '@if (open) {\n  <div\n    appApplyTheme="app-dialog"\n    class="fixed inset-0 flex items-center justify-center z-[1000] bg-[var(--bg-overlay,rgba(0,0,0,0.5))]"\n    (click)="handleOverlayClick($event)"\n  >\n    <div\n      [class]="\n        \'flex flex-col bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-3xl min-w-[360px] max-h-[90vh] shadow-2xl dialog-\' +\n        size\n      "\n    >\n      <header\n        class="flex items-center justify-between px-5 py-4 border-b border-[var(--border-color)] bg-[var(--bg-elevated)] rounded-t-3xl"\n      >\n        <h2 class="m-0 text-xl font-bold text-[var(--text-primary)]">\n          {{ title }}\n        </h2>\n        <button\n          class="bg-transparent border-0 cursor-pointer px-2 py-1 rounded-md text-2xl leading-none font-light transition-colors duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"\n          (click)="close()"\n          aria-label="Close"\n        >\n          &times;\n        </button>\n      </header>\n      <div class="px-6 py-5 overflow-y-auto text-[var(--text-primary)]">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n',
     styles: [""],
     dependencies: [
       {
@@ -6294,7 +6299,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '@if (open) {\n  <div appApplyTheme="app-dialog" class="fixed inset-0 flex items-center justify-center z-[1000] bg-[var(--bg-overlay,rgba(0,0,0,0.5))]" (click)="handleOverlayClick($event)">\n    <div [class]="\'flex flex-col bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-3xl min-w-[360px] max-h-[90vh] shadow-2xl dialog-\' + size">\n      <header class="flex items-center justify-between px-5 py-4 border-b border-[var(--border-color)] bg-[var(--bg-elevated)] rounded-t-3xl">\n        <h2 class="m-0 text-xl font-bold text-[var(--text-primary)]">{{ title }}</h2>\n        <button class="bg-transparent border-0 cursor-pointer px-2 py-1 rounded-md text-2xl leading-none font-light transition-colors duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]" (click)="close()" aria-label="Close">\n          &times;\n        </button>\n      </header>\n      <div class="px-6 py-5 overflow-y-auto text-[var(--text-primary)]">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n',
+            '@if (open) {\n  <div\n    appApplyTheme="app-dialog"\n    class="fixed inset-0 flex items-center justify-center z-[1000] bg-[var(--bg-overlay,rgba(0,0,0,0.5))]"\n    (click)="handleOverlayClick($event)"\n  >\n    <div\n      [class]="\n        \'flex flex-col bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-3xl min-w-[360px] max-h-[90vh] shadow-2xl dialog-\' +\n        size\n      "\n    >\n      <header\n        class="flex items-center justify-between px-5 py-4 border-b border-[var(--border-color)] bg-[var(--bg-elevated)] rounded-t-3xl"\n      >\n        <h2 class="m-0 text-xl font-bold text-[var(--text-primary)]">\n          {{ title }}\n        </h2>\n        <button\n          class="bg-transparent border-0 cursor-pointer px-2 py-1 rounded-md text-2xl leading-none font-light transition-colors duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"\n          (click)="close()"\n          aria-label="Close"\n        >\n          &times;\n        </button>\n      </header>\n      <div class="px-6 py-5 overflow-y-auto text-[var(--text-primary)]">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n',
         },
       ],
     },
@@ -6384,7 +6389,7 @@ class ConfirmDialogComponent {
     host: { listeners: { "window:keydown.escape": "onEscape()" } },
     ngImport: i0,
     template:
-      '    @if (open) {\n      <div appApplyTheme="app-confirm-dialog" class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]" (click)="cancel()">\n        <div class="dialog bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-2xl w-[400px] max-w-[90vw] shadow-2xl" (click)="$event.stopPropagation()">\n          <header class="flex items-center justify-between p-5 border-b border-[var(--border-color)]">\n            <h2 class="m-0 text-lg font-semibold text-[var(--text-primary)]">{{ title || "Confirm" }}</h2>\n            <button class="bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]" (click)="cancel()" aria-label="Close">\n              &times;\n            </button>\n          </header>\n          <div class="p-6 text-[var(--text-secondary)] text-[15px] leading-6">{{ message }}</div>\n          <footer class="flex gap-3 p-4 border-t border-[var(--border-color)] justify-end">\n            <button class="px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] font-medium cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]" (click)="cancel()">\n              {{ cancelText || "Cancel" }}\n            </button>\n            <button class="px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]" (click)="confirm()">\n              {{ confirmText || "Confirm" }}\n            </button>\n          </footer>\n        </div>\n      </div>\n    }\n  ',
+      '@if (open) {\n  <div\n    appApplyTheme="app-confirm-dialog"\n    class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]"\n    (click)="cancel()"\n  >\n    <div\n      class="dialog bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-2xl w-[400px] max-w-[90vw] shadow-2xl"\n      (click)="$event.stopPropagation()"\n    >\n      <header\n        class="flex items-center justify-between p-5 border-b border-[var(--border-color)]"\n      >\n        <h2 class="m-0 text-lg font-semibold text-[var(--text-primary)]">\n          {{ title || "Confirm" }}\n        </h2>\n        <button\n          class="bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n          (click)="cancel()"\n          aria-label="Close"\n        >\n          &times;\n        </button>\n      </header>\n      <div class="p-6 text-[var(--text-secondary)] text-[15px] leading-6">\n        {{ message }}\n      </div>\n      <footer\n        class="flex gap-3 p-4 border-t border-[var(--border-color)] justify-end"\n      >\n        <button\n          class="px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] font-medium cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n          (click)="cancel()"\n        >\n          {{ cancelText || "Cancel" }}\n        </button>\n        <button\n          class="px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]"\n          (click)="confirm()"\n        >\n          {{ confirmText || "Confirm" }}\n        </button>\n      </footer>\n    </div>\n  </div>\n}\n',
     styles: [""],
     dependencies: [
       {
@@ -6410,7 +6415,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    @if (open) {\n      <div appApplyTheme="app-confirm-dialog" class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]" (click)="cancel()">\n        <div class="dialog bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-2xl w-[400px] max-w-[90vw] shadow-2xl" (click)="$event.stopPropagation()">\n          <header class="flex items-center justify-between p-5 border-b border-[var(--border-color)]">\n            <h2 class="m-0 text-lg font-semibold text-[var(--text-primary)]">{{ title || "Confirm" }}</h2>\n            <button class="bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]" (click)="cancel()" aria-label="Close">\n              &times;\n            </button>\n          </header>\n          <div class="p-6 text-[var(--text-secondary)] text-[15px] leading-6">{{ message }}</div>\n          <footer class="flex gap-3 p-4 border-t border-[var(--border-color)] justify-end">\n            <button class="px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] font-medium cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]" (click)="cancel()">\n              {{ cancelText || "Cancel" }}\n            </button>\n            <button class="px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]" (click)="confirm()">\n              {{ confirmText || "Confirm" }}\n            </button>\n          </footer>\n        </div>\n      </div>\n    }\n  ',
+            '@if (open) {\n  <div\n    appApplyTheme="app-confirm-dialog"\n    class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]"\n    (click)="cancel()"\n  >\n    <div\n      class="dialog bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-2xl w-[400px] max-w-[90vw] shadow-2xl"\n      (click)="$event.stopPropagation()"\n    >\n      <header\n        class="flex items-center justify-between p-5 border-b border-[var(--border-color)]"\n      >\n        <h2 class="m-0 text-lg font-semibold text-[var(--text-primary)]">\n          {{ title || "Confirm" }}\n        </h2>\n        <button\n          class="bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n          (click)="cancel()"\n          aria-label="Close"\n        >\n          &times;\n        </button>\n      </header>\n      <div class="p-6 text-[var(--text-secondary)] text-[15px] leading-6">\n        {{ message }}\n      </div>\n      <footer\n        class="flex gap-3 p-4 border-t border-[var(--border-color)] justify-end"\n      >\n        <button\n          class="px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] font-medium cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n          (click)="cancel()"\n        >\n          {{ cancelText || "Cancel" }}\n        </button>\n        <button\n          class="px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]"\n          (click)="confirm()"\n        >\n          {{ confirmText || "Confirm" }}\n        </button>\n      </footer>\n    </div>\n  </div>\n}\n',
         },
       ],
     },
@@ -6563,7 +6568,7 @@ class RadioComponent {
     outputs: { changed: "changed" },
     ngImport: i0,
     template:
-      '<label appApplyTheme="app-radio" class="flex items-center gap-2 cursor-pointer">\n  <input\n    type="radio"\n    class="w-4 h-4 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"\n    [style.accentColor]="\'var(--accent)\'"\n    [name]="name"\n    [value]="value"\n    [checked]="checked"\n    [disabled]="disabled"\n    (change)="handleChange($event)"\n  />\n    <span class="text-sm select-none text-[var(--text-primary)]"><ng-content></ng-content></span>\n</label>\n',
+      '<label appApplyTheme="app-radio" class="flex items-center gap-2 cursor-pointer">\n  <input\n    type="radio"\n    class="w-4 h-4 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"\n    [style.accentColor]="\'var(--accent)\'"\n    [name]="name"\n    [value]="value"\n    [checked]="checked"\n    [disabled]="disabled"\n    (change)="handleChange($event)"\n  />\n  <span class="text-sm select-none text-[var(--text-primary)]"\n    ><ng-content></ng-content\n  ></span>\n</label>\n',
     styles: [""],
     dependencies: [
       {
@@ -6589,7 +6594,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '<label appApplyTheme="app-radio" class="flex items-center gap-2 cursor-pointer">\n  <input\n    type="radio"\n    class="w-4 h-4 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"\n    [style.accentColor]="\'var(--accent)\'"\n    [name]="name"\n    [value]="value"\n    [checked]="checked"\n    [disabled]="disabled"\n    (change)="handleChange($event)"\n  />\n    <span class="text-sm select-none text-[var(--text-primary)]"><ng-content></ng-content></span>\n</label>\n',
+            '<label appApplyTheme="app-radio" class="flex items-center gap-2 cursor-pointer">\n  <input\n    type="radio"\n    class="w-4 h-4 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"\n    [style.accentColor]="\'var(--accent)\'"\n    [name]="name"\n    [value]="value"\n    [checked]="checked"\n    [disabled]="disabled"\n    (change)="handleChange($event)"\n  />\n  <span class="text-sm select-none text-[var(--text-primary)]"\n    ><ng-content></ng-content\n  ></span>\n</label>\n',
         },
       ],
     },
@@ -6664,7 +6669,7 @@ class SliderComponent {
     outputs: { input: "input" },
     ngImport: i0,
     template:
-      '    <div appApplyTheme="app-slider" class="w-full">\n      <input\n        type="range"\n        class="w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"\n        [style.accentColor]="\'var(--accent)\'"\n        [value]="value"\n        [min]="min"\n        [max]="max"\n        [step]="step"\n        [disabled]="disabled"\n        (input)="handleInput($event)"\n      />\n    </div>\n',
+      '<div appApplyTheme="app-slider" class="w-full">\n  <input\n    type="range"\n    class="w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"\n    [style.accentColor]="\'var(--accent)\'"\n    [value]="value"\n    [min]="min"\n    [max]="max"\n    [step]="step"\n    [disabled]="disabled"\n    (input)="handleInput($event)"\n  />\n</div>\n',
     styles: [""],
     dependencies: [
       {
@@ -6690,7 +6695,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <div appApplyTheme="app-slider" class="w-full">\n      <input\n        type="range"\n        class="w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"\n        [style.accentColor]="\'var(--accent)\'"\n        [value]="value"\n        [min]="min"\n        [max]="max"\n        [step]="step"\n        [disabled]="disabled"\n        (input)="handleInput($event)"\n      />\n    </div>\n',
+            '<div appApplyTheme="app-slider" class="w-full">\n  <input\n    type="range"\n    class="w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"\n    [style.accentColor]="\'var(--accent)\'"\n    [value]="value"\n    [min]="min"\n    [max]="max"\n    [step]="step"\n    [disabled]="disabled"\n    (input)="handleInput($event)"\n  />\n</div>\n',
         },
       ],
     },
@@ -6756,7 +6761,7 @@ class SwitchComponent {
     outputs: { changed: "changed" },
     ngImport: i0,
     template:
-      '    <label appApplyTheme="app-switch" class="switch flex items-center gap-2 cursor-pointer relative" [class.switch-checked]="checked" [class.bg-[var(--accent)]]="checked">\n      <input\n        type="checkbox"\n        [checked]="checked"\n        [disabled]="disabled"\n        (change)="handleChange($event)"\n        class="absolute opacity-0 w-0 h-0"\n      />\n      <span class="slider w-10 h-5 rounded-full transition-colors relative" style="background-color: var(--border-color);"></span>\n      @if (label) {\n        <span class="switch-label text-sm select-none text-[var(--text-primary)]">{{ label }}</span>\n      }\n    </label>',
+      '<label\n  appApplyTheme="app-switch"\n  class="switch flex items-center gap-2 cursor-pointer relative"\n  [class.switch-checked]="checked"\n  [class.bg-[var(--accent)]]="checked"\n>\n  <input\n    type="checkbox"\n    [checked]="checked"\n    [disabled]="disabled"\n    (change)="handleChange($event)"\n    class="absolute opacity-0 w-0 h-0"\n  />\n  <span\n    class="slider w-10 h-5 rounded-full transition-colors relative"\n    style="background-color: var(--border-color)"\n  ></span>\n  @if (label) {\n    <span class="switch-label text-sm select-none text-[var(--text-primary)]">{{\n      label\n    }}</span>\n  }\n</label>\n',
     styles: [
       ':host{display:inline-flex;align-items:center}.slider:before{content:"";position:absolute;width:1rem;height:1rem;left:2px;top:2px;background-color:#fff;border-radius:50%;transition:transform .2s}.switch-checked .slider:before{transform:translate(1.25rem)}input:disabled~.slider{opacity:.5;cursor:not-allowed}\n',
     ],
@@ -6784,7 +6789,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <label appApplyTheme="app-switch" class="switch flex items-center gap-2 cursor-pointer relative" [class.switch-checked]="checked" [class.bg-[var(--accent)]]="checked">\n      <input\n        type="checkbox"\n        [checked]="checked"\n        [disabled]="disabled"\n        (change)="handleChange($event)"\n        class="absolute opacity-0 w-0 h-0"\n      />\n      <span class="slider w-10 h-5 rounded-full transition-colors relative" style="background-color: var(--border-color);"></span>\n      @if (label) {\n        <span class="switch-label text-sm select-none text-[var(--text-primary)]">{{ label }}</span>\n      }\n    </label>',
+            '<label\n  appApplyTheme="app-switch"\n  class="switch flex items-center gap-2 cursor-pointer relative"\n  [class.switch-checked]="checked"\n  [class.bg-[var(--accent)]]="checked"\n>\n  <input\n    type="checkbox"\n    [checked]="checked"\n    [disabled]="disabled"\n    (change)="handleChange($event)"\n    class="absolute opacity-0 w-0 h-0"\n  />\n  <span\n    class="slider w-10 h-5 rounded-full transition-colors relative"\n    style="background-color: var(--border-color)"\n  ></span>\n  @if (label) {\n    <span class="switch-label text-sm select-none text-[var(--text-primary)]">{{\n      label\n    }}</span>\n  }\n</label>\n',
           styles: [
             ':host{display:inline-flex;align-items:center}.slider:before{content:"";position:absolute;width:1rem;height:1rem;left:2px;top:2px;background-color:#fff;border-radius:50%;transition:transform .2s}.switch-checked .slider:before{transform:translate(1.25rem)}input:disabled~.slider{opacity:.5;cursor:not-allowed}\n',
           ],
@@ -6852,7 +6857,7 @@ class TextareaComponent {
     outputs: { input: "input" },
     ngImport: i0,
     template:
-      '@if (label) {\n  <label class="block text-sm font-medium mb-1 text-[var(--text-primary)]">{{ label }}</label>\n}\n<textarea\n  appApplyTheme="app-textarea"\n  class="w-full px-3 py-2 rounded-lg border outline-none resize-y min-h-20 font-inherit focus:border-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)]"\n  [style.flexGrow]="flexGrow ? 1 : null"\n  [placeholder]="placeholder"\n  [disabled]="disabled"\n  (input)="handleInput($event)"\n></textarea>\n',
+      '@if (label) {\n  <label class="block text-sm font-medium mb-1 text-[var(--text-primary)]">{{\n    label\n  }}</label>\n}\n<textarea\n  appApplyTheme="app-textarea"\n  class="w-full px-3 py-2 rounded-lg border outline-none resize-y min-h-20 font-inherit focus:border-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)]"\n  [style.flexGrow]="flexGrow ? 1 : null"\n  [placeholder]="placeholder"\n  [disabled]="disabled"\n  (input)="handleInput($event)"\n></textarea>\n',
     styles: [""],
     dependencies: [
       {
@@ -6878,7 +6883,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '@if (label) {\n  <label class="block text-sm font-medium mb-1 text-[var(--text-primary)]">{{ label }}</label>\n}\n<textarea\n  appApplyTheme="app-textarea"\n  class="w-full px-3 py-2 rounded-lg border outline-none resize-y min-h-20 font-inherit focus:border-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)]"\n  [style.flexGrow]="flexGrow ? 1 : null"\n  [placeholder]="placeholder"\n  [disabled]="disabled"\n  (input)="handleInput($event)"\n></textarea>\n',
+            '@if (label) {\n  <label class="block text-sm font-medium mb-1 text-[var(--text-primary)]">{{\n    label\n  }}</label>\n}\n<textarea\n  appApplyTheme="app-textarea"\n  class="w-full px-3 py-2 rounded-lg border outline-none resize-y min-h-20 font-inherit focus:border-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)]"\n  [style.flexGrow]="flexGrow ? 1 : null"\n  [placeholder]="placeholder"\n  [disabled]="disabled"\n  (input)="handleInput($event)"\n></textarea>\n',
         },
       ],
     },
@@ -6958,7 +6963,7 @@ class BadgeComponent {
     inputs: { variant: "variant", size: "size", label: "label" },
     ngImport: i0,
     template:
-      '<span\n  appApplyTheme="app-badge"\n  [themedVariant]="variant"\n  [themedSize]="size"\n  [class]="\'inline-flex items-center rounded border font-medium \' + badgeSizeClass + \' \' + badgeVariantClass"\n>{{ label }}</span>\n',
+      '<span\n  appApplyTheme="app-badge"\n  [themedVariant]="variant"\n  [themedSize]="size"\n  [class]="\n    \'inline-flex items-center rounded border font-medium \' +\n    badgeSizeClass +\n    \' \' +\n    badgeVariantClass\n  "\n  >{{ label }}</span\n>\n',
     styles: [""],
     dependencies: [
       {
@@ -6984,7 +6989,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '<span\n  appApplyTheme="app-badge"\n  [themedVariant]="variant"\n  [themedSize]="size"\n  [class]="\'inline-flex items-center rounded border font-medium \' + badgeSizeClass + \' \' + badgeVariantClass"\n>{{ label }}</span>\n',
+            '<span\n  appApplyTheme="app-badge"\n  [themedVariant]="variant"\n  [themedSize]="size"\n  [class]="\n    \'inline-flex items-center rounded border font-medium \' +\n    badgeSizeClass +\n    \' \' +\n    badgeVariantClass\n  "\n  >{{ label }}</span\n>\n',
         },
       ],
     },
@@ -9236,421 +9241,10 @@ i0.ɵɵngDeclareClassMetadata({
   ],
 });
 
-async function invokeWithRetry(fn, options) {
-  const { maxAttempts, initialDelayMs, maxDelayMs } = options;
-  let lastError;
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      lastError = error;
-      if (attempt < maxAttempts - 1) {
-        const delay = Math.min(
-          initialDelayMs * Math.pow(2, attempt),
-          maxDelayMs,
-        );
-        await new Promise((resolve) => setTimeout(resolve, delay));
-      }
-    }
-  }
-  throw lastError;
-}
-
-class InvokeWrapperService {
-  async invoke(cmd, args, options) {
-    try {
-      return await invoke(cmd, args);
-    } catch (err) {
-      if (options?.suppressError) {
-        return undefined;
-      }
-      throw err;
-    }
-  }
-  async invokeWithRetry(
-    cmd,
-    args,
-    retryOptions = {
-      maxAttempts: 3,
-      initialDelayMs: 1000,
-      maxDelayMs: 30000,
-    },
-  ) {
-    return invokeWithRetry(
-      () => this.invokeWithTimeout(cmd, args, retryOptions.maxDelayMs),
-      retryOptions,
-    );
-  }
-  async timeout(ms, cmd, args, options) {
-    const { signal } = options ?? {};
-    const doTimeout = new Promise((_, reject) =>
-      setTimeout(
-        () => reject(new Error(`Invoke ${cmd} timed out after ${ms}ms`)),
-        ms,
-      ),
-    );
-    if (signal) {
-      const doAbort = new Promise((_, reject) => {
-        if (signal.aborted) {
-          reject(signal.reason);
-          return;
-        }
-        signal.addEventListener("abort", () => reject(signal.reason), {
-          once: true,
-        });
-      });
-      return Promise.race([invoke(cmd, args), doTimeout, doAbort]);
-    }
-    return Promise.race([invoke(cmd, args), doTimeout]);
-  }
-  async invokeWithTimeout(cmd, args, timeoutMs) {
-    return Promise.race([
-      this.invoke(cmd, args),
-      new Promise((_, reject) =>
-        setTimeout(
-          () =>
-            reject(new Error(`Invoke ${cmd} timed out after ${timeoutMs}ms`)),
-          timeoutMs,
-        ),
-      ),
-    ]);
-  }
-  static ɵfac = i0.ɵɵngDeclareFactory({
-    minVersion: "12.0.0",
-    version: "20.3.25",
-    ngImport: i0,
-    type: InvokeWrapperService,
-    deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable,
-  });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
-    version: "20.3.25",
-    ngImport: i0,
-    type: InvokeWrapperService,
-    providedIn: "root",
-  });
-}
-i0.ɵɵngDeclareClassMetadata({
-  minVersion: "12.0.0",
-  version: "20.3.25",
-  ngImport: i0,
-  type: InvokeWrapperService,
-  decorators: [
-    {
-      type: Injectable,
-      args: [{ providedIn: "root" }],
-    },
-  ],
-});
-
-class HandlerExecutorService {
-  invokeWrapper = inject(InvokeWrapperService);
-  signalStore = inject(SignalStoreService);
-  eventBus = inject(EventBusService);
-  dataBindingResolver = inject(DataBindingResolverService);
-  router = null;
-  handlers = {};
-  registeredFunctions = {};
-  pendingListeners = [];
-  setRouter(router) {
-    this.router = router;
-  }
-  setHandlers(handlers) {
-    this.handlers = handlers;
-  }
-  registerFunction(name, fn) {
-    this.registeredFunctions[name] = fn;
-  }
-  async execute(handlerName, eventData) {
-    const def = this.handlers[handlerName];
-    if (!def) {
-      console.warn(`[HandlerExecutor] Handler not found: "${handlerName}"`);
-      return;
-    }
-    await this.executeHandler(def, eventData);
-  }
-  async executeHandler(def, eventData) {
-    if (def.invoke) {
-      await this.handleInvoke(def, eventData);
-    } else if (def.set) {
-      this.handleSet(def.set, eventData);
-    } else if (def.setMany) {
-      this.handleSetMany(def.setMany, eventData);
-    } else if (def.swap) {
-      this.handleSwap(def.swap);
-    } else if (def.navigate) {
-      this.handleNavigate(def.navigate);
-    } else if (def.call) {
-      this.handleCall(def.call);
-    } else if (def.guard) {
-      await this.handleGuard(def, eventData);
-    } else if (def.openOverlay) {
-      this.handleOpenOverlay(def.openOverlay);
-    } else {
-      console.warn("[HandlerExecutor] Unknown handler type", def);
-    }
-  }
-  resolveValue(value, eventData) {
-    if (typeof value === "string") {
-      if (value.startsWith("$store.")) {
-        const path = value.slice(7);
-        return this.getStorePath(path);
-      }
-      if (value.startsWith("$event.detail.")) {
-        const path = value.slice(14);
-        return this.getNestedValue(eventData, path);
-      }
-      if (value.startsWith("$event.")) {
-        const path = value.slice(7);
-        return this.getNestedValue(eventData, path);
-      }
-      const resolved = this.dataBindingResolver.resolveDataBinding(value);
-      return resolved !== value ? resolved : value;
-    }
-    return value;
-  }
-  getStorePath(path) {
-    const parts = path.split(".");
-    let current = this.signalStore.get(parts[0]);
-    for (let i = 1; i < parts.length; i++) {
-      if (current === null || current === undefined) return undefined;
-      current = this.getNestedValue(current, parts[i]);
-    }
-    return current;
-  }
-  setStorePath(path, value) {
-    const parts = path.split(".");
-    if (parts.length === 1) {
-      this.signalStore.set(parts[0], value);
-      return;
-    }
-    const storeName = parts[0];
-    const field = parts.slice(1).join(".");
-    const current = this.signalStore.get(storeName);
-    if (current && typeof current === "object") {
-      current[field] = value;
-      this.signalStore.set(storeName, current);
-    }
-  }
-  getNestedValue(obj, path) {
-    const parts = path.split(".");
-    let current = obj;
-    for (const part of parts) {
-      if (current === null || current === undefined) return undefined;
-      current = current[part];
-    }
-    return current;
-  }
-  async handleInvoke(def, eventData) {
-    const command = def.invoke;
-    const rawArgs = def.args || [];
-    const resolvedArgs = {};
-    for (const raw of rawArgs) {
-      if (typeof raw === "string" && raw.startsWith("$")) {
-        resolvedArgs[raw] = this.resolveValue(raw, eventData);
-      } else if (typeof raw === "object" && raw !== null) {
-        const entries = Object.entries(raw);
-        for (const [k, v] of entries) {
-          resolvedArgs[k] = this.resolveValue(v, eventData);
-        }
-      }
-    }
-    if (def.awaitEvent) {
-      const result = await new Promise((resolve) => {
-        const unlisten = listen(def.awaitEvent, (event) => {
-          resolve(event.payload);
-          unlisten.then((fn) => fn());
-        });
-        this.invokeWrapper.invoke(command, resolvedArgs).catch((err) => {
-          console.error(`[HandlerExecutor] Invoke failed: ${command}`, err);
-          resolve(null);
-        });
-      });
-      if (result && def.resultTo) {
-        this.setStorePath(def.resultTo, result);
-      }
-    } else {
-      try {
-        const result = await this.invokeWrapper.invoke(command, resolvedArgs);
-        if (result !== undefined && def.resultTo) {
-          this.setStorePath(def.resultTo, result);
-        }
-      } catch (err) {
-        console.error(`[HandlerExecutor] Invoke failed: ${command}`, err);
-      }
-    }
-  }
-  handleSet(setDef, eventData) {
-    const value = setDef.from
-      ? this.resolveValue(setDef.from, eventData)
-      : undefined;
-    if (setDef.store && setDef.field) {
-      this.setStorePath(`${setDef.store}.${setDef.field}`, value);
-    }
-  }
-  handleSetMany(setManyDef, eventData) {
-    for (const [path, rawValue] of Object.entries(setManyDef)) {
-      const resolved = this.resolveValue(rawValue, eventData);
-      if (path.startsWith("$store.")) {
-        this.setStorePath(path.slice(7), resolved);
-      }
-    }
-  }
-  handleSwap(swapDef) {
-    if (swapDef.length < 2) return;
-    const valA = this.resolveValue(swapDef[0]);
-    const valB = this.resolveValue(swapDef[1]);
-    if (swapDef[0].startsWith("$store.")) {
-      this.setStorePath(swapDef[0].slice(7), valB);
-    }
-    if (swapDef[1].startsWith("$store.")) {
-      this.setStorePath(swapDef[1].slice(7), valA);
-    }
-  }
-  handleNavigate(path) {
-    if (this.router) {
-      this.router.navigate(path);
-    }
-  }
-  handleCall(name) {
-    const fn = this.registeredFunctions[name];
-    if (fn) {
-      fn();
-    } else {
-      const resolved = this.dataBindingResolver.resolveDataBinding(
-        `{{functions.${name}}}`,
-      );
-      if (typeof resolved === "function") {
-        resolved();
-      }
-    }
-  }
-  async handleGuard(def, eventData) {
-    const condition = this.resolveValue(def.guard, eventData);
-    if (condition && def.then) {
-      const thenDef = this.handlers[def.then];
-      if (thenDef) {
-        await this.executeHandler(thenDef, eventData);
-      }
-    }
-  }
-  handleOpenOverlay(regionId) {
-    this.eventBus.emit("open-overlay", { regionId });
-  }
-  destroy() {
-    this.pendingListeners.forEach((fn) => fn());
-    this.pendingListeners = [];
-  }
-  static ɵfac = i0.ɵɵngDeclareFactory({
-    minVersion: "12.0.0",
-    version: "20.3.25",
-    ngImport: i0,
-    type: HandlerExecutorService,
-    deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable,
-  });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
-    version: "20.3.25",
-    ngImport: i0,
-    type: HandlerExecutorService,
-    providedIn: "root",
-  });
-}
-i0.ɵɵngDeclareClassMetadata({
-  minVersion: "12.0.0",
-  version: "20.3.25",
-  ngImport: i0,
-  type: HandlerExecutorService,
-  decorators: [
-    {
-      type: Injectable,
-      args: [{ providedIn: "root" }],
-    },
-  ],
-});
-
 class SchemaElementComponent {
   renderer = inject(SchemaRendererService);
-  renderer2 = inject(Renderer2);
-  ngZone = inject(NgZone);
-  eventBus = inject(EventBusService);
-  handlerExecutor = inject(HandlerExecutorService);
-  injector = inject(Injector);
-  componentRef = null;
-  styleEl = null;
-  dynamicHost;
   element;
   elements = [];
-  ngAfterViewInit() {
-    this.injectStateStyles();
-    this.createDynamicComponent();
-  }
-  ngOnDestroy() {
-    this.removeStateStyles();
-    this.destroyDynamicComponent();
-  }
-  injectStateStyles() {
-    const css = this.elementStatesStyles;
-    if (!css) return;
-    this.ngZone.runOutsideAngular(() => {
-      this.styleEl = this.renderer2.createElement("style");
-      this.styleEl.textContent = css;
-      this.renderer2.appendChild(document.head, this.styleEl);
-    });
-  }
-  removeStateStyles() {
-    if (this.styleEl) {
-      this.renderer2.removeChild(document.head, this.styleEl);
-      this.styleEl = null;
-    }
-  }
-  destroyDynamicComponent() {
-    if (this.componentRef) {
-      this.componentRef.destroy();
-      this.componentRef = null;
-    }
-  }
-  createDynamicComponent() {
-    if (!this.dynamicHost) return;
-    const compType = this.componentType;
-    if (!compType || this.isNativeHtml) return;
-    const elementId = this.element.id;
-    const elementEvents = this.element.events ?? {};
-    this.componentRef = this.dynamicHost.createComponent(compType, {
-      index: 0,
-      injector: this.injector,
-    });
-    const instance = this.componentRef.instance;
-    const props = this.element.props ?? {};
-    for (const [key, value] of Object.entries(props)) {
-      if (key in instance) {
-        instance[key] = value;
-      }
-    }
-    if ("children" in instance && this.element.children) {
-      instance["children"] = this.element.children;
-    }
-    this.componentRef.changeDetectorRef.detectChanges();
-    for (const key of Object.keys(instance)) {
-      const prop = instance[key];
-      if (
-        prop &&
-        typeof prop.subscribe === "function" &&
-        typeof prop.emit === "function"
-      ) {
-        prop.subscribe((eventPayload) => {
-          const payload = { elementId, event: eventPayload };
-          this.eventBus.emit(`${elementId}:${key}`, payload);
-          const handlerName = elementEvents[key];
-          if (handlerName) {
-            this.handlerExecutor.execute(handlerName, payload);
-          }
-        });
-      }
-    }
-  }
   get componentType() {
     const type = SCHEMA_COMPONENT_MAP.get(this.tag);
     return type ?? null;
@@ -9676,32 +9270,15 @@ class SchemaElementComponent {
   get props() {
     return this.element.props ?? {};
   }
-  get elementStyles() {
-    return this.element.styles?.custom ?? {};
-  }
-  get elementStatesStyles() {
-    const states = this.element.styles?.states;
-    if (!states) return "";
-    const cssParts = [];
-    for (const [state, rules] of Object.entries(states)) {
-      const rulesStr = Object.entries(rules)
-        .map(([k, v]) => `${k}: ${v}`)
-        .join("; ");
-      if (rulesStr) {
-        cssParts.push(
-          `[data-element-id="${this.element.id}"]:${state} { ${rulesStr} }`,
-        );
-      }
-    }
-    return cssParts.join(" ");
-  }
   get gridStyle() {
     const gp = this.element.gridPosition;
     if (!gp) return {};
-    const style = {};
     const col = `${gp.column} / span ${gp.colSpan || 1}`;
     const row = `${gp.row} / span ${gp.rowSpan || 1}`;
     return { gridColumn: col, gridRow: row };
+  }
+  get elementStyles() {
+    return {};
   }
   get isNativeHtml() {
     return [
@@ -9750,18 +9327,9 @@ class SchemaElementComponent {
     isStandalone: true,
     selector: "app-schema-element",
     inputs: { element: "element", elements: "elements" },
-    viewQueries: [
-      {
-        propertyName: "dynamicHost",
-        first: true,
-        predicate: ["dynamicHost"],
-        descendants: true,
-        read: ViewContainerRef,
-      },
-    ],
     ngImport: i0,
     template:
-      '<div\n  [id]="element.id"\n  [class]="classes"\n  [style]="gridStyle"\n  [attr.data-element-id]="element.id"\n  [ngStyle]="elementStyles">\n  @if (isNativeHtml && props["text"]) {\n    <ng-container [ngSwitch]="tag">\n      <h1 *ngSwitchCase="\'h1\'">{{ props["text"] }}</h1>\n      <h2 *ngSwitchCase="\'h2\'">{{ props["text"] }}</h2>\n      <p *ngSwitchCase="\'p\'">{{ props["text"] }}</p>\n      <footer *ngSwitchCase="\'footer\'">{{ props["text"] }}</footer>\n      <span *ngSwitchDefault>{{ props["text"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container #dynamicHost></ng-container>\n  }\n  @if (isNativeHtml) {\n    @for (child of childElements; track $index) {\n      <app-schema-element\n        [element]="child"\n        [elements]="elements"\n      ></app-schema-element>\n    }\n  }\n</div>\n',
+      '<div\n  [id]="element.id"\n  [class]="classes"\n  [style]="gridStyle"\n  [attr.data-element-id]="element.id"\n  [ngStyle]="elementStyles"\n>\n  @if (isNativeHtml && props["text"]) {\n    <ng-container [ngSwitch]="tag">\n      <h1 *ngSwitchCase="\'h1\'">{{ props["text"] }}</h1>\n      <h2 *ngSwitchCase="\'h2\'">{{ props["text"] }}</h2>\n      <p *ngSwitchCase="\'p\'">{{ props["text"] }}</p>\n      <footer *ngSwitchCase="\'footer\'">{{ props["text"] }}</footer>\n      <span *ngSwitchDefault>{{ props["text"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container #dynamicHost></ng-container>\n  }\n  @if (isNativeHtml) {\n    @for (child of childElements; track $index) {\n      <app-schema-element\n        [element]="child"\n        [elements]="elements"\n      ></app-schema-element>\n    }\n  }\n</div>\n',
     styles: [":host{display:contents}\n"],
     dependencies: [
       {
@@ -9811,19 +9379,13 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [CommonModule],
           template:
-            '<div\n  [id]="element.id"\n  [class]="classes"\n  [style]="gridStyle"\n  [attr.data-element-id]="element.id"\n  [ngStyle]="elementStyles">\n  @if (isNativeHtml && props["text"]) {\n    <ng-container [ngSwitch]="tag">\n      <h1 *ngSwitchCase="\'h1\'">{{ props["text"] }}</h1>\n      <h2 *ngSwitchCase="\'h2\'">{{ props["text"] }}</h2>\n      <p *ngSwitchCase="\'p\'">{{ props["text"] }}</p>\n      <footer *ngSwitchCase="\'footer\'">{{ props["text"] }}</footer>\n      <span *ngSwitchDefault>{{ props["text"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container #dynamicHost></ng-container>\n  }\n  @if (isNativeHtml) {\n    @for (child of childElements; track $index) {\n      <app-schema-element\n        [element]="child"\n        [elements]="elements"\n      ></app-schema-element>\n    }\n  }\n</div>\n',
+            '<div\n  [id]="element.id"\n  [class]="classes"\n  [style]="gridStyle"\n  [attr.data-element-id]="element.id"\n  [ngStyle]="elementStyles"\n>\n  @if (isNativeHtml && props["text"]) {\n    <ng-container [ngSwitch]="tag">\n      <h1 *ngSwitchCase="\'h1\'">{{ props["text"] }}</h1>\n      <h2 *ngSwitchCase="\'h2\'">{{ props["text"] }}</h2>\n      <p *ngSwitchCase="\'p\'">{{ props["text"] }}</p>\n      <footer *ngSwitchCase="\'footer\'">{{ props["text"] }}</footer>\n      <span *ngSwitchDefault>{{ props["text"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container #dynamicHost></ng-container>\n  }\n  @if (isNativeHtml) {\n    @for (child of childElements; track $index) {\n      <app-schema-element\n        [element]="child"\n        [elements]="elements"\n      ></app-schema-element>\n    }\n  }\n</div>\n',
           styles: [":host{display:contents}\n"],
         },
       ],
     },
   ],
   propDecorators: {
-    dynamicHost: [
-      {
-        type: ViewChild,
-        args: ["dynamicHost", { read: ViewContainerRef }],
-      },
-    ],
     element: [
       {
         type: Input,
@@ -9872,7 +9434,7 @@ class CardComponent {
     },
     ngImport: i0,
     template:
-      '    <div\n      appApplyTheme="app-card"\n      class="overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)]"\n      [class.shadow-md]="elevated"\n      [style.borderRadius.px]="borderRadius"\n    >\n      @if (title) {\n        <div class="p-4 border-b border-[var(--border-color)]">\n          <h3 class="m-0 text-base font-semibold text-[var(--text-primary)]">{{ title }}</h3>\n          @if (subtitle) {\n            <p class="m-0 mt-1 text-sm text-[var(--text-secondary)]">{{ subtitle }}</p>\n          }\n        </div>\n      }\n      <div class="p-4 text-sm leading-relaxed text-[var(--text-secondary)]" [style.padding.px]="padding">\n        @if (content) {\n          {{ content }}\n        }\n        @for (child of children; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="children"\n          ></app-schema-element>\n        }\n      </div>\n    </div>\n',
+      '<div\n  appApplyTheme="app-card"\n  class="overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)]"\n  [class.shadow-md]="elevated"\n  [style.borderRadius.px]="borderRadius"\n>\n  @if (title) {\n    <div class="p-4 border-b border-[var(--border-color)]">\n      <h3 class="m-0 text-base font-semibold text-[var(--text-primary)]">\n        {{ title }}\n      </h3>\n      @if (subtitle) {\n        <p class="m-0 mt-1 text-sm text-[var(--text-secondary)]">\n          {{ subtitle }}\n        </p>\n      }\n    </div>\n  }\n  <div\n    class="p-4 text-sm leading-relaxed text-[var(--text-secondary)]"\n    [style.padding.px]="padding"\n  >\n    @if (content) {\n      {{ content }}\n    }\n    @for (child of children; track child.id) {\n      <app-schema-element\n        [element]="child"\n        [elements]="children"\n      ></app-schema-element>\n    }\n  </div>\n</div>\n',
     styles: [""],
     dependencies: [
       { kind: "ngmodule", type: CommonModule },
@@ -9905,7 +9467,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [CommonModule, SchemaElementComponent, ApplyThemeDirective],
           template:
-            '    <div\n      appApplyTheme="app-card"\n      class="overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)]"\n      [class.shadow-md]="elevated"\n      [style.borderRadius.px]="borderRadius"\n    >\n      @if (title) {\n        <div class="p-4 border-b border-[var(--border-color)]">\n          <h3 class="m-0 text-base font-semibold text-[var(--text-primary)]">{{ title }}</h3>\n          @if (subtitle) {\n            <p class="m-0 mt-1 text-sm text-[var(--text-secondary)]">{{ subtitle }}</p>\n          }\n        </div>\n      }\n      <div class="p-4 text-sm leading-relaxed text-[var(--text-secondary)]" [style.padding.px]="padding">\n        @if (content) {\n          {{ content }}\n        }\n        @for (child of children; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="children"\n          ></app-schema-element>\n        }\n      </div>\n    </div>\n',
+            '<div\n  appApplyTheme="app-card"\n  class="overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)]"\n  [class.shadow-md]="elevated"\n  [style.borderRadius.px]="borderRadius"\n>\n  @if (title) {\n    <div class="p-4 border-b border-[var(--border-color)]">\n      <h3 class="m-0 text-base font-semibold text-[var(--text-primary)]">\n        {{ title }}\n      </h3>\n      @if (subtitle) {\n        <p class="m-0 mt-1 text-sm text-[var(--text-secondary)]">\n          {{ subtitle }}\n        </p>\n      }\n    </div>\n  }\n  <div\n    class="p-4 text-sm leading-relaxed text-[var(--text-secondary)]"\n    [style.padding.px]="padding"\n  >\n    @if (content) {\n      {{ content }}\n    }\n    @for (child of children; track child.id) {\n      <app-schema-element\n        [element]="child"\n        [elements]="children"\n      ></app-schema-element>\n    }\n  </div>\n</div>\n',
         },
       ],
     },
@@ -9972,7 +9534,7 @@ class StatsCardComponent {
     inputs: { label: "label", value: "value", unit: "unit", icon: "icon" },
     ngImport: i0,
     template:
-      '    <div\n      appApplyTheme="app-stats-card"\n      class="flex flex-col gap-2 p-6 rounded-xl border bg-[color:var(--bg-elevated)] border-[color:var(--border-color)]"\n    >\n      @if (icon) {\n        <div class="text-2xl text-[color:var(--accent)]">{{ icon }}</div>\n      }\n      <div class="text-2xl font-bold leading-none text-[color:var(--text-primary)]">{{ value }}{{ unit }}</div>\n      @if (label) {\n        <div class="text-sm text-[color:var(--text-secondary)]">{{ label }}</div>\n      }\n    </div>\n',
+      '<div\n  appApplyTheme="app-stats-card"\n  class="flex flex-col gap-2 p-6 rounded-xl border bg-[color:var(--bg-elevated)] border-[color:var(--border-color)]"\n>\n  @if (icon) {\n    <div class="text-2xl text-[color:var(--accent)]">{{ icon }}</div>\n  }\n  <div class="text-2xl font-bold leading-none text-[color:var(--text-primary)]">\n    {{ value }}{{ unit }}\n  </div>\n  @if (label) {\n    <div class="text-sm text-[color:var(--text-secondary)]">{{ label }}</div>\n  }\n</div>\n',
     styles: [""],
     dependencies: [
       {
@@ -9998,7 +9560,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <div\n      appApplyTheme="app-stats-card"\n      class="flex flex-col gap-2 p-6 rounded-xl border bg-[color:var(--bg-elevated)] border-[color:var(--border-color)]"\n    >\n      @if (icon) {\n        <div class="text-2xl text-[color:var(--accent)]">{{ icon }}</div>\n      }\n      <div class="text-2xl font-bold leading-none text-[color:var(--text-primary)]">{{ value }}{{ unit }}</div>\n      @if (label) {\n        <div class="text-sm text-[color:var(--text-secondary)]">{{ label }}</div>\n      }\n    </div>\n',
+            '<div\n  appApplyTheme="app-stats-card"\n  class="flex flex-col gap-2 p-6 rounded-xl border bg-[color:var(--bg-elevated)] border-[color:var(--border-color)]"\n>\n  @if (icon) {\n    <div class="text-2xl text-[color:var(--accent)]">{{ icon }}</div>\n  }\n  <div class="text-2xl font-bold leading-none text-[color:var(--text-primary)]">\n    {{ value }}{{ unit }}\n  </div>\n  @if (label) {\n    <div class="text-sm text-[color:var(--text-secondary)]">{{ label }}</div>\n  }\n</div>\n',
         },
       ],
     },
@@ -10054,7 +9616,7 @@ class TableViewComponent {
     inputs: { columns: "columns", data: "data" },
     ngImport: i0,
     template:
-      '    <table appApplyTheme="app-table-view" class="w-full border-collapse text-sm">\n      <thead>\n        <tr>\n          @for (col of parsedColumns; track col.key) {\n            <th class="text-left p-3 bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)] font-semibold border-b border-[color:var(--border-color)]">{{ col.name }}</th>\n          }\n        </tr>\n      </thead>\n      <tbody>\n        @for (row of parsedData; track row) {\n          <tr class="hover:bg-[color:var(--bg-hover)]">\n            @for (col of parsedColumns; track col.key) {\n              <td class="p-3 text-[color:var(--text-primary)] border-b border-[color:var(--border-color)]">{{ row[col.key] }}</td>\n            }\n          </tr>\n        }\n      </tbody>\n    </table>',
+      '<table appApplyTheme="app-table-view" class="w-full border-collapse text-sm">\n  <thead>\n    <tr>\n      @for (col of parsedColumns; track col.key) {\n        <th\n          class="text-left p-3 bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)] font-semibold border-b border-[color:var(--border-color)]"\n        >\n          {{ col.name }}\n        </th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row) {\n      <tr class="hover:bg-[color:var(--bg-hover)]">\n        @for (col of parsedColumns; track col.key) {\n          <td\n            class="p-3 text-[color:var(--text-primary)] border-b border-[color:var(--border-color)]"\n          >\n            {{ row[col.key] }}\n          </td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n',
     styles: [""],
     dependencies: [
       {
@@ -10080,7 +9642,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <table appApplyTheme="app-table-view" class="w-full border-collapse text-sm">\n      <thead>\n        <tr>\n          @for (col of parsedColumns; track col.key) {\n            <th class="text-left p-3 bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)] font-semibold border-b border-[color:var(--border-color)]">{{ col.name }}</th>\n          }\n        </tr>\n      </thead>\n      <tbody>\n        @for (row of parsedData; track row) {\n          <tr class="hover:bg-[color:var(--bg-hover)]">\n            @for (col of parsedColumns; track col.key) {\n              <td class="p-3 text-[color:var(--text-primary)] border-b border-[color:var(--border-color)]">{{ row[col.key] }}</td>\n            }\n          </tr>\n        }\n      </tbody>\n    </table>',
+            '<table appApplyTheme="app-table-view" class="w-full border-collapse text-sm">\n  <thead>\n    <tr>\n      @for (col of parsedColumns; track col.key) {\n        <th\n          class="text-left p-3 bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)] font-semibold border-b border-[color:var(--border-color)]"\n        >\n          {{ col.name }}\n        </th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row) {\n      <tr class="hover:bg-[color:var(--bg-hover)]">\n        @for (col of parsedColumns; track col.key) {\n          <td\n            class="p-3 text-[color:var(--text-primary)] border-b border-[color:var(--border-color)]"\n          >\n            {{ row[col.key] }}\n          </td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n',
         },
       ],
     },
@@ -10135,7 +9697,7 @@ class DataTableComponent {
     outputs: { rowSelected: "rowSelected" },
     ngImport: i0,
     template:
-      '    <table appApplyTheme="app-data-table" class="w-full border-collapse text-sm">\n      <thead>\n        <tr>\n          @if (selectable) {\n            <th class="w-8"></th>\n          }\n          @for (col of parsedColumns; track col.key) {\n            <th class="text-left p-3 font-semibold border-b bg-[var(--bg-secondary)] text-[var(--text-primary)] border-[var(--border-color)]">{{ col.name }}</th>\n          }\n        </tr>\n      </thead>\n      <tbody>\n        @for (row of parsedData; track row; let idx = $index) {\n          <tr\n            class="cursor-default"\n            [class.cursor-pointer]="selectable"\n            [class.bg-[var(--accent)]]="selectedIndex === idx"\n            [class.text-[var(--text-on-accent)]]="selectedIndex === idx"\n            (click)="selectRow(idx)"\n          >\n            @if (selectable) {\n              <td class="p-3 border-b border-[var(--border-color)]">\n                <span\n                  class="inline-block w-4 h-4 rounded-full border-2"\n                  [class.border-[var(--text-on-accent)]]="selectedIndex === idx"\n                  [class.border-[var(--border-color)]]="selectedIndex !== idx"\n                  [class.bg-[var(--text-on-accent)]]="selectedIndex === idx"\n                  [class.bg-transparent]="selectedIndex !== idx"\n                ></span>\n              </td>\n            }\n            @for (col of parsedColumns; track col.key) {\n              <td class="p-3 border-b text-[var(--text-primary)] border-[var(--border-color)]">{{ row[col.key] }}</td>\n            }\n          </tr>\n        }\n      </tbody>\n    </table>\n  ',
+      '<table appApplyTheme="app-data-table" class="w-full border-collapse text-sm">\n  <thead>\n    <tr>\n      @if (selectable) {\n        <th class="w-8"></th>\n      }\n      @for (col of parsedColumns; track col.key) {\n        <th\n          class="text-left p-3 font-semibold border-b bg-[var(--bg-secondary)] text-[var(--text-primary)] border-[var(--border-color)]"\n        >\n          {{ col.name }}\n        </th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row; let idx = $index) {\n      <tr\n        class="cursor-default"\n        [class.cursor-pointer]="selectable"\n        [class.bg-[var(--accent)]]="selectedIndex === idx"\n        [class.text-[var(--text-on-accent)]]="selectedIndex === idx"\n        (click)="selectRow(idx)"\n      >\n        @if (selectable) {\n          <td class="p-3 border-b border-[var(--border-color)]">\n            <span\n              class="inline-block w-4 h-4 rounded-full border-2"\n              [class.border-[var(--text-on-accent)]]="selectedIndex === idx"\n              [class.border-[var(--border-color)]]="selectedIndex !== idx"\n              [class.bg-[var(--text-on-accent)]]="selectedIndex === idx"\n              [class.bg-transparent]="selectedIndex !== idx"\n            ></span>\n          </td>\n        }\n        @for (col of parsedColumns; track col.key) {\n          <td\n            class="p-3 border-b text-[var(--text-primary)] border-[var(--border-color)]"\n          >\n            {{ row[col.key] }}\n          </td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n',
     styles: [""],
     dependencies: [
       {
@@ -10161,7 +9723,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <table appApplyTheme="app-data-table" class="w-full border-collapse text-sm">\n      <thead>\n        <tr>\n          @if (selectable) {\n            <th class="w-8"></th>\n          }\n          @for (col of parsedColumns; track col.key) {\n            <th class="text-left p-3 font-semibold border-b bg-[var(--bg-secondary)] text-[var(--text-primary)] border-[var(--border-color)]">{{ col.name }}</th>\n          }\n        </tr>\n      </thead>\n      <tbody>\n        @for (row of parsedData; track row; let idx = $index) {\n          <tr\n            class="cursor-default"\n            [class.cursor-pointer]="selectable"\n            [class.bg-[var(--accent)]]="selectedIndex === idx"\n            [class.text-[var(--text-on-accent)]]="selectedIndex === idx"\n            (click)="selectRow(idx)"\n          >\n            @if (selectable) {\n              <td class="p-3 border-b border-[var(--border-color)]">\n                <span\n                  class="inline-block w-4 h-4 rounded-full border-2"\n                  [class.border-[var(--text-on-accent)]]="selectedIndex === idx"\n                  [class.border-[var(--border-color)]]="selectedIndex !== idx"\n                  [class.bg-[var(--text-on-accent)]]="selectedIndex === idx"\n                  [class.bg-transparent]="selectedIndex !== idx"\n                ></span>\n              </td>\n            }\n            @for (col of parsedColumns; track col.key) {\n              <td class="p-3 border-b text-[var(--text-primary)] border-[var(--border-color)]">{{ row[col.key] }}</td>\n            }\n          </tr>\n        }\n      </tbody>\n    </table>\n  ',
+            '<table appApplyTheme="app-data-table" class="w-full border-collapse text-sm">\n  <thead>\n    <tr>\n      @if (selectable) {\n        <th class="w-8"></th>\n      }\n      @for (col of parsedColumns; track col.key) {\n        <th\n          class="text-left p-3 font-semibold border-b bg-[var(--bg-secondary)] text-[var(--text-primary)] border-[var(--border-color)]"\n        >\n          {{ col.name }}\n        </th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row; let idx = $index) {\n      <tr\n        class="cursor-default"\n        [class.cursor-pointer]="selectable"\n        [class.bg-[var(--accent)]]="selectedIndex === idx"\n        [class.text-[var(--text-on-accent)]]="selectedIndex === idx"\n        (click)="selectRow(idx)"\n      >\n        @if (selectable) {\n          <td class="p-3 border-b border-[var(--border-color)]">\n            <span\n              class="inline-block w-4 h-4 rounded-full border-2"\n              [class.border-[var(--text-on-accent)]]="selectedIndex === idx"\n              [class.border-[var(--border-color)]]="selectedIndex !== idx"\n              [class.bg-[var(--text-on-accent)]]="selectedIndex === idx"\n              [class.bg-transparent]="selectedIndex !== idx"\n            ></span>\n          </td>\n        }\n        @for (col of parsedColumns; track col.key) {\n          <td\n            class="p-3 border-b text-[var(--text-primary)] border-[var(--border-color)]"\n          >\n            {{ row[col.key] }}\n          </td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n',
         },
       ],
     },
@@ -10229,7 +9791,7 @@ class JsonViewComponent {
     inputs: { data: "data" },
     ngImport: i0,
     template:
-      '<div\n  appApplyTheme="app-json-view"\n  class="text-sm font-mono p-4 rounded border border-[var(--border-color)] bg-[var(--bg-secondary)] overflow-x-auto whitespace-pre-wrap break-words"\n  [innerHTML]="safeHtml"\n></div>',
+      '<div\n  appApplyTheme="app-json-view"\n  class="text-sm font-mono p-4 rounded border border-[var(--border-color)] bg-[var(--bg-secondary)] overflow-x-auto whitespace-pre-wrap break-words"\n  [innerHTML]="safeHtml"\n></div>\n',
     styles: [""],
     dependencies: [
       {
@@ -10255,7 +9817,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '<div\n  appApplyTheme="app-json-view"\n  class="text-sm font-mono p-4 rounded border border-[var(--border-color)] bg-[var(--bg-secondary)] overflow-x-auto whitespace-pre-wrap break-words"\n  [innerHTML]="safeHtml"\n></div>',
+            '<div\n  appApplyTheme="app-json-view"\n  class="text-sm font-mono p-4 rounded border border-[var(--border-color)] bg-[var(--bg-secondary)] overflow-x-auto whitespace-pre-wrap break-words"\n  [innerHTML]="safeHtml"\n></div>\n',
         },
       ],
     },
@@ -10326,7 +9888,7 @@ class ComponentPaletteComponent {
     inputs: { categories: "categories", searchable: "searchable" },
     ngImport: i0,
     template:
-      '<div appApplyTheme="app-component-palette" class="block h-full overflow-y-auto" style="background-color: var(--bg-elevated); border-right: 1px solid var(--border-color);">\n  <div class="p-4" style="border-bottom: 1px solid var(--border-color);">\n    <div class="text-sm font-semibold mb-3" style="color: var(--text-primary);">Components</div>\n    @if (searchable) {\n      <input\n        type="text"\n        class="w-full px-3 py-2 text-sm border rounded-lg box-border"\n        style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);"\n        placeholder="Search components..."\n        [value]="searchQuery"\n        (input)="onSearch($event)"\n      />\n    }\n  </div>\n  <div>\n    @for (cat of filteredCategories; track cat.name) {\n      <div style="border-bottom: 1px solid var(--border-color);">\n        <div\n          class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium"\n          style="color: var(--text-primary);"\n          (click)="toggleCategory(cat.name)"\n        >\n          <span>{{ cat.name }}</span>\n          <span\n            class="text-xs transition-transform duration-200"\n            [class.rotate-180]="!isCollapsed(cat.name)"\n            style="transform: rotate(-90deg);"\n          >\u25BC</span>\n        </div>\n        @if (!isCollapsed(cat.name)) {\n          <div class="px-4 pb-3 flex flex-col gap-1">\n            @for (comp of cat.components; track comp) {\n              <div\n                class="px-3 py-2 rounded text-sm cursor-grab"\n                style="color: var(--text-secondary);"\n                draggable="true"\n                (dragstart)="onDragStart($event, comp)"\n              >{{ comp }}</div>\n            }\n          </div>\n        }\n      </div>\n    }\n  </div>\n</div>',
+      '<div\n  appApplyTheme="app-component-palette"\n  class="block h-full overflow-y-auto"\n  style="\n    background-color: var(--bg-elevated);\n    border-right: 1px solid var(--border-color);\n  "\n>\n  <div class="p-4" style="border-bottom: 1px solid var(--border-color)">\n    <div class="text-sm font-semibold mb-3" style="color: var(--text-primary)">\n      Components\n    </div>\n    @if (searchable) {\n      <input\n        type="text"\n        class="w-full px-3 py-2 text-sm border rounded-lg box-border"\n        style="\n          background-color: var(--bg-primary);\n          color: var(--text-primary);\n          border-color: var(--border-color);\n        "\n        placeholder="Search components..."\n        [value]="searchQuery"\n        (input)="onSearch($event)"\n      />\n    }\n  </div>\n  <div>\n    @for (cat of filteredCategories; track cat.name) {\n      <div style="border-bottom: 1px solid var(--border-color)">\n        <div\n          class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium"\n          style="color: var(--text-primary)"\n          (click)="toggleCategory(cat.name)"\n        >\n          <span>{{ cat.name }}</span>\n          <span\n            class="text-xs transition-transform duration-200"\n            [class.rotate-180]="!isCollapsed(cat.name)"\n            style="transform: rotate(-90deg)"\n            >\u25BC</span\n          >\n        </div>\n        @if (!isCollapsed(cat.name)) {\n          <div class="px-4 pb-3 flex flex-col gap-1">\n            @for (comp of cat.components; track comp) {\n              <div\n                class="px-3 py-2 rounded text-sm cursor-grab"\n                style="color: var(--text-secondary)"\n                draggable="true"\n                (dragstart)="onDragStart($event, comp)"\n              >\n                {{ comp }}\n              </div>\n            }\n          </div>\n        }\n      </div>\n    }\n  </div>\n</div>\n',
     styles: [""],
     dependencies: [
       {
@@ -10352,7 +9914,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '<div appApplyTheme="app-component-palette" class="block h-full overflow-y-auto" style="background-color: var(--bg-elevated); border-right: 1px solid var(--border-color);">\n  <div class="p-4" style="border-bottom: 1px solid var(--border-color);">\n    <div class="text-sm font-semibold mb-3" style="color: var(--text-primary);">Components</div>\n    @if (searchable) {\n      <input\n        type="text"\n        class="w-full px-3 py-2 text-sm border rounded-lg box-border"\n        style="background-color: var(--bg-primary); color: var(--text-primary); border-color: var(--border-color);"\n        placeholder="Search components..."\n        [value]="searchQuery"\n        (input)="onSearch($event)"\n      />\n    }\n  </div>\n  <div>\n    @for (cat of filteredCategories; track cat.name) {\n      <div style="border-bottom: 1px solid var(--border-color);">\n        <div\n          class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium"\n          style="color: var(--text-primary);"\n          (click)="toggleCategory(cat.name)"\n        >\n          <span>{{ cat.name }}</span>\n          <span\n            class="text-xs transition-transform duration-200"\n            [class.rotate-180]="!isCollapsed(cat.name)"\n            style="transform: rotate(-90deg);"\n          >\u25BC</span>\n        </div>\n        @if (!isCollapsed(cat.name)) {\n          <div class="px-4 pb-3 flex flex-col gap-1">\n            @for (comp of cat.components; track comp) {\n              <div\n                class="px-3 py-2 rounded text-sm cursor-grab"\n                style="color: var(--text-secondary);"\n                draggable="true"\n                (dragstart)="onDragStart($event, comp)"\n              >{{ comp }}</div>\n            }\n          </div>\n        }\n      </div>\n    }\n  </div>\n</div>',
+            '<div\n  appApplyTheme="app-component-palette"\n  class="block h-full overflow-y-auto"\n  style="\n    background-color: var(--bg-elevated);\n    border-right: 1px solid var(--border-color);\n  "\n>\n  <div class="p-4" style="border-bottom: 1px solid var(--border-color)">\n    <div class="text-sm font-semibold mb-3" style="color: var(--text-primary)">\n      Components\n    </div>\n    @if (searchable) {\n      <input\n        type="text"\n        class="w-full px-3 py-2 text-sm border rounded-lg box-border"\n        style="\n          background-color: var(--bg-primary);\n          color: var(--text-primary);\n          border-color: var(--border-color);\n        "\n        placeholder="Search components..."\n        [value]="searchQuery"\n        (input)="onSearch($event)"\n      />\n    }\n  </div>\n  <div>\n    @for (cat of filteredCategories; track cat.name) {\n      <div style="border-bottom: 1px solid var(--border-color)">\n        <div\n          class="flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium"\n          style="color: var(--text-primary)"\n          (click)="toggleCategory(cat.name)"\n        >\n          <span>{{ cat.name }}</span>\n          <span\n            class="text-xs transition-transform duration-200"\n            [class.rotate-180]="!isCollapsed(cat.name)"\n            style="transform: rotate(-90deg)"\n            >\u25BC</span\n          >\n        </div>\n        @if (!isCollapsed(cat.name)) {\n          <div class="px-4 pb-3 flex flex-col gap-1">\n            @for (comp of cat.components; track comp) {\n              <div\n                class="px-3 py-2 rounded text-sm cursor-grab"\n                style="color: var(--text-secondary)"\n                draggable="true"\n                (dragstart)="onDragStart($event, comp)"\n              >\n                {{ comp }}\n              </div>\n            }\n          </div>\n        }\n      </div>\n    }\n  </div>\n</div>\n',
         },
       ],
     },
@@ -10662,7 +10224,7 @@ class CanvasComponent {
     selector: "app-canvas",
     ngImport: i0,
     template:
-      '<div\n  appApplyTheme="app-canvas"\n  class="min-w-full min-h-full relative grid bg-[var(--bg-primary)]"\n  [style.--grid-cols]="designer.gridColumns.toString()"\n  [style.zoom]="designer.zoom() / 100"\n  (dragover)="onDragOver($event)"\n  (dragleave)="onDragLeave()"\n  (drop)="onDrop($event)"\n>\n  @if (designer.showGrid()) {\n    <div class="absolute inset-0 pointer-events-none grid grid-cols-[repeat(var(--grid-cols),1fr)]">\n      @for (cell of gridCells; track cell) {\n        <div class="border-r border-b min-h-16 border-[var(--border-color)]"></div>\n      }\n    </div>\n  }\n  @if (elements.length > 0) {\n    @for (el of elements; track el.id) {\n      <div\n        class="border-2 border-dashed rounded-lg p-2 cursor-move flex items-center gap-2 relative z-10 min-h-12 transition-colors duration-150 bg-[var(--bg-elevated)]"\n        [ngClass]="(designer.selectedId() === el.id || dropIndicator?.parentId === el.id) ? \'border-[var(--accent)]\' : \'border-transparent\'"\n        [class.ring-2]="designer.selectedId() === el.id"\n        [class.drop-target]="dropIndicator?.parentId === el.id"\n        [style.box-shadow]="designer.selectedId() === el.id ? \'0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent))\' : (dropIndicator?.parentId === el.id ? \'none\' : \'none\')"\n        [style.gridColumn]="getGridColumn(el)"\n        [style.gridRow]="getGridRow(el)"\n        (click)="designer.selectElement(el.id)"\n        (dblclick)="editElement(el)"\n        draggable="true"\n        (dragstart)="onElementDragStart($event, el)"\n        (dragover)="onElementDragOver($event, el)"\n        (dragleave)="onElementDragLeave(el)"\n      >\n        <span class="text-sm text-[var(--text-secondary)]">{{ getIcon(el) }}</span>\n        <span class="text-sm font-medium text-[var(--text-primary)]">{{ el.componentId }}</span>\n        <span class="text-xs font-mono ml-auto text-[var(--text-muted)]">{{ el.id }}</span>\n        <button\n          class="w-5 h-5 rounded-full border-0 bg-transparent cursor-pointer text-sm leading-none flex items-center justify-center p-0 opacity-0 transition-opacity duration-150 hover:opacity-100 text-[var(--text-muted)] bg-[var(--error)]"\n          [style.--tw-text-opacity]="\'1\'"\n          (click)="deleteElement($event, el.id)"\n          title="Delete"\n        >\u00D7</button>\n        @if (el.children?.length) {\n          <div class="text-xs px-1.5 py-0.5 rounded text-[var(--accent)] bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]">{{ el.children!.length }} children</div>\n        }\n      </div>\n    }\n  } @else {\n    <div class="border-2 border-dashed rounded-lg bg-secondary flex items-center justify-center grid-column-1/-1 min-h-[200px] border-[var(--border-color)]">\n      <div class="text-sm text-[var(--text-muted)]">Drag components here</div>\n    </div>\n  }\n  @if (dropIndicator && !dropIndicator.parentId) {\n    <div\n      class="absolute left-0 right-0 h-0.5 z-20 pointer-events-none bg-[var(--accent)]"\n      [style.top.px]="dropIndicator.y"\n    ></div>\n  }\n</div>\n',
+      '<div\n  appApplyTheme="app-canvas"\n  class="min-w-full min-h-full relative grid bg-[var(--bg-primary)]"\n  [style.--grid-cols]="designer.gridColumns.toString()"\n  [style.zoom]="designer.zoom() / 100"\n  (dragover)="onDragOver($event)"\n  (dragleave)="onDragLeave()"\n  (drop)="onDrop($event)"\n>\n  @if (designer.showGrid()) {\n    <div\n      class="absolute inset-0 pointer-events-none grid grid-cols-[repeat(var(--grid-cols),1fr)]"\n    >\n      @for (cell of gridCells; track cell) {\n        <div\n          class="border-r border-b min-h-16 border-[var(--border-color)]"\n        ></div>\n      }\n    </div>\n  }\n  @if (elements.length > 0) {\n    @for (el of elements; track el.id) {\n      <div\n        class="border-2 border-dashed rounded-lg p-2 cursor-move flex items-center gap-2 relative z-10 min-h-12 transition-colors duration-150 bg-[var(--bg-elevated)]"\n        [ngClass]="\n          designer.selectedId() === el.id || dropIndicator?.parentId === el.id\n            ? \'border-[var(--accent)]\'\n            : \'border-transparent\'\n        "\n        [class.ring-2]="designer.selectedId() === el.id"\n        [class.drop-target]="dropIndicator?.parentId === el.id"\n        [style.box-shadow]="\n          designer.selectedId() === el.id\n            ? \'0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent))\'\n            : dropIndicator?.parentId === el.id\n              ? \'none\'\n              : \'none\'\n        "\n        [style.gridColumn]="getGridColumn(el)"\n        [style.gridRow]="getGridRow(el)"\n        (click)="designer.selectElement(el.id)"\n        (dblclick)="editElement(el)"\n        draggable="true"\n        (dragstart)="onElementDragStart($event, el)"\n        (dragover)="onElementDragOver($event, el)"\n        (dragleave)="onElementDragLeave(el)"\n      >\n        <span class="text-sm text-[var(--text-secondary)]">{{\n          getIcon(el)\n        }}</span>\n        <span class="text-sm font-medium text-[var(--text-primary)]">{{\n          el.componentId\n        }}</span>\n        <span class="text-xs font-mono ml-auto text-[var(--text-muted)]">{{\n          el.id\n        }}</span>\n        <button\n          class="w-5 h-5 rounded-full border-0 bg-transparent cursor-pointer text-sm leading-none flex items-center justify-center p-0 opacity-0 transition-opacity duration-150 hover:opacity-100 text-[var(--text-muted)] bg-[var(--error)]"\n          [style.--tw-text-opacity]="\'1\'"\n          (click)="deleteElement($event, el.id)"\n          title="Delete"\n        >\n          \u00D7\n        </button>\n        @if (el.children?.length) {\n          <div\n            class="text-xs px-1.5 py-0.5 rounded text-[var(--accent)] bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]"\n          >\n            {{ el.children!.length }} children\n          </div>\n        }\n      </div>\n    }\n  } @else {\n    <div\n      class="border-2 border-dashed rounded-lg bg-secondary flex items-center justify-center grid-column-1/-1 min-h-[200px] border-[var(--border-color)]"\n    >\n      <div class="text-sm text-[var(--text-muted)]">Drag components here</div>\n    </div>\n  }\n  @if (dropIndicator && !dropIndicator.parentId) {\n    <div\n      class="absolute left-0 right-0 h-0.5 z-20 pointer-events-none bg-[var(--accent)]"\n      [style.top.px]="dropIndicator.y"\n    ></div>\n  }\n</div>\n',
     styles: [""],
     dependencies: [
       { kind: "ngmodule", type: CommonModule },
@@ -10695,7 +10257,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [CommonModule, ApplyThemeDirective],
           template:
-            '<div\n  appApplyTheme="app-canvas"\n  class="min-w-full min-h-full relative grid bg-[var(--bg-primary)]"\n  [style.--grid-cols]="designer.gridColumns.toString()"\n  [style.zoom]="designer.zoom() / 100"\n  (dragover)="onDragOver($event)"\n  (dragleave)="onDragLeave()"\n  (drop)="onDrop($event)"\n>\n  @if (designer.showGrid()) {\n    <div class="absolute inset-0 pointer-events-none grid grid-cols-[repeat(var(--grid-cols),1fr)]">\n      @for (cell of gridCells; track cell) {\n        <div class="border-r border-b min-h-16 border-[var(--border-color)]"></div>\n      }\n    </div>\n  }\n  @if (elements.length > 0) {\n    @for (el of elements; track el.id) {\n      <div\n        class="border-2 border-dashed rounded-lg p-2 cursor-move flex items-center gap-2 relative z-10 min-h-12 transition-colors duration-150 bg-[var(--bg-elevated)]"\n        [ngClass]="(designer.selectedId() === el.id || dropIndicator?.parentId === el.id) ? \'border-[var(--accent)]\' : \'border-transparent\'"\n        [class.ring-2]="designer.selectedId() === el.id"\n        [class.drop-target]="dropIndicator?.parentId === el.id"\n        [style.box-shadow]="designer.selectedId() === el.id ? \'0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent))\' : (dropIndicator?.parentId === el.id ? \'none\' : \'none\')"\n        [style.gridColumn]="getGridColumn(el)"\n        [style.gridRow]="getGridRow(el)"\n        (click)="designer.selectElement(el.id)"\n        (dblclick)="editElement(el)"\n        draggable="true"\n        (dragstart)="onElementDragStart($event, el)"\n        (dragover)="onElementDragOver($event, el)"\n        (dragleave)="onElementDragLeave(el)"\n      >\n        <span class="text-sm text-[var(--text-secondary)]">{{ getIcon(el) }}</span>\n        <span class="text-sm font-medium text-[var(--text-primary)]">{{ el.componentId }}</span>\n        <span class="text-xs font-mono ml-auto text-[var(--text-muted)]">{{ el.id }}</span>\n        <button\n          class="w-5 h-5 rounded-full border-0 bg-transparent cursor-pointer text-sm leading-none flex items-center justify-center p-0 opacity-0 transition-opacity duration-150 hover:opacity-100 text-[var(--text-muted)] bg-[var(--error)]"\n          [style.--tw-text-opacity]="\'1\'"\n          (click)="deleteElement($event, el.id)"\n          title="Delete"\n        >\u00D7</button>\n        @if (el.children?.length) {\n          <div class="text-xs px-1.5 py-0.5 rounded text-[var(--accent)] bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]">{{ el.children!.length }} children</div>\n        }\n      </div>\n    }\n  } @else {\n    <div class="border-2 border-dashed rounded-lg bg-secondary flex items-center justify-center grid-column-1/-1 min-h-[200px] border-[var(--border-color)]">\n      <div class="text-sm text-[var(--text-muted)]">Drag components here</div>\n    </div>\n  }\n  @if (dropIndicator && !dropIndicator.parentId) {\n    <div\n      class="absolute left-0 right-0 h-0.5 z-20 pointer-events-none bg-[var(--accent)]"\n      [style.top.px]="dropIndicator.y"\n    ></div>\n  }\n</div>\n',
+            '<div\n  appApplyTheme="app-canvas"\n  class="min-w-full min-h-full relative grid bg-[var(--bg-primary)]"\n  [style.--grid-cols]="designer.gridColumns.toString()"\n  [style.zoom]="designer.zoom() / 100"\n  (dragover)="onDragOver($event)"\n  (dragleave)="onDragLeave()"\n  (drop)="onDrop($event)"\n>\n  @if (designer.showGrid()) {\n    <div\n      class="absolute inset-0 pointer-events-none grid grid-cols-[repeat(var(--grid-cols),1fr)]"\n    >\n      @for (cell of gridCells; track cell) {\n        <div\n          class="border-r border-b min-h-16 border-[var(--border-color)]"\n        ></div>\n      }\n    </div>\n  }\n  @if (elements.length > 0) {\n    @for (el of elements; track el.id) {\n      <div\n        class="border-2 border-dashed rounded-lg p-2 cursor-move flex items-center gap-2 relative z-10 min-h-12 transition-colors duration-150 bg-[var(--bg-elevated)]"\n        [ngClass]="\n          designer.selectedId() === el.id || dropIndicator?.parentId === el.id\n            ? \'border-[var(--accent)]\'\n            : \'border-transparent\'\n        "\n        [class.ring-2]="designer.selectedId() === el.id"\n        [class.drop-target]="dropIndicator?.parentId === el.id"\n        [style.box-shadow]="\n          designer.selectedId() === el.id\n            ? \'0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent))\'\n            : dropIndicator?.parentId === el.id\n              ? \'none\'\n              : \'none\'\n        "\n        [style.gridColumn]="getGridColumn(el)"\n        [style.gridRow]="getGridRow(el)"\n        (click)="designer.selectElement(el.id)"\n        (dblclick)="editElement(el)"\n        draggable="true"\n        (dragstart)="onElementDragStart($event, el)"\n        (dragover)="onElementDragOver($event, el)"\n        (dragleave)="onElementDragLeave(el)"\n      >\n        <span class="text-sm text-[var(--text-secondary)]">{{\n          getIcon(el)\n        }}</span>\n        <span class="text-sm font-medium text-[var(--text-primary)]">{{\n          el.componentId\n        }}</span>\n        <span class="text-xs font-mono ml-auto text-[var(--text-muted)]">{{\n          el.id\n        }}</span>\n        <button\n          class="w-5 h-5 rounded-full border-0 bg-transparent cursor-pointer text-sm leading-none flex items-center justify-center p-0 opacity-0 transition-opacity duration-150 hover:opacity-100 text-[var(--text-muted)] bg-[var(--error)]"\n          [style.--tw-text-opacity]="\'1\'"\n          (click)="deleteElement($event, el.id)"\n          title="Delete"\n        >\n          \u00D7\n        </button>\n        @if (el.children?.length) {\n          <div\n            class="text-xs px-1.5 py-0.5 rounded text-[var(--accent)] bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]"\n          >\n            {{ el.children!.length }} children\n          </div>\n        }\n      </div>\n    }\n  } @else {\n    <div\n      class="border-2 border-dashed rounded-lg bg-secondary flex items-center justify-center grid-column-1/-1 min-h-[200px] border-[var(--border-color)]"\n    >\n      <div class="text-sm text-[var(--text-muted)]">Drag components here</div>\n    </div>\n  }\n  @if (dropIndicator && !dropIndicator.parentId) {\n    <div\n      class="absolute left-0 right-0 h-0.5 z-20 pointer-events-none bg-[var(--accent)]"\n      [style.top.px]="dropIndicator.y"\n    ></div>\n  }\n</div>\n',
         },
       ],
     },
@@ -10707,7 +10269,11 @@ class PropertiesPanelComponent {
   designer = inject(DesignerCanvasService);
   activeTab = "props";
   tabs = ["props", "style", "events"];
-  tabLabels = { props: "Props", style: "Style", events: "Events" };
+  tabLabels = {
+    props: "Props",
+    style: "Style",
+    events: "Events",
+  };
   availableStates = ["hover", "focus", "disabled"];
   el = computed(
     () => this.designer.selectedElement(),
@@ -10826,7 +10392,10 @@ class PropertiesPanelComponent {
     const id = this.designer.selectedId();
     const el = this.designer.selectedElement();
     if (!id || !el?.styles?.states) return;
-    const stateRules = { ...el.styles.states[state], "": "" };
+    const stateRules = {
+      ...el.styles.states[state],
+      "": "",
+    };
     const states = { ...el.styles.states, [state]: stateRules };
     this.designer.updateElement(id, {
       styles: { ...(el.styles ?? {}), states },
@@ -10938,7 +10507,7 @@ class PropertiesPanelComponent {
     selector: "app-properties-panel",
     ngImport: i0,
     template:
-      '    <div appApplyTheme="app-properties-panel" class="block h-full overflow-y-auto bg-[var(--bg-elevated)] border-l border-[var(--border-color)] text-[13px]">\n      <div class="p-4 border-b border-[var(--border-color)]">\n        <div class="text-sm font-semibold text-[var(--text-primary)]">Properties</div>\n        @if (el(); as el) {\n          <div class="text-[11px] mt-1 font-mono text-[var(--text-muted)]">{{ el.id }}</div>\n        }\n      </div>\n\n      <div class="flex border-b border-[var(--border-color)]">\n        @for (tab of tabs; track tab) {\n          <button\n            class="flex-1 py-2 px-2 border-none bg-transparent cursor-pointer text-xs font-medium transition-all duration-150"\n            [class.text-[var(--accent)]]="activeTab === tab"\n            [class.text-[var(--text-secondary)]]="activeTab !== tab"\n            [class.font-semibold]="activeTab === tab"\n            [class.border-b-2]="activeTab === tab"\n            [class.border-b-transparent]="activeTab !== tab"\n            (click)="activeTab = tab"\n          >{{ tabLabels[tab] }}</button>\n        }\n      </div>\n\n      @if (el(); as el) {\n        <div class="p-3">\n          @switch (activeTab) {\n            @case ("props") {\n              <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n                <div class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]">Component</div>\n                <div class="flex flex-col gap-1 mb-2">\n                  <label class="text-[11px] font-medium text-[var(--text-secondary)]">Type</label>\n                  <input [value]="el.componentId" readonly class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]" />\n                </div>\n                <div class="flex flex-col gap-1 mb-2">\n                  <label class="text-[11px] font-medium text-[var(--text-secondary)]">ID</label>\n                  <input [value]="el.id" (input)="updateField(\'id\', $any($event.target).value)" class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]" />\n                </div>\n                <div class="flex flex-col gap-1 mb-2">\n                  <label class="text-[11px] font-medium text-[var(--text-secondary)]">Classes</label>\n                  <input [value]="el.classes || \'\'" (input)="updateField(\'classes\', $any($event.target).value)" class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]" />\n                </div>\n                @for (prop of propEntries; track prop.key) {\n                  <div class="flex flex-col gap-1 mb-2">\n                    <label class="text-[11px] font-medium text-[var(--text-secondary)]">{{ prop.key }}</label>\n                    <input\n                      [value]="\'\' + (prop.value ?? \'\')"\n                      (input)="updateProp(prop.key, $any($event.target).value)"\n                      class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n                    />\n                  </div>\n                }\n              </div>\n            }\n            @case ("style") {\n              <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n                <div class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]">Inline Styles</div>\n                <div class="text-[11px] mb-2 text-[var(--text-muted)]">CSS custom properties and inline styles</div>\n                @for (style of styleEntries; track $index) {\n                  <div class="flex gap-1.5 mb-1.5 items-center">\n                    <input\n                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                      [value]="style.key"\n                      placeholder="property"\n                      (input)="updateStyleKey($index, $any($event.target).value)"\n                    />\n                    <input\n                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                      [value]="style.value"\n                      placeholder="value"\n                      (input)="updateStyleVal($index, $any($event.target).value)"\n                    />\n                    <button class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer" (click)="removeStyle($index)">\u00D7</button>\n                  </div>\n                }\n                <button class="py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer" (click)="addStyle()">+ Add style</button>\n              </div>\n              <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n                <div class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]">States</div>\n                @for (state of stateKeys; track state) {\n                  <div class="p-2 rounded-md mb-3 bg-[var(--bg-primary)]">\n                    <label class="text-[11px] font-semibold uppercase mb-1.5 block text-[var(--accent)]">{{ state }}</label>\n                    @for (rule of getStateRules(state); track $index) {\n                      <div class="flex gap-1.5 mb-1.5 items-center">\n                        <input\n                          class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                          [value]="rule.key"\n                          placeholder="property"\n                          (input)="updateStateRule(state, $index, \'key\', $any($event.target).value)"\n                        />\n                        <input\n                          class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                          [value]="rule.value"\n                          placeholder="value"\n                          (input)="updateStateRule(state, $index, \'val\', $any($event.target).value)"\n                        />\n                        <button class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer" (click)="removeStateRule(state, $index)">\u00D7</button>\n                      </div>\n                    }\n                    <button class="py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer" (click)="addStateRule(state)">+ Add rule</button>\n                  </div>\n                }\n                <div class="flex gap-1.5 flex-wrap">\n                  @for (s of availableStates; track s) {\n                    @if (!stateKeys.includes(s)) {\n                      <button class="py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer" (click)="addState(s)">+ {{ s }}</button>\n                    }\n                  }\n                </div>\n              </div>\n            }\n            @case ("events") {\n              <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n                <div class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]">Event Handlers</div>\n                <div class="text-[11px] mb-2 text-[var(--text-muted)]">Map component @Output() events to schema handlers</div>\n                @for (evt of eventEntries; track $index) {\n                  <div class="flex gap-1.5 mb-1.5 items-center">\n                    <input\n                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                      [value]="evt.event"\n                      placeholder="event name"\n                      (input)="updateEventName($index, $any($event.target).value)"\n                    />\n                    <input\n                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                      [value]="evt.handler"\n                      placeholder="handler name"\n                      (input)="updateEventHandler($index, $any($event.target).value)"\n                    />\n                    <button class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer" (click)="removeEvent($index)">\u00D7</button>\n                  </div>\n                }\n                <button class="py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer" (click)="addEvent()">+ Add handler</button>\n              </div>\n              <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n                <div class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]">Data Binding</div>\n                <div class="flex flex-col gap-1 mb-2">\n                  <label class="text-[11px] font-medium text-[var(--text-secondary)]">Store</label>\n                  <input [value]="el.bind?.store || \'\'" (input)="updateBind(\'store\', $any($event.target).value)" class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]" />\n                </div>\n                <div class="flex flex-col gap-1 mb-2">\n                  <label class="text-[11px] font-medium text-[var(--text-secondary)]">Field</label>\n                  <input [value]="el.bind?.field || \'\'" (input)="updateBind(\'field\', $any($event.target).value)" class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]" />\n                </div>\n              </div>\n            }\n          }\n        </div>\n      } @else {\n        <div class="p-8 text-center text-sm text-[var(--text-muted)]">No element selected</div>\n      }\n    </div>\n',
+      '<div\n  appApplyTheme="app-properties-panel"\n  class="block h-full overflow-y-auto bg-[var(--bg-elevated)] border-l border-[var(--border-color)] text-[13px]"\n>\n  <div class="p-4 border-b border-[var(--border-color)]">\n    <div class="text-sm font-semibold text-[var(--text-primary)]">\n      Properties\n    </div>\n    @if (el(); as el) {\n      <div class="text-[11px] mt-1 font-mono text-[var(--text-muted)]">\n        {{ el.id }}\n      </div>\n    }\n  </div>\n\n  <div class="flex border-b border-[var(--border-color)]">\n    @for (tab of tabs; track tab) {\n      <button\n        class="flex-1 py-2 px-2 border-none bg-transparent cursor-pointer text-xs font-medium transition-all duration-150"\n        [class.text-[var(--accent)]]="activeTab === tab"\n        [class.text-[var(--text-secondary)]]="activeTab !== tab"\n        [class.font-semibold]="activeTab === tab"\n        [class.border-b-2]="activeTab === tab"\n        [class.border-b-transparent]="activeTab !== tab"\n        (click)="activeTab = tab"\n      >\n        {{ tabLabels[tab] }}\n      </button>\n    }\n  </div>\n\n  @if (el(); as el) {\n    <div class="p-3">\n      @switch (activeTab) {\n        @case ("props") {\n          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n            <div\n              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"\n            >\n              Component\n            </div>\n            <div class="flex flex-col gap-1 mb-2">\n              <label\n                class="text-[11px] font-medium text-[var(--text-secondary)]"\n                >Type</label\n              >\n              <input\n                [value]="el.componentId"\n                readonly\n                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n              />\n            </div>\n            <div class="flex flex-col gap-1 mb-2">\n              <label\n                class="text-[11px] font-medium text-[var(--text-secondary)]"\n                >ID</label\n              >\n              <input\n                [value]="el.id"\n                (input)="updateField(\'id\', $any($event.target).value)"\n                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n              />\n            </div>\n            <div class="flex flex-col gap-1 mb-2">\n              <label\n                class="text-[11px] font-medium text-[var(--text-secondary)]"\n                >Classes</label\n              >\n              <input\n                [value]="el.classes || \'\'"\n                (input)="updateField(\'classes\', $any($event.target).value)"\n                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n              />\n            </div>\n            @for (prop of propEntries; track prop.key) {\n              <div class="flex flex-col gap-1 mb-2">\n                <label\n                  class="text-[11px] font-medium text-[var(--text-secondary)]"\n                  >{{ prop.key }}</label\n                >\n                <input\n                  [value]="\'\' + (prop.value ?? \'\')"\n                  (input)="updateProp(prop.key, $any($event.target).value)"\n                  class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n                />\n              </div>\n            }\n          </div>\n        }\n        @case ("style") {\n          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n            <div\n              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"\n            >\n              Inline Styles\n            </div>\n            <div class="text-[11px] mb-2 text-[var(--text-muted)]">\n              CSS custom properties and inline styles\n            </div>\n            @for (style of styleEntries; track $index) {\n              <div class="flex gap-1.5 mb-1.5 items-center">\n                <input\n                  class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                  [value]="style.key"\n                  placeholder="property"\n                  (input)="updateStyleKey($index, $any($event.target).value)"\n                />\n                <input\n                  class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                  [value]="style.value"\n                  placeholder="value"\n                  (input)="updateStyleVal($index, $any($event.target).value)"\n                />\n                <button\n                  class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer"\n                  (click)="removeStyle($index)"\n                >\n                  \u00D7\n                </button>\n              </div>\n            }\n            <button\n              class="py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer"\n              (click)="addStyle()"\n            >\n              + Add style\n            </button>\n          </div>\n          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n            <div\n              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"\n            >\n              States\n            </div>\n            @for (state of stateKeys; track state) {\n              <div class="p-2 rounded-md mb-3 bg-[var(--bg-primary)]">\n                <label\n                  class="text-[11px] font-semibold uppercase mb-1.5 block text-[var(--accent)]"\n                  >{{ state }}</label\n                >\n                @for (rule of getStateRules(state); track $index) {\n                  <div class="flex gap-1.5 mb-1.5 items-center">\n                    <input\n                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                      [value]="rule.key"\n                      placeholder="property"\n                      (input)="\n                        updateStateRule(\n                          state,\n                          $index,\n                          \'key\',\n                          $any($event.target).value\n                        )\n                      "\n                    />\n                    <input\n                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                      [value]="rule.value"\n                      placeholder="value"\n                      (input)="\n                        updateStateRule(\n                          state,\n                          $index,\n                          \'val\',\n                          $any($event.target).value\n                        )\n                      "\n                    />\n                    <button\n                      class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer"\n                      (click)="removeStateRule(state, $index)"\n                    >\n                      \u00D7\n                    </button>\n                  </div>\n                }\n                <button\n                  class="py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer"\n                  (click)="addStateRule(state)"\n                >\n                  + Add rule\n                </button>\n              </div>\n            }\n            <div class="flex gap-1.5 flex-wrap">\n              @for (s of availableStates; track s) {\n                @if (!stateKeys.includes(s)) {\n                  <button\n                    class="py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer"\n                    (click)="addState(s)"\n                  >\n                    + {{ s }}\n                  </button>\n                }\n              }\n            </div>\n          </div>\n        }\n        @case ("events") {\n          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n            <div\n              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"\n            >\n              Event Handlers\n            </div>\n            <div class="text-[11px] mb-2 text-[var(--text-muted)]">\n              Map component @Output() events to schema handlers\n            </div>\n            @for (evt of eventEntries; track $index) {\n              <div class="flex gap-1.5 mb-1.5 items-center">\n                <input\n                  class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                  [value]="evt.event"\n                  placeholder="event name"\n                  (input)="updateEventName($index, $any($event.target).value)"\n                />\n                <input\n                  class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                  [value]="evt.handler"\n                  placeholder="handler name"\n                  (input)="\n                    updateEventHandler($index, $any($event.target).value)\n                  "\n                />\n                <button\n                  class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer"\n                  (click)="removeEvent($index)"\n                >\n                  \u00D7\n                </button>\n              </div>\n            }\n            <button\n              class="py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer"\n              (click)="addEvent()"\n            >\n              + Add handler\n            </button>\n          </div>\n          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n            <div\n              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"\n            >\n              Data Binding\n            </div>\n            <div class="flex flex-col gap-1 mb-2">\n              <label\n                class="text-[11px] font-medium text-[var(--text-secondary)]"\n                >Store</label\n              >\n              <input\n                [value]="el.bind?.store || \'\'"\n                (input)="updateBind(\'store\', $any($event.target).value)"\n                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n              />\n            </div>\n            <div class="flex flex-col gap-1 mb-2">\n              <label\n                class="text-[11px] font-medium text-[var(--text-secondary)]"\n                >Field</label\n              >\n              <input\n                [value]="el.bind?.field || \'\'"\n                (input)="updateBind(\'field\', $any($event.target).value)"\n                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n              />\n            </div>\n          </div>\n        }\n      }\n    </div>\n  } @else {\n    <div class="p-8 text-center text-sm text-[var(--text-muted)]">\n      No element selected\n    </div>\n  }\n</div>\n',
     styles: [""],
     dependencies: [
       { kind: "ngmodule", type: CommonModule },
@@ -10965,7 +10534,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [CommonModule, ApplyThemeDirective],
           template:
-            '    <div appApplyTheme="app-properties-panel" class="block h-full overflow-y-auto bg-[var(--bg-elevated)] border-l border-[var(--border-color)] text-[13px]">\n      <div class="p-4 border-b border-[var(--border-color)]">\n        <div class="text-sm font-semibold text-[var(--text-primary)]">Properties</div>\n        @if (el(); as el) {\n          <div class="text-[11px] mt-1 font-mono text-[var(--text-muted)]">{{ el.id }}</div>\n        }\n      </div>\n\n      <div class="flex border-b border-[var(--border-color)]">\n        @for (tab of tabs; track tab) {\n          <button\n            class="flex-1 py-2 px-2 border-none bg-transparent cursor-pointer text-xs font-medium transition-all duration-150"\n            [class.text-[var(--accent)]]="activeTab === tab"\n            [class.text-[var(--text-secondary)]]="activeTab !== tab"\n            [class.font-semibold]="activeTab === tab"\n            [class.border-b-2]="activeTab === tab"\n            [class.border-b-transparent]="activeTab !== tab"\n            (click)="activeTab = tab"\n          >{{ tabLabels[tab] }}</button>\n        }\n      </div>\n\n      @if (el(); as el) {\n        <div class="p-3">\n          @switch (activeTab) {\n            @case ("props") {\n              <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n                <div class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]">Component</div>\n                <div class="flex flex-col gap-1 mb-2">\n                  <label class="text-[11px] font-medium text-[var(--text-secondary)]">Type</label>\n                  <input [value]="el.componentId" readonly class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]" />\n                </div>\n                <div class="flex flex-col gap-1 mb-2">\n                  <label class="text-[11px] font-medium text-[var(--text-secondary)]">ID</label>\n                  <input [value]="el.id" (input)="updateField(\'id\', $any($event.target).value)" class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]" />\n                </div>\n                <div class="flex flex-col gap-1 mb-2">\n                  <label class="text-[11px] font-medium text-[var(--text-secondary)]">Classes</label>\n                  <input [value]="el.classes || \'\'" (input)="updateField(\'classes\', $any($event.target).value)" class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]" />\n                </div>\n                @for (prop of propEntries; track prop.key) {\n                  <div class="flex flex-col gap-1 mb-2">\n                    <label class="text-[11px] font-medium text-[var(--text-secondary)]">{{ prop.key }}</label>\n                    <input\n                      [value]="\'\' + (prop.value ?? \'\')"\n                      (input)="updateProp(prop.key, $any($event.target).value)"\n                      class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n                    />\n                  </div>\n                }\n              </div>\n            }\n            @case ("style") {\n              <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n                <div class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]">Inline Styles</div>\n                <div class="text-[11px] mb-2 text-[var(--text-muted)]">CSS custom properties and inline styles</div>\n                @for (style of styleEntries; track $index) {\n                  <div class="flex gap-1.5 mb-1.5 items-center">\n                    <input\n                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                      [value]="style.key"\n                      placeholder="property"\n                      (input)="updateStyleKey($index, $any($event.target).value)"\n                    />\n                    <input\n                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                      [value]="style.value"\n                      placeholder="value"\n                      (input)="updateStyleVal($index, $any($event.target).value)"\n                    />\n                    <button class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer" (click)="removeStyle($index)">\u00D7</button>\n                  </div>\n                }\n                <button class="py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer" (click)="addStyle()">+ Add style</button>\n              </div>\n              <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n                <div class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]">States</div>\n                @for (state of stateKeys; track state) {\n                  <div class="p-2 rounded-md mb-3 bg-[var(--bg-primary)]">\n                    <label class="text-[11px] font-semibold uppercase mb-1.5 block text-[var(--accent)]">{{ state }}</label>\n                    @for (rule of getStateRules(state); track $index) {\n                      <div class="flex gap-1.5 mb-1.5 items-center">\n                        <input\n                          class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                          [value]="rule.key"\n                          placeholder="property"\n                          (input)="updateStateRule(state, $index, \'key\', $any($event.target).value)"\n                        />\n                        <input\n                          class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                          [value]="rule.value"\n                          placeholder="value"\n                          (input)="updateStateRule(state, $index, \'val\', $any($event.target).value)"\n                        />\n                        <button class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer" (click)="removeStateRule(state, $index)">\u00D7</button>\n                      </div>\n                    }\n                    <button class="py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer" (click)="addStateRule(state)">+ Add rule</button>\n                  </div>\n                }\n                <div class="flex gap-1.5 flex-wrap">\n                  @for (s of availableStates; track s) {\n                    @if (!stateKeys.includes(s)) {\n                      <button class="py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer" (click)="addState(s)">+ {{ s }}</button>\n                    }\n                  }\n                </div>\n              </div>\n            }\n            @case ("events") {\n              <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n                <div class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]">Event Handlers</div>\n                <div class="text-[11px] mb-2 text-[var(--text-muted)]">Map component @Output() events to schema handlers</div>\n                @for (evt of eventEntries; track $index) {\n                  <div class="flex gap-1.5 mb-1.5 items-center">\n                    <input\n                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                      [value]="evt.event"\n                      placeholder="event name"\n                      (input)="updateEventName($index, $any($event.target).value)"\n                    />\n                    <input\n                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                      [value]="evt.handler"\n                      placeholder="handler name"\n                      (input)="updateEventHandler($index, $any($event.target).value)"\n                    />\n                    <button class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer" (click)="removeEvent($index)">\u00D7</button>\n                  </div>\n                }\n                <button class="py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer" (click)="addEvent()">+ Add handler</button>\n              </div>\n              <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n                <div class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]">Data Binding</div>\n                <div class="flex flex-col gap-1 mb-2">\n                  <label class="text-[11px] font-medium text-[var(--text-secondary)]">Store</label>\n                  <input [value]="el.bind?.store || \'\'" (input)="updateBind(\'store\', $any($event.target).value)" class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]" />\n                </div>\n                <div class="flex flex-col gap-1 mb-2">\n                  <label class="text-[11px] font-medium text-[var(--text-secondary)]">Field</label>\n                  <input [value]="el.bind?.field || \'\'" (input)="updateBind(\'field\', $any($event.target).value)" class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]" />\n                </div>\n              </div>\n            }\n          }\n        </div>\n      } @else {\n        <div class="p-8 text-center text-sm text-[var(--text-muted)]">No element selected</div>\n      }\n    </div>\n',
+            '<div\n  appApplyTheme="app-properties-panel"\n  class="block h-full overflow-y-auto bg-[var(--bg-elevated)] border-l border-[var(--border-color)] text-[13px]"\n>\n  <div class="p-4 border-b border-[var(--border-color)]">\n    <div class="text-sm font-semibold text-[var(--text-primary)]">\n      Properties\n    </div>\n    @if (el(); as el) {\n      <div class="text-[11px] mt-1 font-mono text-[var(--text-muted)]">\n        {{ el.id }}\n      </div>\n    }\n  </div>\n\n  <div class="flex border-b border-[var(--border-color)]">\n    @for (tab of tabs; track tab) {\n      <button\n        class="flex-1 py-2 px-2 border-none bg-transparent cursor-pointer text-xs font-medium transition-all duration-150"\n        [class.text-[var(--accent)]]="activeTab === tab"\n        [class.text-[var(--text-secondary)]]="activeTab !== tab"\n        [class.font-semibold]="activeTab === tab"\n        [class.border-b-2]="activeTab === tab"\n        [class.border-b-transparent]="activeTab !== tab"\n        (click)="activeTab = tab"\n      >\n        {{ tabLabels[tab] }}\n      </button>\n    }\n  </div>\n\n  @if (el(); as el) {\n    <div class="p-3">\n      @switch (activeTab) {\n        @case ("props") {\n          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n            <div\n              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"\n            >\n              Component\n            </div>\n            <div class="flex flex-col gap-1 mb-2">\n              <label\n                class="text-[11px] font-medium text-[var(--text-secondary)]"\n                >Type</label\n              >\n              <input\n                [value]="el.componentId"\n                readonly\n                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n              />\n            </div>\n            <div class="flex flex-col gap-1 mb-2">\n              <label\n                class="text-[11px] font-medium text-[var(--text-secondary)]"\n                >ID</label\n              >\n              <input\n                [value]="el.id"\n                (input)="updateField(\'id\', $any($event.target).value)"\n                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n              />\n            </div>\n            <div class="flex flex-col gap-1 mb-2">\n              <label\n                class="text-[11px] font-medium text-[var(--text-secondary)]"\n                >Classes</label\n              >\n              <input\n                [value]="el.classes || \'\'"\n                (input)="updateField(\'classes\', $any($event.target).value)"\n                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n              />\n            </div>\n            @for (prop of propEntries; track prop.key) {\n              <div class="flex flex-col gap-1 mb-2">\n                <label\n                  class="text-[11px] font-medium text-[var(--text-secondary)]"\n                  >{{ prop.key }}</label\n                >\n                <input\n                  [value]="\'\' + (prop.value ?? \'\')"\n                  (input)="updateProp(prop.key, $any($event.target).value)"\n                  class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n                />\n              </div>\n            }\n          </div>\n        }\n        @case ("style") {\n          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n            <div\n              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"\n            >\n              Inline Styles\n            </div>\n            <div class="text-[11px] mb-2 text-[var(--text-muted)]">\n              CSS custom properties and inline styles\n            </div>\n            @for (style of styleEntries; track $index) {\n              <div class="flex gap-1.5 mb-1.5 items-center">\n                <input\n                  class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                  [value]="style.key"\n                  placeholder="property"\n                  (input)="updateStyleKey($index, $any($event.target).value)"\n                />\n                <input\n                  class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                  [value]="style.value"\n                  placeholder="value"\n                  (input)="updateStyleVal($index, $any($event.target).value)"\n                />\n                <button\n                  class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer"\n                  (click)="removeStyle($index)"\n                >\n                  \u00D7\n                </button>\n              </div>\n            }\n            <button\n              class="py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer"\n              (click)="addStyle()"\n            >\n              + Add style\n            </button>\n          </div>\n          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n            <div\n              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"\n            >\n              States\n            </div>\n            @for (state of stateKeys; track state) {\n              <div class="p-2 rounded-md mb-3 bg-[var(--bg-primary)]">\n                <label\n                  class="text-[11px] font-semibold uppercase mb-1.5 block text-[var(--accent)]"\n                  >{{ state }}</label\n                >\n                @for (rule of getStateRules(state); track $index) {\n                  <div class="flex gap-1.5 mb-1.5 items-center">\n                    <input\n                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                      [value]="rule.key"\n                      placeholder="property"\n                      (input)="\n                        updateStateRule(\n                          state,\n                          $index,\n                          \'key\',\n                          $any($event.target).value\n                        )\n                      "\n                    />\n                    <input\n                      class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                      [value]="rule.value"\n                      placeholder="value"\n                      (input)="\n                        updateStateRule(\n                          state,\n                          $index,\n                          \'val\',\n                          $any($event.target).value\n                        )\n                      "\n                    />\n                    <button\n                      class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer"\n                      (click)="removeStateRule(state, $index)"\n                    >\n                      \u00D7\n                    </button>\n                  </div>\n                }\n                <button\n                  class="py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer"\n                  (click)="addStateRule(state)"\n                >\n                  + Add rule\n                </button>\n              </div>\n            }\n            <div class="flex gap-1.5 flex-wrap">\n              @for (s of availableStates; track s) {\n                @if (!stateKeys.includes(s)) {\n                  <button\n                    class="py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer"\n                    (click)="addState(s)"\n                  >\n                    + {{ s }}\n                  </button>\n                }\n              }\n            </div>\n          </div>\n        }\n        @case ("events") {\n          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n            <div\n              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"\n            >\n              Event Handlers\n            </div>\n            <div class="text-[11px] mb-2 text-[var(--text-muted)]">\n              Map component @Output() events to schema handlers\n            </div>\n            @for (evt of eventEntries; track $index) {\n              <div class="flex gap-1.5 mb-1.5 items-center">\n                <input\n                  class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                  [value]="evt.event"\n                  placeholder="event name"\n                  (input)="updateEventName($index, $any($event.target).value)"\n                />\n                <input\n                  class="flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]"\n                  [value]="evt.handler"\n                  placeholder="handler name"\n                  (input)="\n                    updateEventHandler($index, $any($event.target).value)\n                  "\n                />\n                <button\n                  class="w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer"\n                  (click)="removeEvent($index)"\n                >\n                  \u00D7\n                </button>\n              </div>\n            }\n            <button\n              class="py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer"\n              (click)="addEvent()"\n            >\n              + Add handler\n            </button>\n          </div>\n          <div class="pb-4 mb-4 border-b border-[var(--border-color)]">\n            <div\n              class="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]"\n            >\n              Data Binding\n            </div>\n            <div class="flex flex-col gap-1 mb-2">\n              <label\n                class="text-[11px] font-medium text-[var(--text-secondary)]"\n                >Store</label\n              >\n              <input\n                [value]="el.bind?.store || \'\'"\n                (input)="updateBind(\'store\', $any($event.target).value)"\n                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n              />\n            </div>\n            <div class="flex flex-col gap-1 mb-2">\n              <label\n                class="text-[11px] font-medium text-[var(--text-secondary)]"\n                >Field</label\n              >\n              <input\n                [value]="el.bind?.field || \'\'"\n                (input)="updateBind(\'field\', $any($event.target).value)"\n                class="px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]"\n              />\n            </div>\n          </div>\n        }\n      }\n    </div>\n  } @else {\n    <div class="p-8 text-center text-sm text-[var(--text-muted)]">\n      No element selected\n    </div>\n  }\n</div>\n',
         },
       ],
     },
@@ -11013,7 +10582,7 @@ class BottomPanelComponent {
     outputs: { tabChange: "tabChange" },
     ngImport: i0,
     template:
-      '<div appApplyTheme="app-bottom-panel" class="flex flex-col h-full border-t bg-[var(--bg-elevated)] border-[var(--border-color)]">\n  <div class="flex gap-0 pb-px border-b border-[var(--border-color)]">\n    @for (tab of parsedTabs; track tab.id) {\n      <div\n        class="px-4 py-3 text-sm font-medium cursor-pointer border-b-2 -mb-px transition-all duration-150"\n        [class.text-[var(--accent)]]]="activeTab === tab.id"\n        [class.text-[var(--text-secondary)]]]="activeTab !== tab.id"\n        [class.border-b-[var(--accent)]]]="activeTab === tab.id"\n        [class.border-b-transparent]="activeTab !== tab.id"\n        (click)="handleTabClick(tab.id)"\n      >\n        {{ tab.label }}\n      </div>\n    }\n  </div>\n  <div class="flex-1 overflow-auto p-4">\n    <ng-content></ng-content>\n    @if (!parsedTabs.length) {\n      <div class="text-center text-sm text-[var(--text-muted)] py-8">No tabs available</div>\n    }\n  </div>\n</div>',
+      '<div\n  appApplyTheme="app-bottom-panel"\n  class="flex flex-col h-full border-t bg-[var(--bg-elevated)] border-[var(--border-color)]"\n>\n  <div class="flex gap-0 pb-px border-b border-[var(--border-color)]">\n    @for (tab of parsedTabs; track tab.id) {\n      <div\n        class="px-4 py-3 text-sm font-medium cursor-pointer border-b-2 -mb-px transition-all duration-150"\n        [class.text-[var(--accent)]]]="activeTab === tab.id"\n        [class.text-[var(--text-secondary)]]]="activeTab !== tab.id"\n        [class.border-b-[var(--accent)]]]="activeTab === tab.id"\n        [class.border-b-transparent]="activeTab !== tab.id"\n        (click)="handleTabClick(tab.id)"\n      >\n        {{ tab.label }}\n      </div>\n    }\n  </div>\n  <div class="flex-1 overflow-auto p-4">\n    <ng-content></ng-content>\n    @if (!parsedTabs.length) {\n      <div class="text-center text-sm text-[var(--text-muted)] py-8">\n        No tabs available\n      </div>\n    }\n  </div>\n</div>\n',
     styles: [""],
     dependencies: [
       {
@@ -11039,7 +10608,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '<div appApplyTheme="app-bottom-panel" class="flex flex-col h-full border-t bg-[var(--bg-elevated)] border-[var(--border-color)]">\n  <div class="flex gap-0 pb-px border-b border-[var(--border-color)]">\n    @for (tab of parsedTabs; track tab.id) {\n      <div\n        class="px-4 py-3 text-sm font-medium cursor-pointer border-b-2 -mb-px transition-all duration-150"\n        [class.text-[var(--accent)]]]="activeTab === tab.id"\n        [class.text-[var(--text-secondary)]]]="activeTab !== tab.id"\n        [class.border-b-[var(--accent)]]]="activeTab === tab.id"\n        [class.border-b-transparent]="activeTab !== tab.id"\n        (click)="handleTabClick(tab.id)"\n      >\n        {{ tab.label }}\n      </div>\n    }\n  </div>\n  <div class="flex-1 overflow-auto p-4">\n    <ng-content></ng-content>\n    @if (!parsedTabs.length) {\n      <div class="text-center text-sm text-[var(--text-muted)] py-8">No tabs available</div>\n    }\n  </div>\n</div>',
+            '<div\n  appApplyTheme="app-bottom-panel"\n  class="flex flex-col h-full border-t bg-[var(--bg-elevated)] border-[var(--border-color)]"\n>\n  <div class="flex gap-0 pb-px border-b border-[var(--border-color)]">\n    @for (tab of parsedTabs; track tab.id) {\n      <div\n        class="px-4 py-3 text-sm font-medium cursor-pointer border-b-2 -mb-px transition-all duration-150"\n        [class.text-[var(--accent)]]]="activeTab === tab.id"\n        [class.text-[var(--text-secondary)]]]="activeTab !== tab.id"\n        [class.border-b-[var(--accent)]]]="activeTab === tab.id"\n        [class.border-b-transparent]="activeTab !== tab.id"\n        (click)="handleTabClick(tab.id)"\n      >\n        {{ tab.label }}\n      </div>\n    }\n  </div>\n  <div class="flex-1 overflow-auto p-4">\n    <ng-content></ng-content>\n    @if (!parsedTabs.length) {\n      <div class="text-center text-sm text-[var(--text-muted)] py-8">\n        No tabs available\n      </div>\n    }\n  </div>\n</div>\n',
         },
       ],
     },
@@ -11118,7 +10687,7 @@ class HeaderComponent {
     outputs: { navigateBack: "navigateBack" },
     ngImport: i0,
     template:
-      '    <header appApplyTheme="app-header" class="flex items-center gap-4 p-4 border-b min-h-[56px] border-[var(--border-color)]" [style.background]="\'var(--bg-header, var(--bg-elevated))\'">\n      @if (showBack) {\n        <button\n          class="flex items-center justify-center w-9 h-9 rounded-lg border p-0 text-xl transition-all cursor-pointer hover:bg-[var(--bg-hover)] bg-[var(--bg-elevated)] border-[var(--border-color)] text-[var(--text-primary)]"\n          (click)="navigateBack.emit()"\n          aria-label="Back"\n        >\n          &larr;\n        </button>\n      }\n      <div class="flex-1 flex flex-col gap-1">\n        <h1 class="m-0 text-xl font-semibold text-[var(--text-primary)]">{{ title }}</h1>\n        @if (parsedBreadcrumbs.length) {\n          <div class="flex items-center gap-2 text-sm text-[var(--text-secondary)]">\n            @for (\n              crumb of parsedBreadcrumbs;\n              track crumb.label;\n              let last = $last\n            ) {\n              @if (!last && crumb.href) {\n                <a [href]="crumb.href">{{ crumb.label }}</a>\n              } @else {\n                <span>{{ crumb.label }}</span>\n              }\n              @if (!last) {\n                <span class="opacity-50">/</span>\n              }\n            }\n          </div>\n        }\n      </div>\n      <ng-content></ng-content>\n    </header>\n',
+      '<header\n  appApplyTheme="app-header"\n  class="flex items-center gap-4 p-4 border-b min-h-[56px] border-[var(--border-color)]"\n  [style.background]="\'var(--bg-header, var(--bg-elevated))\'"\n>\n  @if (showBack) {\n    <button\n      class="flex items-center justify-center w-9 h-9 rounded-lg border p-0 text-xl transition-all cursor-pointer hover:bg-[var(--bg-hover)] bg-[var(--bg-elevated)] border-[var(--border-color)] text-[var(--text-primary)]"\n      (click)="navigateBack.emit()"\n      aria-label="Back"\n    >\n      &larr;\n    </button>\n  }\n  <div class="flex-1 flex flex-col gap-1">\n    <h1 class="m-0 text-xl font-semibold text-[var(--text-primary)]">\n      {{ title }}\n    </h1>\n    @if (parsedBreadcrumbs.length) {\n      <div class="flex items-center gap-2 text-sm text-[var(--text-secondary)]">\n        @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {\n          @if (!last && crumb.href) {\n            <a [href]="crumb.href">{{ crumb.label }}</a>\n          } @else {\n            <span>{{ crumb.label }}</span>\n          }\n          @if (!last) {\n            <span class="opacity-50">/</span>\n          }\n        }\n      </div>\n    }\n  </div>\n  <ng-content></ng-content>\n</header>\n',
     styles: [""],
     dependencies: [
       {
@@ -11144,7 +10713,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <header appApplyTheme="app-header" class="flex items-center gap-4 p-4 border-b min-h-[56px] border-[var(--border-color)]" [style.background]="\'var(--bg-header, var(--bg-elevated))\'">\n      @if (showBack) {\n        <button\n          class="flex items-center justify-center w-9 h-9 rounded-lg border p-0 text-xl transition-all cursor-pointer hover:bg-[var(--bg-hover)] bg-[var(--bg-elevated)] border-[var(--border-color)] text-[var(--text-primary)]"\n          (click)="navigateBack.emit()"\n          aria-label="Back"\n        >\n          &larr;\n        </button>\n      }\n      <div class="flex-1 flex flex-col gap-1">\n        <h1 class="m-0 text-xl font-semibold text-[var(--text-primary)]">{{ title }}</h1>\n        @if (parsedBreadcrumbs.length) {\n          <div class="flex items-center gap-2 text-sm text-[var(--text-secondary)]">\n            @for (\n              crumb of parsedBreadcrumbs;\n              track crumb.label;\n              let last = $last\n            ) {\n              @if (!last && crumb.href) {\n                <a [href]="crumb.href">{{ crumb.label }}</a>\n              } @else {\n                <span>{{ crumb.label }}</span>\n              }\n              @if (!last) {\n                <span class="opacity-50">/</span>\n              }\n            }\n          </div>\n        }\n      </div>\n      <ng-content></ng-content>\n    </header>\n',
+            '<header\n  appApplyTheme="app-header"\n  class="flex items-center gap-4 p-4 border-b min-h-[56px] border-[var(--border-color)]"\n  [style.background]="\'var(--bg-header, var(--bg-elevated))\'"\n>\n  @if (showBack) {\n    <button\n      class="flex items-center justify-center w-9 h-9 rounded-lg border p-0 text-xl transition-all cursor-pointer hover:bg-[var(--bg-hover)] bg-[var(--bg-elevated)] border-[var(--border-color)] text-[var(--text-primary)]"\n      (click)="navigateBack.emit()"\n      aria-label="Back"\n    >\n      &larr;\n    </button>\n  }\n  <div class="flex-1 flex flex-col gap-1">\n    <h1 class="m-0 text-xl font-semibold text-[var(--text-primary)]">\n      {{ title }}\n    </h1>\n    @if (parsedBreadcrumbs.length) {\n      <div class="flex items-center gap-2 text-sm text-[var(--text-secondary)]">\n        @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {\n          @if (!last && crumb.href) {\n            <a [href]="crumb.href">{{ crumb.label }}</a>\n          } @else {\n            <span>{{ crumb.label }}</span>\n          }\n          @if (!last) {\n            <span class="opacity-50">/</span>\n          }\n        }\n      </div>\n    }\n  </div>\n  <ng-content></ng-content>\n</header>\n',
         },
       ],
     },
@@ -11224,7 +10793,7 @@ class SidebarComponent {
     outputs: { collapseChanged: "collapseChanged", itemClicked: "itemClicked" },
     ngImport: i0,
     template:
-      '<aside\n  appApplyTheme="app-sidebar"\n  class="flex flex-col h-full border-r transition-[width,min-width] duration-200 overflow-hidden bg-[var(--bg-elevated)] border-[var(--border-color)]"\n  [class.w-16]="collapsed"\n  [class.min-w-16]="collapsed"\n  [style.width.px]="width"\n  [style.min-width.px]="width"\n>\n  <div class="flex items-center justify-between px-4 py-3 border-b min-h-14 border-[var(--border-color)]">\n    <button\n      class="flex items-center justify-center w-8 h-8 border rounded-lg bg-transparent cursor-pointer text-xl transition-all duration-150 p-0 border-[var(--border-color)] text-[var(--text-secondary)]"\n      (click)="toggleCollapse()"\n      aria-label="Toggle sidebar"\n    >\n      {{ collapsed ? "\u2192" : "\u2190" }}\n    </button>\n  </div>\n  <nav class="flex-1 overflow-y-auto overflow-x-hidden p-2">\n    <ul class="list-none m-0 p-0">\n      @for (item of parsedItems; track item.label) {\n        <li class="m-0">\n          <div\n            class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]"\n            (click)="handleItemClick(item)"\n          >\n            @if (item.icon) {\n              <span class="flex items-center justify-center w-5 h-5 text-xl flex-shrink-0">{{ item.icon }}</span>\n            }\n            <span class="flex-1 overflow-hidden text-ellipsis">{{ item.label }}</span>\n          </div>\n          @if (item.children?.length) {\n            <ul class="ml-5 border-l pl-2">\n              @for (child of item.children; track child.label) {\n                <li>\n                  <div\n                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]"\n                    (click)="handleItemClick(child)"\n                  >\n                    @if (child.icon) {\n                      <span class="flex items-center justify-center w-5 h-5 text-xl flex-shrink-0">{{ child.icon }}</span>\n                    }\n                    <span class="flex-1 overflow-hidden text-ellipsis">{{ child.label }}</span>\n                  </div>\n                </li>\n              }\n            </ul>\n          }\n        </li>\n      }\n    </ul>\n  </nav>\n  <ng-content></ng-content>\n</aside>\n',
+      '<aside\n  appApplyTheme="app-sidebar"\n  class="flex flex-col h-full border-r transition-[width,min-width] duration-200 overflow-hidden bg-[var(--bg-elevated)] border-[var(--border-color)]"\n  [class.w-16]="collapsed"\n  [class.min-w-16]="collapsed"\n  [style.width.px]="width"\n  [style.min-width.px]="width"\n>\n  <div\n    class="flex items-center justify-between px-4 py-3 border-b min-h-14 border-[var(--border-color)]"\n  >\n    <button\n      class="flex items-center justify-center w-8 h-8 border rounded-lg bg-transparent cursor-pointer text-xl transition-all duration-150 p-0 border-[var(--border-color)] text-[var(--text-secondary)]"\n      (click)="toggleCollapse()"\n      aria-label="Toggle sidebar"\n    >\n      {{ collapsed ? "\u2192" : "\u2190" }}\n    </button>\n  </div>\n  <nav class="flex-1 overflow-y-auto overflow-x-hidden p-2">\n    <ul class="list-none m-0 p-0">\n      @for (item of parsedItems; track item.label) {\n        <li class="m-0">\n          <div\n            class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]"\n            (click)="handleItemClick(item)"\n          >\n            @if (item.icon) {\n              <span\n                class="flex items-center justify-center w-5 h-5 text-xl flex-shrink-0"\n                >{{ item.icon }}</span\n              >\n            }\n            <span class="flex-1 overflow-hidden text-ellipsis">{{\n              item.label\n            }}</span>\n          </div>\n          @if (item.children?.length) {\n            <ul class="ml-5 border-l pl-2">\n              @for (child of item.children; track child.label) {\n                <li>\n                  <div\n                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]"\n                    (click)="handleItemClick(child)"\n                  >\n                    @if (child.icon) {\n                      <span\n                        class="flex items-center justify-center w-5 h-5 text-xl flex-shrink-0"\n                        >{{ child.icon }}</span\n                      >\n                    }\n                    <span class="flex-1 overflow-hidden text-ellipsis">{{\n                      child.label\n                    }}</span>\n                  </div>\n                </li>\n              }\n            </ul>\n          }\n        </li>\n      }\n    </ul>\n  </nav>\n  <ng-content></ng-content>\n</aside>\n',
     styles: [""],
     dependencies: [
       {
@@ -11250,7 +10819,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '<aside\n  appApplyTheme="app-sidebar"\n  class="flex flex-col h-full border-r transition-[width,min-width] duration-200 overflow-hidden bg-[var(--bg-elevated)] border-[var(--border-color)]"\n  [class.w-16]="collapsed"\n  [class.min-w-16]="collapsed"\n  [style.width.px]="width"\n  [style.min-width.px]="width"\n>\n  <div class="flex items-center justify-between px-4 py-3 border-b min-h-14 border-[var(--border-color)]">\n    <button\n      class="flex items-center justify-center w-8 h-8 border rounded-lg bg-transparent cursor-pointer text-xl transition-all duration-150 p-0 border-[var(--border-color)] text-[var(--text-secondary)]"\n      (click)="toggleCollapse()"\n      aria-label="Toggle sidebar"\n    >\n      {{ collapsed ? "\u2192" : "\u2190" }}\n    </button>\n  </div>\n  <nav class="flex-1 overflow-y-auto overflow-x-hidden p-2">\n    <ul class="list-none m-0 p-0">\n      @for (item of parsedItems; track item.label) {\n        <li class="m-0">\n          <div\n            class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]"\n            (click)="handleItemClick(item)"\n          >\n            @if (item.icon) {\n              <span class="flex items-center justify-center w-5 h-5 text-xl flex-shrink-0">{{ item.icon }}</span>\n            }\n            <span class="flex-1 overflow-hidden text-ellipsis">{{ item.label }}</span>\n          </div>\n          @if (item.children?.length) {\n            <ul class="ml-5 border-l pl-2">\n              @for (child of item.children; track child.label) {\n                <li>\n                  <div\n                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]"\n                    (click)="handleItemClick(child)"\n                  >\n                    @if (child.icon) {\n                      <span class="flex items-center justify-center w-5 h-5 text-xl flex-shrink-0">{{ child.icon }}</span>\n                    }\n                    <span class="flex-1 overflow-hidden text-ellipsis">{{ child.label }}</span>\n                  </div>\n                </li>\n              }\n            </ul>\n          }\n        </li>\n      }\n    </ul>\n  </nav>\n  <ng-content></ng-content>\n</aside>\n',
+            '<aside\n  appApplyTheme="app-sidebar"\n  class="flex flex-col h-full border-r transition-[width,min-width] duration-200 overflow-hidden bg-[var(--bg-elevated)] border-[var(--border-color)]"\n  [class.w-16]="collapsed"\n  [class.min-w-16]="collapsed"\n  [style.width.px]="width"\n  [style.min-width.px]="width"\n>\n  <div\n    class="flex items-center justify-between px-4 py-3 border-b min-h-14 border-[var(--border-color)]"\n  >\n    <button\n      class="flex items-center justify-center w-8 h-8 border rounded-lg bg-transparent cursor-pointer text-xl transition-all duration-150 p-0 border-[var(--border-color)] text-[var(--text-secondary)]"\n      (click)="toggleCollapse()"\n      aria-label="Toggle sidebar"\n    >\n      {{ collapsed ? "\u2192" : "\u2190" }}\n    </button>\n  </div>\n  <nav class="flex-1 overflow-y-auto overflow-x-hidden p-2">\n    <ul class="list-none m-0 p-0">\n      @for (item of parsedItems; track item.label) {\n        <li class="m-0">\n          <div\n            class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]"\n            (click)="handleItemClick(item)"\n          >\n            @if (item.icon) {\n              <span\n                class="flex items-center justify-center w-5 h-5 text-xl flex-shrink-0"\n                >{{ item.icon }}</span\n              >\n            }\n            <span class="flex-1 overflow-hidden text-ellipsis">{{\n              item.label\n            }}</span>\n          </div>\n          @if (item.children?.length) {\n            <ul class="ml-5 border-l pl-2">\n              @for (child of item.children; track child.label) {\n                <li>\n                  <div\n                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]"\n                    (click)="handleItemClick(child)"\n                  >\n                    @if (child.icon) {\n                      <span\n                        class="flex items-center justify-center w-5 h-5 text-xl flex-shrink-0"\n                        >{{ child.icon }}</span\n                      >\n                    }\n                    <span class="flex-1 overflow-hidden text-ellipsis">{{\n                      child.label\n                    }}</span>\n                  </div>\n                </li>\n              }\n            </ul>\n          }\n        </li>\n      }\n    </ul>\n  </nav>\n  <ng-content></ng-content>\n</aside>\n',
         },
       ],
     },
@@ -11309,7 +10878,7 @@ class FooterComponent {
     inputs: { text: "text" },
     ngImport: i0,
     template:
-      '    <footer appApplyTheme="app-footer" class="flex items-center justify-center px-4 py-4 min-h-[48px] border-t border-[var(--border-color)] bg-[var(--bg-elevated)]">\n      @if (text) {\n        <p class="text-sm text-center m-0 text-[var(--text-secondary)]">{{ text }}</p>\n      }\n      <ng-content></ng-content>\n    </footer>\n',
+      '<footer\n  appApplyTheme="app-footer"\n  class="flex items-center justify-center px-4 py-4 min-h-[48px] border-t border-[var(--border-color)] bg-[var(--bg-elevated)]"\n>\n  @if (text) {\n    <p class="text-sm text-center m-0 text-[var(--text-secondary)]">\n      {{ text }}\n    </p>\n  }\n  <ng-content></ng-content>\n</footer>\n',
     styles: [""],
     dependencies: [
       {
@@ -11335,7 +10904,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <footer appApplyTheme="app-footer" class="flex items-center justify-center px-4 py-4 min-h-[48px] border-t border-[var(--border-color)] bg-[var(--bg-elevated)]">\n      @if (text) {\n        <p class="text-sm text-center m-0 text-[var(--text-secondary)]">{{ text }}</p>\n      }\n      <ng-content></ng-content>\n    </footer>\n',
+            '<footer\n  appApplyTheme="app-footer"\n  class="flex items-center justify-center px-4 py-4 min-h-[48px] border-t border-[var(--border-color)] bg-[var(--bg-elevated)]"\n>\n  @if (text) {\n    <p class="text-sm text-center m-0 text-[var(--text-secondary)]">\n      {{ text }}\n    </p>\n  }\n  <ng-content></ng-content>\n</footer>\n',
         },
       ],
     },
@@ -11377,7 +10946,7 @@ class PageContainerComponent {
     },
     ngImport: i0,
     template:
-      '    @if (title) {\n      <div class="flex items-center px-6 py-4 gap-4 border-b border-[var(--border-color)] min-h-[56px] bg-[var(--bg-elevated)]">\n        <h1 class="text-xl font-semibold m-0 text-[var(--text-primary)]">{{ title }}</h1>\n        <ng-content select="[slot=header-actions]"></ng-content>\n      </div>\n    }\n    <div\n      appApplyTheme="app-page-container"\n      class="flex-1 overflow-auto"\n      [style.padding.px]="padding"\n      [style.maxWidth]="maxWidth ? maxWidth + \'px\' : null"\n    >\n      <ng-content></ng-content>\n    </div>\n',
+      '@if (title) {\n  <div\n    class="flex items-center px-6 py-4 gap-4 border-b border-[var(--border-color)] min-h-[56px] bg-[var(--bg-elevated)]"\n  >\n    <h1 class="text-xl font-semibold m-0 text-[var(--text-primary)]">\n      {{ title }}\n    </h1>\n    <ng-content select="[slot=header-actions]"></ng-content>\n  </div>\n}\n<div\n  appApplyTheme="app-page-container"\n  class="flex-1 overflow-auto"\n  [style.padding.px]="padding"\n  [style.maxWidth]="maxWidth ? maxWidth + \'px\' : null"\n>\n  <ng-content></ng-content>\n</div>\n',
     styles: [":host{display:flex;flex-direction:column;height:100%}\n"],
     dependencies: [
       {
@@ -11403,7 +10972,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    @if (title) {\n      <div class="flex items-center px-6 py-4 gap-4 border-b border-[var(--border-color)] min-h-[56px] bg-[var(--bg-elevated)]">\n        <h1 class="text-xl font-semibold m-0 text-[var(--text-primary)]">{{ title }}</h1>\n        <ng-content select="[slot=header-actions]"></ng-content>\n      </div>\n    }\n    <div\n      appApplyTheme="app-page-container"\n      class="flex-1 overflow-auto"\n      [style.padding.px]="padding"\n      [style.maxWidth]="maxWidth ? maxWidth + \'px\' : null"\n    >\n      <ng-content></ng-content>\n    </div>\n',
+            '@if (title) {\n  <div\n    class="flex items-center px-6 py-4 gap-4 border-b border-[var(--border-color)] min-h-[56px] bg-[var(--bg-elevated)]"\n  >\n    <h1 class="text-xl font-semibold m-0 text-[var(--text-primary)]">\n      {{ title }}\n    </h1>\n    <ng-content select="[slot=header-actions]"></ng-content>\n  </div>\n}\n<div\n  appApplyTheme="app-page-container"\n  class="flex-1 overflow-auto"\n  [style.padding.px]="padding"\n  [style.maxWidth]="maxWidth ? maxWidth + \'px\' : null"\n>\n  <ng-content></ng-content>\n</div>\n',
           styles: [":host{display:flex;flex-direction:column;height:100%}\n"],
         },
       ],
@@ -11462,7 +11031,7 @@ class PageToolbarComponent {
     outputs: { actionClicked: "actionClicked" },
     ngImport: i0,
     template:
-      "    <div appApplyTheme=\"app-page-toolbar\" class=\"flex items-center px-6 py-4 gap-4 flex-wrap border-b border-[var(--border-color)] bg-[var(--bg-elevated)]\">\n      <div class=\"flex-1 flex flex-col gap-1 min-w-[200px]\">\n        <h2 class=\"text-lg font-semibold m-0 text-[var(--text-primary)]\">{{ title }}</h2>\n        <ng-content select=\"[slot=subtitle]\"></ng-content>\n      </div>\n      <div class=\"flex items-center gap-2 flex-wrap\">\n        @for (action of parsedActions; track action.label) {\n          <button\n            class=\"inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm cursor-pointer transition-all duration-150\"\n            [style.border-color]=\"action.variant === 'primary' ? 'var(--accent)' : action.variant === 'danger' ? 'var(--error)' : action.variant === 'ghost' ? 'transparent' : 'var(--border-color)'\"\n            [style.background]=\"action.variant === 'primary' ? 'var(--accent)' : action.variant === 'danger' ? 'var(--error)' : action.variant === 'ghost' ? 'transparent' : 'var(--bg-elevated)'\"\n            [style.color]=\"action.variant === 'primary' ? 'var(--text-on-accent)' : action.variant === 'danger' ? 'var(--text-on-error)' : action.variant === 'ghost' ? 'var(--text-secondary)' : 'var(--text-primary)'\"\n            (mouseenter)=\"$any($event.target).style.background='var(--bg-hover)'\"\n            (mouseleave)=\"$any($event.target).style.background=(action.variant === 'primary' ? 'var(--accent)' : action.variant === 'danger' ? 'var(--error)' : action.variant === 'ghost' ? 'transparent' : 'var(--bg-elevated)')\"\n            (click)=\"handleAction(action)\"\n          >\n            @if (action.icon) {\n              <app-icon class=\"text-lg\" [icon]=\"action.icon\" [size]=\"18\" />\n            }\n            {{ action.label }}\n          </button>\n        }\n      </div>\n    </div>\n",
+      "<div\n  appApplyTheme=\"app-page-toolbar\"\n  class=\"flex items-center px-6 py-4 gap-4 flex-wrap border-b border-[var(--border-color)] bg-[var(--bg-elevated)]\"\n>\n  <div class=\"flex-1 flex flex-col gap-1 min-w-[200px]\">\n    <h2 class=\"text-lg font-semibold m-0 text-[var(--text-primary)]\">\n      {{ title }}\n    </h2>\n    <ng-content select=\"[slot=subtitle]\"></ng-content>\n  </div>\n  <div class=\"flex items-center gap-2 flex-wrap\">\n    @for (action of parsedActions; track action.label) {\n      <button\n        class=\"inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm cursor-pointer transition-all duration-150\"\n        [style.border-color]=\"\n          action.variant === 'primary'\n            ? 'var(--accent)'\n            : action.variant === 'danger'\n              ? 'var(--error)'\n              : action.variant === 'ghost'\n                ? 'transparent'\n                : 'var(--border-color)'\n        \"\n        [style.background]=\"\n          action.variant === 'primary'\n            ? 'var(--accent)'\n            : action.variant === 'danger'\n              ? 'var(--error)'\n              : action.variant === 'ghost'\n                ? 'transparent'\n                : 'var(--bg-elevated)'\n        \"\n        [style.color]=\"\n          action.variant === 'primary'\n            ? 'var(--text-on-accent)'\n            : action.variant === 'danger'\n              ? 'var(--text-on-error)'\n              : action.variant === 'ghost'\n                ? 'var(--text-secondary)'\n                : 'var(--text-primary)'\n        \"\n        (mouseenter)=\"$any($event.target).style.background = 'var(--bg-hover)'\"\n        (mouseleave)=\"\n          $any($event.target).style.background =\n            action.variant === 'primary'\n              ? 'var(--accent)'\n              : action.variant === 'danger'\n                ? 'var(--error)'\n                : action.variant === 'ghost'\n                  ? 'transparent'\n                  : 'var(--bg-elevated)'\n        \"\n        (click)=\"handleAction(action)\"\n      >\n        @if (action.icon) {\n          <app-icon class=\"text-lg\" [icon]=\"action.icon\" [size]=\"18\" />\n        }\n        {{ action.label }}\n      </button>\n    }\n  </div>\n</div>\n",
     styles: [""],
     dependencies: [
       {
@@ -11494,7 +11063,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [IconComponent, ApplyThemeDirective],
           template:
-            "    <div appApplyTheme=\"app-page-toolbar\" class=\"flex items-center px-6 py-4 gap-4 flex-wrap border-b border-[var(--border-color)] bg-[var(--bg-elevated)]\">\n      <div class=\"flex-1 flex flex-col gap-1 min-w-[200px]\">\n        <h2 class=\"text-lg font-semibold m-0 text-[var(--text-primary)]\">{{ title }}</h2>\n        <ng-content select=\"[slot=subtitle]\"></ng-content>\n      </div>\n      <div class=\"flex items-center gap-2 flex-wrap\">\n        @for (action of parsedActions; track action.label) {\n          <button\n            class=\"inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm cursor-pointer transition-all duration-150\"\n            [style.border-color]=\"action.variant === 'primary' ? 'var(--accent)' : action.variant === 'danger' ? 'var(--error)' : action.variant === 'ghost' ? 'transparent' : 'var(--border-color)'\"\n            [style.background]=\"action.variant === 'primary' ? 'var(--accent)' : action.variant === 'danger' ? 'var(--error)' : action.variant === 'ghost' ? 'transparent' : 'var(--bg-elevated)'\"\n            [style.color]=\"action.variant === 'primary' ? 'var(--text-on-accent)' : action.variant === 'danger' ? 'var(--text-on-error)' : action.variant === 'ghost' ? 'var(--text-secondary)' : 'var(--text-primary)'\"\n            (mouseenter)=\"$any($event.target).style.background='var(--bg-hover)'\"\n            (mouseleave)=\"$any($event.target).style.background=(action.variant === 'primary' ? 'var(--accent)' : action.variant === 'danger' ? 'var(--error)' : action.variant === 'ghost' ? 'transparent' : 'var(--bg-elevated)')\"\n            (click)=\"handleAction(action)\"\n          >\n            @if (action.icon) {\n              <app-icon class=\"text-lg\" [icon]=\"action.icon\" [size]=\"18\" />\n            }\n            {{ action.label }}\n          </button>\n        }\n      </div>\n    </div>\n",
+            "<div\n  appApplyTheme=\"app-page-toolbar\"\n  class=\"flex items-center px-6 py-4 gap-4 flex-wrap border-b border-[var(--border-color)] bg-[var(--bg-elevated)]\"\n>\n  <div class=\"flex-1 flex flex-col gap-1 min-w-[200px]\">\n    <h2 class=\"text-lg font-semibold m-0 text-[var(--text-primary)]\">\n      {{ title }}\n    </h2>\n    <ng-content select=\"[slot=subtitle]\"></ng-content>\n  </div>\n  <div class=\"flex items-center gap-2 flex-wrap\">\n    @for (action of parsedActions; track action.label) {\n      <button\n        class=\"inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm cursor-pointer transition-all duration-150\"\n        [style.border-color]=\"\n          action.variant === 'primary'\n            ? 'var(--accent)'\n            : action.variant === 'danger'\n              ? 'var(--error)'\n              : action.variant === 'ghost'\n                ? 'transparent'\n                : 'var(--border-color)'\n        \"\n        [style.background]=\"\n          action.variant === 'primary'\n            ? 'var(--accent)'\n            : action.variant === 'danger'\n              ? 'var(--error)'\n              : action.variant === 'ghost'\n                ? 'transparent'\n                : 'var(--bg-elevated)'\n        \"\n        [style.color]=\"\n          action.variant === 'primary'\n            ? 'var(--text-on-accent)'\n            : action.variant === 'danger'\n              ? 'var(--text-on-error)'\n              : action.variant === 'ghost'\n                ? 'var(--text-secondary)'\n                : 'var(--text-primary)'\n        \"\n        (mouseenter)=\"$any($event.target).style.background = 'var(--bg-hover)'\"\n        (mouseleave)=\"\n          $any($event.target).style.background =\n            action.variant === 'primary'\n              ? 'var(--accent)'\n              : action.variant === 'danger'\n                ? 'var(--error)'\n                : action.variant === 'ghost'\n                  ? 'transparent'\n                  : 'var(--bg-elevated)'\n        \"\n        (click)=\"handleAction(action)\"\n      >\n        @if (action.icon) {\n          <app-icon class=\"text-lg\" [icon]=\"action.icon\" [size]=\"18\" />\n        }\n        {{ action.label }}\n      </button>\n    }\n  </div>\n</div>\n",
         },
       ],
     },
@@ -11595,7 +11164,7 @@ class SplitViewComponent {
     ],
     ngImport: i0,
     template:
-      "    <div appApplyTheme=\"app-split-view\" #container [class]=\"'flex h-full w-full overflow-hidden ' + (direction === 'vertical' ? 'flex-col' : '')\">\n      <div\n        class=\"split-pane first overflow-auto shrink-0\"\n        [style]=\"\n          direction === 'horizontal'\n            ? 'height: 100%; width: ' + split + '%; flex-grow: 0'\n            : 'width: 100%; height: ' + split + '%; flex-grow: 0'\n        \"\n      >\n        <ng-content select=\"[slot=first]\"></ng-content>\n      </div>\n      <div\n        class=\"split-divider shrink-0 relative z-10 transition-colors duration-150 bg-[color:var(--border-color)]\"\n        [class.dragging]=\"isDragging\"\n        [class.cursor-col-resize]=\"direction === 'horizontal'\"\n        [class.cursor-row-resize]=\"direction === 'vertical'\"\n        [class.w-1.5]=\"direction === 'horizontal'\"\n        [class.h-full]=\"direction === 'horizontal'\"\n        [class.w-full]=\"direction === 'vertical'\"\n        [class.h-1.5]=\"direction === 'vertical'\"\n        (mousedown)=\"onDividerMouseDown($event)\"\n      ></div>\n      <div\n        class=\"split-pane second overflow-auto\"\n        [style]=\"\n          direction === 'horizontal'\n            ? 'flex: 1; height: 100%'\n            : 'flex: 1; width: 100%'\n        \"\n      >\n        <ng-content select=\"[slot=second]\"></ng-content>\n      </div>\n    </div>\n",
+      "<div\n  appApplyTheme=\"app-split-view\"\n  #container\n  [class]=\"\n    'flex h-full w-full overflow-hidden ' +\n    (direction === 'vertical' ? 'flex-col' : '')\n  \"\n>\n  <div\n    class=\"split-pane first overflow-auto shrink-0\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'height: 100%; width: ' + split + '%; flex-grow: 0'\n        : 'width: 100%; height: ' + split + '%; flex-grow: 0'\n    \"\n  >\n    <ng-content select=\"[slot=first]\"></ng-content>\n  </div>\n  <div\n    class=\"split-divider shrink-0 relative z-10 transition-colors duration-150 bg-[color:var(--border-color)]\"\n    [class.dragging]=\"isDragging\"\n    [class.cursor-col-resize]=\"direction === 'horizontal'\"\n    [class.cursor-row-resize]=\"direction === 'vertical'\"\n    [class.w-1.5]=\"direction === 'horizontal'\"\n    [class.h-full]=\"direction === 'horizontal'\"\n    [class.w-full]=\"direction === 'vertical'\"\n    [class.h-1.5]=\"direction === 'vertical'\"\n    (mousedown)=\"onDividerMouseDown($event)\"\n  ></div>\n  <div\n    class=\"split-pane second overflow-auto\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'flex: 1; height: 100%'\n        : 'flex: 1; width: 100%'\n    \"\n  >\n    <ng-content select=\"[slot=second]\"></ng-content>\n  </div>\n</div>\n",
     styles: [""],
     dependencies: [
       {
@@ -11621,7 +11190,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            "    <div appApplyTheme=\"app-split-view\" #container [class]=\"'flex h-full w-full overflow-hidden ' + (direction === 'vertical' ? 'flex-col' : '')\">\n      <div\n        class=\"split-pane first overflow-auto shrink-0\"\n        [style]=\"\n          direction === 'horizontal'\n            ? 'height: 100%; width: ' + split + '%; flex-grow: 0'\n            : 'width: 100%; height: ' + split + '%; flex-grow: 0'\n        \"\n      >\n        <ng-content select=\"[slot=first]\"></ng-content>\n      </div>\n      <div\n        class=\"split-divider shrink-0 relative z-10 transition-colors duration-150 bg-[color:var(--border-color)]\"\n        [class.dragging]=\"isDragging\"\n        [class.cursor-col-resize]=\"direction === 'horizontal'\"\n        [class.cursor-row-resize]=\"direction === 'vertical'\"\n        [class.w-1.5]=\"direction === 'horizontal'\"\n        [class.h-full]=\"direction === 'horizontal'\"\n        [class.w-full]=\"direction === 'vertical'\"\n        [class.h-1.5]=\"direction === 'vertical'\"\n        (mousedown)=\"onDividerMouseDown($event)\"\n      ></div>\n      <div\n        class=\"split-pane second overflow-auto\"\n        [style]=\"\n          direction === 'horizontal'\n            ? 'flex: 1; height: 100%'\n            : 'flex: 1; width: 100%'\n        \"\n      >\n        <ng-content select=\"[slot=second]\"></ng-content>\n      </div>\n    </div>\n",
+            "<div\n  appApplyTheme=\"app-split-view\"\n  #container\n  [class]=\"\n    'flex h-full w-full overflow-hidden ' +\n    (direction === 'vertical' ? 'flex-col' : '')\n  \"\n>\n  <div\n    class=\"split-pane first overflow-auto shrink-0\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'height: 100%; width: ' + split + '%; flex-grow: 0'\n        : 'width: 100%; height: ' + split + '%; flex-grow: 0'\n    \"\n  >\n    <ng-content select=\"[slot=first]\"></ng-content>\n  </div>\n  <div\n    class=\"split-divider shrink-0 relative z-10 transition-colors duration-150 bg-[color:var(--border-color)]\"\n    [class.dragging]=\"isDragging\"\n    [class.cursor-col-resize]=\"direction === 'horizontal'\"\n    [class.cursor-row-resize]=\"direction === 'vertical'\"\n    [class.w-1.5]=\"direction === 'horizontal'\"\n    [class.h-full]=\"direction === 'horizontal'\"\n    [class.w-full]=\"direction === 'vertical'\"\n    [class.h-1.5]=\"direction === 'vertical'\"\n    (mousedown)=\"onDividerMouseDown($event)\"\n  ></div>\n  <div\n    class=\"split-pane second overflow-auto\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'flex: 1; height: 100%'\n        : 'flex: 1; width: 100%'\n    \"\n  >\n    <ng-content select=\"[slot=second]\"></ng-content>\n  </div>\n</div>\n",
         },
       ],
     },
@@ -11689,7 +11258,7 @@ class AvatarComponent {
     inputs: { src: "src", alt: "alt", name: "name", size: "size" },
     ngImport: i0,
     template:
-      '<div appApplyTheme="app-avatar">\n    @if (src && !imgError) {\n      <img class="w-full h-full object-cover" [src]="src" [alt]="alt" (error)="imgError = true" />\n    } @else {\n      <span class="font-semibold text-[var(--text-secondary)] uppercase">{{ initials }}</span>\n    }\n</div>\n  ',
+      '<div appApplyTheme="app-avatar">\n  @if (src && !imgError) {\n    <img\n      class="w-full h-full object-cover"\n      [src]="src"\n      [alt]="alt"\n      (error)="imgError = true"\n    />\n  } @else {\n    <span class="font-semibold text-[var(--text-secondary)] uppercase">{{\n      initials\n    }}</span>\n  }\n</div>\n',
     styles: [
       ':host([size="sm"]){width:2rem;height:2rem;font-size:.75rem}:host([size="md"]){width:2.5rem;height:2.5rem;font-size:.875rem}:host([size="lg"]){width:3.5rem;height:3.5rem;font-size:1.25rem}\n',
     ],
@@ -11717,7 +11286,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '<div appApplyTheme="app-avatar">\n    @if (src && !imgError) {\n      <img class="w-full h-full object-cover" [src]="src" [alt]="alt" (error)="imgError = true" />\n    } @else {\n      <span class="font-semibold text-[var(--text-secondary)] uppercase">{{ initials }}</span>\n    }\n</div>\n  ',
+            '<div appApplyTheme="app-avatar">\n  @if (src && !imgError) {\n    <img\n      class="w-full h-full object-cover"\n      [src]="src"\n      [alt]="alt"\n      (error)="imgError = true"\n    />\n  } @else {\n    <span class="font-semibold text-[var(--text-secondary)] uppercase">{{\n      initials\n    }}</span>\n  }\n</div>\n',
           styles: [
             ':host([size="sm"]){width:2rem;height:2rem;font-size:.75rem}:host([size="md"]){width:2.5rem;height:2.5rem;font-size:.875rem}:host([size="lg"]){width:3.5rem;height:3.5rem;font-size:1.25rem}\n',
           ],
@@ -11914,7 +11483,7 @@ class PaginationComponent {
     outputs: { pageChange: "pageChange", pageSizeChange: "pageSizeChange" },
     ngImport: i0,
     template:
-      '<div\n  class="flex w-full items-center justify-between border-t border-[var(--border-subtle)] bg-transparent px-6 py-3"\n>\n  <div class="flex items-center gap-6">\n    <span class="text-sm text-[var(--text-dim)]">\n      Showing <span class="font-bold text-[var(--text-main)]">{{ startIndex }}</span\n      >-<span class="font-bold text-[var(--text-main)]">{{ endIndex }}</span> of\n      <span class="font-bold text-[var(--text-main)]">{{ totalItems }}</span>\n    </span>\n    <div class="flex items-center gap-3">\n      <span class="text-xs text-[var(--text-muted)]">Rows per page:</span>\n      <select\n        class="cursor-pointer rounded-lg border border-[var(--border-visible)] bg-[var(--bg-card)] px-3 py-1.5 text-sm text-[var(--text-main)] focus:border-[var(--accent)] focus:outline-none"\n        [value]="pageSize"\n        (change)="onPageSizeChange(+$any($event.target).value)"\n      >\n        <option value="10">10</option>\n        <option value="25">25</option>\n        <option value="50">50</option>\n        <option value="100">100</option>\n      </select>\n    </div>\n  </div>\n\n  <div class="flex items-center gap-2">\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasPrevPage"\n      (click)="firstPage()"\n      title="First page"\n    >\n      <app-icon icon="first_page" [size]="18" />\n    </button>\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasPrevPage"\n      (click)="prevPage()"\n      title="Previous page"\n    >\n      <app-icon icon="chevron_left" [size]="18" />\n    </button>\n    <span class="px-3 text-sm text-[var(--text-dim)]"\n      >Page {{ currentPage + 1 }} of {{ totalPages || 1 }}</span\n    >\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasNextPage"\n      (click)="nextPage()"\n      title="Next page"\n    >\n      <app-icon icon="chevron_right" [size]="18" />\n    </button>\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasNextPage"\n      (click)="lastPage()"\n      title="Last page"\n    >\n      <app-icon icon="last_page" [size]="18" />\n    </button>\n  </div>\n</div>',
+      '<div\n  class="flex w-full items-center justify-between border-t border-[var(--border-subtle)] bg-transparent px-6 py-3"\n>\n  <div class="flex items-center gap-6">\n    <span class="text-sm text-[var(--text-dim)]">\n      Showing\n      <span class="font-bold text-[var(--text-main)]">{{ startIndex }}</span\n      >-<span class="font-bold text-[var(--text-main)]">{{ endIndex }}</span> of\n      <span class="font-bold text-[var(--text-main)]">{{ totalItems }}</span>\n    </span>\n    <div class="flex items-center gap-3">\n      <span class="text-xs text-[var(--text-muted)]">Rows per page:</span>\n      <select\n        class="cursor-pointer rounded-lg border border-[var(--border-visible)] bg-[var(--bg-card)] px-3 py-1.5 text-sm text-[var(--text-main)] focus:border-[var(--accent)] focus:outline-none"\n        [value]="pageSize"\n        (change)="onPageSizeChange(+$any($event.target).value)"\n      >\n        <option value="10">10</option>\n        <option value="25">25</option>\n        <option value="50">50</option>\n        <option value="100">100</option>\n      </select>\n    </div>\n  </div>\n\n  <div class="flex items-center gap-2">\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasPrevPage"\n      (click)="firstPage()"\n      title="First page"\n    >\n      <app-icon icon="first_page" [size]="18" />\n    </button>\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasPrevPage"\n      (click)="prevPage()"\n      title="Previous page"\n    >\n      <app-icon icon="chevron_left" [size]="18" />\n    </button>\n    <span class="px-3 text-sm text-[var(--text-dim)]"\n      >Page {{ currentPage + 1 }} of {{ totalPages || 1 }}</span\n    >\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasNextPage"\n      (click)="nextPage()"\n      title="Next page"\n    >\n      <app-icon icon="chevron_right" [size]="18" />\n    </button>\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasNextPage"\n      (click)="lastPage()"\n      title="Last page"\n    >\n      <app-icon icon="last_page" [size]="18" />\n    </button>\n  </div>\n</div>\n',
     styles: [""],
     dependencies: [
       {
@@ -11942,7 +11511,7 @@ i0.ɵɵngDeclareClassMetadata({
           changeDetection: ChangeDetectionStrategy.OnPush,
           imports: [IconComponent, ApplyThemeDirective],
           template:
-            '<div\n  class="flex w-full items-center justify-between border-t border-[var(--border-subtle)] bg-transparent px-6 py-3"\n>\n  <div class="flex items-center gap-6">\n    <span class="text-sm text-[var(--text-dim)]">\n      Showing <span class="font-bold text-[var(--text-main)]">{{ startIndex }}</span\n      >-<span class="font-bold text-[var(--text-main)]">{{ endIndex }}</span> of\n      <span class="font-bold text-[var(--text-main)]">{{ totalItems }}</span>\n    </span>\n    <div class="flex items-center gap-3">\n      <span class="text-xs text-[var(--text-muted)]">Rows per page:</span>\n      <select\n        class="cursor-pointer rounded-lg border border-[var(--border-visible)] bg-[var(--bg-card)] px-3 py-1.5 text-sm text-[var(--text-main)] focus:border-[var(--accent)] focus:outline-none"\n        [value]="pageSize"\n        (change)="onPageSizeChange(+$any($event.target).value)"\n      >\n        <option value="10">10</option>\n        <option value="25">25</option>\n        <option value="50">50</option>\n        <option value="100">100</option>\n      </select>\n    </div>\n  </div>\n\n  <div class="flex items-center gap-2">\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasPrevPage"\n      (click)="firstPage()"\n      title="First page"\n    >\n      <app-icon icon="first_page" [size]="18" />\n    </button>\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasPrevPage"\n      (click)="prevPage()"\n      title="Previous page"\n    >\n      <app-icon icon="chevron_left" [size]="18" />\n    </button>\n    <span class="px-3 text-sm text-[var(--text-dim)]"\n      >Page {{ currentPage + 1 }} of {{ totalPages || 1 }}</span\n    >\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasNextPage"\n      (click)="nextPage()"\n      title="Next page"\n    >\n      <app-icon icon="chevron_right" [size]="18" />\n    </button>\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasNextPage"\n      (click)="lastPage()"\n      title="Last page"\n    >\n      <app-icon icon="last_page" [size]="18" />\n    </button>\n  </div>\n</div>',
+            '<div\n  class="flex w-full items-center justify-between border-t border-[var(--border-subtle)] bg-transparent px-6 py-3"\n>\n  <div class="flex items-center gap-6">\n    <span class="text-sm text-[var(--text-dim)]">\n      Showing\n      <span class="font-bold text-[var(--text-main)]">{{ startIndex }}</span\n      >-<span class="font-bold text-[var(--text-main)]">{{ endIndex }}</span> of\n      <span class="font-bold text-[var(--text-main)]">{{ totalItems }}</span>\n    </span>\n    <div class="flex items-center gap-3">\n      <span class="text-xs text-[var(--text-muted)]">Rows per page:</span>\n      <select\n        class="cursor-pointer rounded-lg border border-[var(--border-visible)] bg-[var(--bg-card)] px-3 py-1.5 text-sm text-[var(--text-main)] focus:border-[var(--accent)] focus:outline-none"\n        [value]="pageSize"\n        (change)="onPageSizeChange(+$any($event.target).value)"\n      >\n        <option value="10">10</option>\n        <option value="25">25</option>\n        <option value="50">50</option>\n        <option value="100">100</option>\n      </select>\n    </div>\n  </div>\n\n  <div class="flex items-center gap-2">\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasPrevPage"\n      (click)="firstPage()"\n      title="First page"\n    >\n      <app-icon icon="first_page" [size]="18" />\n    </button>\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasPrevPage"\n      (click)="prevPage()"\n      title="Previous page"\n    >\n      <app-icon icon="chevron_left" [size]="18" />\n    </button>\n    <span class="px-3 text-sm text-[var(--text-dim)]"\n      >Page {{ currentPage + 1 }} of {{ totalPages || 1 }}</span\n    >\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasNextPage"\n      (click)="nextPage()"\n      title="Next page"\n    >\n      <app-icon icon="chevron_right" [size]="18" />\n    </button>\n    <button\n      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"\n      [disabled]="!hasNextPage"\n      (click)="lastPage()"\n      title="Last page"\n    >\n      <app-icon icon="last_page" [size]="18" />\n    </button>\n  </div>\n</div>\n',
         },
       ],
     },
@@ -12006,7 +11575,7 @@ class TabsComponent {
     outputs: { tabChanged: "tabChanged" },
     ngImport: i0,
     template:
-      '    <div appApplyTheme="app-tabs" class="flex gap-0 border-b border-[var(--border-color)]">\n      @for (tab of parsedTabs; track tab) {\n        <div\n          class="tab px-5 py-3 text-sm font-medium cursor-pointer -mb-px transition-all duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"\n          [class.active]="tab === activeTab"\n          [class.text-[var(--accent)]]="tab === activeTab"\n          [class.border-b-2]="tab === activeTab"\n          [class.border-b-transparent]="tab !== activeTab"\n          [style.--tw-border-color]="tab === activeTab ? \'var(--accent)\' : \'transparent\'"\n          (click)="selectTab(tab)"\n        >\n          {{ tab }}\n        </div>\n      }\n    </div>\n',
+      '<div\n  appApplyTheme="app-tabs"\n  class="flex gap-0 border-b border-[var(--border-color)]"\n>\n  @for (tab of parsedTabs; track tab) {\n    <div\n      class="tab px-5 py-3 text-sm font-medium cursor-pointer -mb-px transition-all duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"\n      [class.active]="tab === activeTab"\n      [class.text-[var(--accent)]]="tab === activeTab"\n      [class.border-b-2]="tab === activeTab"\n      [class.border-b-transparent]="tab !== activeTab"\n      [style.--tw-border-color]="\n        tab === activeTab ? \'var(--accent)\' : \'transparent\'\n      "\n      (click)="selectTab(tab)"\n    >\n      {{ tab }}\n    </div>\n  }\n</div>\n',
     styles: [""],
     dependencies: [
       {
@@ -12032,7 +11601,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <div appApplyTheme="app-tabs" class="flex gap-0 border-b border-[var(--border-color)]">\n      @for (tab of parsedTabs; track tab) {\n        <div\n          class="tab px-5 py-3 text-sm font-medium cursor-pointer -mb-px transition-all duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"\n          [class.active]="tab === activeTab"\n          [class.text-[var(--accent)]]="tab === activeTab"\n          [class.border-b-2]="tab === activeTab"\n          [class.border-b-transparent]="tab !== activeTab"\n          [style.--tw-border-color]="tab === activeTab ? \'var(--accent)\' : \'transparent\'"\n          (click)="selectTab(tab)"\n        >\n          {{ tab }}\n        </div>\n      }\n    </div>\n',
+            '<div\n  appApplyTheme="app-tabs"\n  class="flex gap-0 border-b border-[var(--border-color)]"\n>\n  @for (tab of parsedTabs; track tab) {\n    <div\n      class="tab px-5 py-3 text-sm font-medium cursor-pointer -mb-px transition-all duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"\n      [class.active]="tab === activeTab"\n      [class.text-[var(--accent)]]="tab === activeTab"\n      [class.border-b-2]="tab === activeTab"\n      [class.border-b-transparent]="tab !== activeTab"\n      [style.--tw-border-color]="\n        tab === activeTab ? \'var(--accent)\' : \'transparent\'\n      "\n      (click)="selectTab(tab)"\n    >\n      {{ tab }}\n    </div>\n  }\n</div>\n',
         },
       ],
     },
@@ -12086,7 +11655,7 @@ class ProgressBarComponent {
     inputs: { value: "value", max: "max" },
     ngImport: i0,
     template:
-      '    <div appApplyTheme="app-progress-bar" class="w-full h-2 bg-[var(--bg-elevated)] rounded border border-[var(--border-color)] overflow-hidden">\n      <div\n        class="h-full rounded transition-all duration-300"\n        [class.bg-[var(--warning)]]="fillClass === \'low\'"\n        [class.bg-[var(--accent)]]="fillClass === \'medium\'"\n        [class.bg-[var(--success)]]="fillClass === \'high\'"\n        [style.width.%]="percentage"\n      ></div>\n    </div>\n',
+      '<div\n  appApplyTheme="app-progress-bar"\n  class="w-full h-2 bg-[var(--bg-elevated)] rounded border border-[var(--border-color)] overflow-hidden"\n>\n  <div\n    class="h-full rounded transition-all duration-300"\n    [class.bg-[var(--warning)]]="fillClass === \'low\'"\n    [class.bg-[var(--accent)]]="fillClass === \'medium\'"\n    [class.bg-[var(--success)]]="fillClass === \'high\'"\n    [style.width.%]="percentage"\n  ></div>\n</div>\n',
     styles: [":host{display:block}\n"],
     dependencies: [
       {
@@ -12112,7 +11681,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <div appApplyTheme="app-progress-bar" class="w-full h-2 bg-[var(--bg-elevated)] rounded border border-[var(--border-color)] overflow-hidden">\n      <div\n        class="h-full rounded transition-all duration-300"\n        [class.bg-[var(--warning)]]="fillClass === \'low\'"\n        [class.bg-[var(--accent)]]="fillClass === \'medium\'"\n        [class.bg-[var(--success)]]="fillClass === \'high\'"\n        [style.width.%]="percentage"\n      ></div>\n    </div>\n',
+            '<div\n  appApplyTheme="app-progress-bar"\n  class="w-full h-2 bg-[var(--bg-elevated)] rounded border border-[var(--border-color)] overflow-hidden"\n>\n  <div\n    class="h-full rounded transition-all duration-300"\n    [class.bg-[var(--warning)]]="fillClass === \'low\'"\n    [class.bg-[var(--accent)]]="fillClass === \'medium\'"\n    [class.bg-[var(--success)]]="fillClass === \'high\'"\n    [style.width.%]="percentage"\n  ></div>\n</div>\n',
           styles: [":host{display:block}\n"],
         },
       ],
@@ -12162,7 +11731,7 @@ class SegmentSelectorComponent {
     outputs: { changed: "changed" },
     ngImport: i0,
     template:
-      '    <div appApplyTheme="app-segment-selector" class="inline-flex border border-[var(--border-color)] rounded-lg overflow-hidden bg-[var(--bg-elevated)]">\n      @for (opt of parsedOptions; track opt) {\n        <div\n          class="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] cursor-pointer transition-colors duration-150 border-r border-[var(--border-color)] last:border-r-0 hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n          [class.bg-[var(--accent)]]="opt === selected"\n          [class.text-[var(--text-on-accent)]]="opt === selected"\n          (click)="selectOption(opt)"\n        >\n          {{ opt }}\n        </div>\n      }\n    </div>\n  ',
+      '<div\n  appApplyTheme="app-segment-selector"\n  class="inline-flex border border-[var(--border-color)] rounded-lg overflow-hidden bg-[var(--bg-elevated)]"\n>\n  @for (opt of parsedOptions; track opt) {\n    <div\n      class="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] cursor-pointer transition-colors duration-150 border-r border-[var(--border-color)] last:border-r-0 hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n      [class.bg-[var(--accent)]]="opt === selected"\n      [class.text-[var(--text-on-accent)]]="opt === selected"\n      (click)="selectOption(opt)"\n    >\n      {{ opt }}\n    </div>\n  }\n</div>\n',
     styles: [":host{display:inline-flex}\n"],
     dependencies: [
       {
@@ -12188,7 +11757,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <div appApplyTheme="app-segment-selector" class="inline-flex border border-[var(--border-color)] rounded-lg overflow-hidden bg-[var(--bg-elevated)]">\n      @for (opt of parsedOptions; track opt) {\n        <div\n          class="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] cursor-pointer transition-colors duration-150 border-r border-[var(--border-color)] last:border-r-0 hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n          [class.bg-[var(--accent)]]="opt === selected"\n          [class.text-[var(--text-on-accent)]]="opt === selected"\n          (click)="selectOption(opt)"\n        >\n          {{ opt }}\n        </div>\n      }\n    </div>\n  ',
+            '<div\n  appApplyTheme="app-segment-selector"\n  class="inline-flex border border-[var(--border-color)] rounded-lg overflow-hidden bg-[var(--bg-elevated)]"\n>\n  @for (opt of parsedOptions; track opt) {\n    <div\n      class="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] cursor-pointer transition-colors duration-150 border-r border-[var(--border-color)] last:border-r-0 hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n      [class.bg-[var(--accent)]]="opt === selected"\n      [class.text-[var(--text-on-accent)]]="opt === selected"\n      (click)="selectOption(opt)"\n    >\n      {{ opt }}\n    </div>\n  }\n</div>\n',
           styles: [":host{display:inline-flex}\n"],
         },
       ],
@@ -12243,7 +11812,7 @@ class TooltipComponent {
     },
     ngImport: i0,
     template:
-      '    <div\n      appApplyTheme="app-tooltip"\n      class="inline-flex relative cursor-pointer"\n      (mouseenter)="show = true"\n      (mouseleave)="show = false"\n      (focus)="show = true"\n      (blur)="show = false"\n      tabindex="0"\n    >\n      <ng-content></ng-content>\n      @if (show) {\n        <div\n          class="absolute z-50 px-3 py-1.5 rounded-md text-xs whitespace-nowrap shadow-md pointer-events-none tooltip-bubble bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--border-color)]"\n          [class.top]="!position || position === \'top\'"\n          [class.bottom]="position === \'bottom\'"\n          [class.left]="position === \'left\'"\n          [class.right]="position === \'right\'"\n        >{{ text || content }}</div>\n      }\n    </div>\n',
+      '<div\n  appApplyTheme="app-tooltip"\n  class="inline-flex relative cursor-pointer"\n  (mouseenter)="show = true"\n  (mouseleave)="show = false"\n  (focus)="show = true"\n  (blur)="show = false"\n  tabindex="0"\n>\n  <ng-content></ng-content>\n  @if (show) {\n    <div\n      class="absolute z-50 px-3 py-1.5 rounded-md text-xs whitespace-nowrap shadow-md pointer-events-none tooltip-bubble bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--border-color)]"\n      [class.top]="!position || position === \'top\'"\n      [class.bottom]="position === \'bottom\'"\n      [class.left]="position === \'left\'"\n      [class.right]="position === \'right\'"\n    >\n      {{ text || content }}\n    </div>\n  }\n</div>\n',
     styles: [
       ":host{display:inline-flex;position:relative}.tooltip-bubble{position:absolute;z-index:50}.tooltip-bubble.top{bottom:100%;left:50%;transform:translate(-50%);margin-bottom:.5rem}.tooltip-bubble.bottom{top:100%;left:50%;transform:translate(-50%);margin-top:.5rem}.tooltip-bubble.left{right:100%;top:50%;transform:translateY(-50%);margin-right:.5rem}.tooltip-bubble.right{left:100%;top:50%;transform:translateY(-50%);margin-left:.5rem}\n",
     ],
@@ -12271,7 +11840,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <div\n      appApplyTheme="app-tooltip"\n      class="inline-flex relative cursor-pointer"\n      (mouseenter)="show = true"\n      (mouseleave)="show = false"\n      (focus)="show = true"\n      (blur)="show = false"\n      tabindex="0"\n    >\n      <ng-content></ng-content>\n      @if (show) {\n        <div\n          class="absolute z-50 px-3 py-1.5 rounded-md text-xs whitespace-nowrap shadow-md pointer-events-none tooltip-bubble bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--border-color)]"\n          [class.top]="!position || position === \'top\'"\n          [class.bottom]="position === \'bottom\'"\n          [class.left]="position === \'left\'"\n          [class.right]="position === \'right\'"\n        >{{ text || content }}</div>\n      }\n    </div>\n',
+            '<div\n  appApplyTheme="app-tooltip"\n  class="inline-flex relative cursor-pointer"\n  (mouseenter)="show = true"\n  (mouseleave)="show = false"\n  (focus)="show = true"\n  (blur)="show = false"\n  tabindex="0"\n>\n  <ng-content></ng-content>\n  @if (show) {\n    <div\n      class="absolute z-50 px-3 py-1.5 rounded-md text-xs whitespace-nowrap shadow-md pointer-events-none tooltip-bubble bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--border-color)]"\n      [class.top]="!position || position === \'top\'"\n      [class.bottom]="position === \'bottom\'"\n      [class.left]="position === \'left\'"\n      [class.right]="position === \'right\'"\n    >\n      {{ text || content }}\n    </div>\n  }\n</div>\n',
           styles: [
             ":host{display:inline-flex;position:relative}.tooltip-bubble{position:absolute;z-index:50}.tooltip-bubble.top{bottom:100%;left:50%;transform:translate(-50%);margin-bottom:.5rem}.tooltip-bubble.bottom{top:100%;left:50%;transform:translate(-50%);margin-top:.5rem}.tooltip-bubble.left{right:100%;top:50%;transform:translateY(-50%);margin-right:.5rem}.tooltip-bubble.right{left:100%;top:50%;transform:translateY(-50%);margin-left:.5rem}\n",
           ],
@@ -12365,7 +11934,7 @@ class SnackbarComponent {
     usesOnChanges: true,
     ngImport: i0,
     template:
-      '    @if (open) {\n      <div appApplyTheme="app-snackbar" [class]="\'bar \' + type" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] block inline-flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-elevated)] text-[var(--text-on-accent)] text-sm shadow-xl min-w-[280px] max-w-[560px] border-l-4" [style.border-left-color]="\'var(--\' + type + \'-color, var(--accent))\'" role="status">\n        <span class="message flex-1">{{ message }}</span>\n        @if (action) {\n          <button class="action-btn bg-transparent border-none text-[var(--accent)] font-semibold cursor-pointer px-2 py-1 rounded text-xs uppercase hover:bg-white/10" (click)="handleAction()">\n            {{ action }}\n          </button>\n        }\n        <button class="close-btn bg-transparent border-none cursor-pointer p-0.5 opacity-70 text-lg leading-none hover:opacity-100" (click)="dismiss()" aria-label="Dismiss">\n          &times;\n        </button>\n      </div>\n    }\n',
+      '@if (open) {\n  <div\n    appApplyTheme="app-snackbar"\n    [class]="\'bar \' + type"\n    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] block inline-flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-elevated)] text-[var(--text-on-accent)] text-sm shadow-xl min-w-[280px] max-w-[560px] border-l-4"\n    [style.border-left-color]="\'var(--\' + type + \'-color, var(--accent))\'"\n    role="status"\n  >\n    <span class="message flex-1">{{ message }}</span>\n    @if (action) {\n      <button\n        class="action-btn bg-transparent border-none text-[var(--accent)] font-semibold cursor-pointer px-2 py-1 rounded text-xs uppercase hover:bg-white/10"\n        (click)="handleAction()"\n      >\n        {{ action }}\n      </button>\n    }\n    <button\n      class="close-btn bg-transparent border-none cursor-pointer p-0.5 opacity-70 text-lg leading-none hover:opacity-100"\n      (click)="dismiss()"\n      aria-label="Dismiss"\n    >\n      &times;\n    </button>\n  </div>\n}\n',
     styles: [""],
     dependencies: [
       {
@@ -12391,7 +11960,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    @if (open) {\n      <div appApplyTheme="app-snackbar" [class]="\'bar \' + type" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] block inline-flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-elevated)] text-[var(--text-on-accent)] text-sm shadow-xl min-w-[280px] max-w-[560px] border-l-4" [style.border-left-color]="\'var(--\' + type + \'-color, var(--accent))\'" role="status">\n        <span class="message flex-1">{{ message }}</span>\n        @if (action) {\n          <button class="action-btn bg-transparent border-none text-[var(--accent)] font-semibold cursor-pointer px-2 py-1 rounded text-xs uppercase hover:bg-white/10" (click)="handleAction()">\n            {{ action }}\n          </button>\n        }\n        <button class="close-btn bg-transparent border-none cursor-pointer p-0.5 opacity-70 text-lg leading-none hover:opacity-100" (click)="dismiss()" aria-label="Dismiss">\n          &times;\n        </button>\n      </div>\n    }\n',
+            '@if (open) {\n  <div\n    appApplyTheme="app-snackbar"\n    [class]="\'bar \' + type"\n    class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] block inline-flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-elevated)] text-[var(--text-on-accent)] text-sm shadow-xl min-w-[280px] max-w-[560px] border-l-4"\n    [style.border-left-color]="\'var(--\' + type + \'-color, var(--accent))\'"\n    role="status"\n  >\n    <span class="message flex-1">{{ message }}</span>\n    @if (action) {\n      <button\n        class="action-btn bg-transparent border-none text-[var(--accent)] font-semibold cursor-pointer px-2 py-1 rounded text-xs uppercase hover:bg-white/10"\n        (click)="handleAction()"\n      >\n        {{ action }}\n      </button>\n    }\n    <button\n      class="close-btn bg-transparent border-none cursor-pointer p-0.5 opacity-70 text-lg leading-none hover:opacity-100"\n      (click)="dismiss()"\n      aria-label="Dismiss"\n    >\n      &times;\n    </button>\n  </div>\n}\n',
         },
       ],
     },
@@ -12457,7 +12026,7 @@ class SpinnerComponent {
     inputs: { size: "size", color: "color", label: "label" },
     ngImport: i0,
     template:
-      '<div\n  appApplyTheme="app-spinner"\n  class="inline-flex items-center gap-2"\n>\n  <div\n    class="border-2 rounded-full animate-spin border-[var(--border-color)]"\n    [class]="\'spinner-\' + size"\n    [style.borderTopColor]="color || \'var(--accent)\'"\n  ></div>\n  @if (label) {\n    <span class="text-sm text-[var(--text-secondary)]">{{ label }}</span>\n  }\n</div>\n',
+      '<div appApplyTheme="app-spinner" class="inline-flex items-center gap-2">\n  <div\n    class="border-2 rounded-full animate-spin border-[var(--border-color)]"\n    [class]="\'spinner-\' + size"\n    [style.borderTopColor]="color || \'var(--accent)\'"\n  ></div>\n  @if (label) {\n    <span class="text-sm text-[var(--text-secondary)]">{{ label }}</span>\n  }\n</div>\n',
     styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"],
     dependencies: [
       {
@@ -12483,7 +12052,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '<div\n  appApplyTheme="app-spinner"\n  class="inline-flex items-center gap-2"\n>\n  <div\n    class="border-2 rounded-full animate-spin border-[var(--border-color)]"\n    [class]="\'spinner-\' + size"\n    [style.borderTopColor]="color || \'var(--accent)\'"\n  ></div>\n  @if (label) {\n    <span class="text-sm text-[var(--text-secondary)]">{{ label }}</span>\n  }\n</div>\n',
+            '<div appApplyTheme="app-spinner" class="inline-flex items-center gap-2">\n  <div\n    class="border-2 rounded-full animate-spin border-[var(--border-color)]"\n    [class]="\'spinner-\' + size"\n    [style.borderTopColor]="color || \'var(--accent)\'"\n  ></div>\n  @if (label) {\n    <span class="text-sm text-[var(--text-secondary)]">{{ label }}</span>\n  }\n</div>\n',
           styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"],
         },
       ],
@@ -12621,7 +12190,7 @@ class TreeNodeComponent {
     outputs: { selected: "selected" },
     ngImport: i0,
     template:
-      '    <div\n      class="flex items-center gap-[0.375rem] px-2 py-1 cursor-pointer rounded transition-colors duration-150 tree-node"\n      [style.paddingLeft.px]="depth * 20"\n      [class.selected]="node.selected"\n      [class]="node.selected ? \'bg-[var(--accent)] text-[var(--text-on-accent)]\' : \'bg-[var(--bg-hover)]\'"\n      (click)="handleClick()"\n    >\n      @if (node.children?.length) {\n        <span class="toggle text-[0.625rem] w-4 text-center shrink-0 cursor-pointer text-[var(--text-secondary)]" (click)="toggleExpand($event)">{{\n          node.expanded ? "\u25BC" : "\u25B6"\n        }}</span>\n      } @else {\n        <span class="toggle-placeholder w-4 shrink-0"></span>\n      }\n      @if (node.icon) {\n        <span class="node-icon text-base shrink-0 text-[var(--text-secondary)]">{{ node.icon }}</span>\n      }\n      <span class="node-label flex-1 overflow-hidden text-ellipsis whitespace-nowrap">{{ node.label }}</span>\n    </div>\n    @if (node.expanded && node.children?.length) {\n      @for (child of node.children; track child.id) {\n        <app-tree-node\n          [node]="child"\n          [depth]="depth + 1"\n          (selected)="onChildSelected($event)"\n        ></app-tree-node>\n      }\n    }\n',
+      '<div\n  class="flex items-center gap-[0.375rem] px-2 py-1 cursor-pointer rounded transition-colors duration-150 tree-node"\n  [style.paddingLeft.px]="depth * 20"\n  [class.selected]="node.selected"\n  [class]="\n    node.selected\n      ? \'bg-[var(--accent)] text-[var(--text-on-accent)]\'\n      : \'bg-[var(--bg-hover)]\'\n  "\n  (click)="handleClick()"\n>\n  @if (node.children?.length) {\n    <span\n      class="toggle text-[0.625rem] w-4 text-center shrink-0 cursor-pointer text-[var(--text-secondary)]"\n      (click)="toggleExpand($event)"\n      >{{ node.expanded ? "\u25BC" : "\u25B6" }}</span\n    >\n  } @else {\n    <span class="toggle-placeholder w-4 shrink-0"></span>\n  }\n  @if (node.icon) {\n    <span class="node-icon text-base shrink-0 text-[var(--text-secondary)]">{{\n      node.icon\n    }}</span>\n  }\n  <span\n    class="node-label flex-1 overflow-hidden text-ellipsis whitespace-nowrap"\n    >{{ node.label }}</span\n  >\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-tree-node\n      [node]="child"\n      [depth]="depth + 1"\n      (selected)="onChildSelected($event)"\n    ></app-tree-node>\n  }\n}\n',
     styles: [""],
     dependencies: [
       {
@@ -12649,7 +12218,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [CommonModule, ApplyThemeDirective],
           template:
-            '    <div\n      class="flex items-center gap-[0.375rem] px-2 py-1 cursor-pointer rounded transition-colors duration-150 tree-node"\n      [style.paddingLeft.px]="depth * 20"\n      [class.selected]="node.selected"\n      [class]="node.selected ? \'bg-[var(--accent)] text-[var(--text-on-accent)]\' : \'bg-[var(--bg-hover)]\'"\n      (click)="handleClick()"\n    >\n      @if (node.children?.length) {\n        <span class="toggle text-[0.625rem] w-4 text-center shrink-0 cursor-pointer text-[var(--text-secondary)]" (click)="toggleExpand($event)">{{\n          node.expanded ? "\u25BC" : "\u25B6"\n        }}</span>\n      } @else {\n        <span class="toggle-placeholder w-4 shrink-0"></span>\n      }\n      @if (node.icon) {\n        <span class="node-icon text-base shrink-0 text-[var(--text-secondary)]">{{ node.icon }}</span>\n      }\n      <span class="node-label flex-1 overflow-hidden text-ellipsis whitespace-nowrap">{{ node.label }}</span>\n    </div>\n    @if (node.expanded && node.children?.length) {\n      @for (child of node.children; track child.id) {\n        <app-tree-node\n          [node]="child"\n          [depth]="depth + 1"\n          (selected)="onChildSelected($event)"\n        ></app-tree-node>\n      }\n    }\n',
+            '<div\n  class="flex items-center gap-[0.375rem] px-2 py-1 cursor-pointer rounded transition-colors duration-150 tree-node"\n  [style.paddingLeft.px]="depth * 20"\n  [class.selected]="node.selected"\n  [class]="\n    node.selected\n      ? \'bg-[var(--accent)] text-[var(--text-on-accent)]\'\n      : \'bg-[var(--bg-hover)]\'\n  "\n  (click)="handleClick()"\n>\n  @if (node.children?.length) {\n    <span\n      class="toggle text-[0.625rem] w-4 text-center shrink-0 cursor-pointer text-[var(--text-secondary)]"\n      (click)="toggleExpand($event)"\n      >{{ node.expanded ? "\u25BC" : "\u25B6" }}</span\n    >\n  } @else {\n    <span class="toggle-placeholder w-4 shrink-0"></span>\n  }\n  @if (node.icon) {\n    <span class="node-icon text-base shrink-0 text-[var(--text-secondary)]">{{\n      node.icon\n    }}</span>\n  }\n  <span\n    class="node-label flex-1 overflow-hidden text-ellipsis whitespace-nowrap"\n    >{{ node.label }}</span\n  >\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-tree-node\n      [node]="child"\n      [depth]="depth + 1"\n      (selected)="onChildSelected($event)"\n    ></app-tree-node>\n  }\n}\n',
         },
       ],
     },
@@ -12700,7 +12269,7 @@ class TreeComponent {
     outputs: { selected: "selected" },
     ngImport: i0,
     template:
-      '<div appApplyTheme="app-tree">\n  @for (node of parsedNodes; track node.id) {\n    <app-tree-node\n      [node]="node"\n      [depth]="0"\n      (selected)="onNodeSelected($event)"\n      class="block text-sm"\n    ></app-tree-node>\n  }\n</div>',
+      '<div appApplyTheme="app-tree">\n  @for (node of parsedNodes; track node.id) {\n    <app-tree-node\n      [node]="node"\n      [depth]="0"\n      (selected)="onNodeSelected($event)"\n      class="block text-sm"\n    ></app-tree-node>\n  }\n</div>\n',
     styles: [""],
     dependencies: [
       { kind: "ngmodule", type: CommonModule },
@@ -12734,7 +12303,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [CommonModule, TreeNodeComponent, ApplyThemeDirective],
           template:
-            '<div appApplyTheme="app-tree">\n  @for (node of parsedNodes; track node.id) {\n    <app-tree-node\n      [node]="node"\n      [depth]="0"\n      (selected)="onNodeSelected($event)"\n      class="block text-sm"\n    ></app-tree-node>\n  }\n</div>',
+            '<div appApplyTheme="app-tree">\n  @for (node of parsedNodes; track node.id) {\n    <app-tree-node\n      [node]="node"\n      [depth]="0"\n      (selected)="onNodeSelected($event)"\n      class="block text-sm"\n    ></app-tree-node>\n  }\n</div>\n',
         },
       ],
     },
@@ -12796,7 +12365,7 @@ class FormComponent {
     outputs: { submitted: "submitted", cancelled: "cancelled" },
     ngImport: i0,
     template:
-      '    <form appApplyTheme="app-form" (submit)="handleSubmit($event)">\n      @if (heading) {\n        <h3 class="text-lg font-semibold text-[var(--text-primary)] m-0 mb-4">{{ heading }}</h3>\n      }\n      <ng-content></ng-content>\n      @if (showActions) {\n        <div class="flex gap-3 justify-end mt-6">\n          <button type="submit" class="px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]">{{ submitText }}</button>\n          <button type="button" class="px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]" (click)="handleCancel()">\n            {{ cancelText }}\n          </button>\n        </div>\n      }\n    </form>\n  ',
+      '<form appApplyTheme="app-form" (submit)="handleSubmit($event)">\n  @if (heading) {\n    <h3 class="text-lg font-semibold text-[var(--text-primary)] m-0 mb-4">\n      {{ heading }}\n    </h3>\n  }\n  <ng-content></ng-content>\n  @if (showActions) {\n    <div class="flex gap-3 justify-end mt-6">\n      <button\n        type="submit"\n        class="px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]"\n      >\n        {{ submitText }}\n      </button>\n      <button\n        type="button"\n        class="px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n        (click)="handleCancel()"\n      >\n        {{ cancelText }}\n      </button>\n    </div>\n  }\n</form>\n',
     styles: [""],
     dependencies: [
       {
@@ -12822,7 +12391,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <form appApplyTheme="app-form" (submit)="handleSubmit($event)">\n      @if (heading) {\n        <h3 class="text-lg font-semibold text-[var(--text-primary)] m-0 mb-4">{{ heading }}</h3>\n      }\n      <ng-content></ng-content>\n      @if (showActions) {\n        <div class="flex gap-3 justify-end mt-6">\n          <button type="submit" class="px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]">{{ submitText }}</button>\n          <button type="button" class="px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]" (click)="handleCancel()">\n            {{ cancelText }}\n          </button>\n        </div>\n      }\n    </form>\n  ',
+            '<form appApplyTheme="app-form" (submit)="handleSubmit($event)">\n  @if (heading) {\n    <h3 class="text-lg font-semibold text-[var(--text-primary)] m-0 mb-4">\n      {{ heading }}\n    </h3>\n  }\n  <ng-content></ng-content>\n  @if (showActions) {\n    <div class="flex gap-3 justify-end mt-6">\n      <button\n        type="submit"\n        class="px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]"\n      >\n        {{ submitText }}\n      </button>\n      <button\n        type="button"\n        class="px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n        (click)="handleCancel()"\n      >\n        {{ cancelText }}\n      </button>\n    </div>\n  }\n</form>\n',
         },
       ],
     },
@@ -12888,7 +12457,7 @@ class CheckboxComponent {
     outputs: { changed: "changed" },
     ngImport: i0,
     template:
-      '<label appApplyTheme="app-checkbox" class="flex items-center gap-2 cursor-pointer">\n  <input\n    type="checkbox"\n    class="w-4 h-4"\n    [style.accent-color]="\'var(--accent)\'"\n    [checked]="checked"\n    [disabled]="disabled"\n    (change)="handleChange($event)"\n  />\n  @if (label) {\n    <span class="text-sm select-none text-[var(--text-primary)]">{{ label }}</span>\n  }\n</label>',
+      '<label\n  appApplyTheme="app-checkbox"\n  class="flex items-center gap-2 cursor-pointer"\n>\n  <input\n    type="checkbox"\n    class="w-4 h-4"\n    [style.accent-color]="\'var(--accent)\'"\n    [checked]="checked"\n    [disabled]="disabled"\n    (change)="handleChange($event)"\n  />\n  @if (label) {\n    <span class="text-sm select-none text-[var(--text-primary)]">{{\n      label\n    }}</span>\n  }\n</label>\n',
     styles: [""],
     dependencies: [
       {
@@ -12914,7 +12483,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '<label appApplyTheme="app-checkbox" class="flex items-center gap-2 cursor-pointer">\n  <input\n    type="checkbox"\n    class="w-4 h-4"\n    [style.accent-color]="\'var(--accent)\'"\n    [checked]="checked"\n    [disabled]="disabled"\n    (change)="handleChange($event)"\n  />\n  @if (label) {\n    <span class="text-sm select-none text-[var(--text-primary)]">{{ label }}</span>\n  }\n</label>',
+            '<label\n  appApplyTheme="app-checkbox"\n  class="flex items-center gap-2 cursor-pointer"\n>\n  <input\n    type="checkbox"\n    class="w-4 h-4"\n    [style.accent-color]="\'var(--accent)\'"\n    [checked]="checked"\n    [disabled]="disabled"\n    (change)="handleChange($event)"\n  />\n  @if (label) {\n    <span class="text-sm select-none text-[var(--text-primary)]">{{\n      label\n    }}</span>\n  }\n</label>\n',
         },
       ],
     },
@@ -12944,7 +12513,7 @@ i0.ɵɵngDeclareClassMetadata({
 });
 registerSchemaComponent("app-checkbox", CheckboxComponent);
 
-class ToastComponent {
+let ToastComponent$1 = class ToastComponent {
   message = "";
   visible = false;
   type = "info";
@@ -13035,15 +12604,15 @@ class ToastComponent {
     usesOnChanges: true,
     ngImport: i0,
     template:
-      '    <div [class]="toastClasses">\n      @if (type === "success") {\n        <i class="fa fa-circle-check toast-icon flex-shrink-0" style="font-size: 20px;"></i>\n      } @else if (type === "error") {\n        <i class="fa fa-circle-xmark toast-icon flex-shrink-0" style="font-size: 20px;"></i>\n      } @else if (type === "warning") {\n        <i class="fa fa-triangle-exclamation toast-icon flex-shrink-0" style="font-size: 20px;"></i>\n      } @else {\n        <i class="fa fa-circle-info toast-icon flex-shrink-0" style="font-size: 20px;"></i>\n      }\n      <span class="toast-message flex-1">{{ message }}</span>\n      <button class="close-btn inline-flex items-center justify-center w-5 h-5 bg-transparent border-none cursor-pointer p-0 flex-shrink-0 text-[color:var(--text-muted)] hover:text-[color:var(--text-primary)]" type="button" (click)="handleClose()">\n        <i class="fa fa-xmark" style="font-size: 12px;"></i>\n      </button>\n    </div>\n',
+      '<div [class]="toastClasses">\n  @if (type === "success") {\n  <i\n    class="fa fa-circle-check toast-icon flex-shrink-0"\n    style="font-size: 20px"\n  ></i>\n  } @else if (type === "error") {\n  <i\n    class="fa fa-circle-xmark toast-icon flex-shrink-0"\n    style="font-size: 20px"\n  ></i>\n  } @else if (type === "warning") {\n  <i\n    class="fa fa-triangle-exclamation toast-icon flex-shrink-0"\n    style="font-size: 20px"\n  ></i>\n  } @else {\n  <i\n    class="fa fa-circle-info toast-icon flex-shrink-0"\n    style="font-size: 20px"\n  ></i>\n  }\n  <span class="toast-message flex-1">{{ message }}</span>\n  <button\n    class="close-btn inline-flex items-center justify-center w-5 h-5 bg-transparent border-none cursor-pointer p-0 flex-shrink-0 text-[color:var(--text-muted)] hover:text-[color:var(--text-primary)]"\n    type="button"\n    (click)="handleClose()"\n  >\n    <i class="fa fa-xmark" style="font-size: 12px"></i>\n  </button>\n</div>\n',
     styles: [""],
   });
-}
+};
 i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
   version: "20.3.25",
   ngImport: i0,
-  type: ToastComponent,
+  type: ToastComponent$1,
   decorators: [
     {
       type: Component,
@@ -13053,7 +12622,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [],
           template:
-            '    <div [class]="toastClasses">\n      @if (type === "success") {\n        <i class="fa fa-circle-check toast-icon flex-shrink-0" style="font-size: 20px;"></i>\n      } @else if (type === "error") {\n        <i class="fa fa-circle-xmark toast-icon flex-shrink-0" style="font-size: 20px;"></i>\n      } @else if (type === "warning") {\n        <i class="fa fa-triangle-exclamation toast-icon flex-shrink-0" style="font-size: 20px;"></i>\n      } @else {\n        <i class="fa fa-circle-info toast-icon flex-shrink-0" style="font-size: 20px;"></i>\n      }\n      <span class="toast-message flex-1">{{ message }}</span>\n      <button class="close-btn inline-flex items-center justify-center w-5 h-5 bg-transparent border-none cursor-pointer p-0 flex-shrink-0 text-[color:var(--text-muted)] hover:text-[color:var(--text-primary)]" type="button" (click)="handleClose()">\n        <i class="fa fa-xmark" style="font-size: 12px;"></i>\n      </button>\n    </div>\n',
+            '<div [class]="toastClasses">\n  @if (type === "success") {\n  <i\n    class="fa fa-circle-check toast-icon flex-shrink-0"\n    style="font-size: 20px"\n  ></i>\n  } @else if (type === "error") {\n  <i\n    class="fa fa-circle-xmark toast-icon flex-shrink-0"\n    style="font-size: 20px"\n  ></i>\n  } @else if (type === "warning") {\n  <i\n    class="fa fa-triangle-exclamation toast-icon flex-shrink-0"\n    style="font-size: 20px"\n  ></i>\n  } @else {\n  <i\n    class="fa fa-circle-info toast-icon flex-shrink-0"\n    style="font-size: 20px"\n  ></i>\n  }\n  <span class="toast-message flex-1">{{ message }}</span>\n  <button\n    class="close-btn inline-flex items-center justify-center w-5 h-5 bg-transparent border-none cursor-pointer p-0 flex-shrink-0 text-[color:var(--text-muted)] hover:text-[color:var(--text-primary)]"\n    type="button"\n    (click)="handleClose()"\n  >\n    <i class="fa fa-xmark" style="font-size: 12px"></i>\n  </button>\n</div>\n',
         },
       ],
     },
@@ -13081,7 +12650,7 @@ i0.ɵɵngDeclareClassMetadata({
     ],
   },
 });
-registerSchemaComponent("app-toast", ToastComponent);
+registerSchemaComponent("app-toast", ToastComponent$1);
 
 // Use internal registry to avoid circular dependency with schema-component.registry
 class NavItemComponent {
@@ -13263,7 +12832,7 @@ class CanvasToolbarComponent {
     outputs: { action: "action" },
     ngImport: i0,
     template:
-      '<div appApplyTheme="app-canvas-toolbar" class="inline-flex items-center gap-1">\n  <div class="flex items-center gap-0.5 px-1 toolbar-group">\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]"\n      [disabled]="!canUndo"\n      (click)="emit(\'undo\')"\n      title="Undo"\n    >\n      <span class="text-lg leading-none">\u21A9</span>\n    </button>\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]"\n      [disabled]="!canRedo"\n      (click)="emit(\'redo\')"\n      title="Redo"\n    >\n      <span class="text-lg leading-none">\u21AA</span>\n    </button>\n  </div>\n  <div class="flex items-center gap-0.5 px-1 toolbar-group">\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"\n      (click)="emit(\'zoom-out\')"\n      title="Zoom Out"\n    >\n      <span class="text-lg leading-none">\u2212</span>\n    </button>\n    <span class="text-xs min-w-12 text-center text-[var(--text-secondary)]">{{ zoomLevel }}%</span>\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"\n      (click)="emit(\'zoom-in\')"\n      title="Zoom In"\n    >\n      <span class="text-lg leading-none">+</span>\n    </button>\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"\n      (click)="emit(\'zoom-reset\')"\n      title="Reset Zoom"\n    >\n      <span class="text-lg leading-none">\u22A1</span>\n    </button>\n  </div>\n  <div class="flex items-center gap-0.5 px-1 toolbar-group">\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150"\n      [class.bg-[var(--accent)]]="showGrid"\n      [class.text-white]="showGrid"\n      [class.text-[var(--text-secondary)]]="!showGrid"\n      (click)="emit(\'toggle-grid\')"\n      title="Toggle Grid"\n    >\n      <span class="text-lg leading-none">\u25A6</span>\n    </button>\n  </div>\n</div>\n',
+      '<div appApplyTheme="app-canvas-toolbar" class="inline-flex items-center gap-1">\n  <div class="flex items-center gap-0.5 px-1 toolbar-group">\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]"\n      [disabled]="!canUndo"\n      (click)="emit(\'undo\')"\n      title="Undo"\n    >\n      <span class="text-lg leading-none">\u21A9</span>\n    </button>\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]"\n      [disabled]="!canRedo"\n      (click)="emit(\'redo\')"\n      title="Redo"\n    >\n      <span class="text-lg leading-none">\u21AA</span>\n    </button>\n  </div>\n  <div class="flex items-center gap-0.5 px-1 toolbar-group">\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"\n      (click)="emit(\'zoom-out\')"\n      title="Zoom Out"\n    >\n      <span class="text-lg leading-none">\u2212</span>\n    </button>\n    <span class="text-xs min-w-12 text-center text-[var(--text-secondary)]"\n      >{{ zoomLevel }}%</span\n    >\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"\n      (click)="emit(\'zoom-in\')"\n      title="Zoom In"\n    >\n      <span class="text-lg leading-none">+</span>\n    </button>\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"\n      (click)="emit(\'zoom-reset\')"\n      title="Reset Zoom"\n    >\n      <span class="text-lg leading-none">\u22A1</span>\n    </button>\n  </div>\n  <div class="flex items-center gap-0.5 px-1 toolbar-group">\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150"\n      [class.bg-[var(--accent)]]="showGrid"\n      [class.text-white]="showGrid"\n      [class.text-[var(--text-secondary)]]="!showGrid"\n      (click)="emit(\'toggle-grid\')"\n      title="Toggle Grid"\n    >\n      <span class="text-lg leading-none">\u25A6</span>\n    </button>\n  </div>\n</div>\n',
     styles: [
       ":host{display:inline-flex;align-items:center;gap:4px}.toolbar-group:not(:last-child){border-right:1px solid var(--border-color)}.toolbar-btn[disabled]{opacity:.4;cursor:not-allowed}\n",
     ],
@@ -13291,7 +12860,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '<div appApplyTheme="app-canvas-toolbar" class="inline-flex items-center gap-1">\n  <div class="flex items-center gap-0.5 px-1 toolbar-group">\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]"\n      [disabled]="!canUndo"\n      (click)="emit(\'undo\')"\n      title="Undo"\n    >\n      <span class="text-lg leading-none">\u21A9</span>\n    </button>\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]"\n      [disabled]="!canRedo"\n      (click)="emit(\'redo\')"\n      title="Redo"\n    >\n      <span class="text-lg leading-none">\u21AA</span>\n    </button>\n  </div>\n  <div class="flex items-center gap-0.5 px-1 toolbar-group">\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"\n      (click)="emit(\'zoom-out\')"\n      title="Zoom Out"\n    >\n      <span class="text-lg leading-none">\u2212</span>\n    </button>\n    <span class="text-xs min-w-12 text-center text-[var(--text-secondary)]">{{ zoomLevel }}%</span>\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"\n      (click)="emit(\'zoom-in\')"\n      title="Zoom In"\n    >\n      <span class="text-lg leading-none">+</span>\n    </button>\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"\n      (click)="emit(\'zoom-reset\')"\n      title="Reset Zoom"\n    >\n      <span class="text-lg leading-none">\u22A1</span>\n    </button>\n  </div>\n  <div class="flex items-center gap-0.5 px-1 toolbar-group">\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150"\n      [class.bg-[var(--accent)]]="showGrid"\n      [class.text-white]="showGrid"\n      [class.text-[var(--text-secondary)]]="!showGrid"\n      (click)="emit(\'toggle-grid\')"\n      title="Toggle Grid"\n    >\n      <span class="text-lg leading-none">\u25A6</span>\n    </button>\n  </div>\n</div>\n',
+            '<div appApplyTheme="app-canvas-toolbar" class="inline-flex items-center gap-1">\n  <div class="flex items-center gap-0.5 px-1 toolbar-group">\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]"\n      [disabled]="!canUndo"\n      (click)="emit(\'undo\')"\n      title="Undo"\n    >\n      <span class="text-lg leading-none">\u21A9</span>\n    </button>\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]"\n      [disabled]="!canRedo"\n      (click)="emit(\'redo\')"\n      title="Redo"\n    >\n      <span class="text-lg leading-none">\u21AA</span>\n    </button>\n  </div>\n  <div class="flex items-center gap-0.5 px-1 toolbar-group">\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"\n      (click)="emit(\'zoom-out\')"\n      title="Zoom Out"\n    >\n      <span class="text-lg leading-none">\u2212</span>\n    </button>\n    <span class="text-xs min-w-12 text-center text-[var(--text-secondary)]"\n      >{{ zoomLevel }}%</span\n    >\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"\n      (click)="emit(\'zoom-in\')"\n      title="Zoom In"\n    >\n      <span class="text-lg leading-none">+</span>\n    </button>\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]"\n      (click)="emit(\'zoom-reset\')"\n      title="Reset Zoom"\n    >\n      <span class="text-lg leading-none">\u22A1</span>\n    </button>\n  </div>\n  <div class="flex items-center gap-0.5 px-1 toolbar-group">\n    <button\n      class="inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150"\n      [class.bg-[var(--accent)]]="showGrid"\n      [class.text-white]="showGrid"\n      [class.text-[var(--text-secondary)]]="!showGrid"\n      (click)="emit(\'toggle-grid\')"\n      title="Toggle Grid"\n    >\n      <span class="text-lg leading-none">\u25A6</span>\n    </button>\n  </div>\n</div>\n',
           styles: [
             ":host{display:inline-flex;align-items:center;gap:4px}.toolbar-group:not(:last-child){border-right:1px solid var(--border-color)}.toolbar-btn[disabled]{opacity:.4;cursor:not-allowed}\n",
           ],
@@ -13356,7 +12925,7 @@ class DesignerSidebarComponent {
     outputs: { collapsedChange: "collapsedChange" },
     ngImport: i0,
     template:
-      "<div appApplyTheme=\"app-designer-sidebar\" class=\"relative h-full flex\">\n  <aside\n    class=\"flex flex-col h-full flex-shrink-0 transition-all duration-200 bg-[var(--bg-secondary)]\"\n    [class.w-0]=\"collapsed\"\n    [class.w-64]=\"!collapsed\"\n    [class.invisible]=\"collapsed\"\n    [class.overflow-hidden]=\"collapsed\"\n    [style.border-right]=\"position === 'left' ? '1px solid var(--border-color)' : 'none'\"\n    [style.border-left]=\"position === 'right' ? '1px solid var(--border-color)' : 'none'\"\n  >\n    <div\n      class=\"flex items-center justify-between px-4 py-3 flex-shrink-0 min-h-12 border-b border-[var(--border-color)] bg-[var(--bg-secondary)]\"\n      [style.flex-direction]=\"position === 'right' ? 'row-reverse' : 'row'\"\n    >\n      <span class=\"text-sm font-semibold truncate text-[var(--text-primary)]\">{{ header }}</span>\n    </div>\n    <div class=\"flex-1 overflow-auto min-h-0\">\n      <ng-content select=\"[slot=content]\"></ng-content>\n    </div>\n    <div class=\"px-4 py-3 flex-shrink-0 border-t border-[var(--border-color)]\">\n      <ng-content select=\"[slot=footer]\"></ng-content>\n    </div>\n  </aside>\n  <div\n    class=\"absolute top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-6 h-12 rounded cursor-pointer transition-all duration-150 bg-[var(--bg-secondary)] border border-[var(--border-color)]\"\n    [style.right]=\"position === 'left' ? '-12px' : 'auto'\"\n    [style.left]=\"position === 'right' ? '-12px' : 'auto'\"\n  >\n    <button\n      class=\"flex items-center justify-center w-6 h-7 p-0 bg-transparent border-none rounded cursor-pointer transition-all duration-150 text-[var(--text-secondary)]\"\n      (click)=\"toggleCollapse()\"\n    >\n      {{ collapsed ? (position === 'left' ? '\u25B6' : '\u25C0') : (position === 'left' ? '\u25C0' : '\u25B6') }}\n    </button>\n  </div>\n</div>",
+      '<div appApplyTheme="app-designer-sidebar" class="relative h-full flex">\n  <aside\n    class="flex flex-col h-full flex-shrink-0 transition-all duration-200 bg-[var(--bg-secondary)]"\n    [class.w-0]="collapsed"\n    [class.w-64]="!collapsed"\n    [class.invisible]="collapsed"\n    [class.overflow-hidden]="collapsed"\n    [style.border-right]="\n      position === \'left\' ? \'1px solid var(--border-color)\' : \'none\'\n    "\n    [style.border-left]="\n      position === \'right\' ? \'1px solid var(--border-color)\' : \'none\'\n    "\n  >\n    <div\n      class="flex items-center justify-between px-4 py-3 flex-shrink-0 min-h-12 border-b border-[var(--border-color)] bg-[var(--bg-secondary)]"\n      [style.flex-direction]="position === \'right\' ? \'row-reverse\' : \'row\'"\n    >\n      <span class="text-sm font-semibold truncate text-[var(--text-primary)]">{{\n        header\n      }}</span>\n    </div>\n    <div class="flex-1 overflow-auto min-h-0">\n      <ng-content select="[slot=content]"></ng-content>\n    </div>\n    <div class="px-4 py-3 flex-shrink-0 border-t border-[var(--border-color)]">\n      <ng-content select="[slot=footer]"></ng-content>\n    </div>\n  </aside>\n  <div\n    class="absolute top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-6 h-12 rounded cursor-pointer transition-all duration-150 bg-[var(--bg-secondary)] border border-[var(--border-color)]"\n    [style.right]="position === \'left\' ? \'-12px\' : \'auto\'"\n    [style.left]="position === \'right\' ? \'-12px\' : \'auto\'"\n  >\n    <button\n      class="flex items-center justify-center w-6 h-7 p-0 bg-transparent border-none rounded cursor-pointer transition-all duration-150 text-[var(--text-secondary)]"\n      (click)="toggleCollapse()"\n    >\n      {{\n        collapsed\n          ? position === "left"\n            ? "\u25B6"\n            : "\u25C0"\n          : position === "left"\n            ? "\u25C0"\n            : "\u25B6"\n      }}\n    </button>\n  </div>\n</div>\n',
     styles: [""],
     dependencies: [
       {
@@ -13382,7 +12951,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            "<div appApplyTheme=\"app-designer-sidebar\" class=\"relative h-full flex\">\n  <aside\n    class=\"flex flex-col h-full flex-shrink-0 transition-all duration-200 bg-[var(--bg-secondary)]\"\n    [class.w-0]=\"collapsed\"\n    [class.w-64]=\"!collapsed\"\n    [class.invisible]=\"collapsed\"\n    [class.overflow-hidden]=\"collapsed\"\n    [style.border-right]=\"position === 'left' ? '1px solid var(--border-color)' : 'none'\"\n    [style.border-left]=\"position === 'right' ? '1px solid var(--border-color)' : 'none'\"\n  >\n    <div\n      class=\"flex items-center justify-between px-4 py-3 flex-shrink-0 min-h-12 border-b border-[var(--border-color)] bg-[var(--bg-secondary)]\"\n      [style.flex-direction]=\"position === 'right' ? 'row-reverse' : 'row'\"\n    >\n      <span class=\"text-sm font-semibold truncate text-[var(--text-primary)]\">{{ header }}</span>\n    </div>\n    <div class=\"flex-1 overflow-auto min-h-0\">\n      <ng-content select=\"[slot=content]\"></ng-content>\n    </div>\n    <div class=\"px-4 py-3 flex-shrink-0 border-t border-[var(--border-color)]\">\n      <ng-content select=\"[slot=footer]\"></ng-content>\n    </div>\n  </aside>\n  <div\n    class=\"absolute top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-6 h-12 rounded cursor-pointer transition-all duration-150 bg-[var(--bg-secondary)] border border-[var(--border-color)]\"\n    [style.right]=\"position === 'left' ? '-12px' : 'auto'\"\n    [style.left]=\"position === 'right' ? '-12px' : 'auto'\"\n  >\n    <button\n      class=\"flex items-center justify-center w-6 h-7 p-0 bg-transparent border-none rounded cursor-pointer transition-all duration-150 text-[var(--text-secondary)]\"\n      (click)=\"toggleCollapse()\"\n    >\n      {{ collapsed ? (position === 'left' ? '\u25B6' : '\u25C0') : (position === 'left' ? '\u25C0' : '\u25B6') }}\n    </button>\n  </div>\n</div>",
+            '<div appApplyTheme="app-designer-sidebar" class="relative h-full flex">\n  <aside\n    class="flex flex-col h-full flex-shrink-0 transition-all duration-200 bg-[var(--bg-secondary)]"\n    [class.w-0]="collapsed"\n    [class.w-64]="!collapsed"\n    [class.invisible]="collapsed"\n    [class.overflow-hidden]="collapsed"\n    [style.border-right]="\n      position === \'left\' ? \'1px solid var(--border-color)\' : \'none\'\n    "\n    [style.border-left]="\n      position === \'right\' ? \'1px solid var(--border-color)\' : \'none\'\n    "\n  >\n    <div\n      class="flex items-center justify-between px-4 py-3 flex-shrink-0 min-h-12 border-b border-[var(--border-color)] bg-[var(--bg-secondary)]"\n      [style.flex-direction]="position === \'right\' ? \'row-reverse\' : \'row\'"\n    >\n      <span class="text-sm font-semibold truncate text-[var(--text-primary)]">{{\n        header\n      }}</span>\n    </div>\n    <div class="flex-1 overflow-auto min-h-0">\n      <ng-content select="[slot=content]"></ng-content>\n    </div>\n    <div class="px-4 py-3 flex-shrink-0 border-t border-[var(--border-color)]">\n      <ng-content select="[slot=footer]"></ng-content>\n    </div>\n  </aside>\n  <div\n    class="absolute top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-6 h-12 rounded cursor-pointer transition-all duration-150 bg-[var(--bg-secondary)] border border-[var(--border-color)]"\n    [style.right]="position === \'left\' ? \'-12px\' : \'auto\'"\n    [style.left]="position === \'right\' ? \'-12px\' : \'auto\'"\n  >\n    <button\n      class="flex items-center justify-center w-6 h-7 p-0 bg-transparent border-none rounded cursor-pointer transition-all duration-150 text-[var(--text-secondary)]"\n      (click)="toggleCollapse()"\n    >\n      {{\n        collapsed\n          ? position === "left"\n            ? "\u25B6"\n            : "\u25C0"\n          : position === "left"\n            ? "\u25C0"\n            : "\u25B6"\n      }}\n    </button>\n  </div>\n</div>\n',
         },
       ],
     },
@@ -13445,7 +13014,7 @@ class MainEditorComponent {
     selector: "app-main-editor",
     ngImport: i0,
     template:
-      '    <div appApplyTheme="app-main-editor" class="flex flex-col h-full bg-[var(--bg-primary)]">\n      <div class="flex items-center gap-1 py-[6px] px-3 bg-[var(--bg-elevated)] border-b border-[var(--border-color)] min-h-[2.5rem]">\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"\n          [disabled]="!designer.canUndo()"\n          (click)="designer.undo()"\n          title="Undo"\n        >\n          <app-icon icon="undo" [size]="18" />\n        </button>\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"\n          [disabled]="!designer.canRedo()"\n          (click)="designer.redo()"\n          title="Redo"\n        >\n          <app-icon icon="redo" [size]="18" />\n        </button>\n        <div class="w-px h-5 mx-1 bg-[var(--border-color)]"></div>\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n          [class.text-[var(--accent)]]]="designer.showGrid()"\n          [class.text-[var(--text-secondary)]]]="!designer.showGrid()"\n          [class.bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]]]="designer.showGrid()"\n          [class.bg-transparent]="!designer.showGrid()"\n          (click)="designer.toggleGrid()"\n          title="Toggle grid"\n        >\n          <app-icon icon="grid" [size]="18" />\n        </button>\n        <div class="w-px h-5 mx-1 bg-[var(--border-color)]"></div>\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n          (click)="zoomOut()"\n          title="Zoom out"\n        >\n          <app-icon icon="zoom_out" [size]="18" />\n        </button>\n        <span class="text-xs min-w-10 text-center text-[var(--text-secondary)]">{{ designer.zoom() }}%</span>\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n          (click)="zoomIn()"\n          title="Zoom in"\n        >\n          <app-icon icon="zoom_in" [size]="18" />\n        </button>\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n          (click)="designer.setZoom(100)"\n          title="Reset zoom"\n        >\n          <app-icon icon="fit_screen" [size]="18" />\n        </button>\n        <div class="flex-1"></div>\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"\n          [disabled]="!designer.selectedId()"\n          (click)="deleteSelected()"\n          title="Delete selected"\n        >\n          <app-icon icon="delete" [size]="18" />\n        </button>\n      </div>\n      <div class="flex-1 overflow-auto relative" (click)="onCanvasClick($event)">\n        <app-canvas></app-canvas>\n      </div>\n    </div>\n',
+      '<div\n  appApplyTheme="app-main-editor"\n  class="flex flex-col h-full bg-[var(--bg-primary)]"\n>\n  <div\n    class="flex items-center gap-1 py-[6px] px-3 bg-[var(--bg-elevated)] border-b border-[var(--border-color)] min-h-[2.5rem]"\n  >\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"\n      [disabled]="!designer.canUndo()"\n      (click)="designer.undo()"\n      title="Undo"\n    >\n      <app-icon icon="undo" [size]="18" />\n    </button>\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"\n      [disabled]="!designer.canRedo()"\n      (click)="designer.redo()"\n      title="Redo"\n    >\n      <app-icon icon="redo" [size]="18" />\n    </button>\n    <div class="w-px h-5 mx-1 bg-[var(--border-color)]"></div>\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n      [class.text-[var(--accent)]]]="designer.showGrid()"\n      [class.text-[var(--text-secondary)]]]="!designer.showGrid()"\n      [class.bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]]]="\n        designer.showGrid()\n      "\n      [class.bg-transparent]="!designer.showGrid()"\n      (click)="designer.toggleGrid()"\n      title="Toggle grid"\n    >\n      <app-icon icon="grid" [size]="18" />\n    </button>\n    <div class="w-px h-5 mx-1 bg-[var(--border-color)]"></div>\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n      (click)="zoomOut()"\n      title="Zoom out"\n    >\n      <app-icon icon="zoom_out" [size]="18" />\n    </button>\n    <span class="text-xs min-w-10 text-center text-[var(--text-secondary)]"\n      >{{ designer.zoom() }}%</span\n    >\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n      (click)="zoomIn()"\n      title="Zoom in"\n    >\n      <app-icon icon="zoom_in" [size]="18" />\n    </button>\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n      (click)="designer.setZoom(100)"\n      title="Reset zoom"\n    >\n      <app-icon icon="fit_screen" [size]="18" />\n    </button>\n    <div class="flex-1"></div>\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"\n      [disabled]="!designer.selectedId()"\n      (click)="deleteSelected()"\n      title="Delete selected"\n    >\n      <app-icon icon="delete" [size]="18" />\n    </button>\n  </div>\n  <div class="flex-1 overflow-auto relative" (click)="onCanvasClick($event)">\n    <app-canvas></app-canvas>\n  </div>\n</div>\n',
     dependencies: [
       { kind: "ngmodule", type: CommonModule },
       { kind: "component", type: CanvasComponent, selector: "app-canvas" },
@@ -13484,7 +13053,7 @@ i0.ɵɵngDeclareClassMetadata({
             ApplyThemeDirective,
           ],
           template:
-            '    <div appApplyTheme="app-main-editor" class="flex flex-col h-full bg-[var(--bg-primary)]">\n      <div class="flex items-center gap-1 py-[6px] px-3 bg-[var(--bg-elevated)] border-b border-[var(--border-color)] min-h-[2.5rem]">\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"\n          [disabled]="!designer.canUndo()"\n          (click)="designer.undo()"\n          title="Undo"\n        >\n          <app-icon icon="undo" [size]="18" />\n        </button>\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"\n          [disabled]="!designer.canRedo()"\n          (click)="designer.redo()"\n          title="Redo"\n        >\n          <app-icon icon="redo" [size]="18" />\n        </button>\n        <div class="w-px h-5 mx-1 bg-[var(--border-color)]"></div>\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n          [class.text-[var(--accent)]]]="designer.showGrid()"\n          [class.text-[var(--text-secondary)]]]="!designer.showGrid()"\n          [class.bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]]]="designer.showGrid()"\n          [class.bg-transparent]="!designer.showGrid()"\n          (click)="designer.toggleGrid()"\n          title="Toggle grid"\n        >\n          <app-icon icon="grid" [size]="18" />\n        </button>\n        <div class="w-px h-5 mx-1 bg-[var(--border-color)]"></div>\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n          (click)="zoomOut()"\n          title="Zoom out"\n        >\n          <app-icon icon="zoom_out" [size]="18" />\n        </button>\n        <span class="text-xs min-w-10 text-center text-[var(--text-secondary)]">{{ designer.zoom() }}%</span>\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n          (click)="zoomIn()"\n          title="Zoom in"\n        >\n          <app-icon icon="zoom_in" [size]="18" />\n        </button>\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n          (click)="designer.setZoom(100)"\n          title="Reset zoom"\n        >\n          <app-icon icon="fit_screen" [size]="18" />\n        </button>\n        <div class="flex-1"></div>\n        <button\n          class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"\n          [disabled]="!designer.selectedId()"\n          (click)="deleteSelected()"\n          title="Delete selected"\n        >\n          <app-icon icon="delete" [size]="18" />\n        </button>\n      </div>\n      <div class="flex-1 overflow-auto relative" (click)="onCanvasClick($event)">\n        <app-canvas></app-canvas>\n      </div>\n    </div>\n',
+            '<div\n  appApplyTheme="app-main-editor"\n  class="flex flex-col h-full bg-[var(--bg-primary)]"\n>\n  <div\n    class="flex items-center gap-1 py-[6px] px-3 bg-[var(--bg-elevated)] border-b border-[var(--border-color)] min-h-[2.5rem]"\n  >\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"\n      [disabled]="!designer.canUndo()"\n      (click)="designer.undo()"\n      title="Undo"\n    >\n      <app-icon icon="undo" [size]="18" />\n    </button>\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"\n      [disabled]="!designer.canRedo()"\n      (click)="designer.redo()"\n      title="Redo"\n    >\n      <app-icon icon="redo" [size]="18" />\n    </button>\n    <div class="w-px h-5 mx-1 bg-[var(--border-color)]"></div>\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n      [class.text-[var(--accent)]]]="designer.showGrid()"\n      [class.text-[var(--text-secondary)]]]="!designer.showGrid()"\n      [class.bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]]]="\n        designer.showGrid()\n      "\n      [class.bg-transparent]="!designer.showGrid()"\n      (click)="designer.toggleGrid()"\n      title="Toggle grid"\n    >\n      <app-icon icon="grid" [size]="18" />\n    </button>\n    <div class="w-px h-5 mx-1 bg-[var(--border-color)]"></div>\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n      (click)="zoomOut()"\n      title="Zoom out"\n    >\n      <app-icon icon="zoom_out" [size]="18" />\n    </button>\n    <span class="text-xs min-w-10 text-center text-[var(--text-secondary)]"\n      >{{ designer.zoom() }}%</span\n    >\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n      (click)="zoomIn()"\n      title="Zoom in"\n    >\n      <app-icon icon="zoom_in" [size]="18" />\n    </button>\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"\n      (click)="designer.setZoom(100)"\n      title="Reset zoom"\n    >\n      <app-icon icon="fit_screen" [size]="18" />\n    </button>\n    <div class="flex-1"></div>\n    <button\n      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"\n      [disabled]="!designer.selectedId()"\n      (click)="deleteSelected()"\n      title="Delete selected"\n    >\n      <app-icon icon="delete" [size]="18" />\n    </button>\n  </div>\n  <div class="flex-1 overflow-auto relative" (click)="onCanvasClick($event)">\n    <app-canvas></app-canvas>\n  </div>\n</div>\n',
         },
       ],
     },
@@ -13620,7 +13189,7 @@ class CommandPaletteComponent {
     host: { listeners: { "document:keydown": "onKeyDown($event)" } },
     ngImport: i0,
     template:
-      '@if (isOpen()) {\n  <div\n    appApplyTheme="app-command-palette"\n    class="fixed inset-0 flex items-start justify-center pt-[15vh] z-[9999] animate-fade-in bg-[var(--bg-overlay,rgba(0,0,0,0.5))] backdrop-blur-[4px]"\n    (click)="close()"\n  >\n    <div\n      class="w-full max-w-[560px] rounded-xl overflow-hidden animate-slide-down bg-[var(--bg-elevated)] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-[var(--border-subtle)]"\n      (click)="$event.stopPropagation()"\n    >\n      <div class="flex items-center gap-3 px-4 py-3 border-b border-[var(--border-subtle)]">\n        <app-icon class="text-xl text-gray-500 flex-shrink-0" icon="search" [size]="20" />\n        <input\n          type="text"\n          class="flex-1 bg-transparent border-none outline-none text-base text-[var(--text-primary)]"\n          [placeholder]="placeholder"\n          [value]="searchQuery()"\n          (input)="onSearchChange($any($event.target).value)"\n          autofocus\n        />\n        <kbd class="px-2 py-1 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]">Esc</kbd>\n      </div>\n      <div class="max-h-[320px] overflow-y-auto">\n        @if (filteredCommands().length === 0) {\n          <div class="flex flex-col items-center justify-center gap-2 py-12 text-[var(--text-muted)]">\n            <app-icon class="text-4xl" icon="search" [size]="40" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class="py-2">\n              <div class="px-4 py-1 text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]">\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type="button"\n                  class="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm border-none cursor-pointer transition-colors duration-100"\n                  [class]="isSelected(command) ? \'bg-blue-50 hover:bg-blue-100\' : \'hover:bg-gray-100\'"\n                  [class.opacity-50]="command.disabled"\n                  [class.cursor-not-allowed]="command.disabled"\n                  [class.text-[var(--text-primary)]]="!command.disabled"\n                  [disabled]="command.disabled"\n                  (click)="selectCommand(command)"\n                >\n                  @if (command.icon) {\n                    <app-icon class="text-xl text-gray-500 flex-shrink-0" [icon]="command.icon" [size]="20" />\n                  }\n                  <span class="flex-1">{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd class="px-1.5 py-0.5 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]">{{ command.shortcut }}</kbd>\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div class="flex items-center gap-4 px-4 py-2 border-t border-[var(--border-subtle)] bg-[var(--bg-secondary)]">\n        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"><kbd class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">\u2191\u2193</kbd> Navigate</span>\n        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"><kbd class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">\u21B5</kbd> Select</span>\n        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"><kbd class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">Esc</kbd> Close</span>\n      </div>\n    </div>\n  </div>\n}\n',
+      '@if (isOpen()) {\n  <div\n    appApplyTheme="app-command-palette"\n    class="fixed inset-0 flex items-start justify-center pt-[15vh] z-[9999] animate-fade-in bg-[var(--bg-overlay,rgba(0,0,0,0.5))] backdrop-blur-[4px]"\n    (click)="close()"\n  >\n    <div\n      class="w-full max-w-[560px] rounded-xl overflow-hidden animate-slide-down bg-[var(--bg-elevated)] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-[var(--border-subtle)]"\n      (click)="$event.stopPropagation()"\n    >\n      <div\n        class="flex items-center gap-3 px-4 py-3 border-b border-[var(--border-subtle)]"\n      >\n        <app-icon\n          class="text-xl text-gray-500 flex-shrink-0"\n          icon="search"\n          [size]="20"\n        />\n        <input\n          type="text"\n          class="flex-1 bg-transparent border-none outline-none text-base text-[var(--text-primary)]"\n          [placeholder]="placeholder"\n          [value]="searchQuery()"\n          (input)="onSearchChange($any($event.target).value)"\n          autofocus\n        />\n        <kbd\n          class="px-2 py-1 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]"\n          >Esc</kbd\n        >\n      </div>\n      <div class="max-h-[320px] overflow-y-auto">\n        @if (filteredCommands().length === 0) {\n          <div\n            class="flex flex-col items-center justify-center gap-2 py-12 text-[var(--text-muted)]"\n          >\n            <app-icon class="text-4xl" icon="search" [size]="40" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class="py-2">\n              <div\n                class="px-4 py-1 text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]"\n              >\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type="button"\n                  class="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm border-none cursor-pointer transition-colors duration-100"\n                  [class]="\n                    isSelected(command)\n                      ? \'bg-blue-50 hover:bg-blue-100\'\n                      : \'hover:bg-gray-100\'\n                  "\n                  [class.opacity-50]="command.disabled"\n                  [class.cursor-not-allowed]="command.disabled"\n                  [class.text-[var(--text-primary)]]="!command.disabled"\n                  [disabled]="command.disabled"\n                  (click)="selectCommand(command)"\n                >\n                  @if (command.icon) {\n                    <app-icon\n                      class="text-xl text-gray-500 flex-shrink-0"\n                      [icon]="command.icon"\n                      [size]="20"\n                    />\n                  }\n                  <span class="flex-1">{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd\n                      class="px-1.5 py-0.5 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]"\n                      >{{ command.shortcut }}</kbd\n                    >\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div\n        class="flex items-center gap-4 px-4 py-2 border-t border-[var(--border-subtle)] bg-[var(--bg-secondary)]"\n      >\n        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"\n          ><kbd\n            class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]"\n            >\u2191\u2193</kbd\n          >\n          Navigate</span\n        >\n        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"\n          ><kbd\n            class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]"\n            >\u21B5</kbd\n          >\n          Select</span\n        >\n        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"\n          ><kbd\n            class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]"\n            >Esc</kbd\n          >\n          Close</span\n        >\n      </div>\n    </div>\n  </div>\n}\n',
     styles: [
       "@keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes slideDown{0%{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}.animate-fade-in{animation:fadeIn .15s ease-out}.animate-slide-down{animation:slideDown .15s ease-out}\n",
     ],
@@ -13654,7 +13223,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [IconComponent, ApplyThemeDirective],
           template:
-            '@if (isOpen()) {\n  <div\n    appApplyTheme="app-command-palette"\n    class="fixed inset-0 flex items-start justify-center pt-[15vh] z-[9999] animate-fade-in bg-[var(--bg-overlay,rgba(0,0,0,0.5))] backdrop-blur-[4px]"\n    (click)="close()"\n  >\n    <div\n      class="w-full max-w-[560px] rounded-xl overflow-hidden animate-slide-down bg-[var(--bg-elevated)] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-[var(--border-subtle)]"\n      (click)="$event.stopPropagation()"\n    >\n      <div class="flex items-center gap-3 px-4 py-3 border-b border-[var(--border-subtle)]">\n        <app-icon class="text-xl text-gray-500 flex-shrink-0" icon="search" [size]="20" />\n        <input\n          type="text"\n          class="flex-1 bg-transparent border-none outline-none text-base text-[var(--text-primary)]"\n          [placeholder]="placeholder"\n          [value]="searchQuery()"\n          (input)="onSearchChange($any($event.target).value)"\n          autofocus\n        />\n        <kbd class="px-2 py-1 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]">Esc</kbd>\n      </div>\n      <div class="max-h-[320px] overflow-y-auto">\n        @if (filteredCommands().length === 0) {\n          <div class="flex flex-col items-center justify-center gap-2 py-12 text-[var(--text-muted)]">\n            <app-icon class="text-4xl" icon="search" [size]="40" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class="py-2">\n              <div class="px-4 py-1 text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]">\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type="button"\n                  class="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm border-none cursor-pointer transition-colors duration-100"\n                  [class]="isSelected(command) ? \'bg-blue-50 hover:bg-blue-100\' : \'hover:bg-gray-100\'"\n                  [class.opacity-50]="command.disabled"\n                  [class.cursor-not-allowed]="command.disabled"\n                  [class.text-[var(--text-primary)]]="!command.disabled"\n                  [disabled]="command.disabled"\n                  (click)="selectCommand(command)"\n                >\n                  @if (command.icon) {\n                    <app-icon class="text-xl text-gray-500 flex-shrink-0" [icon]="command.icon" [size]="20" />\n                  }\n                  <span class="flex-1">{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd class="px-1.5 py-0.5 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]">{{ command.shortcut }}</kbd>\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div class="flex items-center gap-4 px-4 py-2 border-t border-[var(--border-subtle)] bg-[var(--bg-secondary)]">\n        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"><kbd class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">\u2191\u2193</kbd> Navigate</span>\n        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"><kbd class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">\u21B5</kbd> Select</span>\n        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"><kbd class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">Esc</kbd> Close</span>\n      </div>\n    </div>\n  </div>\n}\n',
+            '@if (isOpen()) {\n  <div\n    appApplyTheme="app-command-palette"\n    class="fixed inset-0 flex items-start justify-center pt-[15vh] z-[9999] animate-fade-in bg-[var(--bg-overlay,rgba(0,0,0,0.5))] backdrop-blur-[4px]"\n    (click)="close()"\n  >\n    <div\n      class="w-full max-w-[560px] rounded-xl overflow-hidden animate-slide-down bg-[var(--bg-elevated)] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-[var(--border-subtle)]"\n      (click)="$event.stopPropagation()"\n    >\n      <div\n        class="flex items-center gap-3 px-4 py-3 border-b border-[var(--border-subtle)]"\n      >\n        <app-icon\n          class="text-xl text-gray-500 flex-shrink-0"\n          icon="search"\n          [size]="20"\n        />\n        <input\n          type="text"\n          class="flex-1 bg-transparent border-none outline-none text-base text-[var(--text-primary)]"\n          [placeholder]="placeholder"\n          [value]="searchQuery()"\n          (input)="onSearchChange($any($event.target).value)"\n          autofocus\n        />\n        <kbd\n          class="px-2 py-1 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]"\n          >Esc</kbd\n        >\n      </div>\n      <div class="max-h-[320px] overflow-y-auto">\n        @if (filteredCommands().length === 0) {\n          <div\n            class="flex flex-col items-center justify-center gap-2 py-12 text-[var(--text-muted)]"\n          >\n            <app-icon class="text-4xl" icon="search" [size]="40" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class="py-2">\n              <div\n                class="px-4 py-1 text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]"\n              >\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type="button"\n                  class="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm border-none cursor-pointer transition-colors duration-100"\n                  [class]="\n                    isSelected(command)\n                      ? \'bg-blue-50 hover:bg-blue-100\'\n                      : \'hover:bg-gray-100\'\n                  "\n                  [class.opacity-50]="command.disabled"\n                  [class.cursor-not-allowed]="command.disabled"\n                  [class.text-[var(--text-primary)]]="!command.disabled"\n                  [disabled]="command.disabled"\n                  (click)="selectCommand(command)"\n                >\n                  @if (command.icon) {\n                    <app-icon\n                      class="text-xl text-gray-500 flex-shrink-0"\n                      [icon]="command.icon"\n                      [size]="20"\n                    />\n                  }\n                  <span class="flex-1">{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd\n                      class="px-1.5 py-0.5 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]"\n                      >{{ command.shortcut }}</kbd\n                    >\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div\n        class="flex items-center gap-4 px-4 py-2 border-t border-[var(--border-subtle)] bg-[var(--bg-secondary)]"\n      >\n        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"\n          ><kbd\n            class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]"\n            >\u2191\u2193</kbd\n          >\n          Navigate</span\n        >\n        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"\n          ><kbd\n            class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]"\n            >\u21B5</kbd\n          >\n          Select</span\n        >\n        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"\n          ><kbd\n            class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]"\n            >Esc</kbd\n          >\n          Close</span\n        >\n      </div>\n    </div>\n  </div>\n}\n',
           styles: [
             "@keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes slideDown{0%{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}.animate-fade-in{animation:fadeIn .15s ease-out}.animate-slide-down{animation:slideDown .15s ease-out}\n",
           ],
@@ -13724,7 +13293,7 @@ class DesignerTreeNodeComponent {
     outputs: { select: "select" },
     ngImport: i0,
     template:
-      '<div\n  class="flex items-center gap-2 px-2 py-1 cursor-pointer rounded transition-colors duration-100"\n  [style.paddingLeft.px]="depth * 16 + 8"\n  [class.bg-[color-mix(in_srgb,_var(--accent)_20%,_transparent)]]]="node.selected"\n  [class.bg-transparent]="!node.selected"\n  [class.text-[var(--accent)]]="node.selected"\n  [style.color]="node.selected ? \'var(--accent)\' : \'inherit\'"\n  (click)="select.emit(node)"\n>\n  <span class="w-3 text-center flex-shrink-0 cursor-pointer text-xs text-[var(--text-muted)]" (click)="toggle($event)">\n    @if (node.children?.length) {\n      {{ node.expanded ? "\u25BC" : "\u25B6" }}\n    }\n  </span>\n  <span class="text-sm flex-shrink-0 text-[var(--text-secondary)]">{{ node.icon }}</span>\n  <span class="text-sm flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[var(--text-primary)]">{{ node.label }}</span>\n  <span class="text-xs font-mono text-[var(--text-muted)]">{{ node.id }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-designer-tree-node\n      [node]="child"\n      [depth]="depth + 1"\n      (select)="select.emit($event)"\n    ></app-designer-tree-node>\n  }\n}',
+      '<div\n  class="flex items-center gap-2 px-2 py-1 cursor-pointer rounded transition-colors duration-100"\n  [style.paddingLeft.px]="depth * 16 + 8"\n  [class.bg-[color-mix(in_srgb,_var(--accent)_20%,_transparent)]]]="\n    node.selected\n  "\n  [class.bg-transparent]="!node.selected"\n  [class.text-[var(--accent)]]="node.selected"\n  [style.color]="node.selected ? \'var(--accent)\' : \'inherit\'"\n  (click)="select.emit(node)"\n>\n  <span\n    class="w-3 text-center flex-shrink-0 cursor-pointer text-xs text-[var(--text-muted)]"\n    (click)="toggle($event)"\n  >\n    @if (node.children?.length) {\n      {{ node.expanded ? "\u25BC" : "\u25B6" }}\n    }\n  </span>\n  <span class="text-sm flex-shrink-0 text-[var(--text-secondary)]">{{\n    node.icon\n  }}</span>\n  <span\n    class="text-sm flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[var(--text-primary)]"\n    >{{ node.label }}</span\n  >\n  <span class="text-xs font-mono text-[var(--text-muted)]">{{ node.id }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-designer-tree-node\n      [node]="child"\n      [depth]="depth + 1"\n      (select)="select.emit($event)"\n    ></app-designer-tree-node>\n  }\n}\n',
     dependencies: [
       {
         kind: "component",
@@ -13751,7 +13320,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [CommonModule],
           template:
-            '<div\n  class="flex items-center gap-2 px-2 py-1 cursor-pointer rounded transition-colors duration-100"\n  [style.paddingLeft.px]="depth * 16 + 8"\n  [class.bg-[color-mix(in_srgb,_var(--accent)_20%,_transparent)]]]="node.selected"\n  [class.bg-transparent]="!node.selected"\n  [class.text-[var(--accent)]]="node.selected"\n  [style.color]="node.selected ? \'var(--accent)\' : \'inherit\'"\n  (click)="select.emit(node)"\n>\n  <span class="w-3 text-center flex-shrink-0 cursor-pointer text-xs text-[var(--text-muted)]" (click)="toggle($event)">\n    @if (node.children?.length) {\n      {{ node.expanded ? "\u25BC" : "\u25B6" }}\n    }\n  </span>\n  <span class="text-sm flex-shrink-0 text-[var(--text-secondary)]">{{ node.icon }}</span>\n  <span class="text-sm flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[var(--text-primary)]">{{ node.label }}</span>\n  <span class="text-xs font-mono text-[var(--text-muted)]">{{ node.id }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-designer-tree-node\n      [node]="child"\n      [depth]="depth + 1"\n      (select)="select.emit($event)"\n    ></app-designer-tree-node>\n  }\n}',
+            '<div\n  class="flex items-center gap-2 px-2 py-1 cursor-pointer rounded transition-colors duration-100"\n  [style.paddingLeft.px]="depth * 16 + 8"\n  [class.bg-[color-mix(in_srgb,_var(--accent)_20%,_transparent)]]]="\n    node.selected\n  "\n  [class.bg-transparent]="!node.selected"\n  [class.text-[var(--accent)]]="node.selected"\n  [style.color]="node.selected ? \'var(--accent)\' : \'inherit\'"\n  (click)="select.emit(node)"\n>\n  <span\n    class="w-3 text-center flex-shrink-0 cursor-pointer text-xs text-[var(--text-muted)]"\n    (click)="toggle($event)"\n  >\n    @if (node.children?.length) {\n      {{ node.expanded ? "\u25BC" : "\u25B6" }}\n    }\n  </span>\n  <span class="text-sm flex-shrink-0 text-[var(--text-secondary)]">{{\n    node.icon\n  }}</span>\n  <span\n    class="text-sm flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[var(--text-primary)]"\n    >{{ node.label }}</span\n  >\n  <span class="text-xs font-mono text-[var(--text-muted)]">{{ node.id }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-designer-tree-node\n      [node]="child"\n      [depth]="depth + 1"\n      (select)="select.emit($event)"\n    ></app-designer-tree-node>\n  }\n}\n',
         },
       ],
     },
@@ -13826,7 +13395,7 @@ class DesignerTreeComponent {
     selector: "app-designer-tree",
     ngImport: i0,
     template:
-      '<div appApplyTheme="app-designer-tree" class="flex flex-col h-full bg-[var(--bg-elevated)]">\n  <div class="px-4 py-3 text-xs font-semibold uppercase tracking-wide border-b text-[var(--text-secondary)] border-[var(--border-color)]">Layers</div>\n  <div class="flex-1 overflow-y-auto py-1 text-sm">\n    @for (node of treeNodes(); track node.id) {\n      <app-designer-tree-node\n        [node]="node"\n        [depth]="0"\n        (select)="selectNode($event)"\n      ></app-designer-tree-node>\n    }\n    @if (treeNodes().length === 0) {\n      <div class="px-4 py-3 text-center text-[var(--text-muted)]">No elements</div>\n    }\n  </div>\n</div>\n',
+      '<div\n  appApplyTheme="app-designer-tree"\n  class="flex flex-col h-full bg-[var(--bg-elevated)]"\n>\n  <div\n    class="px-4 py-3 text-xs font-semibold uppercase tracking-wide border-b text-[var(--text-secondary)] border-[var(--border-color)]"\n  >\n    Layers\n  </div>\n  <div class="flex-1 overflow-y-auto py-1 text-sm">\n    @for (node of treeNodes(); track node.id) {\n      <app-designer-tree-node\n        [node]="node"\n        [depth]="0"\n        (select)="selectNode($event)"\n      ></app-designer-tree-node>\n    }\n    @if (treeNodes().length === 0) {\n      <div class="px-4 py-3 text-center text-[var(--text-muted)]">\n        No elements\n      </div>\n    }\n  </div>\n</div>\n',
     dependencies: [
       { kind: "ngmodule", type: CommonModule },
       {
@@ -13863,7 +13432,7 @@ i0.ɵɵngDeclareClassMetadata({
             ApplyThemeDirective,
           ],
           template:
-            '<div appApplyTheme="app-designer-tree" class="flex flex-col h-full bg-[var(--bg-elevated)]">\n  <div class="px-4 py-3 text-xs font-semibold uppercase tracking-wide border-b text-[var(--text-secondary)] border-[var(--border-color)]">Layers</div>\n  <div class="flex-1 overflow-y-auto py-1 text-sm">\n    @for (node of treeNodes(); track node.id) {\n      <app-designer-tree-node\n        [node]="node"\n        [depth]="0"\n        (select)="selectNode($event)"\n      ></app-designer-tree-node>\n    }\n    @if (treeNodes().length === 0) {\n      <div class="px-4 py-3 text-center text-[var(--text-muted)]">No elements</div>\n    }\n  </div>\n</div>\n',
+            '<div\n  appApplyTheme="app-designer-tree"\n  class="flex flex-col h-full bg-[var(--bg-elevated)]"\n>\n  <div\n    class="px-4 py-3 text-xs font-semibold uppercase tracking-wide border-b text-[var(--text-secondary)] border-[var(--border-color)]"\n  >\n    Layers\n  </div>\n  <div class="flex-1 overflow-y-auto py-1 text-sm">\n    @for (node of treeNodes(); track node.id) {\n      <app-designer-tree-node\n        [node]="node"\n        [depth]="0"\n        (select)="selectNode($event)"\n      ></app-designer-tree-node>\n    }\n    @if (treeNodes().length === 0) {\n      <div class="px-4 py-3 text-center text-[var(--text-muted)]">\n        No elements\n      </div>\n    }\n  </div>\n</div>\n',
         },
       ],
     },
@@ -13914,7 +13483,7 @@ class LanguageSelectorComponent {
     outputs: { changed: "changed" },
     ngImport: i0,
     template:
-      '    <div appApplyTheme="app-language-selector" class="relative inline-flex items-center gap-2">\n      @if (label) {\n        <label [attr.id]="labelId" class="text-sm text-[var(--text-secondary)] whitespace-nowrap">{{ label }}</label>\n      }\n      <select\n        [value]="value"\n        (change)="handleChange($event)"\n        [attr.aria-labelledby]="labelId || null"\n        class="p-1.5 pr-8 rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)] text-[var(--text-primary)] text-sm cursor-pointer appearance-none min-w-28"\n      >\n        @for (lang of parsedLanguages; track lang.value) {\n          <option [value]="lang.value" [selected]="lang.value === value">\n            {{ lang.label }}\n          </option>\n        }\n      </select>\n      <app-icon class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" icon="chevron-down" [size]="16" />\n    </div>\n',
+      '<div\n  appApplyTheme="app-language-selector"\n  class="relative inline-flex items-center gap-2"\n>\n  @if (label) {\n    <label\n      [attr.id]="labelId"\n      class="text-sm text-[var(--text-secondary)] whitespace-nowrap"\n      >{{ label }}</label\n    >\n  }\n  <select\n    [value]="value"\n    (change)="handleChange($event)"\n    [attr.aria-labelledby]="labelId || null"\n    class="p-1.5 pr-8 rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)] text-[var(--text-primary)] text-sm cursor-pointer appearance-none min-w-28"\n  >\n    @for (lang of parsedLanguages; track lang.value) {\n      <option [value]="lang.value" [selected]="lang.value === value">\n        {{ lang.label }}\n      </option>\n    }\n  </select>\n  <app-icon\n    class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"\n    icon="chevron-down"\n    [size]="16"\n  />\n</div>\n',
     styles: [""],
     dependencies: [
       {
@@ -13946,7 +13515,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [IconComponent, ApplyThemeDirective],
           template:
-            '    <div appApplyTheme="app-language-selector" class="relative inline-flex items-center gap-2">\n      @if (label) {\n        <label [attr.id]="labelId" class="text-sm text-[var(--text-secondary)] whitespace-nowrap">{{ label }}</label>\n      }\n      <select\n        [value]="value"\n        (change)="handleChange($event)"\n        [attr.aria-labelledby]="labelId || null"\n        class="p-1.5 pr-8 rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)] text-[var(--text-primary)] text-sm cursor-pointer appearance-none min-w-28"\n      >\n        @for (lang of parsedLanguages; track lang.value) {\n          <option [value]="lang.value" [selected]="lang.value === value">\n            {{ lang.label }}\n          </option>\n        }\n      </select>\n      <app-icon class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" icon="chevron-down" [size]="16" />\n    </div>\n',
+            '<div\n  appApplyTheme="app-language-selector"\n  class="relative inline-flex items-center gap-2"\n>\n  @if (label) {\n    <label\n      [attr.id]="labelId"\n      class="text-sm text-[var(--text-secondary)] whitespace-nowrap"\n      >{{ label }}</label\n    >\n  }\n  <select\n    [value]="value"\n    (change)="handleChange($event)"\n    [attr.aria-labelledby]="labelId || null"\n    class="p-1.5 pr-8 rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)] text-[var(--text-primary)] text-sm cursor-pointer appearance-none min-w-28"\n  >\n    @for (lang of parsedLanguages; track lang.value) {\n      <option [value]="lang.value" [selected]="lang.value === value">\n        {{ lang.label }}\n      </option>\n    }\n  </select>\n  <app-icon\n    class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"\n    icon="chevron-down"\n    [size]="16"\n  />\n</div>\n',
         },
       ],
     },
@@ -14027,7 +13596,7 @@ class SwapButtonComponent {
     outputs: { clicked: "clicked" },
     ngImport: i0,
     template:
-      '<button\n  appApplyTheme="app-swap-button"\n  class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-color)] bg-[var(--bg-elevated)] cursor-pointer transition-all p-0 text-[var(--text-secondary)]"\n  (mouseenter)="hovered = true"\n  (mouseleave)="hovered = false"\n  [class.bg-[var(--bg-hover)]]]="hovered"\n  [class.bg-[var(--bg-elevated)]]]="!hovered"\n  [class.text-[var(--text-primary)]]]="hovered"\n  [class.text-[var(--text-secondary)]]]="!hovered"\n  (click)="clicked.emit($event)"\n  aria-label="Swap"\n>\n  <app-icon icon="chevron-down" [size]="20" style="transform: rotate(90deg);" />\n</button>\n',
+      '<button\n  appApplyTheme="app-swap-button"\n  class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-color)] bg-[var(--bg-elevated)] cursor-pointer transition-all p-0 text-[var(--text-secondary)]"\n  (mouseenter)="hovered = true"\n  (mouseleave)="hovered = false"\n  [class.bg-[var(--bg-hover)]]]="hovered"\n  [class.bg-[var(--bg-elevated)]]]="!hovered"\n  [class.text-[var(--text-primary)]]]="hovered"\n  [class.text-[var(--text-secondary)]]]="!hovered"\n  (click)="clicked.emit($event)"\n  aria-label="Swap"\n>\n  <app-icon icon="chevron-down" [size]="20" style="transform: rotate(90deg)" />\n</button>\n',
     dependencies: [
       {
         kind: "component",
@@ -14058,7 +13627,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [IconComponent, ApplyThemeDirective],
           template:
-            '<button\n  appApplyTheme="app-swap-button"\n  class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-color)] bg-[var(--bg-elevated)] cursor-pointer transition-all p-0 text-[var(--text-secondary)]"\n  (mouseenter)="hovered = true"\n  (mouseleave)="hovered = false"\n  [class.bg-[var(--bg-hover)]]]="hovered"\n  [class.bg-[var(--bg-elevated)]]]="!hovered"\n  [class.text-[var(--text-primary)]]]="hovered"\n  [class.text-[var(--text-secondary)]]]="!hovered"\n  (click)="clicked.emit($event)"\n  aria-label="Swap"\n>\n  <app-icon icon="chevron-down" [size]="20" style="transform: rotate(90deg);" />\n</button>\n',
+            '<button\n  appApplyTheme="app-swap-button"\n  class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-color)] bg-[var(--bg-elevated)] cursor-pointer transition-all p-0 text-[var(--text-secondary)]"\n  (mouseenter)="hovered = true"\n  (mouseleave)="hovered = false"\n  [class.bg-[var(--bg-hover)]]]="hovered"\n  [class.bg-[var(--bg-elevated)]]]="!hovered"\n  [class.text-[var(--text-primary)]]]="hovered"\n  [class.text-[var(--text-secondary)]]]="!hovered"\n  (click)="clicked.emit($event)"\n  aria-label="Swap"\n>\n  <app-icon icon="chevron-down" [size]="20" style="transform: rotate(90deg)" />\n</button>\n',
         },
       ],
     },
@@ -14184,7 +13753,7 @@ class TextInputComponent {
     ],
     ngImport: i0,
     template:
-      '    <div appApplyTheme="app-text-input" class="relative">\n      <textarea\n        #textareaEl\n        [placeholder]="placeholder"\n        [value]="value"\n        [attr.maxlength]="maxChars || null"\n        (input)="handleInput($event)"\n        (focus)="focused = true"\n        (blur)="focused = false"\n        [style.--tw-border-color]="focused ? \'var(--accent)\' : \'var(--border-color)\'"\n        class="w-full p-2 px-3 rounded-lg border box-border outline-none resize-none min-h-10 font-inherit text-base bg-[var(--bg-primary)] text-[var(--text-primary)]"\n        [class.focused]="focused"\n      ></textarea>\n      @if (clearable && value) {\n        <button\n          class="absolute right-2 top-2 bg-transparent border-none cursor-pointer p-0 leading-none text-xl text-[var(--text-secondary)]"\n          (mouseenter)="hovered = true"\n          (mouseleave)="hovered = false"\n          [style.color]="hovered ? \'var(--text-primary)\' : \'var(--text-secondary)\'"\n          (click)="clear()"\n          aria-label="Clear"\n        >\n          &times;\n        </button>\n      }\n      @if (maxChars) {\n        <span class="absolute right-2 bottom-1 text-xs text-[var(--text-muted)]">{{ value.length }}/{{ maxChars }}</span>\n      }\n    </div>\n',
+      '<div appApplyTheme="app-text-input" class="relative">\n  <textarea\n    #textareaEl\n    [placeholder]="placeholder"\n    [value]="value"\n    [attr.maxlength]="maxChars || null"\n    (input)="handleInput($event)"\n    (focus)="focused = true"\n    (blur)="focused = false"\n    [style.--tw-border-color]="\n      focused ? \'var(--accent)\' : \'var(--border-color)\'\n    "\n    class="w-full p-2 px-3 rounded-lg border box-border outline-none resize-none min-h-10 font-inherit text-base bg-[var(--bg-primary)] text-[var(--text-primary)]"\n    [class.focused]="focused"\n  ></textarea>\n  @if (clearable && value) {\n    <button\n      class="absolute right-2 top-2 bg-transparent border-none cursor-pointer p-0 leading-none text-xl text-[var(--text-secondary)]"\n      (mouseenter)="hovered = true"\n      (mouseleave)="hovered = false"\n      [style.color]="hovered ? \'var(--text-primary)\' : \'var(--text-secondary)\'"\n      (click)="clear()"\n      aria-label="Clear"\n    >\n      &times;\n    </button>\n  }\n  @if (maxChars) {\n    <span class="absolute right-2 bottom-1 text-xs text-[var(--text-muted)]"\n      >{{ value.length }}/{{ maxChars }}</span\n    >\n  }\n</div>\n',
     styles: [""],
     dependencies: [
       {
@@ -14210,7 +13779,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    <div appApplyTheme="app-text-input" class="relative">\n      <textarea\n        #textareaEl\n        [placeholder]="placeholder"\n        [value]="value"\n        [attr.maxlength]="maxChars || null"\n        (input)="handleInput($event)"\n        (focus)="focused = true"\n        (blur)="focused = false"\n        [style.--tw-border-color]="focused ? \'var(--accent)\' : \'var(--border-color)\'"\n        class="w-full p-2 px-3 rounded-lg border box-border outline-none resize-none min-h-10 font-inherit text-base bg-[var(--bg-primary)] text-[var(--text-primary)]"\n        [class.focused]="focused"\n      ></textarea>\n      @if (clearable && value) {\n        <button\n          class="absolute right-2 top-2 bg-transparent border-none cursor-pointer p-0 leading-none text-xl text-[var(--text-secondary)]"\n          (mouseenter)="hovered = true"\n          (mouseleave)="hovered = false"\n          [style.color]="hovered ? \'var(--text-primary)\' : \'var(--text-secondary)\'"\n          (click)="clear()"\n          aria-label="Clear"\n        >\n          &times;\n        </button>\n      }\n      @if (maxChars) {\n        <span class="absolute right-2 bottom-1 text-xs text-[var(--text-muted)]">{{ value.length }}/{{ maxChars }}</span>\n      }\n    </div>\n',
+            '<div appApplyTheme="app-text-input" class="relative">\n  <textarea\n    #textareaEl\n    [placeholder]="placeholder"\n    [value]="value"\n    [attr.maxlength]="maxChars || null"\n    (input)="handleInput($event)"\n    (focus)="focused = true"\n    (blur)="focused = false"\n    [style.--tw-border-color]="\n      focused ? \'var(--accent)\' : \'var(--border-color)\'\n    "\n    class="w-full p-2 px-3 rounded-lg border box-border outline-none resize-none min-h-10 font-inherit text-base bg-[var(--bg-primary)] text-[var(--text-primary)]"\n    [class.focused]="focused"\n  ></textarea>\n  @if (clearable && value) {\n    <button\n      class="absolute right-2 top-2 bg-transparent border-none cursor-pointer p-0 leading-none text-xl text-[var(--text-secondary)]"\n      (mouseenter)="hovered = true"\n      (mouseleave)="hovered = false"\n      [style.color]="hovered ? \'var(--text-primary)\' : \'var(--text-secondary)\'"\n      (click)="clear()"\n      aria-label="Clear"\n    >\n      &times;\n    </button>\n  }\n  @if (maxChars) {\n    <span class="absolute right-2 bottom-1 text-xs text-[var(--text-muted)]"\n      >{{ value.length }}/{{ maxChars }}</span\n    >\n  }\n</div>\n',
         },
       ],
     },
@@ -14330,7 +13899,7 @@ class TranslationOutputComponent {
     outputs: { copied: "copied" },
     ngImport: i0,
     template:
-      '    <div appApplyTheme="app-translation-output" class="relative">\n      <textarea\n        #outputEl\n        class="w-full p-3 rounded-lg border box-border resize-none min-h-20 cursor-default font-inherit text-base bg-[var(--bg-primary)] text-[var(--text-primary)]"\n        [value]="value"\n        [placeholder]="placeholder || \'Translation will appear here...\'"\n        readonly\n      ></textarea>\n      @if (showCopyButton && value) {\n        <button\n          class="absolute right-2 top-2 flex items-center gap-1 p-1.5 rounded-md border cursor-pointer transition-all text-xs border-[var(--border-color)]"\n          [style.background-color]="hovered ? \'var(--bg-hover)\' : \'var(--bg-elevated)\'"\n          [style.color]="hovered ? \'var(--text-primary)\' : \'var(--text-secondary)\'"\n          (mouseenter)="hovered = true"\n          (mouseleave)="hovered = false"\n          (click)="copyToClipboard()"\n          aria-label="Copy"\n        >\n          @if (isCopied) {\n            <span class="text-[var(--success)]">Copied!</span>\n          } @else {\n            <app-icon icon="copy" [size]="14" />\n          }\n        </button>\n      }\n    </div>',
+      '<div appApplyTheme="app-translation-output" class="relative">\n  <textarea\n    #outputEl\n    class="w-full p-3 rounded-lg border box-border resize-none min-h-20 cursor-default font-inherit text-base bg-[var(--bg-primary)] text-[var(--text-primary)]"\n    [value]="value"\n    [placeholder]="placeholder || \'Translation will appear here...\'"\n    readonly\n  ></textarea>\n  @if (showCopyButton && value) {\n    <button\n      class="absolute right-2 top-2 flex items-center gap-1 p-1.5 rounded-md border cursor-pointer transition-all text-xs border-[var(--border-color)]"\n      [style.background-color]="\n        hovered ? \'var(--bg-hover)\' : \'var(--bg-elevated)\'\n      "\n      [style.color]="hovered ? \'var(--text-primary)\' : \'var(--text-secondary)\'"\n      (mouseenter)="hovered = true"\n      (mouseleave)="hovered = false"\n      (click)="copyToClipboard()"\n      aria-label="Copy"\n    >\n      @if (isCopied) {\n        <span class="text-[var(--success)]">Copied!</span>\n      } @else {\n        <app-icon icon="copy" [size]="14" />\n      }\n    </button>\n  }\n</div>\n',
     styles: [""],
     dependencies: [
       {
@@ -14362,7 +13931,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [IconComponent, ApplyThemeDirective],
           template:
-            '    <div appApplyTheme="app-translation-output" class="relative">\n      <textarea\n        #outputEl\n        class="w-full p-3 rounded-lg border box-border resize-none min-h-20 cursor-default font-inherit text-base bg-[var(--bg-primary)] text-[var(--text-primary)]"\n        [value]="value"\n        [placeholder]="placeholder || \'Translation will appear here...\'"\n        readonly\n      ></textarea>\n      @if (showCopyButton && value) {\n        <button\n          class="absolute right-2 top-2 flex items-center gap-1 p-1.5 rounded-md border cursor-pointer transition-all text-xs border-[var(--border-color)]"\n          [style.background-color]="hovered ? \'var(--bg-hover)\' : \'var(--bg-elevated)\'"\n          [style.color]="hovered ? \'var(--text-primary)\' : \'var(--text-secondary)\'"\n          (mouseenter)="hovered = true"\n          (mouseleave)="hovered = false"\n          (click)="copyToClipboard()"\n          aria-label="Copy"\n        >\n          @if (isCopied) {\n            <span class="text-[var(--success)]">Copied!</span>\n          } @else {\n            <app-icon icon="copy" [size]="14" />\n          }\n        </button>\n      }\n    </div>',
+            '<div appApplyTheme="app-translation-output" class="relative">\n  <textarea\n    #outputEl\n    class="w-full p-3 rounded-lg border box-border resize-none min-h-20 cursor-default font-inherit text-base bg-[var(--bg-primary)] text-[var(--text-primary)]"\n    [value]="value"\n    [placeholder]="placeholder || \'Translation will appear here...\'"\n    readonly\n  ></textarea>\n  @if (showCopyButton && value) {\n    <button\n      class="absolute right-2 top-2 flex items-center gap-1 p-1.5 rounded-md border cursor-pointer transition-all text-xs border-[var(--border-color)]"\n      [style.background-color]="\n        hovered ? \'var(--bg-hover)\' : \'var(--bg-elevated)\'\n      "\n      [style.color]="hovered ? \'var(--text-primary)\' : \'var(--text-secondary)\'"\n      (mouseenter)="hovered = true"\n      (mouseleave)="hovered = false"\n      (click)="copyToClipboard()"\n      aria-label="Copy"\n    >\n      @if (isCopied) {\n        <span class="text-[var(--success)]">Copied!</span>\n      } @else {\n        <app-icon icon="copy" [size]="14" />\n      }\n    </button>\n  }\n</div>\n',
         },
       ],
     },
@@ -14450,7 +14019,7 @@ class ThemeToggleComponent {
     selector: "app-theme-toggle",
     ngImport: i0,
     template:
-      '    <button\n      appApplyTheme="app-theme-toggle"\n      class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-color)] bg-transparent cursor-pointer transition-all p-0 text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n      (mouseenter)="hovered = true"\n      (mouseleave)="hovered = false"\n      (click)="toggle()"\n      aria-label="Toggle theme"\n    >\n      @if (isDark) {\n        <app-icon icon="moon" [size]="20" />\n      } @else {\n        <app-icon icon="sun" [size]="20" />\n      }\n    </button>',
+      '<button\n  appApplyTheme="app-theme-toggle"\n  class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-color)] bg-transparent cursor-pointer transition-all p-0 text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n  (mouseenter)="hovered = true"\n  (mouseleave)="hovered = false"\n  (click)="toggle()"\n  aria-label="Toggle theme"\n>\n  @if (isDark) {\n    <app-icon icon="moon" [size]="20" />\n  } @else {\n    <app-icon icon="sun" [size]="20" />\n  }\n</button>\n',
     styles: [""],
     dependencies: [
       {
@@ -14482,7 +14051,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [IconComponent, ApplyThemeDirective],
           template:
-            '    <button\n      appApplyTheme="app-theme-toggle"\n      class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-color)] bg-transparent cursor-pointer transition-all p-0 text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n      (mouseenter)="hovered = true"\n      (mouseleave)="hovered = false"\n      (click)="toggle()"\n      aria-label="Toggle theme"\n    >\n      @if (isDark) {\n        <app-icon icon="moon" [size]="20" />\n      } @else {\n        <app-icon icon="sun" [size]="20" />\n      }\n    </button>',
+            '<button\n  appApplyTheme="app-theme-toggle"\n  class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-color)] bg-transparent cursor-pointer transition-all p-0 text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"\n  (mouseenter)="hovered = true"\n  (mouseleave)="hovered = false"\n  (click)="toggle()"\n  aria-label="Toggle theme"\n>\n  @if (isDark) {\n    <app-icon icon="moon" [size]="20" />\n  } @else {\n    <app-icon icon="sun" [size]="20" />\n  }\n</button>\n',
         },
       ],
     },
@@ -14534,7 +14103,7 @@ class ShortcutsOverlayComponent {
     host: { listeners: { "window:keydown.escape": "onEscape()" } },
     ngImport: i0,
     template:
-      '    @if (visible) {\n      <div\n        appApplyTheme="app-shortcuts-overlay"\n        class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-50"\n        (click)="close()"\n      >\n        <div\n          class="bg-[var(--bg-elevated)] border rounded-3xl w-[480px] max-w-[90vw] max-h-[80vh] overflow-y-auto shadow-2xl"\n          [style.--tw-border-color]="\'var(--border-color)\'"\n          (click)="$event.stopPropagation()"\n        >\n          <div class="flex items-center justify-between p-5 border-b">\n            <h3 class="m-0 text-lg font-semibold text-[var(--text-primary)]">{{ title || "Keyboard Shortcuts" }}</h3>\n            <button\n              class="bg-transparent border-none cursor-pointer p-1 rounded text-2xl leading-none"\n              [style.color]="hovered ? \'var(--text-primary)\' : \'var(--text-secondary)\'"\n              (mouseenter)="hovered = true"\n              (mouseleave)="hovered = false"\n              (click)="close()"\n              aria-label="Close"\n            >\n              &times;\n            </button>\n          </div>\n          <div class="p-4">\n            @for (shortcut of parsedShortcuts; track shortcut.key) {\n              <div class="flex items-center gap-4 py-2">\n                <kbd\n                  class="px-2 py-1 rounded border text-[var(--text-primary)] font-mono text-sm min-w-[60px] text-center border-[var(--border-color)] bg-[var(--bg-primary)]"\n                  [style.--tw-border-color]="\'var(--border-color)\'"\n                >{{ shortcut.key }}</kbd>\n                <span class="text-[var(--text-secondary)] text-sm">{{ shortcut.description }}</span>\n              </div>\n            }\n          </div>\n        </div>\n      </div>\n    }\n',
+      '@if (visible) {\n  <div\n    appApplyTheme="app-shortcuts-overlay"\n    class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-50"\n    (click)="close()"\n  >\n    <div\n      class="bg-[var(--bg-elevated)] border rounded-3xl w-[480px] max-w-[90vw] max-h-[80vh] overflow-y-auto shadow-2xl"\n      [style.--tw-border-color]="\'var(--border-color)\'"\n      (click)="$event.stopPropagation()"\n    >\n      <div class="flex items-center justify-between p-5 border-b">\n        <h3 class="m-0 text-lg font-semibold text-[var(--text-primary)]">\n          {{ title || "Keyboard Shortcuts" }}\n        </h3>\n        <button\n          class="bg-transparent border-none cursor-pointer p-1 rounded text-2xl leading-none"\n          [style.color]="\n            hovered ? \'var(--text-primary)\' : \'var(--text-secondary)\'\n          "\n          (mouseenter)="hovered = true"\n          (mouseleave)="hovered = false"\n          (click)="close()"\n          aria-label="Close"\n        >\n          &times;\n        </button>\n      </div>\n      <div class="p-4">\n        @for (shortcut of parsedShortcuts; track shortcut.key) {\n          <div class="flex items-center gap-4 py-2">\n            <kbd\n              class="px-2 py-1 rounded border text-[var(--text-primary)] font-mono text-sm min-w-[60px] text-center border-[var(--border-color)] bg-[var(--bg-primary)]"\n              [style.--tw-border-color]="\'var(--border-color)\'"\n              >{{ shortcut.key }}</kbd\n            >\n            <span class="text-[var(--text-secondary)] text-sm">{{\n              shortcut.description\n            }}</span>\n          </div>\n        }\n      </div>\n    </div>\n  </div>\n}\n',
     styles: [""],
     dependencies: [
       {
@@ -14560,7 +14129,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    @if (visible) {\n      <div\n        appApplyTheme="app-shortcuts-overlay"\n        class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-50"\n        (click)="close()"\n      >\n        <div\n          class="bg-[var(--bg-elevated)] border rounded-3xl w-[480px] max-w-[90vw] max-h-[80vh] overflow-y-auto shadow-2xl"\n          [style.--tw-border-color]="\'var(--border-color)\'"\n          (click)="$event.stopPropagation()"\n        >\n          <div class="flex items-center justify-between p-5 border-b">\n            <h3 class="m-0 text-lg font-semibold text-[var(--text-primary)]">{{ title || "Keyboard Shortcuts" }}</h3>\n            <button\n              class="bg-transparent border-none cursor-pointer p-1 rounded text-2xl leading-none"\n              [style.color]="hovered ? \'var(--text-primary)\' : \'var(--text-secondary)\'"\n              (mouseenter)="hovered = true"\n              (mouseleave)="hovered = false"\n              (click)="close()"\n              aria-label="Close"\n            >\n              &times;\n            </button>\n          </div>\n          <div class="p-4">\n            @for (shortcut of parsedShortcuts; track shortcut.key) {\n              <div class="flex items-center gap-4 py-2">\n                <kbd\n                  class="px-2 py-1 rounded border text-[var(--text-primary)] font-mono text-sm min-w-[60px] text-center border-[var(--border-color)] bg-[var(--bg-primary)]"\n                  [style.--tw-border-color]="\'var(--border-color)\'"\n                >{{ shortcut.key }}</kbd>\n                <span class="text-[var(--text-secondary)] text-sm">{{ shortcut.description }}</span>\n              </div>\n            }\n          </div>\n        </div>\n      </div>\n    }\n',
+            '@if (visible) {\n  <div\n    appApplyTheme="app-shortcuts-overlay"\n    class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-50"\n    (click)="close()"\n  >\n    <div\n      class="bg-[var(--bg-elevated)] border rounded-3xl w-[480px] max-w-[90vw] max-h-[80vh] overflow-y-auto shadow-2xl"\n      [style.--tw-border-color]="\'var(--border-color)\'"\n      (click)="$event.stopPropagation()"\n    >\n      <div class="flex items-center justify-between p-5 border-b">\n        <h3 class="m-0 text-lg font-semibold text-[var(--text-primary)]">\n          {{ title || "Keyboard Shortcuts" }}\n        </h3>\n        <button\n          class="bg-transparent border-none cursor-pointer p-1 rounded text-2xl leading-none"\n          [style.color]="\n            hovered ? \'var(--text-primary)\' : \'var(--text-secondary)\'\n          "\n          (mouseenter)="hovered = true"\n          (mouseleave)="hovered = false"\n          (click)="close()"\n          aria-label="Close"\n        >\n          &times;\n        </button>\n      </div>\n      <div class="p-4">\n        @for (shortcut of parsedShortcuts; track shortcut.key) {\n          <div class="flex items-center gap-4 py-2">\n            <kbd\n              class="px-2 py-1 rounded border text-[var(--text-primary)] font-mono text-sm min-w-[60px] text-center border-[var(--border-color)] bg-[var(--bg-primary)]"\n              [style.--tw-border-color]="\'var(--border-color)\'"\n              >{{ shortcut.key }}</kbd\n            >\n            <span class="text-[var(--text-secondary)] text-sm">{{\n              shortcut.description\n            }}</span>\n          </div>\n        }\n      </div>\n    </div>\n  </div>\n}\n',
         },
       ],
     },
@@ -14691,7 +14260,7 @@ class BlockComponent {
     },
     ngImport: i0,
     template:
-      '    <div\n      appApplyTheme="app-block"\n      class="box-border min-w-0 inline-flex"\n      [style.flexDirection]="direction"\n      [style.alignItems]="alignCss"\n      [style.justifyContent]="justifyCss"\n      [style.flexWrap]="wrap"\n      [style.gap]="gapCss"\n      [style.padding]="paddingCss"\n      [style.width]="widthCss"\n      [style.height]="heightCss"\n      [style.flex]="flex"\n      [style.overflow]="overflow"\n    >\n      @for (child of children; track child.id) {\n        <app-schema-element\n          [element]="child"\n          [elements]="children"\n        ></app-schema-element>\n      }\n    </div>',
+      '<div\n  appApplyTheme="app-block"\n  class="box-border min-w-0 inline-flex"\n  [style.flexDirection]="direction"\n  [style.alignItems]="alignCss"\n  [style.justifyContent]="justifyCss"\n  [style.flexWrap]="wrap"\n  [style.gap]="gapCss"\n  [style.padding]="paddingCss"\n  [style.width]="widthCss"\n  [style.height]="heightCss"\n  [style.flex]="flex"\n  [style.overflow]="overflow"\n>\n  @for (child of children; track child.id) {\n    <app-schema-element\n      [element]="child"\n      [elements]="children"\n    ></app-schema-element>\n  }\n</div>\n',
     styles: [":host{display:contents}\n"],
     dependencies: [
       { kind: "ngmodule", type: CommonModule },
@@ -14724,7 +14293,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [CommonModule, SchemaElementComponent, ApplyThemeDirective],
           template:
-            '    <div\n      appApplyTheme="app-block"\n      class="box-border min-w-0 inline-flex"\n      [style.flexDirection]="direction"\n      [style.alignItems]="alignCss"\n      [style.justifyContent]="justifyCss"\n      [style.flexWrap]="wrap"\n      [style.gap]="gapCss"\n      [style.padding]="paddingCss"\n      [style.width]="widthCss"\n      [style.height]="heightCss"\n      [style.flex]="flex"\n      [style.overflow]="overflow"\n    >\n      @for (child of children; track child.id) {\n        <app-schema-element\n          [element]="child"\n          [elements]="children"\n        ></app-schema-element>\n      }\n    </div>',
+            '<div\n  appApplyTheme="app-block"\n  class="box-border min-w-0 inline-flex"\n  [style.flexDirection]="direction"\n  [style.alignItems]="alignCss"\n  [style.justifyContent]="justifyCss"\n  [style.flexWrap]="wrap"\n  [style.gap]="gapCss"\n  [style.padding]="paddingCss"\n  [style.width]="widthCss"\n  [style.height]="heightCss"\n  [style.flex]="flex"\n  [style.overflow]="overflow"\n>\n  @for (child of children; track child.id) {\n    <app-schema-element\n      [element]="child"\n      [elements]="children"\n    ></app-schema-element>\n  }\n</div>\n',
           styles: [":host{display:contents}\n"],
         },
       ],
@@ -14895,7 +14464,7 @@ class TextComponent {
     },
     ngImport: i0,
     template:
-      '    @if (tag === "p") {\n      <p\n        appApplyTheme="app-text"\n        class="app-text m-0"\n        [class]="fontSizeClass + \' \' + fontWeightClass + \' \' + colorClass + \' \' + textAlignClass + \' \' + textTransformClass"\n        [style.lineHeight]="lineHeight || null"\n        [style.letterSpacing]="letterSpacing || null"\n        [style.whiteSpace]="whiteSpace || null"\n        [class.truncate]="truncate"\n        [class.overflow-hidden]="truncate"\n        [class.text-ellipsis]="truncate"\n        [title]="truncate && text ? text : \'\'"\n      >\n        {{ text }}\n        <ng-content></ng-content>\n      </p>\n    } @else {\n      <span\n        appApplyTheme="app-text"\n        class="app-text m-0"\n        [class]="fontSizeClass + \' \' + fontWeightClass + \' \' + colorClass + \' \' + textAlignClass + \' \' + textTransformClass"\n        [style.lineHeight]="lineHeight || null"\n        [style.letterSpacing]="letterSpacing || null"\n        [style.whiteSpace]="whiteSpace || null"\n        [class.truncate]="truncate"\n        [class.overflow-hidden]="truncate"\n        [class.text-ellipsis]="truncate"\n        [title]="truncate && text ? text : \'\'"\n      >\n        {{ text }}\n        <ng-content></ng-content>\n      </span>\n    }\n',
+      '@if (tag === "p") {\n  <p\n    appApplyTheme="app-text"\n    class="app-text m-0"\n    [class]="\n      fontSizeClass +\n      \' \' +\n      fontWeightClass +\n      \' \' +\n      colorClass +\n      \' \' +\n      textAlignClass +\n      \' \' +\n      textTransformClass\n    "\n    [style.lineHeight]="lineHeight || null"\n    [style.letterSpacing]="letterSpacing || null"\n    [style.whiteSpace]="whiteSpace || null"\n    [class.truncate]="truncate"\n    [class.overflow-hidden]="truncate"\n    [class.text-ellipsis]="truncate"\n    [title]="truncate && text ? text : \'\'"\n  >\n    {{ text }}\n    <ng-content></ng-content>\n  </p>\n} @else {\n  <span\n    appApplyTheme="app-text"\n    class="app-text m-0"\n    [class]="\n      fontSizeClass +\n      \' \' +\n      fontWeightClass +\n      \' \' +\n      colorClass +\n      \' \' +\n      textAlignClass +\n      \' \' +\n      textTransformClass\n    "\n    [style.lineHeight]="lineHeight || null"\n    [style.letterSpacing]="letterSpacing || null"\n    [style.whiteSpace]="whiteSpace || null"\n    [class.truncate]="truncate"\n    [class.overflow-hidden]="truncate"\n    [class.text-ellipsis]="truncate"\n    [title]="truncate && text ? text : \'\'"\n  >\n    {{ text }}\n    <ng-content></ng-content>\n  </span>\n}\n',
     dependencies: [
       {
         kind: "directive",
@@ -14920,7 +14489,7 @@ i0.ɵɵngDeclareClassMetadata({
           standalone: true,
           imports: [ApplyThemeDirective],
           template:
-            '    @if (tag === "p") {\n      <p\n        appApplyTheme="app-text"\n        class="app-text m-0"\n        [class]="fontSizeClass + \' \' + fontWeightClass + \' \' + colorClass + \' \' + textAlignClass + \' \' + textTransformClass"\n        [style.lineHeight]="lineHeight || null"\n        [style.letterSpacing]="letterSpacing || null"\n        [style.whiteSpace]="whiteSpace || null"\n        [class.truncate]="truncate"\n        [class.overflow-hidden]="truncate"\n        [class.text-ellipsis]="truncate"\n        [title]="truncate && text ? text : \'\'"\n      >\n        {{ text }}\n        <ng-content></ng-content>\n      </p>\n    } @else {\n      <span\n        appApplyTheme="app-text"\n        class="app-text m-0"\n        [class]="fontSizeClass + \' \' + fontWeightClass + \' \' + colorClass + \' \' + textAlignClass + \' \' + textTransformClass"\n        [style.lineHeight]="lineHeight || null"\n        [style.letterSpacing]="letterSpacing || null"\n        [style.whiteSpace]="whiteSpace || null"\n        [class.truncate]="truncate"\n        [class.overflow-hidden]="truncate"\n        [class.text-ellipsis]="truncate"\n        [title]="truncate && text ? text : \'\'"\n      >\n        {{ text }}\n        <ng-content></ng-content>\n      </span>\n    }\n',
+            '@if (tag === "p") {\n  <p\n    appApplyTheme="app-text"\n    class="app-text m-0"\n    [class]="\n      fontSizeClass +\n      \' \' +\n      fontWeightClass +\n      \' \' +\n      colorClass +\n      \' \' +\n      textAlignClass +\n      \' \' +\n      textTransformClass\n    "\n    [style.lineHeight]="lineHeight || null"\n    [style.letterSpacing]="letterSpacing || null"\n    [style.whiteSpace]="whiteSpace || null"\n    [class.truncate]="truncate"\n    [class.overflow-hidden]="truncate"\n    [class.text-ellipsis]="truncate"\n    [title]="truncate && text ? text : \'\'"\n  >\n    {{ text }}\n    <ng-content></ng-content>\n  </p>\n} @else {\n  <span\n    appApplyTheme="app-text"\n    class="app-text m-0"\n    [class]="\n      fontSizeClass +\n      \' \' +\n      fontWeightClass +\n      \' \' +\n      colorClass +\n      \' \' +\n      textAlignClass +\n      \' \' +\n      textTransformClass\n    "\n    [style.lineHeight]="lineHeight || null"\n    [style.letterSpacing]="letterSpacing || null"\n    [style.whiteSpace]="whiteSpace || null"\n    [class.truncate]="truncate"\n    [class.overflow-hidden]="truncate"\n    [class.text-ellipsis]="truncate"\n    [title]="truncate && text ? text : \'\'"\n  >\n    {{ text }}\n    <ng-content></ng-content>\n  </span>\n}\n',
         },
       ],
     },
@@ -15358,6 +14927,8 @@ const feedbackComponents = [
   },
 ];
 const components = uiComponents;
+// Data Components (placeholder for @tauri-front/data package)
+const dataComponents = [];
 
 /**
  * Abstract base component that provides a destroy$ Subject for subscription cleanup.
@@ -15405,6 +14976,254 @@ i0.ɵɵngDeclareClassMetadata({
       ],
     },
   ],
+});
+
+class SchemaRouteViewerComponent {
+  router;
+  renderer;
+  route = "";
+  /** When true, renders schema layoutRegions (header, footer, bottom-nav, overlay) */
+  showLayoutRegions = false;
+  page = computed(
+    () => {
+      const p = this.router.currentPage();
+      if (p) {
+        console.log(
+          `[SchemaRouteViewer] page() computed: id="${p.id}", name="${p.name}", canvasElements=${p.canvasElements?.length ?? 0}, layouts=${p.layouts?.length ?? 0}`,
+        );
+      }
+      return p;
+    },
+    ...(ngDevMode ? [{ debugName: "page" }] : []),
+  );
+  /** CSS grid properties to apply via ngStyle */
+  gridStyles = computed(
+    () => {
+      const p = this.page();
+      const layout = p?.layouts?.[0];
+      if (!layout) return {};
+      // For "stack" layouts, use flex column
+      if (layout.type === "stack") {
+        return { display: "flex", "flex-direction": "column" };
+      }
+      // For "flex" layouts
+      if (layout.type === "flex") {
+        const styles = { display: "flex" };
+        styles["flex-direction"] =
+          layout.direction === "column" ? "column" : "row";
+        if (layout.gap) styles.gap = `${layout.gap * 0.25}rem`;
+        if (layout.flexWrap) styles["flex-wrap"] = layout.flexWrap;
+        return styles;
+      }
+      // For "grid" layouts
+      const styles = { display: "grid" };
+      // Normalize gridTemplateColumns: "12" → "repeat(12, 1fr)"
+      if (layout.gridTemplateColumns) {
+        const val = layout.gridTemplateColumns;
+        if (/^\d+$/.test(val)) {
+          styles["grid-template-columns"] = `repeat(${val}, 1fr)`;
+        } else {
+          styles["grid-template-columns"] = val;
+        }
+      }
+      // Normalize gridTemplateRows: "6" → "repeat(6, auto)"
+      if (layout.gridTemplateRows) {
+        const val = layout.gridTemplateRows;
+        if (/^\d+$/.test(val)) {
+          styles["grid-template-rows"] = `repeat(${val}, auto)`;
+        } else {
+          styles["grid-template-rows"] = val;
+        }
+      }
+      // Gap: schema value is a Tailwind spacing token (4 = 1rem)
+      const rowGap = layout.rowGap ?? layout.gap;
+      const colGap = layout.colGap ?? layout.gap;
+      if (rowGap !== undefined || colGap !== undefined) {
+        const rg = rowGap ? `${rowGap * 0.25}rem` : "0";
+        const cg = colGap ? `${colGap * 0.25}rem` : "0";
+        styles.gap = `${rg} ${cg}`;
+      }
+      // Padding
+      const px = layout.paddingX;
+      const py = layout.paddingY;
+      if (px !== undefined || py !== undefined) {
+        styles.padding = `${py ? py * 0.25 : 0}rem ${px ? px * 0.25 : 0}rem`;
+      }
+      // Width
+      if (layout.width === "full") styles.width = "100%";
+      return styles;
+    },
+    ...(ngDevMode ? [{ debugName: "gridStyles" }] : []),
+  );
+  /** CSS classes: schema-page + layout class */
+  containerClass = computed(
+    () => {
+      const layoutCls = this.page()?.layouts?.[0]?.class ?? "";
+      return layoutCls ? `schema-page ${layoutCls}` : "schema-page";
+    },
+    ...(ngDevMode ? [{ debugName: "containerClass" }] : []),
+  );
+  // ── Layout region support ───────────────────────────────────────
+  /** All layout regions from the renderer, re-computed when route changes */
+  rawRegions = computed(
+    () => {
+      this.router.currentRoute();
+      return this.renderer.getLayoutRegions();
+    },
+    ...(ngDevMode ? [{ debugName: "rawRegions" }] : []),
+  );
+  getRegionType(region) {
+    if (region.region) return region.region;
+    const id = region.id.toLowerCase();
+    if (id.includes("header")) return "header";
+    if (id.includes("sidebar-right")) return "sidebar-right";
+    if (id.includes("sidebar")) return "sidebar";
+    if (id.includes("footer")) return "footer";
+    if (
+      id.includes("bottom-nav") ||
+      (id.includes("bottom") && !id.includes("nav"))
+    )
+      return "bottom-nav";
+    if (id.includes("nav")) return "nav";
+    if (id.includes("overlay")) return "overlay";
+    return "other";
+  }
+  isRegionVisible(region) {
+    return this.renderer.isElementVisible(region);
+  }
+  regionByType(type) {
+    return (
+      this.rawRegions().find(
+        (r) => this.isRegionVisible(r) && this.getRegionType(r) === type,
+      ) ?? null
+    );
+  }
+  headerRegion = computed(
+    () => (this.showLayoutRegions ? this.regionByType("header") : null),
+    ...(ngDevMode ? [{ debugName: "headerRegion" }] : []),
+  );
+  footerRegion = computed(
+    () => (this.showLayoutRegions ? this.regionByType("footer") : null),
+    ...(ngDevMode ? [{ debugName: "footerRegion" }] : []),
+  );
+  bottomNavRegion = computed(
+    () => (this.showLayoutRegions ? this.regionByType("bottom-nav") : null),
+    ...(ngDevMode ? [{ debugName: "bottomNavRegion" }] : []),
+  );
+  overlayRegions = computed(
+    () =>
+      this.showLayoutRegions
+        ? this.rawRegions().filter(
+            (r) =>
+              this.isRegionVisible(r) && this.getRegionType(r) === "overlay",
+          )
+        : [],
+    ...(ngDevMode ? [{ debugName: "overlayRegions" }] : []),
+  );
+  constructor(router, renderer) {
+    this.router = router;
+    this.renderer = renderer;
+    // Sync router params to the data binding resolver when params change
+    effect(() => {
+      const params = this.router.params();
+      if (Object.keys(params).length > 0) {
+        this.renderer.setParams(params);
+      }
+    });
+  }
+  ngOnInit() {
+    console.log(
+      `[SchemaRouteViewer] ngOnInit, route="${this.route}", currentRoute="${this.router.currentRoute()}"`,
+    );
+    if (this.route) {
+      this.router.navigate(this.route);
+    } else if (!this.router.currentRoute()) {
+      const firstPage = this.router.schema()?.pages?.[0];
+      if (firstPage?.route) {
+        console.log(
+          `[SchemaRouteViewer] auto-navigating to first page: "${firstPage.route}"`,
+        );
+        this.router.navigate(firstPage.route);
+      }
+    }
+  }
+  ngOnChanges(changes) {
+    if (changes["route"]) this.router.navigate(this.route);
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: SchemaRouteViewerComponent,
+    deps: [{ token: SchemaRouterService }, { token: SchemaRendererService }],
+    target: i0.ɵɵFactoryTarget.Component,
+  });
+  static ɵcmp = i0.ɵɵngDeclareComponent({
+    minVersion: "17.0.0",
+    version: "20.3.25",
+    type: SchemaRouteViewerComponent,
+    isStandalone: true,
+    selector: "lib-schema-route-viewer",
+    inputs: { route: "route", showLayoutRegions: "showLayoutRegions" },
+    usesOnChanges: true,
+    ngImport: i0,
+    template:
+      '@if (headerRegion(); as region) {\n  <header class="schema-layout-header">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]="containerClass()" [ngStyle]="gridStyles()">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]="element"\n        [elements]="p.canvasElements"\n      ></app-schema-element>\n    }\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class="schema-layout-footer">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class="schema-layout-bottom-nav">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class="schema-layout-overlay">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </div>\n}\n',
+    styles: [":host{display:block}.schema-page{min-height:100%}\n"],
+    dependencies: [
+      { kind: "ngmodule", type: CommonModule },
+      {
+        kind: "directive",
+        type: i1.NgStyle,
+        selector: "[ngStyle]",
+        inputs: ["ngStyle"],
+      },
+      {
+        kind: "component",
+        type: SchemaElementComponent,
+        selector: "app-schema-element",
+        inputs: ["element", "elements"],
+      },
+    ],
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: SchemaRouteViewerComponent,
+  decorators: [
+    {
+      type: Component,
+      args: [
+        {
+          selector: "lib-schema-route-viewer",
+          standalone: true,
+          imports: [CommonModule, SchemaElementComponent],
+          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          template:
+            '@if (headerRegion(); as region) {\n  <header class="schema-layout-header">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]="containerClass()" [ngStyle]="gridStyles()">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]="element"\n        [elements]="p.canvasElements"\n      ></app-schema-element>\n    }\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class="schema-layout-footer">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class="schema-layout-bottom-nav">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class="schema-layout-overlay">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </div>\n}\n',
+          styles: [":host{display:block}.schema-page{min-height:100%}\n"],
+        },
+      ],
+    },
+  ],
+  ctorParameters: () => [
+    { type: SchemaRouterService },
+    { type: SchemaRendererService },
+  ],
+  propDecorators: {
+    route: [
+      {
+        type: Input,
+      },
+    ],
+    showLayoutRegions: [
+      {
+        type: Input,
+      },
+    ],
+  },
 });
 
 /**
@@ -15980,8 +15799,52 @@ class SchemaRouterService {
   }
   findReservedRoute(route) {
     const schema = this._schema();
-    if (!schema) return null;
-    return schema.pages.find((p) => p.route === route) ?? null;
+    if (schema) {
+      const found = schema.pages.find((p) => p.route === route);
+      if (found) return found;
+    }
+    // Return a built-in fallback page so /404 and /schema-error always work
+    // even when the schema doesn't define them (deduplication: library handles this)
+    if (route === "/404") {
+      return {
+        id: "not-found",
+        name: "Not Found",
+        route: "/404",
+        layouts: [],
+        canvasElements: [
+          {
+            id: "not-found-content",
+            componentId: "app-empty-state",
+            props: {
+              title: "Page Not Found",
+              message: "The page you requested does not exist.",
+              variant: "warning",
+            },
+          },
+        ],
+      };
+    }
+    if (route === "/schema-error") {
+      return {
+        id: "schema-error",
+        name: "Schema Error",
+        route: "/schema-error",
+        layouts: [],
+        canvasElements: [
+          {
+            id: "schema-error-content",
+            componentId: "app-empty-state",
+            props: {
+              title: "Schema Error",
+              message: this._error() ?? "Failed to load application schema.",
+              variant: "danger",
+              actionLabel: "Retry",
+            },
+          },
+        ],
+      };
+    }
+    return null;
   }
   getPage(pageId) {
     const schema = this._schema();
@@ -16010,6 +15873,45 @@ class SchemaRouterService {
     this._queryParams.set({});
     this._isLoading.set(false);
     this._error.set(null);
+  }
+  // ── Auto-Routing from Schema ──────────────────────────────────
+  /**
+   * Convert all schema pages to Angular Routes.
+   * Each route points to SchemaRouteViewerComponent with page data in route data.
+   */
+  toAngularRoutes() {
+    const pages = this.getAllPages();
+    if (pages.length === 0) return [];
+    const routes = pages.map((page) => {
+      const path = page.route?.replace(/^\//, "") || page.id;
+      const paramPath = path.replace(/:(\w+)/g, (_, param) => `:${param}`);
+      return {
+        path: paramPath,
+        component: SchemaRouteViewerComponent,
+        data: { pageId: page.id, page },
+      };
+    });
+    const firstPage = pages[0];
+    const firstPath =
+      firstPage?.route?.replace(/^\//, "") || firstPage?.id || "";
+    routes.push({ path: "", redirectTo: firstPath, pathMatch: "full" });
+    routes.push({ path: "**", redirectTo: firstPath });
+    return routes;
+  }
+  /**
+   * Register all schema pages with Angular Router by calling router.resetConfig().
+   * Must be called AFTER setSchema().
+   */
+  registerAngularRoutes(router) {
+    const routes = this.toAngularRoutes();
+    if (routes.length === 0) {
+      logger.warn("[SchemaRouter] no pages to register as Angular routes");
+      return;
+    }
+    logger.log(
+      `[SchemaRouter] registering ${routes.length} Angular routes from schema`,
+    );
+    router.resetConfig(routes);
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
@@ -16050,152 +15952,249 @@ i0.ɵɵngDeclareClassMetadata({
   ],
 });
 
-class SchemaRouteViewerComponent {
-  router;
-  renderer;
-  route = "";
-  page = computed(
-    () => {
-      const p = this.router.currentPage();
-      if (p) {
-        console.log(
-          `[SchemaRouteViewer] page() computed: id="${p.id}", name="${p.name}", canvasElements=${p.canvasElements?.length ?? 0}, layouts=${p.layouts?.length ?? 0}`,
-        );
-      }
-      return p;
-    },
-    ...(ngDevMode ? [{ debugName: "page" }] : []),
-  );
-  /** CSS grid properties to apply via ngStyle */
-  gridStyles = computed(
-    () => {
-      const p = this.page();
-      const layout = p?.layouts?.[0];
-      if (!layout) return {};
-      // For "stack" layouts, use flex column
-      if (layout.type === "stack") {
-        return { display: "flex", "flex-direction": "column" };
-      }
-      // For "flex" layouts
-      if (layout.type === "flex") {
-        const styles = { display: "flex" };
-        styles["flex-direction"] =
-          layout.direction === "column" ? "column" : "row";
-        if (layout.gap) styles.gap = `${layout.gap * 0.25}rem`;
-        if (layout.flexWrap) styles["flex-wrap"] = layout.flexWrap;
-        return styles;
-      }
-      // For "grid" layouts
-      const styles = { display: "grid" };
-      // Normalize gridTemplateColumns: "12" → "repeat(12, 1fr)"
-      if (layout.gridTemplateColumns) {
-        const val = layout.gridTemplateColumns;
-        if (/^\d+$/.test(val)) {
-          styles["grid-template-columns"] = `repeat(${val}, 1fr)`;
-        } else {
-          styles["grid-template-columns"] = val;
-        }
-      }
-      // Normalize gridTemplateRows: "6" → "repeat(6, auto)"
-      if (layout.gridTemplateRows) {
-        const val = layout.gridTemplateRows;
-        if (/^\d+$/.test(val)) {
-          styles["grid-template-rows"] = `repeat(${val}, auto)`;
-        } else {
-          styles["grid-template-rows"] = val;
-        }
-      }
-      // Gap: schema value is a Tailwind spacing token (4 = 1rem)
-      const rowGap = layout.rowGap ?? layout.gap;
-      const colGap = layout.colGap ?? layout.gap;
-      if (rowGap !== undefined || colGap !== undefined) {
-        const rg = rowGap ? `${rowGap * 0.25}rem` : "0";
-        const cg = colGap ? `${colGap * 0.25}rem` : "0";
-        styles.gap = `${rg} ${cg}`;
-      }
-      // Padding
-      const px = layout.paddingX;
-      const py = layout.paddingY;
-      if (px !== undefined || py !== undefined) {
-        styles.padding = `${py ? py * 0.25 : 0}rem ${px ? px * 0.25 : 0}rem`;
-      }
-      // Width
-      if (layout.width === "full") styles.width = "100%";
-      return styles;
-    },
-    ...(ngDevMode ? [{ debugName: "gridStyles" }] : []),
-  );
-  /** CSS classes: schema-page + layout class */
-  containerClass = computed(
-    () => {
-      const layoutCls = this.page()?.layouts?.[0]?.class ?? "";
-      return layoutCls ? `schema-page ${layoutCls}` : "schema-page";
-    },
-    ...(ngDevMode ? [{ debugName: "containerClass" }] : []),
-  );
-  constructor(router, renderer) {
-    this.router = router;
-    this.renderer = renderer;
-    // Sync router params to the data binding resolver when params change
-    effect(() => {
-      const params = this.router.params();
-      if (Object.keys(params).length > 0) {
-        this.renderer.setParams(params);
-      }
-    });
+class ToastComponent {
+  toast = input.required(...(ngDevMode ? [{ debugName: "toast" }] : []));
+  dismiss = output();
+  onDismiss() {
+    this.dismiss.emit(this.toast().id);
   }
-  ngOnInit() {
-    console.log(
-      `[SchemaRouteViewer] ngOnInit, route="${this.route}", currentRoute="${this.router.currentRoute()}"`,
-    );
-    if (this.route) {
-      this.router.navigate(this.route);
-    } else if (!this.router.currentRoute()) {
-      const firstPage = this.router.schema()?.pages?.[0];
-      if (firstPage?.route) {
-        console.log(
-          `[SchemaRouteViewer] auto-navigating to first page: "${firstPage.route}"`,
-        );
-        this.router.navigate(firstPage.route);
-      }
+  onAction() {
+    const action = this.toast().action;
+    if (action) {
+      action.callback();
     }
-  }
-  ngOnChanges(changes) {
-    if (changes["route"]) this.router.navigate(this.route);
+    this.dismiss.emit(this.toast().id);
   }
   static ɵfac = i0.ɵɵngDeclareFactory({
     minVersion: "12.0.0",
     version: "20.3.25",
     ngImport: i0,
-    type: SchemaRouteViewerComponent,
-    deps: [{ token: SchemaRouterService }, { token: SchemaRendererService }],
+    type: ToastComponent,
+    deps: [],
     target: i0.ɵɵFactoryTarget.Component,
   });
   static ɵcmp = i0.ɵɵngDeclareComponent({
     minVersion: "17.0.0",
     version: "20.3.25",
-    type: SchemaRouteViewerComponent,
+    type: ToastComponent,
     isStandalone: true,
-    selector: "lib-schema-route-viewer",
-    inputs: { route: "route" },
-    usesOnChanges: true,
+    selector: "app-toast",
+    inputs: {
+      toast: {
+        classPropertyName: "toast",
+        publicName: "toast",
+        isSignal: true,
+        isRequired: true,
+        transformFunction: null,
+      },
+    },
+    outputs: { dismiss: "dismiss" },
     ngImport: i0,
     template:
-      '@if (page(); as p) {\n  <div [class]="containerClass()" [ngStyle]="gridStyles()">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]="element"\n        [elements]="p.canvasElements"\n      ></app-schema-element>\n    }\n  </div>\n}\n',
-    styles: [":host{display:block}.schema-page{min-height:100%}\n"],
+      '<div\n  class="relative flex items-start gap-3 rounded-lg border-l-4 bg-[var(--bg-toast)] p-4 text-[var(--text-main)] shadow-lg"\n  [class.border-[var(--color-success)]]="toast().type === \'success\'"\n  [class.border-[var(--color-error)]]="toast().type === \'error\'"\n  [class.border-[var(--color-warning)]]="toast().type === \'warning\'"\n  [class.border-[var(--color-info)]]="toast().type === \'info\'"\n  role="alert"\n>\n  <div class="mt-0.5 flex-shrink-0">\n    @switch (toast().type) {\n      @case ("success") {\n        <svg\n          class="h-5 w-5 text-[var(--color-success)]"\n          fill="none"\n          viewBox="0 0 24 24"\n          stroke="currentColor"\n        >\n          <path\n            stroke-linecap="round"\n            stroke-linejoin="round"\n            stroke-width="2"\n            d="M5 13l4 4L19 7"\n          />\n        </svg>\n      }\n      @case ("error") {\n        <svg\n          class="h-5 w-5 text-[var(--color-error)]"\n          fill="none"\n          viewBox="0 0 24 24"\n          stroke="currentColor"\n        >\n          <path\n            stroke-linecap="round"\n            stroke-linejoin="round"\n            stroke-width="2"\n            d="M6 18L18 6M6 6l12 12"\n          />\n        </svg>\n      }\n      @case ("warning") {\n        <svg\n          class="h-5 w-5 text-[var(--color-warning)]"\n          fill="none"\n          viewBox="0 0 24 24"\n          stroke="currentColor"\n        >\n          <path\n            stroke-linecap="round"\n            stroke-linejoin="round"\n            stroke-width="2"\n            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"\n          />\n        </svg>\n      }\n      @case ("info") {\n        <svg\n          class="h-5 w-5 text-[var(--color-info)]"\n          fill="none"\n          viewBox="0 0 24 24"\n          stroke="currentColor"\n        >\n          <path\n            stroke-linecap="round"\n            stroke-linejoin="round"\n            stroke-width="2"\n            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"\n          />\n        </svg>\n      }\n    }\n  </div>\n\n  <div class="min-w-0 flex-1">\n    @if (toast().title) {\n      <p class="text-sm font-semibold">{{ toast().title }}</p>\n    }\n    <p class="text-sm" [class.font-medium]="!toast().title">\n      {{ toast().message }}\n    </p>\n    @if (toast().action) {\n      <button\n        class="mt-2 text-sm font-medium text-[var(--color-success)] transition-colors hover:text-[var(--color-success)]"\n        (click)="onAction()"\n      >\n        {{ toast().action!.label }}\n      </button>\n    }\n  </div>\n\n  <button\n    class="flex-shrink-0 text-[var(--text-dim)] transition-colors hover:text-[var(--text-main)]"\n    (click)="onDismiss()"\n    aria-label="Dismiss"\n  >\n    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">\n      <path\n        stroke-linecap="round"\n        stroke-linejoin="round"\n        stroke-width="2"\n        d="M6 18L18 6M6 6l12 12"\n      />\n    </svg>\n  </button>\n\n  @if (!toast().persistent && (toast().duration ?? 0) > 0) {\n    <div\n      class="absolute right-0 bottom-0 left-0 h-1 overflow-hidden rounded-b-lg bg-[var(--bg-elevated)]"\n    >\n      <div\n        class="h-full"\n        [class.bg-[var(--color-success)]]="toast().type === \'success\'"\n        [class.bg-[var(--color-error)]]="toast().type === \'error\'"\n        [class.bg-[var(--color-warning)]]="toast().type === \'warning\'"\n        [class.bg-[var(--color-info)]]="toast().type === \'info\'"\n        class="w-full"\n      ></div>\n    </div>\n  }\n</div>\n',
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: ToastComponent,
+  decorators: [
+    {
+      type: Component,
+      args: [
+        {
+          selector: "app-toast",
+          standalone: true,
+          template:
+            '<div\n  class="relative flex items-start gap-3 rounded-lg border-l-4 bg-[var(--bg-toast)] p-4 text-[var(--text-main)] shadow-lg"\n  [class.border-[var(--color-success)]]="toast().type === \'success\'"\n  [class.border-[var(--color-error)]]="toast().type === \'error\'"\n  [class.border-[var(--color-warning)]]="toast().type === \'warning\'"\n  [class.border-[var(--color-info)]]="toast().type === \'info\'"\n  role="alert"\n>\n  <div class="mt-0.5 flex-shrink-0">\n    @switch (toast().type) {\n      @case ("success") {\n        <svg\n          class="h-5 w-5 text-[var(--color-success)]"\n          fill="none"\n          viewBox="0 0 24 24"\n          stroke="currentColor"\n        >\n          <path\n            stroke-linecap="round"\n            stroke-linejoin="round"\n            stroke-width="2"\n            d="M5 13l4 4L19 7"\n          />\n        </svg>\n      }\n      @case ("error") {\n        <svg\n          class="h-5 w-5 text-[var(--color-error)]"\n          fill="none"\n          viewBox="0 0 24 24"\n          stroke="currentColor"\n        >\n          <path\n            stroke-linecap="round"\n            stroke-linejoin="round"\n            stroke-width="2"\n            d="M6 18L18 6M6 6l12 12"\n          />\n        </svg>\n      }\n      @case ("warning") {\n        <svg\n          class="h-5 w-5 text-[var(--color-warning)]"\n          fill="none"\n          viewBox="0 0 24 24"\n          stroke="currentColor"\n        >\n          <path\n            stroke-linecap="round"\n            stroke-linejoin="round"\n            stroke-width="2"\n            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"\n          />\n        </svg>\n      }\n      @case ("info") {\n        <svg\n          class="h-5 w-5 text-[var(--color-info)]"\n          fill="none"\n          viewBox="0 0 24 24"\n          stroke="currentColor"\n        >\n          <path\n            stroke-linecap="round"\n            stroke-linejoin="round"\n            stroke-width="2"\n            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"\n          />\n        </svg>\n      }\n    }\n  </div>\n\n  <div class="min-w-0 flex-1">\n    @if (toast().title) {\n      <p class="text-sm font-semibold">{{ toast().title }}</p>\n    }\n    <p class="text-sm" [class.font-medium]="!toast().title">\n      {{ toast().message }}\n    </p>\n    @if (toast().action) {\n      <button\n        class="mt-2 text-sm font-medium text-[var(--color-success)] transition-colors hover:text-[var(--color-success)]"\n        (click)="onAction()"\n      >\n        {{ toast().action!.label }}\n      </button>\n    }\n  </div>\n\n  <button\n    class="flex-shrink-0 text-[var(--text-dim)] transition-colors hover:text-[var(--text-main)]"\n    (click)="onDismiss()"\n    aria-label="Dismiss"\n  >\n    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">\n      <path\n        stroke-linecap="round"\n        stroke-linejoin="round"\n        stroke-width="2"\n        d="M6 18L18 6M6 6l12 12"\n      />\n    </svg>\n  </button>\n\n  @if (!toast().persistent && (toast().duration ?? 0) > 0) {\n    <div\n      class="absolute right-0 bottom-0 left-0 h-1 overflow-hidden rounded-b-lg bg-[var(--bg-elevated)]"\n    >\n      <div\n        class="h-full"\n        [class.bg-[var(--color-success)]]="toast().type === \'success\'"\n        [class.bg-[var(--color-error)]]="toast().type === \'error\'"\n        [class.bg-[var(--color-warning)]]="toast().type === \'warning\'"\n        [class.bg-[var(--color-info)]]="toast().type === \'info\'"\n        class="w-full"\n      ></div>\n    </div>\n  }\n</div>\n',
+        },
+      ],
+    },
+  ],
+  propDecorators: {
+    toast: [
+      {
+        type: i0.Input,
+        args: [{ isSignal: true, alias: "toast", required: true }],
+      },
+    ],
+    dismiss: [{ type: i0.Output, args: ["dismiss"] }],
+  },
+});
+
+const DEFAULT_DURATIONS = {
+  success: 3000,
+  error: 5000,
+  warning: 4000,
+  info: 3000,
+};
+class ToastService {
+  toastsSignal = signal(
+    [],
+    ...(ngDevMode ? [{ debugName: "toastsSignal" }] : []),
+  );
+  counter = 0;
+  autoDismissTimers = new Map();
+  toasts = computed(
+    () => this.toastsSignal(),
+    ...(ngDevMode ? [{ debugName: "toasts" }] : []),
+  );
+  generateId() {
+    return `toast-${++this.counter}-${Date.now()}`;
+  }
+  show(options) {
+    const id = options.id ?? this.generateId();
+    const type = options.type;
+    const duration = options.duration ?? DEFAULT_DURATIONS[type];
+    const persistent = options.persistent ?? false;
+    const toast = {
+      ...options,
+      id,
+      type,
+      duration,
+      persistent,
+    };
+    this.toastsSignal.update((toasts) => {
+      const updated = [toast, ...toasts];
+      return updated.slice(0, 20);
+    });
+    if (!persistent && duration > 0) {
+      const timer = setTimeout(() => {
+        this.autoDismissTimers.delete(id);
+        this.dismiss(id);
+      }, duration);
+      this.autoDismissTimers.set(id, timer);
+    }
+    return id;
+  }
+  success(message, options) {
+    return this.show({ ...options, type: "success", message });
+  }
+  error(message, options) {
+    return this.show({ ...options, type: "error", message });
+  }
+  warning(message, options) {
+    return this.show({ ...options, type: "warning", message });
+  }
+  info(message, options) {
+    return this.show({ ...options, type: "info", message });
+  }
+  dismiss(id) {
+    const timer = this.autoDismissTimers.get(id);
+    if (timer !== undefined) {
+      clearTimeout(timer);
+      this.autoDismissTimers.delete(id);
+    }
+    this.toastsSignal.update((toasts) => toasts.filter((t) => t.id !== id));
+  }
+  dismissAll() {
+    this.autoDismissTimers.forEach((timer) => clearTimeout(timer));
+    this.autoDismissTimers.clear();
+    this.toastsSignal.set([]);
+  }
+  update(id, changes) {
+    this.toastsSignal.update((toasts) =>
+      toasts.map((t) => (t.id === id ? { ...t, ...changes } : t)),
+    );
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: ToastService,
+    deps: [],
+    target: i0.ɵɵFactoryTarget.Injectable,
+  });
+  static ɵprov = i0.ɵɵngDeclareInjectable({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: ToastService,
+    providedIn: "root",
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: ToastService,
+  decorators: [
+    {
+      type: Injectable,
+      args: [
+        {
+          providedIn: "root",
+        },
+      ],
+    },
+  ],
+});
+
+class ToastContainerComponent {
+  toastService;
+  maxVisible = 5;
+  position = "top-right";
+  constructor(toastService) {
+    this.toastService = toastService;
+  }
+  visibleToasts = computed(
+    () => {
+      return this.toastService.toasts().slice(0, this.maxVisible);
+    },
+    ...(ngDevMode ? [{ debugName: "visibleToasts" }] : []),
+  );
+  dismiss(id) {
+    this.toastService.dismiss(id);
+  }
+  get positionClass() {
+    switch (this.position) {
+      case "top-left":
+        return "top-4 left-4";
+      case "bottom-right":
+        return "bottom-4 right-4";
+      case "bottom-left":
+        return "bottom-4 left-4";
+      case "top-center":
+        return "top-4 left-1/2 -translate-x-1/2";
+      case "bottom-center":
+        return "bottom-4 left-1/2 -translate-x-1/2";
+      default:
+        return "top-4 right-4";
+    }
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: ToastContainerComponent,
+    deps: [{ token: ToastService }],
+    target: i0.ɵɵFactoryTarget.Component,
+  });
+  static ɵcmp = i0.ɵɵngDeclareComponent({
+    minVersion: "17.0.0",
+    version: "20.3.25",
+    type: ToastContainerComponent,
+    isStandalone: true,
+    selector: "app-toast-container",
+    inputs: { position: "position" },
+    ngImport: i0,
+    template:
+      '@if (visibleToasts().length > 0) {\n  <div\n    class="fixed z-50 flex w-80 max-w-full flex-col gap-2 p-4"\n    [ngClass]="positionClass"\n  >\n    @for (toast of visibleToasts(); track toast.id) {\n      <app-toast [toast]="toast" (dismiss)="dismiss($event)"></app-toast>\n    }\n  </div>\n}\n',
     dependencies: [
       { kind: "ngmodule", type: CommonModule },
       {
         kind: "directive",
-        type: i1.NgStyle,
-        selector: "[ngStyle]",
-        inputs: ["ngStyle"],
+        type: i1.NgClass,
+        selector: "[ngClass]",
+        inputs: ["class", "ngClass"],
       },
       {
         kind: "component",
-        type: SchemaElementComponent,
-        selector: "app-schema-element",
-        inputs: ["element", "elements"],
+        type: ToastComponent,
+        selector: "app-toast",
+        inputs: ["toast"],
+        outputs: ["dismiss"],
       },
     ],
   });
@@ -16204,34 +16203,137 @@ i0.ɵɵngDeclareClassMetadata({
   minVersion: "12.0.0",
   version: "20.3.25",
   ngImport: i0,
-  type: SchemaRouteViewerComponent,
+  type: ToastContainerComponent,
   decorators: [
     {
       type: Component,
       args: [
         {
-          selector: "lib-schema-route-viewer",
+          selector: "app-toast-container",
           standalone: true,
-          imports: [CommonModule, SchemaElementComponent],
-          schemas: [CUSTOM_ELEMENTS_SCHEMA],
+          imports: [CommonModule, ToastComponent],
           template:
-            '@if (page(); as p) {\n  <div [class]="containerClass()" [ngStyle]="gridStyles()">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]="element"\n        [elements]="p.canvasElements"\n      ></app-schema-element>\n    }\n  </div>\n}\n',
-          styles: [":host{display:block}.schema-page{min-height:100%}\n"],
+            '@if (visibleToasts().length > 0) {\n  <div\n    class="fixed z-50 flex w-80 max-w-full flex-col gap-2 p-4"\n    [ngClass]="positionClass"\n  >\n    @for (toast of visibleToasts(); track toast.id) {\n      <app-toast [toast]="toast" (dismiss)="dismiss($event)"></app-toast>\n    }\n  </div>\n}\n',
         },
       ],
     },
   ],
-  ctorParameters: () => [
-    { type: SchemaRouterService },
-    { type: SchemaRendererService },
-  ],
+  ctorParameters: () => [{ type: ToastService }],
   propDecorators: {
-    route: [
+    position: [
       {
         type: Input,
       },
     ],
   },
+});
+
+async function invokeWithRetry(fn, options) {
+  const { maxAttempts, initialDelayMs, maxDelayMs } = options;
+  let lastError;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      if (attempt < maxAttempts - 1) {
+        const delay = Math.min(
+          initialDelayMs * Math.pow(2, attempt),
+          maxDelayMs,
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+  }
+  throw lastError;
+}
+
+class InvokeWrapperService {
+  async invoke(cmd, args, options) {
+    try {
+      return await invoke(cmd, args);
+    } catch (err) {
+      if (options?.suppressError) {
+        return undefined;
+      }
+      throw err;
+    }
+  }
+  async invokeWithRetry(
+    cmd,
+    args,
+    retryOptions = {
+      maxAttempts: 3,
+      initialDelayMs: 1000,
+      maxDelayMs: 30000,
+    },
+  ) {
+    return invokeWithRetry(
+      () => this.invokeWithTimeout(cmd, args, retryOptions.maxDelayMs),
+      retryOptions,
+    );
+  }
+  async timeout(ms, cmd, args, options) {
+    const { signal } = options ?? {};
+    const doTimeout = new Promise((_, reject) =>
+      setTimeout(
+        () => reject(new Error(`Invoke ${cmd} timed out after ${ms}ms`)),
+        ms,
+      ),
+    );
+    if (signal) {
+      const doAbort = new Promise((_, reject) => {
+        if (signal.aborted) {
+          reject(signal.reason);
+          return;
+        }
+        signal.addEventListener("abort", () => reject(signal.reason), {
+          once: true,
+        });
+      });
+      return Promise.race([invoke(cmd, args), doTimeout, doAbort]);
+    }
+    return Promise.race([invoke(cmd, args), doTimeout]);
+  }
+  async invokeWithTimeout(cmd, args, timeoutMs) {
+    return Promise.race([
+      this.invoke(cmd, args),
+      new Promise((_, reject) =>
+        setTimeout(
+          () =>
+            reject(new Error(`Invoke ${cmd} timed out after ${timeoutMs}ms`)),
+          timeoutMs,
+        ),
+      ),
+    ]);
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: InvokeWrapperService,
+    deps: [],
+    target: i0.ɵɵFactoryTarget.Injectable,
+  });
+  static ɵprov = i0.ɵɵngDeclareInjectable({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: InvokeWrapperService,
+    providedIn: "root",
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: InvokeWrapperService,
+  decorators: [
+    {
+      type: Injectable,
+      args: [{ providedIn: "root" }],
+    },
+  ],
 });
 
 class ThemeToggleService {
@@ -16355,6 +16457,233 @@ i0.ɵɵngDeclareClassMetadata({
   ],
 });
 
+class HandlerExecutorService {
+  invokeWrapper = inject(InvokeWrapperService);
+  signalStore = inject(SignalStoreService);
+  eventBus = inject(EventBusService);
+  dataBindingResolver = inject(DataBindingResolverService);
+  router = null;
+  handlers = {};
+  registeredFunctions = {};
+  pendingListeners = [];
+  setRouter(router) {
+    this.router = router;
+  }
+  setHandlers(handlers) {
+    this.handlers = handlers;
+  }
+  registerFunction(name, fn) {
+    this.registeredFunctions[name] = fn;
+  }
+  async execute(handlerName, eventData) {
+    const def = this.handlers[handlerName];
+    if (!def) {
+      console.warn(`[HandlerExecutor] Handler not found: "${handlerName}"`);
+      return;
+    }
+    await this.executeHandler(def, eventData);
+  }
+  async executeHandler(def, eventData) {
+    if (def.invoke) {
+      await this.handleInvoke(def, eventData);
+    } else if (def.set) {
+      this.handleSet(def.set, eventData);
+    } else if (def.setMany) {
+      this.handleSetMany(def.setMany, eventData);
+    } else if (def.swap) {
+      this.handleSwap(def.swap);
+    } else if (def.navigate) {
+      this.handleNavigate(def.navigate);
+    } else if (def.call) {
+      this.handleCall(def.call);
+    } else if (def.guard) {
+      await this.handleGuard(def, eventData);
+    } else if (def.openOverlay) {
+      this.handleOpenOverlay(def.openOverlay);
+    } else {
+      console.warn("[HandlerExecutor] Unknown handler type", def);
+    }
+  }
+  resolveValue(value, eventData) {
+    if (typeof value === "string") {
+      if (value.startsWith("$store.")) {
+        const path = value.slice(7);
+        return this.getStorePath(path);
+      }
+      if (value.startsWith("$event.detail.")) {
+        const path = value.slice(14);
+        return this.getNestedValue(eventData, path);
+      }
+      if (value.startsWith("$event.")) {
+        const path = value.slice(7);
+        return this.getNestedValue(eventData, path);
+      }
+      const resolved = this.dataBindingResolver.resolveDataBinding(value);
+      return resolved !== value ? resolved : value;
+    }
+    return value;
+  }
+  getStorePath(path) {
+    const parts = path.split(".");
+    let current = this.signalStore.get(parts[0]);
+    for (let i = 1; i < parts.length; i++) {
+      if (current === null || current === undefined) return undefined;
+      current = this.getNestedValue(current, parts[i]);
+    }
+    return current;
+  }
+  setStorePath(path, value) {
+    const parts = path.split(".");
+    if (parts.length === 1) {
+      this.signalStore.set(parts[0], value);
+      return;
+    }
+    const storeName = parts[0];
+    const field = parts.slice(1).join(".");
+    const current = this.signalStore.get(storeName);
+    if (current && typeof current === "object") {
+      current[field] = value;
+      this.signalStore.set(storeName, current);
+    }
+  }
+  getNestedValue(obj, path) {
+    const parts = path.split(".");
+    let current = obj;
+    for (const part of parts) {
+      if (current === null || current === undefined) return undefined;
+      current = current[part];
+    }
+    return current;
+  }
+  async handleInvoke(def, eventData) {
+    const command = def.invoke;
+    const rawArgs = def.args || [];
+    const resolvedArgs = {};
+    for (const raw of rawArgs) {
+      if (typeof raw === "string" && raw.startsWith("$")) {
+        resolvedArgs[raw] = this.resolveValue(raw, eventData);
+      } else if (typeof raw === "object" && raw !== null) {
+        const entries = Object.entries(raw);
+        for (const [k, v] of entries) {
+          resolvedArgs[k] = this.resolveValue(v, eventData);
+        }
+      }
+    }
+    if (def.awaitEvent) {
+      const result = await new Promise((resolve) => {
+        const unlisten = listen(def.awaitEvent, (event) => {
+          resolve(event.payload);
+          unlisten.then((fn) => fn());
+        });
+        this.invokeWrapper.invoke(command, resolvedArgs).catch((err) => {
+          console.error(`[HandlerExecutor] Invoke failed: ${command}`, err);
+          resolve(null);
+        });
+      });
+      if (result && def.resultTo) {
+        this.setStorePath(def.resultTo, result);
+      }
+    } else {
+      try {
+        const result = await this.invokeWrapper.invoke(command, resolvedArgs);
+        if (result !== undefined && def.resultTo) {
+          this.setStorePath(def.resultTo, result);
+        }
+      } catch (err) {
+        console.error(`[HandlerExecutor] Invoke failed: ${command}`, err);
+      }
+    }
+  }
+  handleSet(setDef, eventData) {
+    const value = setDef.from
+      ? this.resolveValue(setDef.from, eventData)
+      : undefined;
+    if (setDef.store && setDef.field) {
+      this.setStorePath(`${setDef.store}.${setDef.field}`, value);
+    }
+  }
+  handleSetMany(setManyDef, eventData) {
+    for (const [path, rawValue] of Object.entries(setManyDef)) {
+      const resolved = this.resolveValue(rawValue, eventData);
+      if (path.startsWith("$store.")) {
+        this.setStorePath(path.slice(7), resolved);
+      }
+    }
+  }
+  handleSwap(swapDef) {
+    if (swapDef.length < 2) return;
+    const valA = this.resolveValue(swapDef[0]);
+    const valB = this.resolveValue(swapDef[1]);
+    if (swapDef[0].startsWith("$store.")) {
+      this.setStorePath(swapDef[0].slice(7), valB);
+    }
+    if (swapDef[1].startsWith("$store.")) {
+      this.setStorePath(swapDef[1].slice(7), valA);
+    }
+  }
+  handleNavigate(path) {
+    if (this.router) {
+      this.router.navigate(path);
+    }
+  }
+  handleCall(name) {
+    const fn = this.registeredFunctions[name];
+    if (fn) {
+      fn();
+    } else {
+      const resolved = this.dataBindingResolver.resolveDataBinding(
+        `{{functions.${name}}}`,
+      );
+      if (typeof resolved === "function") {
+        resolved();
+      }
+    }
+  }
+  async handleGuard(def, eventData) {
+    const condition = this.resolveValue(def.guard, eventData);
+    if (condition && def.then) {
+      const thenDef = this.handlers[def.then];
+      if (thenDef) {
+        await this.executeHandler(thenDef, eventData);
+      }
+    }
+  }
+  handleOpenOverlay(regionId) {
+    this.eventBus.emit("open-overlay", { regionId });
+  }
+  destroy() {
+    this.pendingListeners.forEach((fn) => fn());
+    this.pendingListeners = [];
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: HandlerExecutorService,
+    deps: [],
+    target: i0.ɵɵFactoryTarget.Injectable,
+  });
+  static ɵprov = i0.ɵɵngDeclareInjectable({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: HandlerExecutorService,
+    providedIn: "root",
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: HandlerExecutorService,
+  decorators: [
+    {
+      type: Injectable,
+      args: [{ providedIn: "root" }],
+    },
+  ],
+});
+
 class SchemaShellComponent {
   invokeWrapper;
   schemaRouter;
@@ -16369,6 +16698,8 @@ class SchemaShellComponent {
   defaultTheme = "material-design-v3";
   initialRoute = "";
   errorFallbackCommandName = "";
+  /** When true, auto-renders app-toast-container and a full-screen loading overlay */
+  includeOverlays = true;
   loading = signal(true, ...(ngDevMode ? [{ debugName: "loading" }] : []));
   error = signal(null, ...(ngDevMode ? [{ debugName: "error" }] : []));
   themeSubscription;
@@ -16667,11 +16998,12 @@ class SchemaShellComponent {
       defaultTheme: "defaultTheme",
       initialRoute: "initialRoute",
       errorFallbackCommandName: "errorFallbackCommandName",
+      includeOverlays: "includeOverlays",
     },
     host: { listeners: { "window:toggle-dark": "onWindowToggleDark($event)" } },
     ngImport: i0,
     template:
-      '@if (loading()) {\n  <div\n    style="\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      gap: 1rem;\n      min-height: 100vh;\n    "\n  >\n    <app-loading size="lg"></app-loading>\n    <p style="color: var(--text-secondary); font-size: 1.125rem">\n      Loading application...\n    </p>\n  </div>\n} @else if (error(); as err) {\n  <div\n    style="\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      min-height: 100vh;\n      padding: 2rem;\n    "\n  >\n    <app-empty-state\n      variant="danger"\n      title="Application Not Available"\n      [message]="err"\n      actionLabel="Retry"\n      (action)="retry()"\n    ></app-empty-state>\n  </div>\n} @else {\n  <div\n    class="app-layout"\n    [style.grid-template-columns]="gridColumns()"\n    [style.grid-template-rows]="gridRows()"\n    [style.grid-template-areas]="gridAreas()"\n  >\n    @if (headerRegion(); as region) {\n      <div\n        data-region="header"\n        [class]="getRegionClasses(region)"\n        style="grid-area: header"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (sidebarLeftRegion(); as region) {\n      <div\n        data-region="sidebar-left"\n        [class]="getRegionClasses(region)"\n        style="grid-area: sidebar-left"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    <div data-region="content" style="grid-area: content">\n      <lib-schema-route-viewer />\n    </div>\n\n    @if (sidebarRightRegion(); as region) {\n      <div\n        data-region="sidebar-right"\n        [class]="getRegionClasses(region)"\n        style="grid-area: sidebar-right"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (footerRegion(); as region) {\n      <div\n        data-region="footer"\n        [class]="getRegionClasses(region)"\n        style="grid-area: footer"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (bottomNavRegion(); as region) {\n      <div\n        data-region="bottom-nav"\n        [class]="getRegionClasses(region)"\n        style="grid-area: bottom-nav"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @for (region of otherRegions(); track region.id) {\n      <div\n        data-region="other"\n        [class]="getRegionClasses(region)"\n        style="grid-area: other"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n  </div>\n\n  @for (region of overlayRegions(); track region.id) {\n    <div class="layout-overlay" data-region="overlay">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element\n          [element]="child"\n          [elements]="region.children || []"\n        />\n      }\n    </div>\n  }\n}\n',
+      '@if (loading()) {\n  <div\n    style="\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      gap: 1rem;\n      min-height: 100vh;\n    "\n  >\n    <app-loading size="lg"></app-loading>\n    <p style="color: var(--text-secondary); font-size: 1.125rem">\n      Loading application...\n    </p>\n  </div>\n} @else if (error(); as err) {\n  <div\n    style="\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      min-height: 100vh;\n      padding: 2rem;\n    "\n  >\n    <app-empty-state\n      variant="danger"\n      title="Application Not Available"\n      [message]="err"\n      actionLabel="Retry"\n      (action)="retry()"\n    ></app-empty-state>\n  </div>\n} @else {\n  <div\n    class="app-layout"\n    [style.grid-template-columns]="gridColumns()"\n    [style.grid-template-rows]="gridRows()"\n    [style.grid-template-areas]="gridAreas()"\n  >\n    @if (headerRegion(); as region) {\n      <div\n        data-region="header"\n        [class]="getRegionClasses(region)"\n        style="grid-area: header"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (sidebarLeftRegion(); as region) {\n      <div\n        data-region="sidebar-left"\n        [class]="getRegionClasses(region)"\n        style="grid-area: sidebar-left"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    <div data-region="content" style="grid-area: content">\n      <lib-schema-route-viewer />\n    </div>\n\n    @if (sidebarRightRegion(); as region) {\n      <div\n        data-region="sidebar-right"\n        [class]="getRegionClasses(region)"\n        style="grid-area: sidebar-right"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (footerRegion(); as region) {\n      <div\n        data-region="footer"\n        [class]="getRegionClasses(region)"\n        style="grid-area: footer"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (bottomNavRegion(); as region) {\n      <div\n        data-region="bottom-nav"\n        [class]="getRegionClasses(region)"\n        style="grid-area: bottom-nav"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @for (region of otherRegions(); track region.id) {\n      <div\n        data-region="other"\n        [class]="getRegionClasses(region)"\n        style="grid-area: other"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n  </div>\n\n  @for (region of overlayRegions(); track region.id) {\n    <div class="layout-overlay" data-region="overlay">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element\n          [element]="child"\n          [elements]="region.children || []"\n        />\n      }\n    </div>\n  }\n}\n\n@if (includeOverlays) {\n  <app-toast-container position="top-right" />\n}\n',
     styles: [
       ":host{display:block;height:100%}.app-layout{display:grid;min-height:100vh}[data-region=content],[data-region=sidebar-left],[data-region=sidebar-right]{overflow:auto}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n",
     ],
@@ -16681,13 +17013,19 @@ class SchemaShellComponent {
         kind: "component",
         type: SchemaRouteViewerComponent,
         selector: "lib-schema-route-viewer",
-        inputs: ["route"],
+        inputs: ["route", "showLayoutRegions"],
       },
       {
         kind: "component",
         type: SchemaElementComponent,
         selector: "app-schema-element",
         inputs: ["element", "elements"],
+      },
+      {
+        kind: "component",
+        type: ToastContainerComponent,
+        selector: "app-toast-container",
+        inputs: ["position"],
       },
     ],
   });
@@ -16708,10 +17046,11 @@ i0.ɵɵngDeclareClassMetadata({
             CommonModule,
             SchemaRouteViewerComponent,
             SchemaElementComponent,
+            ToastContainerComponent,
           ],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           template:
-            '@if (loading()) {\n  <div\n    style="\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      gap: 1rem;\n      min-height: 100vh;\n    "\n  >\n    <app-loading size="lg"></app-loading>\n    <p style="color: var(--text-secondary); font-size: 1.125rem">\n      Loading application...\n    </p>\n  </div>\n} @else if (error(); as err) {\n  <div\n    style="\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      min-height: 100vh;\n      padding: 2rem;\n    "\n  >\n    <app-empty-state\n      variant="danger"\n      title="Application Not Available"\n      [message]="err"\n      actionLabel="Retry"\n      (action)="retry()"\n    ></app-empty-state>\n  </div>\n} @else {\n  <div\n    class="app-layout"\n    [style.grid-template-columns]="gridColumns()"\n    [style.grid-template-rows]="gridRows()"\n    [style.grid-template-areas]="gridAreas()"\n  >\n    @if (headerRegion(); as region) {\n      <div\n        data-region="header"\n        [class]="getRegionClasses(region)"\n        style="grid-area: header"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (sidebarLeftRegion(); as region) {\n      <div\n        data-region="sidebar-left"\n        [class]="getRegionClasses(region)"\n        style="grid-area: sidebar-left"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    <div data-region="content" style="grid-area: content">\n      <lib-schema-route-viewer />\n    </div>\n\n    @if (sidebarRightRegion(); as region) {\n      <div\n        data-region="sidebar-right"\n        [class]="getRegionClasses(region)"\n        style="grid-area: sidebar-right"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (footerRegion(); as region) {\n      <div\n        data-region="footer"\n        [class]="getRegionClasses(region)"\n        style="grid-area: footer"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (bottomNavRegion(); as region) {\n      <div\n        data-region="bottom-nav"\n        [class]="getRegionClasses(region)"\n        style="grid-area: bottom-nav"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @for (region of otherRegions(); track region.id) {\n      <div\n        data-region="other"\n        [class]="getRegionClasses(region)"\n        style="grid-area: other"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n  </div>\n\n  @for (region of overlayRegions(); track region.id) {\n    <div class="layout-overlay" data-region="overlay">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element\n          [element]="child"\n          [elements]="region.children || []"\n        />\n      }\n    </div>\n  }\n}\n',
+            '@if (loading()) {\n  <div\n    style="\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      gap: 1rem;\n      min-height: 100vh;\n    "\n  >\n    <app-loading size="lg"></app-loading>\n    <p style="color: var(--text-secondary); font-size: 1.125rem">\n      Loading application...\n    </p>\n  </div>\n} @else if (error(); as err) {\n  <div\n    style="\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      min-height: 100vh;\n      padding: 2rem;\n    "\n  >\n    <app-empty-state\n      variant="danger"\n      title="Application Not Available"\n      [message]="err"\n      actionLabel="Retry"\n      (action)="retry()"\n    ></app-empty-state>\n  </div>\n} @else {\n  <div\n    class="app-layout"\n    [style.grid-template-columns]="gridColumns()"\n    [style.grid-template-rows]="gridRows()"\n    [style.grid-template-areas]="gridAreas()"\n  >\n    @if (headerRegion(); as region) {\n      <div\n        data-region="header"\n        [class]="getRegionClasses(region)"\n        style="grid-area: header"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (sidebarLeftRegion(); as region) {\n      <div\n        data-region="sidebar-left"\n        [class]="getRegionClasses(region)"\n        style="grid-area: sidebar-left"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    <div data-region="content" style="grid-area: content">\n      <lib-schema-route-viewer />\n    </div>\n\n    @if (sidebarRightRegion(); as region) {\n      <div\n        data-region="sidebar-right"\n        [class]="getRegionClasses(region)"\n        style="grid-area: sidebar-right"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (footerRegion(); as region) {\n      <div\n        data-region="footer"\n        [class]="getRegionClasses(region)"\n        style="grid-area: footer"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @if (bottomNavRegion(); as region) {\n      <div\n        data-region="bottom-nav"\n        [class]="getRegionClasses(region)"\n        style="grid-area: bottom-nav"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n\n    @for (region of otherRegions(); track region.id) {\n      <div\n        data-region="other"\n        [class]="getRegionClasses(region)"\n        style="grid-area: other"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]="child"\n            [elements]="region.children || []"\n          />\n        }\n      </div>\n    }\n  </div>\n\n  @for (region of overlayRegions(); track region.id) {\n    <div class="layout-overlay" data-region="overlay">\n      @for (child of region.children || []; track child.id) {\n        <app-schema-element\n          [element]="child"\n          [elements]="region.children || []"\n        />\n      }\n    </div>\n  }\n}\n\n@if (includeOverlays) {\n  <app-toast-container position="top-right" />\n}\n',
           styles: [
             ":host{display:block;height:100%}.app-layout{display:grid;min-height:100vh}[data-region=content],[data-region=sidebar-left],[data-region=sidebar-right]{overflow:auto}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n",
           ],
@@ -16751,6 +17090,11 @@ i0.ɵɵngDeclareClassMetadata({
       },
     ],
     errorFallbackCommandName: [
+      {
+        type: Input,
+      },
+    ],
+    includeOverlays: [
       {
         type: Input,
       },
@@ -16841,114 +17185,6 @@ function formatError(error) {
       return error.message;
   }
 }
-
-const DEFAULT_DURATIONS = {
-  success: 3000,
-  error: 5000,
-  warning: 4000,
-  info: 3000,
-};
-class ToastService {
-  toastsSignal = signal(
-    [],
-    ...(ngDevMode ? [{ debugName: "toastsSignal" }] : []),
-  );
-  counter = 0;
-  autoDismissTimers = new Map();
-  toasts = computed(
-    () => this.toastsSignal(),
-    ...(ngDevMode ? [{ debugName: "toasts" }] : []),
-  );
-  generateId() {
-    return `toast-${++this.counter}-${Date.now()}`;
-  }
-  show(options) {
-    const id = options.id ?? this.generateId();
-    const type = options.type;
-    const duration = options.duration ?? DEFAULT_DURATIONS[type];
-    const persistent = options.persistent ?? false;
-    const toast = {
-      ...options,
-      id,
-      type,
-      duration,
-      persistent,
-    };
-    this.toastsSignal.update((toasts) => {
-      const updated = [toast, ...toasts];
-      return updated.slice(0, 20);
-    });
-    if (!persistent && duration > 0) {
-      const timer = setTimeout(() => {
-        this.autoDismissTimers.delete(id);
-        this.dismiss(id);
-      }, duration);
-      this.autoDismissTimers.set(id, timer);
-    }
-    return id;
-  }
-  success(message, options) {
-    return this.show({ ...options, type: "success", message });
-  }
-  error(message, options) {
-    return this.show({ ...options, type: "error", message });
-  }
-  warning(message, options) {
-    return this.show({ ...options, type: "warning", message });
-  }
-  info(message, options) {
-    return this.show({ ...options, type: "info", message });
-  }
-  dismiss(id) {
-    const timer = this.autoDismissTimers.get(id);
-    if (timer !== undefined) {
-      clearTimeout(timer);
-      this.autoDismissTimers.delete(id);
-    }
-    this.toastsSignal.update((toasts) => toasts.filter((t) => t.id !== id));
-  }
-  dismissAll() {
-    this.autoDismissTimers.forEach((timer) => clearTimeout(timer));
-    this.autoDismissTimers.clear();
-    this.toastsSignal.set([]);
-  }
-  update(id, changes) {
-    this.toastsSignal.update((toasts) =>
-      toasts.map((t) => (t.id === id ? { ...t, ...changes } : t)),
-    );
-  }
-  static ɵfac = i0.ɵɵngDeclareFactory({
-    minVersion: "12.0.0",
-    version: "20.3.25",
-    ngImport: i0,
-    type: ToastService,
-    deps: [],
-    target: i0.ɵɵFactoryTarget.Injectable,
-  });
-  static ɵprov = i0.ɵɵngDeclareInjectable({
-    minVersion: "12.0.0",
-    version: "20.3.25",
-    ngImport: i0,
-    type: ToastService,
-    providedIn: "root",
-  });
-}
-i0.ɵɵngDeclareClassMetadata({
-  minVersion: "12.0.0",
-  version: "20.3.25",
-  ngImport: i0,
-  type: ToastService,
-  decorators: [
-    {
-      type: Injectable,
-      args: [
-        {
-          providedIn: "root",
-        },
-      ],
-    },
-  ],
-});
 
 const DEFAULT_RETRY_CONFIG = {
   maxAttempts: 3,
@@ -17138,7 +17374,339 @@ class ApiException extends Error {
   }
 }
 
+class SignalLoggerService {
+  _entries = signal([], ...(ngDevMode ? [{ debugName: "_entries" }] : []));
+  _minLevel = signal(
+    "info",
+    ...(ngDevMode ? [{ debugName: "_minLevel" }] : []),
+  );
+  _maxEntries = signal(
+    1000,
+    ...(ngDevMode ? [{ debugName: "_maxEntries" }] : []),
+  );
+  entries = computed(
+    () => this._entries(),
+    ...(ngDevMode ? [{ debugName: "entries" }] : []),
+  );
+  filteredEntries = computed(
+    () => {
+      const level = this._minLevel();
+      const levels = ["debug", "info", "warn", "error"];
+      const minIndex = levels.indexOf(level);
+      return this._entries().filter((e) => levels.indexOf(e.level) >= minIndex);
+    },
+    ...(ngDevMode ? [{ debugName: "filteredEntries" }] : []),
+  );
+  setMinLevel(level) {
+    this._minLevel.set(level);
+  }
+  getMinLevel() {
+    return this._minLevel();
+  }
+  setMaxEntries(max) {
+    this._maxEntries.set(max);
+  }
+  addEntry(entry) {
+    this._entries.update((entries) => {
+      const newEntries = [...entries, entry];
+      if (newEntries.length > this._maxEntries()) {
+        return newEntries.slice(-this._maxEntries());
+      }
+      return newEntries;
+    });
+  }
+  debug(message, source, metadata) {
+    this.addEntry({
+      level: "debug",
+      message,
+      timestamp: new Date().toISOString(),
+      source,
+      metadata,
+    });
+  }
+  info(message, source, metadata) {
+    this.addEntry({
+      level: "info",
+      message,
+      timestamp: new Date().toISOString(),
+      source,
+      metadata,
+    });
+  }
+  warn(message, source, metadata) {
+    this.addEntry({
+      level: "warn",
+      message,
+      timestamp: new Date().toISOString(),
+      source,
+      metadata,
+    });
+  }
+  error(message, source, metadata) {
+    this.addEntry({
+      level: "error",
+      message,
+      timestamp: new Date().toISOString(),
+      source,
+      metadata,
+    });
+  }
+  clear() {
+    this._entries.set([]);
+  }
+  getEntriesByLevel(level) {
+    return this._entries().filter((e) => e.level === level);
+  }
+  exportToJson() {
+    return JSON.stringify(this._entries(), null, 2);
+  }
+  importFromJson(json) {
+    try {
+      const entries = JSON.parse(json);
+      this._entries.set(entries);
+    } catch {
+      this.error("Failed to import log entries from JSON");
+    }
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: SignalLoggerService,
+    deps: [],
+    target: i0.ɵɵFactoryTarget.Injectable,
+  });
+  static ɵprov = i0.ɵɵngDeclareInjectable({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: SignalLoggerService,
+    providedIn: "root",
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: SignalLoggerService,
+  decorators: [
+    {
+      type: Injectable,
+      args: [{ providedIn: "root" }],
+    },
+  ],
+});
+
+class SignalSyncService {
+  http = inject(HttpClient);
+  _syncStatus = signal(
+    "idle",
+    ...(ngDevMode ? [{ debugName: "_syncStatus" }] : []),
+  );
+  _lastSyncTime = signal(
+    null,
+    ...(ngDevMode ? [{ debugName: "_lastSyncTime" }] : []),
+  );
+  _pendingChanges = signal(
+    0,
+    ...(ngDevMode ? [{ debugName: "_pendingChanges" }] : []),
+  );
+  _syncEndpoint = signal(
+    "",
+    ...(ngDevMode ? [{ debugName: "_syncEndpoint" }] : []),
+  );
+  syncStatus = computed(
+    () => this._syncStatus(),
+    ...(ngDevMode ? [{ debugName: "syncStatus" }] : []),
+  );
+  lastSyncTime = computed(
+    () => this._lastSyncTime(),
+    ...(ngDevMode ? [{ debugName: "lastSyncTime" }] : []),
+  );
+  pendingChanges = computed(
+    () => this._pendingChanges(),
+    ...(ngDevMode ? [{ debugName: "pendingChanges" }] : []),
+  );
+  syncEndpoint = computed(
+    () => this._syncEndpoint(),
+    ...(ngDevMode ? [{ debugName: "syncEndpoint" }] : []),
+  );
+  setEndpoint(endpoint) {
+    this._syncEndpoint.set(endpoint);
+  }
+  setStatus(status) {
+    this._syncStatus.set(status);
+  }
+  incrementPending() {
+    this._pendingChanges.update((n) => n + 1);
+  }
+  decrementPending() {
+    this._pendingChanges.update((n) => Math.max(0, n - 1));
+  }
+  markSynced() {
+    this._lastSyncTime.set(new Date());
+    this._pendingChanges.set(0);
+    this._syncStatus.set("idle");
+  }
+  markError() {
+    this._syncStatus.set("error");
+  }
+  markOffline() {
+    this._syncStatus.set("offline");
+  }
+  async syncToCloud() {
+    if (this._syncStatus() === "syncing") return;
+    if (!this._syncEndpoint()) {
+      this.markOffline();
+      return;
+    }
+    this._syncStatus.set("syncing");
+    try {
+      const state = this._pendingChanges();
+      if (state > 0) {
+        await this.performSync();
+      }
+      this.markSynced();
+    } catch (error) {
+      this.markError();
+      throw error;
+    }
+  }
+  async performSync() {
+    const endpoint = this._syncEndpoint();
+    if (!endpoint) return;
+    try {
+      await this.http
+        .post(`${endpoint}/sync`, { timestamp: new Date().toISOString() })
+        .toPromise();
+    } catch (error) {
+      console.error("Sync failed:", error);
+      throw error;
+    }
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: SignalSyncService,
+    deps: [],
+    target: i0.ɵɵFactoryTarget.Injectable,
+  });
+  static ɵprov = i0.ɵɵngDeclareInjectable({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: SignalSyncService,
+    providedIn: "root",
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: SignalSyncService,
+  decorators: [
+    {
+      type: Injectable,
+      args: [{ providedIn: "root" }],
+    },
+  ],
+});
+
 class StorageService {}
+
+class LocalStorageService {
+  prefix = "";
+  /**
+   * Configure a prefix for namespacing keys.
+   * Call before using get/set/remove/has with prefixed keys.
+   */
+  setPrefix(prefix) {
+    this.prefix = prefix;
+  }
+  makeKey(key) {
+    return `${this.prefix}${key}`;
+  }
+  get(key, defaultValue, validator) {
+    const item = localStorage.getItem(this.makeKey(key));
+    if (!item) return defaultValue ?? null;
+    try {
+      const parsed = JSON.parse(item);
+      if (validator && validator(parsed)) {
+        return parsed;
+      }
+      if (!validator) {
+        return parsed;
+      }
+      return defaultValue ?? null;
+    } catch {
+      return defaultValue ?? null;
+    }
+  }
+  set(key, value) {
+    localStorage.setItem(this.makeKey(key), JSON.stringify(value));
+  }
+  remove(key) {
+    localStorage.removeItem(this.makeKey(key));
+  }
+  clear() {
+    if (!this.prefix) {
+      localStorage.clear();
+    } else {
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k?.startsWith(this.prefix)) {
+          keysToRemove.push(k);
+        }
+      }
+      keysToRemove.forEach((k) => localStorage.removeItem(k));
+    }
+  }
+  keys() {
+    if (!this.prefix) {
+      return Object.keys(localStorage);
+    }
+    const result = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k?.startsWith(this.prefix)) {
+        result.push(k.substring(this.prefix.length));
+      }
+    }
+    return result;
+  }
+  has(key) {
+    return localStorage.getItem(this.makeKey(key)) !== null;
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: LocalStorageService,
+    deps: [],
+    target: i0.ɵɵFactoryTarget.Injectable,
+  });
+  static ɵprov = i0.ɵɵngDeclareInjectable({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: LocalStorageService,
+    providedIn: "root",
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: LocalStorageService,
+  decorators: [
+    {
+      type: Injectable,
+      args: [{ providedIn: "root" }],
+    },
+  ],
+});
 
 class SignalStore {
   store = new Map();
@@ -17183,6 +17751,23 @@ class SignalStore {
       this.subscribers.delete(callback);
     };
   }
+  /** Creates an Angular-signal-compatible callable for a store key */
+  signal(key, initialValue) {
+    if (!this.store.has(key)) {
+      this.store.set(key, initialValue);
+    }
+    const self = this;
+    const fn = function () {
+      return self.get(key);
+    };
+    fn.set = function (value) {
+      self.set(key, value);
+    };
+    fn.update = function (updater) {
+      self.update(key, updater);
+    };
+    return fn;
+  }
   notify(key, value) {
     for (const callback of this.subscribers) {
       callback(key, value);
@@ -17198,8 +17783,19 @@ function createSignalStore() {
   return new SignalStore();
 }
 
+const DEFAULT_CACHE_TTL_MS = 5 * 60 * 1000;
+const MAX_CACHE_SIZE = 100;
 class StorageCacheService {
   cache = new Map();
+  reactiveCache = new Map();
+  cacheTimestamps = new Map();
+  inFlightRequests = new Map();
+  defaultTtl = DEFAULT_CACHE_TTL_MS;
+  cacheInvalidated = signal(
+    false,
+    ...(ngDevMode ? [{ debugName: "cacheInvalidated" }] : []),
+  );
+  // ─── Basic TTL cache ────────────────────────────────────────────────
   get(key) {
     const entry = this.cache.get(key);
     if (!entry) return null;
@@ -17213,8 +17809,11 @@ class StorageCacheService {
     this.cache.set(key, {
       value,
       timestamp: Date.now(),
-      ttl,
+      ttl: ttl ?? this.defaultTtl,
     });
+  }
+  setDefaultTtl(ttl) {
+    this.defaultTtl = ttl;
   }
   invalidate(key) {
     this.cache.delete(key);
@@ -17231,7 +17830,119 @@ class StorageCacheService {
     }
     return true;
   }
+  delete(key) {
+    this.cache.delete(key);
+  }
+  clear() {
+    this.cache.clear();
+  }
+  clearPattern(pattern) {
+    const regex = new RegExp(pattern);
+    for (const key of this.cache.keys()) {
+      if (regex.test(key)) {
+        this.cache.delete(key);
+      }
+    }
+  }
+  // ─── Reactive cache ──────────────────────────────────────────────────
+  hasCachedData(key) {
+    return this.reactiveCache.has(key);
+  }
+  getReactiveCache(key) {
+    return this.reactiveCache.get(key);
+  }
+  setReactiveCache(key, value) {
+    this.reactiveCache.set(key, value);
+  }
+  // ─── Timestamp tracking ─────────────────────────────────────────────
+  getCacheTimestamp(key) {
+    return this.cacheTimestamps.get(key);
+  }
+  setCacheTimestamp(key, timestamp) {
+    this.cacheTimestamps.set(key, timestamp);
+  }
+  isCacheValid(key, ttlMs = DEFAULT_CACHE_TTL_MS) {
+    const timestamp = this.cacheTimestamps.get(key);
+    if (!timestamp) return false;
+    return Date.now() - timestamp < ttlMs;
+  }
+  // ─── Cache size management ──────────────────────────────────────────
+  isCacheFull() {
+    return this.reactiveCache.size >= MAX_CACHE_SIZE;
+  }
+  evictOldestCache() {
+    const sortedKeys = Array.from(this.cacheTimestamps.entries())
+      .sort((a, b) => a[1] - b[1])
+      .slice(0, 10)
+      .map(([key]) => key);
+    for (const key of sortedKeys) {
+      this.reactiveCache.delete(key);
+      this.cacheTimestamps.delete(key);
+    }
+  }
+  // ─── Invalidation ───────────────────────────────────────────────────
+  invalidateCache() {
+    this.reactiveCache.clear();
+    this.cacheTimestamps.clear();
+    this.cacheInvalidated.set(true);
+    setTimeout(() => this.cacheInvalidated.set(false), 0);
+  }
+  clearAll() {
+    this.reactiveCache.clear();
+    this.cacheTimestamps.clear();
+    this.cacheInvalidated.set(true);
+    setTimeout(() => this.cacheInvalidated.set(false), 0);
+  }
+  // ─── Request deduplication ──────────────────────────────────────────
+  getOrFetch(key, fetchFn, ttl = DEFAULT_CACHE_TTL_MS) {
+    const existing = this.inFlightRequests.get(key);
+    if (existing) return existing;
+    const requestPromise = (async () => {
+      try {
+        const result = await fetchFn();
+        this.setCacheTimestamp(key, Date.now());
+        return result;
+      } finally {
+        this.inFlightRequests.delete(key);
+      }
+    })();
+    this.inFlightRequests.set(key, requestPromise);
+    return requestPromise;
+  }
+  hasInFlightRequest(key) {
+    return this.inFlightRequests.has(key);
+  }
+  getInFlightRequest(key) {
+    return this.inFlightRequests.get(key);
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: StorageCacheService,
+    deps: [],
+    target: i0.ɵɵFactoryTarget.Injectable,
+  });
+  static ɵprov = i0.ɵɵngDeclareInjectable({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: StorageCacheService,
+    providedIn: "root",
+  });
 }
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: StorageCacheService,
+  decorators: [
+    {
+      type: Injectable,
+      args: [{ providedIn: "root" }],
+    },
+  ],
+});
 
 class StorageQueryService {
   query(items, filter) {
@@ -17377,6 +18088,551 @@ i0.ɵɵngDeclareClassMetadata({
       type: Injectable,
       args: [{ providedIn: "root" }],
     },
+  ],
+});
+
+/**
+ * Unified CRUD service that maps to Rust define_crud_routes! commands.
+ *
+ * Naming convention: entity "connection" → Rust command `connection_get`, `connection_get_all`, etc.
+ * Custom commands: call `.custom('my_command', { arg: value })` for app-specific Tauri commands.
+ */
+class ApiCrudService {
+  invoke = inject(InvokeWrapperService);
+  /** Get a single entity by ID — calls `{entity}_get` */
+  async get(entity, id, options) {
+    return this.invoke.invoke(`${entity}_get`, { id }, options);
+  }
+  /** Get all entities with optional filtering/pagination — calls `{entity}_get_all` */
+  async getAll(entity, filter, skip, limit, sortBy, sortAsc) {
+    return this.invoke.invoke(`${entity}_get_all`, {
+      filter,
+      skip,
+      limit,
+      sort_by: sortBy,
+      sort_asc: sortAsc,
+    });
+  }
+  /** Create a new entity — calls `{entity}_create` */
+  async create(entity, data) {
+    return this.invoke.invoke(`${entity}_create`, { data });
+  }
+  /** Full update of an entity — calls `{entity}_update` */
+  async update(entity, id, data) {
+    return this.invoke.invoke(`${entity}_update`, { id, data });
+  }
+  /** Partial update of an entity — calls `{entity}_patch` */
+  async patch(entity, id, patch) {
+    return this.invoke.invoke(`${entity}_patch`, { id, patch });
+  }
+  /** Delete an entity — calls `{entity}_delete` */
+  async delete(entity, id) {
+    return this.invoke.invoke(`${entity}_delete`, { id });
+  }
+  /**
+   * Call any custom Tauri command not covered by standard CRUD.
+   * Use for app-specific commands that don't follow the `{entity}_{operation}` pattern.
+   */
+  async custom(command, args) {
+    return this.invoke.invoke(command, args);
+  }
+  // Retry variants for unreliable operations
+  /** Get with automatic retry on failure */
+  async getWithRetry(entity, id, retryOptions) {
+    return invokeWithRetry(
+      () => this.invoke.invoke(`${entity}_get`, { id }),
+      retryOptions ?? {
+        maxAttempts: 3,
+        initialDelayMs: 1000,
+        maxDelayMs: 30000,
+      },
+    );
+  }
+  /** Custom command with automatic retry on failure */
+  async customWithRetry(command, args, retryOptions) {
+    return invokeWithRetry(
+      () => this.invoke.invoke(command, args),
+      retryOptions ?? {
+        maxAttempts: 3,
+        initialDelayMs: 1000,
+        maxDelayMs: 30000,
+      },
+    );
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: ApiCrudService,
+    deps: [],
+    target: i0.ɵɵFactoryTarget.Injectable,
+  });
+  static ɵprov = i0.ɵɵngDeclareInjectable({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: ApiCrudService,
+    providedIn: "root",
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: ApiCrudService,
+  decorators: [
+    {
+      type: Injectable,
+      args: [{ providedIn: "root" }],
+    },
+  ],
+});
+
+class SchemaSetupService {
+  invokeWrapper = inject(InvokeWrapperService);
+  schemaRouter = inject(SchemaRouterService);
+  renderer = inject(SchemaRendererService);
+  themeService = inject(StyleThemeService);
+  fallbackService = inject(FallbackService);
+  handlerExecutor = inject(HandlerExecutorService);
+  router = null;
+  schemaLoaded = signal(
+    false,
+    ...(ngDevMode ? [{ debugName: "schemaLoaded" }] : []),
+  );
+  setupError = signal(
+    null,
+    ...(ngDevMode ? [{ debugName: "setupError" }] : []),
+  );
+  /**
+   * Complete schema setup: load, validate, register, navigate.
+   * This replaces per-app schema loading boilerplate.
+   */
+  async setup(appId, options) {
+    this.schemaLoaded.set(false);
+    this.setupError.set(null);
+    this.handlerExecutor.setRouter(this.schemaRouter);
+    const commandName = options?.commandName ?? "get_ui_schema";
+    const themeVariant = options?.themeVariant ?? "material-design-v3";
+    try {
+      this.themeService.loadTheme(themeVariant);
+      const schema = await this.loadSchema(appId, commandName, options);
+      if (!schema) return null;
+      this.registerFunctions(options);
+      this.applyTheme(schema, themeVariant, options);
+      const route =
+        options?.initialRoute ||
+        schema.pages?.[0]?.route ||
+        `/${schema.pages?.[0]?.id || ""}`;
+      logger.log(`[SchemaSetup] navigating to "${route}"`);
+      await this.schemaRouter.navigate(route);
+      if (options?.autoRegisterRoutes === true) {
+        this.registerRouter();
+      }
+      options?.onSchemaLoaded?.(schema);
+      this.schemaLoaded.set(true);
+      return schema;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.setupError.set(message);
+      options?.onError?.(err instanceof Error ? err : new Error(message));
+      if (options?.errorFallbackCommandName) {
+        return this.tryFallback(appId, options);
+      }
+      return null;
+    }
+  }
+  /**
+   * Set the Angular Router instance for route registration.
+   * Called automatically if Router is available via DI.
+   */
+  setRouter(router) {
+    this.router = router;
+  }
+  /**
+   * Register all schema pages as Angular Routes pointing to SchemaRouteViewerComponent.
+   * Must be called AFTER schema is loaded.
+   */
+  registerRouter() {
+    const activeRouter = this.router ?? inject(Router, { optional: true });
+    if (!activeRouter) {
+      logger.warn("[SchemaSetup] Router not available for route registration");
+      return;
+    }
+    const routes = this.toAngularRoutes();
+    if (routes.length === 0) return;
+    logger.log(
+      `[SchemaSetup] registering ${routes.length} Angular routes from schema`,
+    );
+    activeRouter.resetConfig(routes);
+  }
+  /**
+   * Convert all schema pages to Angular Routes.
+   * Each route points to SchemaRouteViewerComponent with page data in route data.
+   */
+  toAngularRoutes() {
+    const pages = this.schemaRouter.getAllPages();
+    if (pages.length === 0) return [];
+    const routes = pages.map((page) => {
+      const path = page.route?.replace(/^\//, "") || page.id;
+      const paramPath = path.replace(/:(\w+)/g, (_, param) => `:${param}`);
+      return {
+        path: paramPath,
+        component: SchemaRouteViewerComponent,
+        data: { pageId: page.id, page },
+      };
+    });
+    const firstPage = pages[0];
+    const firstPath =
+      firstPage?.route?.replace(/^\//, "") || firstPage?.id || "";
+    routes.push({ path: "", redirectTo: firstPath, pathMatch: "full" });
+    routes.push({ path: "**", redirectTo: firstPath });
+    return routes;
+  }
+  async loadSchema(appId, commandName, options) {
+    const response = await this.invokeWrapper.invoke(commandName, {
+      id: appId,
+    });
+    logger.log(
+      `[SchemaSetup] invoke("${commandName}") response:`,
+      response ? `pages=${response?.data?.pages?.length}` : "null",
+    );
+    const schema = response?.data ?? response;
+    if (!schema?.pages?.length) {
+      this.setupError.set(
+        "Schema has no pages. Create it in Designer and sync.",
+      );
+      return null;
+    }
+    this.schemaRouter.setSchema(schema);
+    this.renderer.loadSchema(schema);
+    if (schema.handlers) {
+      this.handlerExecutor.setHandlers(schema.handlers);
+    }
+    return schema;
+  }
+  async tryFallback(appId, options) {
+    try {
+      const fallbackResponse = await this.invokeWrapper.invoke(
+        options.errorFallbackCommandName,
+        { id: appId },
+      );
+      const fallbackSchema = fallbackResponse?.data ?? fallbackResponse;
+      if (fallbackSchema?.pages?.length) {
+        logger.warn(
+          "[SchemaSetup] Primary schema failed, using fallback schema",
+        );
+        this.schemaRouter.setSchema(fallbackSchema);
+        this.renderer.loadSchema(fallbackSchema);
+        await this.schemaRouter.navigate("/schema-error");
+        this.schemaLoaded.set(true);
+        return fallbackSchema;
+      }
+    } catch (fallbackErr) {
+      logger.error("[SchemaSetup] Fallback schema also failed:", fallbackErr);
+    }
+    logger.warn(
+      "[SchemaSetup] All schema loading failed, using fallback error schema",
+    );
+    const fallbackSchema = this.fallbackService.getFallbackSchema(
+      this.setupError() ?? "Unknown error",
+    );
+    this.schemaRouter.setSchema(fallbackSchema);
+    this.renderer.loadSchema(fallbackSchema);
+    await this.schemaRouter.navigate("/schema-error");
+    this.schemaLoaded.set(true);
+    return fallbackSchema;
+  }
+  registerFunctions(options) {
+    this.renderer.registerFunction("toggleThemeDark", () => {
+      this.themeService.toggleDarkMode();
+    });
+    this.renderer.registerFunction("reloadSchema", () => {
+      this.setupError.set(null);
+    });
+    if (options?.handlers) {
+      this.handlerExecutor.setHandlers(options.handlers);
+    }
+  }
+  applyTheme(schema, defaultVariant, options) {
+    const variant = schema.app?.style ?? defaultVariant;
+    this.themeService.loadTheme(variant);
+    loadStyleVariant(variant).then(() => {
+      if (this.themeService.isDarkMode()) {
+        this.themeService.setDarkMode(true);
+      }
+    });
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: SchemaSetupService,
+    deps: [],
+    target: i0.ɵɵFactoryTarget.Injectable,
+  });
+  static ɵprov = i0.ɵɵngDeclareInjectable({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: SchemaSetupService,
+    providedIn: "root",
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: SchemaSetupService,
+  decorators: [
+    {
+      type: Injectable,
+      args: [{ providedIn: "root" }],
+    },
+  ],
+});
+
+const DEFAULT_CONFIG = {
+  enableAnimations: false,
+  enableHttpClient: false,
+  enableBrowserErrorListeners: true,
+  enableZoneChangeDetection: true,
+};
+/**
+ * Standardized Angular providers for all Tauri apps.
+ *
+ * Usage:
+ * ```typescript
+ * export const appConfig: ApplicationConfig = {
+ *   providers: [
+ *     ...provideUnifiedApp({ appId: 'my-app' }),
+ *     // App-specific providers only
+ *   ],
+ * };
+ * ```
+ */
+function provideUnifiedApp(config) {
+  const cfg = { ...DEFAULT_CONFIG, ...config };
+  const providers = [];
+  if (cfg.enableBrowserErrorListeners) {
+    providers.push(provideBrowserGlobalErrorListeners());
+  }
+  if (cfg.enableAnimations) {
+    providers.push(provideAnimationsAsync());
+  }
+  if (cfg.enableHttpClient) {
+    providers.push(provideHttpClient());
+  }
+  if (cfg.enableZoneChangeDetection) {
+    providers.push(provideZoneChangeDetection({ eventCoalescing: true }));
+  }
+  if (cfg.extraProviders?.length) {
+    providers.push(...cfg.extraProviders);
+  }
+  return providers;
+}
+
+class BaseCrudService {
+  config;
+  mainService;
+  cacheService;
+  queryService;
+  entitiesSignal;
+  activeEntitySignal;
+  activeEntityIdSignal;
+  /** Call as a function: entities() returns T[] */
+  entities;
+  activeEntity;
+  activeEntityId;
+  constructor(config, mainService, cacheService, queryService) {
+    this.config = {
+      showNotifications: true,
+      defaultFilter: {},
+      ...config,
+    };
+    this.mainService = mainService;
+    this.cacheService = cacheService;
+    this.queryService = queryService;
+    const store = new SignalStore();
+    this.entitiesSignal = store.signal("entities", []);
+    this.activeEntitySignal = store.signal("activeEntity", null);
+    this.activeEntityIdSignal = store.signal("activeEntityId", null);
+    this.entities = this.entitiesSignal;
+    this.activeEntity = this.activeEntitySignal;
+    this.activeEntityId = this.activeEntityIdSignal;
+  }
+  getEntityName() {
+    return this.config.entityName.toLowerCase();
+  }
+  getEndpoint() {
+    return this.config.endpoint;
+  }
+  async load(filter) {
+    const effectiveFilter = { ...this.config.defaultFilter, ...filter };
+    const cacheKey = `${this.config.endpoint}_list`;
+    if (this.cacheService.isCacheValid(cacheKey)) {
+      const cached = this.cacheService.getReactiveCache(cacheKey);
+      if (cached) {
+        return cached();
+      }
+    }
+    try {
+      const entities = await this.mainService.getAll(
+        this.config.endpoint,
+        effectiveFilter,
+      );
+      this.setEntities(entities || []);
+      this.cacheService.setCacheTimestamp(cacheKey, Date.now());
+      return entities || [];
+    } catch (error) {
+      return [];
+    }
+  }
+  async get(filter) {
+    try {
+      const entity = await this.mainService.get(this.config.endpoint, filter);
+      return entity || null;
+    } catch (error) {
+      return null;
+    }
+  }
+  async create(data, showSuccess) {
+    try {
+      const entity = await this.mainService.create(this.config.endpoint, data);
+      if (entity) {
+        this.addEntity(entity);
+        this.invalidateEndpointCache();
+      }
+      return entity || null;
+    } catch (error) {
+      return null;
+    }
+  }
+  async update(id, updates, showSuccess) {
+    try {
+      const entity = await this.mainService.update(
+        this.config.endpoint,
+        id,
+        updates,
+      );
+      if (entity) {
+        this.updateEntity(entity);
+        this.invalidateEndpointCache();
+      }
+      return entity || null;
+    } catch (error) {
+      return null;
+    }
+  }
+  async patch(id, updates, showSuccess) {
+    try {
+      const entity = await this.mainService.patch(
+        this.config.endpoint,
+        id,
+        updates,
+      );
+      if (entity) {
+        this.updateEntity(entity);
+        this.invalidateEndpointCache();
+      }
+      return entity || null;
+    } catch (error) {
+      return null;
+    }
+  }
+  async delete(id, showSuccess) {
+    try {
+      await this.mainService.delete(this.config.endpoint, id);
+      this.removeEntity(id);
+      this.invalidateEndpointCache();
+      if (this.activeEntityId() === id) {
+        this.setActiveEntityId(null);
+      }
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+  setActiveEntityId(id) {
+    this.activeEntityIdSignal.set(id);
+    if (id) {
+      const entity = this.entities().find((e) => e.id === id) || null;
+      this.setActiveEntity(entity);
+    } else {
+      this.setActiveEntity(null);
+    }
+  }
+  invalidateEndpointCache() {
+    this.cacheService.invalidateCache();
+  }
+  setEntities(entities) {
+    this.entitiesSignal.set(entities);
+  }
+  addEntity(entity) {
+    this.entitiesSignal.update((current) => [...current, entity]);
+  }
+  updateEntity(entity) {
+    this.entitiesSignal.update((current) => {
+      const index = current.findIndex((e) => e.id === entity.id);
+      if (index !== -1) {
+        const updated = [...current];
+        updated[index] = entity;
+        return updated;
+      }
+      return current;
+    });
+    if (this.activeEntity()?.id === entity.id) {
+      this.setActiveEntity(entity);
+    }
+  }
+  removeEntity(id) {
+    this.entitiesSignal.update((current) => current.filter((e) => e.id !== id));
+  }
+  setActiveEntity(entity) {
+    this.activeEntitySignal.set(entity);
+  }
+  async updateOrder(items) {
+    const data = items.map((item, index) => ({
+      id: item.id,
+      positionIndex: items.length - 1 - index,
+    }));
+    try {
+      await this.mainService.invoke(`${this.config.endpoint}_update_order`, {
+        data,
+      });
+      await this.load();
+    } catch (error) {}
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: BaseCrudService,
+    deps: "invalid",
+    target: i0.ɵɵFactoryTarget.Injectable,
+  });
+  static ɵprov = i0.ɵɵngDeclareInjectable({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: BaseCrudService,
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: BaseCrudService,
+  decorators: [
+    {
+      type: Injectable,
+    },
+  ],
+  ctorParameters: () => [
+    { type: undefined },
+    { type: undefined },
+    { type: undefined },
+    { type: undefined },
   ],
 });
 
@@ -17624,6 +18880,277 @@ function randomPitchVariation(variation) {
 function generatePeerId() {
   return Math.floor(Math.random() * 1000000);
 }
+function lerpVector3D(a, b, t) {
+  return [
+    a[0] + (b[0] - a[0]) * t,
+    a[1] + (b[1] - a[1]) * t,
+    a[2] + (b[2] - a[2]) * t,
+  ];
+}
+function lerpAngle(a, b, t) {
+  let diff = b - a;
+  while (diff > Math.PI) diff -= 2 * Math.PI;
+  while (diff < -Math.PI) diff += 2 * Math.PI;
+  return a + diff * t;
+}
+
+/**
+ * Route guard that checks resource-action permissions.
+ *
+ * Usage in route config:
+ * {
+ *   path: 'admin',
+ *   canActivate: [rbacGuard],
+ *   data: {
+ *     permissions: ['users.read', 'settings.write'],
+ *     requireAll: false  // OR logic (default), true = AND logic
+ *   }
+ * }
+ */
+const rbacGuard = (route, _state) => {
+  const injector = inject(Injector);
+  const permissionService = injector.get(PermissionService);
+  const router = injector.get(Router);
+  if (!permissionService.isAuthenticated()) {
+    router.navigate(["/login"]);
+    return false;
+  }
+  const requiredPermissions = route.data?.["permissions"];
+  const requireAll = route.data?.["requireAll"] ?? false;
+  if (requiredPermissions && requiredPermissions.length > 0) {
+    const results = requiredPermissions.map((perm) => {
+      const [resource, action] = perm.split(".");
+      return permissionService.hasPermission(resource, action);
+    });
+    if (requireAll) {
+      if (!results.every((r) => r)) {
+        router.navigate(["/unauthorized"]);
+        return false;
+      }
+    } else {
+      if (!results.some((r) => r)) {
+        router.navigate(["/unauthorized"]);
+        return false;
+      }
+    }
+  }
+  return true;
+};
+/**
+ * Guard that checks for specific roles.
+ *
+ * Usage in route config:
+ * {
+ *   path: 'admin',
+ *   canActivate: [rbacRoleGuard],
+ *   data: {
+ *     roles: ['admin', 'moderator']
+ *   }
+ * }
+ */
+const rbacRoleGuard = (route, _state) => {
+  const injector = inject(Injector);
+  const permissionService = injector.get(PermissionService);
+  const router = injector.get(Router);
+  if (!permissionService.isAuthenticated()) {
+    router.navigate(["/login"]);
+    return false;
+  }
+  const requiredRoles = route.data?.["roles"];
+  if (requiredRoles && requiredRoles.length > 0) {
+    const hasRole = requiredRoles.some((role) =>
+      permissionService.hasRole(role),
+    );
+    if (!hasRole) {
+      router.navigate(["/unauthorized"]);
+      return false;
+    }
+  }
+  return true;
+};
+
+/**
+ * Structural directive that shows/hides content based on permission.
+ *
+ * Usage:
+ * <button *rbacHasPermission="'users.write'">Edit Users</button>
+ * <div *rbacHasPermission="'users.delete'; else noPerm">Delete</div>
+ * <ng-template #noPerm>No permission</ng-template>
+ *
+ * Supports AND logic with multiple permissions:
+ * <button *rbacHasPermission="['users.write', 'users.admin']">Admin Action</button>
+ */
+class RbacHasPermissionDirective {
+  permissionService;
+  templateRef;
+  viewContainer;
+  permission = "";
+  constructor(permissionService, templateRef, viewContainer) {
+    this.permissionService = permissionService;
+    this.templateRef = templateRef;
+    this.viewContainer = viewContainer;
+  }
+  ngOnInit() {
+    this.updateView();
+  }
+  updateView() {
+    const hasPermission = this.checkPermission();
+    this.viewContainer.clear();
+    if (hasPermission) {
+      this.viewContainer.createEmbeddedView(this.templateRef);
+    }
+  }
+  checkPermission() {
+    if (Array.isArray(this.permission)) {
+      return this.permission.every((perm) => {
+        const [resource, action] = perm.split(".");
+        return resource && action
+          ? this.permissionService.hasPermission(resource, action)
+          : false;
+      });
+    }
+    const [resource, action] = this.permission.split(".");
+    return resource && action
+      ? this.permissionService.hasPermission(resource, action)
+      : false;
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: RbacHasPermissionDirective,
+    deps: [
+      { token: PermissionService },
+      { token: i0.TemplateRef },
+      { token: i0.ViewContainerRef },
+    ],
+    target: i0.ɵɵFactoryTarget.Directive,
+  });
+  static ɵdir = i0.ɵɵngDeclareDirective({
+    minVersion: "14.0.0",
+    version: "20.3.25",
+    type: RbacHasPermissionDirective,
+    isStandalone: true,
+    selector: "[rbacHasPermission]",
+    inputs: { permission: ["rbacHasPermission", "permission"] },
+    ngImport: i0,
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: RbacHasPermissionDirective,
+  decorators: [
+    {
+      type: Directive,
+      args: [
+        {
+          selector: "[rbacHasPermission]",
+          standalone: true,
+        },
+      ],
+    },
+  ],
+  ctorParameters: () => [
+    { type: PermissionService },
+    { type: i0.TemplateRef },
+    { type: i0.ViewContainerRef },
+  ],
+  propDecorators: {
+    permission: [
+      {
+        type: Input,
+        args: ["rbacHasPermission"],
+      },
+    ],
+  },
+});
+/**
+ * Structural directive that shows/hides content based on role membership.
+ *
+ * Usage:
+ * <button *rbacHasRole="'admin'">Admin Panel</button>
+ * <div *rbacHasRole="['editor', 'moderator']">Can Edit</div>
+ */
+class RbacHasRoleDirective {
+  permissionService;
+  templateRef;
+  viewContainer;
+  role = "";
+  constructor(permissionService, templateRef, viewContainer) {
+    this.permissionService = permissionService;
+    this.templateRef = templateRef;
+    this.viewContainer = viewContainer;
+  }
+  ngOnInit() {
+    this.updateView();
+  }
+  updateView() {
+    const hasRole = this.checkRole();
+    this.viewContainer.clear();
+    if (hasRole) {
+      this.viewContainer.createEmbeddedView(this.templateRef);
+    }
+  }
+  checkRole() {
+    if (Array.isArray(this.role)) {
+      return this.role.some((r) => this.permissionService.hasRole(r));
+    }
+    return this.permissionService.hasRole(this.role);
+  }
+  static ɵfac = i0.ɵɵngDeclareFactory({
+    minVersion: "12.0.0",
+    version: "20.3.25",
+    ngImport: i0,
+    type: RbacHasRoleDirective,
+    deps: [
+      { token: PermissionService },
+      { token: i0.TemplateRef },
+      { token: i0.ViewContainerRef },
+    ],
+    target: i0.ɵɵFactoryTarget.Directive,
+  });
+  static ɵdir = i0.ɵɵngDeclareDirective({
+    minVersion: "14.0.0",
+    version: "20.3.25",
+    type: RbacHasRoleDirective,
+    isStandalone: true,
+    selector: "[rbacHasRole]",
+    inputs: { role: ["rbacHasRole", "role"] },
+    ngImport: i0,
+  });
+}
+i0.ɵɵngDeclareClassMetadata({
+  minVersion: "12.0.0",
+  version: "20.3.25",
+  ngImport: i0,
+  type: RbacHasRoleDirective,
+  decorators: [
+    {
+      type: Directive,
+      args: [
+        {
+          selector: "[rbacHasRole]",
+          standalone: true,
+        },
+      ],
+    },
+  ],
+  ctorParameters: () => [
+    { type: PermissionService },
+    { type: i0.TemplateRef },
+    { type: i0.ViewContainerRef },
+  ],
+  propDecorators: {
+    role: [
+      {
+        type: Input,
+        args: ["rbacHasRole"],
+      },
+    ],
+  },
+});
 
 // @tauri-front/shared - Unified shared library
 // Explicit re-exports to avoid name collisions
@@ -17635,7 +19162,9 @@ function generatePeerId() {
  */
 
 export {
+  ApiCrudService,
   ApiException,
+  BaseCrudService,
   BaseDestroyableComponent,
   ComponentRegistryService,
   DataBindingResolverService,
@@ -17647,24 +19176,33 @@ export {
   I18nService,
   InvokeWrapperService,
   LayoutEngineService,
+  LocalStorageService,
   PaginationComponent,
   PermissionService,
+  RbacHasPermissionDirective,
+  RbacHasRoleDirective,
   CrudService as RemoteCrudService,
   SCHEMA_COMPONENT_MAP,
   SchemaElementComponent,
   SchemaRendererService,
   SchemaRouteViewerComponent,
   SchemaRouterService,
+  SchemaSetupService,
   SchemaShellComponent,
+  SignalLoggerService,
   SignalStoreService,
+  SignalSyncService,
+  StorageCacheService,
   StorageService,
   StyleThemeService,
   StyleThemeService as ThemeService,
   ThemeToggleService,
   ToastService,
+  TodoPermission,
   UnifiedStorageService,
   calculateDistance3D,
   clamp,
+  dataComponents,
   easeInOutQuad,
   easeOutQuad,
   feedbackComponents,
@@ -17685,15 +19223,20 @@ export {
   isSuccess,
   layoutComponents,
   lerp,
+  lerpAngle,
+  lerpVector3D,
   loadStyleVariant,
   mapResponse,
   parseError,
+  provideUnifiedApp,
   randomChoice,
   randomChoice as randomElement,
   randomInt,
   randomInterval,
   randomPitchVariation,
   randomRange,
+  rbacGuard,
+  rbacRoleGuard,
   registerSchemaComponent,
   setCurrentStyle,
   sortBy,

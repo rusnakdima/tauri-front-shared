@@ -7,16 +7,8 @@
     "projects/*"
   ],
   "scripts": {
-    "build": "npm run build:shared && npm run build:storage && npm run build:core && npm run build:core-api && npm run build:core-crud && npm run build:core-i18n && npm run build:core-logger && npm run build:core-storage && npm run build:grid",
+    "build": "npm run build:shared",
     "build:shared": "cd projects/shared && npm run build",
-    "build:core": "cd projects/core && npm run build",
-    "build:core-api": "cd projects/core-api && npm run build",
-    "build:core-crud": "cd projects/core-crud && npm run build",
-    "build:core-i18n": "cd projects/core-i18n && npm run build",
-    "build:core-logger": "cd projects/core-logger && npm run build",
-    "build:core-storage": "cd projects/core-storage && npm run build",
-    "build:storage": "cd projects/storage && npm run build",
-    "build:grid": "cd projects/grid && npm run build",
     "dev": "npm run build && npm run build:watch",
     "build:watch": "npm run build:watch --workspaces",
     "generate-component-manifest": "bun run scripts/generate-component-manifest.ts"
@@ -35,6 +27,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@angular/animations": "^20.0.0",
     "@angular/compiler": "^20.3.25",
     "@angular/compiler-cli": "^20.3.25",
     "tslib": "^2.8.1"

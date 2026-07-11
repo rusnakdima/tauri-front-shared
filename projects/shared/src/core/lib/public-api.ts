@@ -18,6 +18,8 @@ export { DataBindingResolverService } from "./schema-renderer/data-binding-resol
 export { LayoutEngineService } from "./schema-renderer/layout-engine";
 export { SchemaRouterService } from "./schema-router/schema-router.service";
 export { SchemaRouteViewerComponent } from "./schema-router/schema-route-viewer.component";
+export { SchemaShellComponent } from "./schema-router/schema-shell.component";
+export { ToastContainerComponent } from "./toast/toast-container.component";
 
 export * from "./rbac/permission.service";
 export * from "./rbac/rbac.guard";

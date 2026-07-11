@@ -1,4 +1,18 @@
-import { Component, OnInit, signal, Type, inject, AfterViewInit, ComponentRef, ViewContainerRef, Input, ViewChild, ApplicationRef, OnChanges, SimpleChanges } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  signal,
+  Type,
+  inject,
+  AfterViewInit,
+  ComponentRef,
+  ViewContainerRef,
+  Input,
+  ViewChild,
+  ApplicationRef,
+  OnChanges,
+  SimpleChanges,
+} from "@angular/core";
 import { NgIf } from "@angular/common";
 import { ShowcaseComponent } from "./showcase/showcase.component";
 import {
@@ -94,9 +108,7 @@ const COMPONENT_PROPS: Record<string, ModalPropDef[]> = {
   selector: "app-modal-preview",
   standalone: true,
   imports: [NgIf],
-  template: `
-    <ng-container #dynamicHost></ng-container>
-  `,
+  template: ` <ng-container #dynamicHost></ng-container> `,
 })
 export class ModalPreviewComponent implements AfterViewInit, OnChanges {
   // Use ApplicationRef.injector for proper ElementRef propagation to deeply nested
@@ -651,5 +663,4 @@ export class AppComponent implements OnInit {
       this.themeService.setDarkMode(true);
     }
   }
-
 }

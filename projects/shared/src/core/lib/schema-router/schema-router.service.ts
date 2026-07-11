@@ -1,6 +1,8 @@
 import { Injectable, signal, computed, inject, Optional } from "@angular/core";
+import { type Routes, type Route } from "@angular/router";
 import type { UiSchema, Page, Layout } from "../types";
 import { GuardService } from "./guard.service";
+import { SchemaRouteViewerComponent } from "./schema-route-viewer.component";
 import { logger } from "../../../utils/logger";
 
 export interface RouteConfig {
@@ -201,8 +203,52 @@ export class SchemaRouterService {
 
   private findReservedRoute(route: string): Page | null {
     const schema = this._schema();
-    if (!schema) return null;
-    return schema.pages.find((p) => p.route === route) ?? null;
+    if (schema) {
+      const found = schema.pages.find((p) => p.route === route);
+      if (found) return found;
+    }
+    // Return a built-in fallback page so /404 and /schema-error always work
+    // even when the schema doesn't define them (deduplication: library handles this)
+    if (route === "/404") {
+      return {
+        id: "not-found",
+        name: "Not Found",
+        route: "/404",
+        layouts: [],
+        canvasElements: [
+          {
+            id: "not-found-content",
+            componentId: "app-empty-state",
+            props: {
+              title: "Page Not Found",
+              message: "The page you requested does not exist.",
+              variant: "warning",
+            },
+          },
+        ],
+      } as Page;
+    }
+    if (route === "/schema-error") {
+      return {
+        id: "schema-error",
+        name: "Schema Error",
+        route: "/schema-error",
+        layouts: [],
+        canvasElements: [
+          {
+            id: "schema-error-content",
+            componentId: "app-empty-state",
+            props: {
+              title: "Schema Error",
+              message: this._error() ?? "Failed to load application schema.",
+              variant: "danger",
+              actionLabel: "Retry",
+            },
+          },
+        ],
+      } as Page;
+    }
+    return null;
   }
 
   getPage(pageId: string): Page | null {
@@ -237,5 +283,53 @@ export class SchemaRouterService {
     this._queryParams.set({});
     this._isLoading.set(false);
     this._error.set(null);
+  }
+
+  // ── Auto-Routing from Schema ──────────────────────────────────
+
+  /**
+   * Convert all schema pages to Angular Routes.
+   * Each route points to SchemaRouteViewerComponent with page data in route data.
+   */
+  toAngularRoutes(): Routes {
+    const pages = this.getAllPages();
+    if (pages.length === 0) return [];
+
+    const routes: Routes = pages.map((page: Page) => {
+      const path = page.route?.replace(/^\//, "") || page.id;
+      const paramPath = path.replace(
+        /:(\w+)/g,
+        (_: string, param: string) => `:${param}`,
+      );
+      return {
+        path: paramPath,
+        component: SchemaRouteViewerComponent,
+        data: { pageId: page.id, page },
+      } satisfies Route;
+    });
+
+    const firstPage = pages[0];
+    const firstPath =
+      firstPage?.route?.replace(/^\//, "") || firstPage?.id || "";
+    routes.push({ path: "", redirectTo: firstPath, pathMatch: "full" });
+    routes.push({ path: "**", redirectTo: firstPath });
+
+    return routes;
+  }
+
+  /**
+   * Register all schema pages with Angular Router by calling router.resetConfig().
+   * Must be called AFTER setSchema().
+   */
+  registerAngularRoutes(router: import("@angular/router").Router): void {
+    const routes = this.toAngularRoutes();
+    if (routes.length === 0) {
+      logger.warn("[SchemaRouter] no pages to register as Angular routes");
+      return;
+    }
+    logger.log(
+      `[SchemaRouter] registering ${routes.length} Angular routes from schema`,
+    );
+    router.resetConfig(routes);
   }
 }

@@ -10,6 +10,7 @@ export {
   uiComponents,
   layoutComponents,
   feedbackComponents,
+  dataComponents,
 } from "./components";
 
 // Core SDUI services (core/lib/)
@@ -33,9 +34,10 @@ export {
   type HandlerDefinition,
 } from "./core/lib/handler-executor/handler-executor.service";
 
-
 // Missing services
 export { SignalStoreService } from "./core/lib/signal-store/signal-store.service";
+export { SignalLoggerService } from "./core/lib/signal-logger/signal-logger.service";
+export { SignalSyncService } from "./core/lib/signal-sync/signal-sync.service";
 export { ToastService } from "./core/lib/toast/toast.service";
 export { SchemaElementComponent } from "./core/lib/schema-router/schema-element.component";
 export {
@@ -45,11 +47,40 @@ export {
 
 // Storage services
 export { StorageService } from "./storage/storage.service";
+export { LocalStorageService } from "./storage/local-storage.service";
+export type { StorageValidator } from "./storage/local-storage.service";
 export { UnifiedStorageService } from "./core-storage/unified-storage.service";
+export {
+  StorageCacheService,
+  type CacheEntry,
+} from "./core-storage/storage-cache.service";
 
 // Existing working services
 export { InvokeWrapperService } from "./core-api/invoke-wrapper.service";
 export { CrudService as RemoteCrudService } from "./core-crud/crud.service";
+
+// Unified CRUD service — maps to Rust define_crud_routes! commands
+export { ApiCrudService, type CrudFilter } from "./core-api/api-crud.service";
+
+// Schema setup — unified schema loading and Angular route registration
+export {
+  SchemaSetupService,
+  type SchemaSetupOptions,
+} from "./core/lib/schema-router/schema-setup.service";
+
+// Unified app configuration providers
+export {
+  provideUnifiedApp,
+  type UnifiedAppConfig,
+  type AppProvider,
+} from "./core/providers/unified-config";
+
+// Base CRUD service
+export {
+  BaseCrudService,
+  type BaseEntity,
+  type BaseServiceConfig,
+} from "./core-crud/base-crud.service";
 
 // Core API types
 export type { Response } from "./core-api/tauri/response";
@@ -109,7 +140,20 @@ export { StyleThemeService as ThemeService } from "./styles/theme.service";
 export { ThemeToggleService } from "./styles/theme-toggle.service";
 
 // RBAC / Permission Service
-export { PermissionService } from "./core/lib/rbac/permission.service";
+export {
+  PermissionService,
+  TodoPermission,
+  Permission,
+  Role,
+  User,
+  PermissionCheckResult,
+  TodoPermissionContext,
+} from "./core/lib/rbac/permission.service";
+export { rbacGuard, rbacRoleGuard } from "./core/lib/rbac/rbac.guard";
+export {
+  RbacHasPermissionDirective,
+  RbacHasRoleDirective,
+} from "./core/lib/rbac/rbac-has-permission.directive";
 
 // Components
 export { PaginationComponent } from "./components/pagination/pagination.component";

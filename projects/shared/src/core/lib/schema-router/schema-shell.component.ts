@@ -19,6 +19,7 @@ import { ThemeToggleService } from "../../../styles/theme-toggle.service";
 import { FallbackService } from "../fallback/fallback.service";
 import { HandlerExecutorService } from "../handler-executor/handler-executor.service";
 import { SignalStoreService } from "../signal-store/signal-store.service";
+import { ToastContainerComponent } from "../toast/toast-container.component";
 import type { StyleVariant } from "../../../styles/style-registry";
 import {
   loadStyleVariant,
@@ -32,7 +33,12 @@ import { logger } from "../../../utils/logger";
 @Component({
   selector: "lib-schema-shell",
   standalone: true,
-  imports: [CommonModule, SchemaRouteViewerComponent, SchemaElementComponent],
+  imports: [
+    CommonModule,
+    SchemaRouteViewerComponent,
+    SchemaElementComponent,
+    ToastContainerComponent,
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: "./schema-shell.component.html",
   styleUrl: "./schema-shell.component.css",
@@ -43,6 +49,8 @@ export class SchemaShellComponent implements OnInit, OnDestroy {
   @Input() defaultTheme: StyleVariant = "material-design-v3";
   @Input() initialRoute = "";
   @Input() errorFallbackCommandName = "";
+  /** When true, auto-renders app-toast-container and a full-screen loading overlay */
+  @Input() includeOverlays = true;
 
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
@@ -169,9 +177,10 @@ export class SchemaShellComponent implements OnInit, OnDestroy {
   private setupThemeStoreSync() {
     this.themeSubscription = this.themeService.themeChanged$.subscribe(
       ({ isDark }) => {
-        const settings = this.signalStore.get(
-          "translator-settings",
-        ) as Record<string, unknown>;
+        const settings = this.signalStore.get("translator-settings") as Record<
+          string,
+          unknown
+        >;
         if (settings && settings["darkMode"] !== isDark) {
           settings["darkMode"] = isDark;
           this.signalStore.set("translator-settings", settings);

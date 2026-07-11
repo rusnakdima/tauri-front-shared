@@ -1,3 +1,14 @@
+@if (headerRegion(); as region) {
+  <header class="schema-layout-header">
+    @for (child of region.children || []; track child.id) {
+      <app-schema-element
+        [element]="child"
+        [elements]="region.children || []"
+      />
+    }
+  </header>
+}
+
 @if (page(); as p) {
   <div [class]="containerClass()" [ngStyle]="gridStyles()">
     @for (element of p.canvasElements; track element.id) {
@@ -5,6 +16,39 @@
         [element]="element"
         [elements]="p.canvasElements"
       ></app-schema-element>
+    }
+  </div>
+}
+
+@if (footerRegion(); as region) {
+  <footer class="schema-layout-footer">
+    @for (child of region.children || []; track child.id) {
+      <app-schema-element
+        [element]="child"
+        [elements]="region.children || []"
+      />
+    }
+  </footer>
+}
+
+@if (bottomNavRegion(); as region) {
+  <nav class="schema-layout-bottom-nav">
+    @for (child of region.children || []; track child.id) {
+      <app-schema-element
+        [element]="child"
+        [elements]="region.children || []"
+      />
+    }
+  </nav>
+}
+
+@for (region of overlayRegions(); track region.id) {
+  <div class="schema-layout-overlay">
+    @for (child of region.children || []; track child.id) {
+      <app-schema-element
+        [element]="child"
+        [elements]="region.children || []"
+      />
     }
   </div>
 }

@@ -50,13 +50,21 @@
 }
 
 .neu-btn-primary {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
+  background: linear-gradient(
+    145deg,
+    var(--gradient-neu-light),
+    var(--gradient-neu-dark)
+  );
   color: var(--color-neu-accent);
 }
 
 .neu-btn-primary:active,
 .neu-btn-primary-pressed {
-  background: linear-gradient(145deg, var(--gradient-neu-dark), var(--gradient-neu-light));
+  background: linear-gradient(
+    145deg,
+    var(--gradient-neu-dark),
+    var(--gradient-neu-light)
+  );
 }
 
 .neu-btn-solid {
@@ -131,11 +139,19 @@
 }
 
 .neu-btn-tonal:hover {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
+  background: linear-gradient(
+    145deg,
+    var(--gradient-neu-light),
+    var(--gradient-neu-dark)
+  );
 }
 
 .neu-btn-tonal:active {
-  background: linear-gradient(145deg, var(--gradient-neu-dark), var(--gradient-neu-light));
+  background: linear-gradient(
+    145deg,
+    var(--gradient-neu-dark),
+    var(--gradient-neu-light)
+  );
 }
 
 .neu-btn-sm {
@@ -231,7 +247,11 @@
 
 /* Neumorphism badge */
 .neu-badge {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
+  background: linear-gradient(
+    145deg,
+    var(--gradient-neu-light),
+    var(--gradient-neu-dark)
+  );
   border-radius: var(--radius-neu-sm);
   box-shadow:
     3px 3px 6px var(--color-neu-shadow-dark),
@@ -321,7 +341,11 @@
 }
 
 .neu-toggle-knob {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
+  background: linear-gradient(
+    145deg,
+    var(--gradient-neu-light),
+    var(--gradient-neu-dark)
+  );
   border-radius: 50%;
   box-shadow:
     3px 3px 6px var(--color-neu-shadow-dark),
@@ -353,7 +377,11 @@
 }
 
 .neu-slider-thumb {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
+  background: linear-gradient(
+    145deg,
+    var(--gradient-neu-light),
+    var(--gradient-neu-dark)
+  );
   border-radius: 50%;
   box-shadow:
     4px 4px 8px var(--color-neu-shadow-dark),
@@ -461,7 +489,11 @@
 }
 
 .neu-nav-item:hover {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
+  background: linear-gradient(
+    145deg,
+    var(--gradient-neu-light),
+    var(--gradient-neu-dark)
+  );
   box-shadow:
     3px 3px 6px var(--color-neu-shadow-dark),
     -3px -3px 6px var(--color-neu-shadow-light);
@@ -531,7 +563,11 @@
 }
 
 .neu-page-btn:hover {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
+  background: linear-gradient(
+    145deg,
+    var(--gradient-neu-light),
+    var(--gradient-neu-dark)
+  );
   box-shadow:
     2px 2px 4px var(--color-neu-shadow-dark),
     -2px -2px 4px var(--color-neu-shadow-light);
@@ -668,26 +704,102 @@
 }
 
 /* Neumorphism additional components */
-.neu-data-table { background: var(--bg-elevated); border-radius: var(--radius-neu-lg); box-shadow: var(--shadow-neu-outset); }
-.neu-sidebar { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); }
-.neu-header, .neu-footer { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); }
-.neu-page-container { background: var(--bg-primary); }
-.neu-panel { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); border-radius: var(--radius-neu-lg); }
-.neu-segment-selector { background: var(--bg-elevated); box-shadow: var(--shadow-neu-inset); border-radius: var(--radius-neu-md); }
-.neu-split-view { background: var(--bg-primary); }
-.neu-stats-card { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset-strong); border-radius: var(--radius-neu-xl); padding: 24px; }
-.neu-table { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); border-radius: var(--radius-neu-md); }
-.neu-tree { background: var(--bg-elevated); }
-.neu-canvas { background: var(--bg-primary); }
-.neu-main-editor { background: var(--bg-primary); }
-.neu-canvas-toolbar, .neu-page-toolbar { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); }
-.neu-command-palette { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset-strong); border-radius: var(--radius-neu-xl); }
-.neu-component-palette { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); }
-.neu-locale-switcher { background: var(--bg-elevated); border-radius: var(--radius-neu-sm); }
-.neu-json-view { background: var(--bg-elevated); border-radius: var(--radius-neu-md); font-family: monospace; }
-.neu-form { background: var(--bg-elevated); padding: 16px; }
-.neu-properties-panel { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); border-radius: var(--radius-neu-lg); }
-.neu-bottom-panel { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); }
-.neu-designer-tree { background: var(--bg-elevated); border-radius: var(--radius-neu-md); }
-.neu-designer-sidebar { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); }
-.neu-block { background: var(--bg-elevated); border-radius: var(--radius-neu-lg); box-shadow: var(--shadow-neu-outset); }
+.neu-data-table {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-neu-lg);
+  box-shadow: var(--shadow-neu-outset);
+}
+.neu-sidebar {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-neu-outset);
+}
+.neu-header,
+.neu-footer {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-neu-outset);
+}
+.neu-page-container {
+  background: var(--bg-primary);
+}
+.neu-panel {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-neu-outset);
+  border-radius: var(--radius-neu-lg);
+}
+.neu-segment-selector {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-neu-inset);
+  border-radius: var(--radius-neu-md);
+}
+.neu-split-view {
+  background: var(--bg-primary);
+}
+.neu-stats-card {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-neu-outset-strong);
+  border-radius: var(--radius-neu-xl);
+  padding: 24px;
+}
+.neu-table {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-neu-outset);
+  border-radius: var(--radius-neu-md);
+}
+.neu-tree {
+  background: var(--bg-elevated);
+}
+.neu-canvas {
+  background: var(--bg-primary);
+}
+.neu-main-editor {
+  background: var(--bg-primary);
+}
+.neu-canvas-toolbar,
+.neu-page-toolbar {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-neu-outset);
+}
+.neu-command-palette {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-neu-outset-strong);
+  border-radius: var(--radius-neu-xl);
+}
+.neu-component-palette {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-neu-outset);
+}
+.neu-locale-switcher {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-neu-sm);
+}
+.neu-json-view {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-neu-md);
+  font-family: monospace;
+}
+.neu-form {
+  background: var(--bg-elevated);
+  padding: 16px;
+}
+.neu-properties-panel {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-neu-outset);
+  border-radius: var(--radius-neu-lg);
+}
+.neu-bottom-panel {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-neu-outset);
+}
+.neu-designer-tree {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-neu-md);
+}
+.neu-designer-sidebar {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-neu-outset);
+}
+.neu-block {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-neu-lg);
+  box-shadow: var(--shadow-neu-outset);
+}

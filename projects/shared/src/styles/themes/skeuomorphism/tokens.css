@@ -13,30 +13,43 @@
   --color-skeu-accent: #b8860b;
   --color-skeu-accent-dark: #8b6508;
   --color-skeu-cream: #faf3e0;
-  --color-skeu-glass: rgba(255,255,255,0.2);
+  --color-skeu-glass: rgba(255, 255, 255, 0.2);
 
   /* CONSOLIDATED gradient vars — eliminates 29 duplicate definitions */
-  --gradient-leather: linear-gradient(180deg, var(--color-skeu-leather) 0%, var(--color-skeu-leather-dark) 100%);
-  --gradient-paper: linear-gradient(180deg, var(--color-skeu-paper) 0%, #e8d9b3 100%);
+  --gradient-leather: linear-gradient(
+    180deg,
+    var(--color-skeu-leather) 0%,
+    var(--color-skeu-leather-dark) 100%
+  );
+  --gradient-paper: linear-gradient(
+    180deg,
+    var(--color-skeu-paper) 0%,
+    #e8d9b3 100%
+  );
   --gradient-paper-light: linear-gradient(180deg, #f5e6c8 0%, #e8d9b3 100%);
   --gradient-input: linear-gradient(180deg, #dcc99e 0%, #c4b58a 100%);
   --gradient-tab: linear-gradient(180deg, #d4b890 0%, #b89968 100%);
-  --gradient-accent: linear-gradient(180deg, #d4a017 0%, var(--color-skeu-accent-dark) 100%);
-  --gradient-divider: linear-gradient(90deg, transparent 0%, var(--color-skeu-leather-dark) 50%, transparent 100%);
+  --gradient-accent: linear-gradient(
+    180deg,
+    #d4a017 0%,
+    var(--color-skeu-accent-dark) 100%
+  );
+  --gradient-divider: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-skeu-leather-dark) 50%,
+    transparent 100%
+  );
 
   /* Shadow tokens — standardize opacities */
   --shadow-skeu-outset:
-    0 1px 0 rgba(255,255,255,0.4) inset,
-    0 2px 4px rgba(0,0,0,0.2),
-    0 4px 8px rgba(0,0,0,0.15),
-    0 8px 16px rgba(0,0,0,0.1);
+    0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 2px 4px rgba(0, 0, 0, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
   --shadow-skeu-inset:
-    inset 0 2px 4px rgba(0,0,0,0.3),
-    inset 0 4px 8px rgba(0,0,0,0.2);
+    inset 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 4px 8px rgba(0, 0, 0, 0.2);
   --shadow-skeu-glossy:
-    inset 0 1px 0 rgba(255,255,255,0.5) inset,
-    inset 0 -10px 20px rgba(255,255,255,0.1),
-    0 2px 4px rgba(0,0,0,0.2);
+    inset 0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    inset 0 -10px 20px rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.2);
 
   /* Radius tokens */
   --radius-skeu-sm: 6px;
@@ -76,8 +89,16 @@
   --color-skeu-accent: #d4a017;
   --color-skeu-accent-dark: #8b6508;
   --color-skeu-cream: #faf3e0;
-  --gradient-leather: linear-gradient(180deg, var(--color-skeu-leather) 0%, var(--color-skeu-leather-dark) 100%);
-  --gradient-paper: linear-gradient(180deg, var(--color-skeu-paper) 0%, #2d2015 100%);
+  --gradient-leather: linear-gradient(
+    180deg,
+    var(--color-skeu-leather) 0%,
+    var(--color-skeu-leather-dark) 100%
+  );
+  --gradient-paper: linear-gradient(
+    180deg,
+    var(--color-skeu-paper) 0%,
+    #2d2015 100%
+  );
   --gradient-paper-light: linear-gradient(180deg, #3d2b1f 0%, #2d2015 100%);
   --gradient-input: linear-gradient(180deg, #5a4030 0%, #3d2b1f 100%);
   --text-primary: #f5e6c8;

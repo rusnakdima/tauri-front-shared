@@ -456,26 +456,125 @@
 }
 
 /* Glassmorphism additional components */
-.glass-data-table { backdrop-filter: blur(var(--radius-glass-md)); background: var(--color-glass-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-md); }
-.glass-sidebar { backdrop-filter: blur(var(--radius-glass-md)); background: var(--bg-secondary); border-right: 1px solid var(--border-subtle); }
-.glass-header, .glass-footer { backdrop-filter: blur(var(--radius-glass-md)); background: var(--bg-secondary); border-bottom: 1px solid var(--border-subtle); }
-.glass-page-container { background: var(--bg-primary); }
-.glass-panel { backdrop-filter: blur(var(--radius-glass-md)); background: var(--color-glass-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-xl); }
-.glass-segment-selector { backdrop-filter: blur(var(--radius-glass-sm)); background: var(--color-glass-blur); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-md); }
-.glass-split-view { background: var(--bg-primary); }
-.glass-stats-card { backdrop-filter: blur(var(--radius-glass-md)); background: var(--color-glass-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-xl); padding: 24px; }
-.glass-table { backdrop-filter: blur(var(--radius-glass-sm)); background: var(--color-glass-blur); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-md); }
-.glass-tree { background: var(--color-glass-blur); }
-.glass-canvas { background: var(--bg-primary); }
-.glass-main-editor { background: var(--bg-primary); }
-.glass-canvas-toolbar, .glass-page-toolbar { backdrop-filter: blur(var(--radius-glass-md)); background: var(--bg-secondary); border-bottom: 1px solid var(--border-subtle); }
-.glass-command-palette { backdrop-filter: blur(var(--radius-glass-xl)); background: var(--bg-secondary); border: 1px solid var(--color-glass-border-strong); border-radius: var(--radius-glass-xl); }
-.glass-component-palette { backdrop-filter: blur(var(--radius-glass-md)); background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-xl); }
-.glass-locale-switcher { backdrop-filter: blur(var(--radius-glass-sm)); background: var(--color-glass-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-sm); }
-.glass-json-view { backdrop-filter: blur(var(--radius-glass-sm)); background: var(--color-glass-blur); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-sm); font-family: monospace; }
-.glass-form { backdrop-filter: blur(var(--radius-glass-sm)); background: var(--color-glass-blur); padding: 16px; border-radius: var(--radius-glass-md); }
-.glass-properties-panel { backdrop-filter: blur(var(--radius-glass-md)); background: var(--color-glass-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-xl); }
-.glass-bottom-panel { backdrop-filter: blur(var(--radius-glass-md)); background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); }
-.glass-designer-tree { backdrop-filter: blur(var(--radius-glass-sm)); background: var(--color-glass-blur); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-md); }
-.glass-designer-sidebar { backdrop-filter: blur(var(--radius-glass-md)); background: var(--bg-secondary); border-right: 1px solid var(--border-subtle); }
-.glass-block { backdrop-filter: blur(var(--radius-glass-md)); background: var(--color-glass-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-md); }
+.glass-data-table {
+  backdrop-filter: blur(var(--radius-glass-md));
+  background: var(--color-glass-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-glass-md);
+}
+.glass-sidebar {
+  backdrop-filter: blur(var(--radius-glass-md));
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-subtle);
+}
+.glass-header,
+.glass-footer {
+  backdrop-filter: blur(var(--radius-glass-md));
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.glass-page-container {
+  background: var(--bg-primary);
+}
+.glass-panel {
+  backdrop-filter: blur(var(--radius-glass-md));
+  background: var(--color-glass-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-glass-xl);
+}
+.glass-segment-selector {
+  backdrop-filter: blur(var(--radius-glass-sm));
+  background: var(--color-glass-blur);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-glass-md);
+}
+.glass-split-view {
+  background: var(--bg-primary);
+}
+.glass-stats-card {
+  backdrop-filter: blur(var(--radius-glass-md));
+  background: var(--color-glass-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-glass-xl);
+  padding: 24px;
+}
+.glass-table {
+  backdrop-filter: blur(var(--radius-glass-sm));
+  background: var(--color-glass-blur);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-glass-md);
+}
+.glass-tree {
+  background: var(--color-glass-blur);
+}
+.glass-canvas {
+  background: var(--bg-primary);
+}
+.glass-main-editor {
+  background: var(--bg-primary);
+}
+.glass-canvas-toolbar,
+.glass-page-toolbar {
+  backdrop-filter: blur(var(--radius-glass-md));
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.glass-command-palette {
+  backdrop-filter: blur(var(--radius-glass-xl));
+  background: var(--bg-secondary);
+  border: 1px solid var(--color-glass-border-strong);
+  border-radius: var(--radius-glass-xl);
+}
+.glass-component-palette {
+  backdrop-filter: blur(var(--radius-glass-md));
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-glass-xl);
+}
+.glass-locale-switcher {
+  backdrop-filter: blur(var(--radius-glass-sm));
+  background: var(--color-glass-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-glass-sm);
+}
+.glass-json-view {
+  backdrop-filter: blur(var(--radius-glass-sm));
+  background: var(--color-glass-blur);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-glass-sm);
+  font-family: monospace;
+}
+.glass-form {
+  backdrop-filter: blur(var(--radius-glass-sm));
+  background: var(--color-glass-blur);
+  padding: 16px;
+  border-radius: var(--radius-glass-md);
+}
+.glass-properties-panel {
+  backdrop-filter: blur(var(--radius-glass-md));
+  background: var(--color-glass-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-glass-xl);
+}
+.glass-bottom-panel {
+  backdrop-filter: blur(var(--radius-glass-md));
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-subtle);
+}
+.glass-designer-tree {
+  backdrop-filter: blur(var(--radius-glass-sm));
+  background: var(--color-glass-blur);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-glass-md);
+}
+.glass-designer-sidebar {
+  backdrop-filter: blur(var(--radius-glass-md));
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-subtle);
+}
+.glass-block {
+  backdrop-filter: blur(var(--radius-glass-md));
+  background: var(--color-glass-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-glass-md);
+}

@@ -879,29 +879,106 @@
 }
 
 /* M3 Additional components */
-.m3-data-table { background: var(--color-m3-surface); border-radius: var(--radius-m3-medium); box-shadow: var(--shadow-m3-1); }
-.m3-sidebar { background: var(--color-m3-surface); box-shadow: var(--shadow-m3-2); }
-.m3-header, .m3-footer { background: var(--color-m3-surface); box-shadow: var(--shadow-m3-2); }
-.m3-page-container { background: var(--color-m3-surface); }
-.m3-panel { background: var(--color-m3-surface); border-radius: var(--radius-m3-large); box-shadow: var(--shadow-m3-2); }
-.m3-segment-selector { background: var(--color-m3-surface-container-low); border-radius: var(--radius-m3-medium); }
-.m3-split-view { background: var(--color-m3-surface); }
-.m3-stats-card { background: var(--color-m3-surface); border-radius: var(--radius-m3-large); box-shadow: var(--shadow-m3-3); padding: 24px; }
-.m3-table { background: var(--color-m3-surface); border-radius: var(--radius-m3-medium); }
-.m3-tree { background: var(--color-m3-surface-container-low); border-radius: var(--radius-m3-small); }
-.m3-canvas { background: var(--color-m3-surface-dim); }
-.m3-main-editor { background: var(--color-m3-surface); }
-.m3-canvas-toolbar, .m3-page-toolbar { background: var(--color-m3-surface); box-shadow: var(--shadow-m3-2); }
-.m3-command-palette { background: var(--color-m3-surface); border-radius: var(--radius-m3-extra-large); box-shadow: var(--shadow-m3-5); }
-.m3-component-palette { background: var(--color-m3-surface); border-radius: var(--radius-m3-large); box-shadow: var(--shadow-m3-3); }
-.m3-locale-switcher { background: var(--color-m3-surface-container-high); border-radius: var(--radius-m3-small); }
-.m3-json-view { background: var(--color-m3-surface-container-highest); border-radius: var(--radius-m3-small); font-family: monospace; }
-.m3-form { background: var(--color-m3-surface-container-low); padding: 16px; border-radius: var(--radius-m3-medium); }
-.m3-properties-panel { background: var(--color-m3-surface); border-radius: var(--radius-m3-large); box-shadow: var(--shadow-m3-3); }
-.m3-bottom-panel { background: var(--color-m3-surface); box-shadow: var(--shadow-m3-2); }
-.m3-designer-tree { background: var(--color-m3-surface-container-low); border-radius: var(--radius-m3-medium); }
-.m3-designer-sidebar { background: var(--color-m3-surface); box-shadow: var(--shadow-m3-2); }
-.m3-block { background: var(--color-m3-surface); border-radius: var(--radius-m3-medium); box-shadow: var(--shadow-m3-2); }
+.m3-data-table {
+  background: var(--color-m3-surface);
+  border-radius: var(--radius-m3-medium);
+  box-shadow: var(--shadow-m3-1);
+}
+.m3-sidebar {
+  background: var(--color-m3-surface);
+  box-shadow: var(--shadow-m3-2);
+}
+.m3-header,
+.m3-footer {
+  background: var(--color-m3-surface);
+  box-shadow: var(--shadow-m3-2);
+}
+.m3-page-container {
+  background: var(--color-m3-surface);
+}
+.m3-panel {
+  background: var(--color-m3-surface);
+  border-radius: var(--radius-m3-large);
+  box-shadow: var(--shadow-m3-2);
+}
+.m3-segment-selector {
+  background: var(--color-m3-surface-container-low);
+  border-radius: var(--radius-m3-medium);
+}
+.m3-split-view {
+  background: var(--color-m3-surface);
+}
+.m3-stats-card {
+  background: var(--color-m3-surface);
+  border-radius: var(--radius-m3-large);
+  box-shadow: var(--shadow-m3-3);
+  padding: 24px;
+}
+.m3-table {
+  background: var(--color-m3-surface);
+  border-radius: var(--radius-m3-medium);
+}
+.m3-tree {
+  background: var(--color-m3-surface-container-low);
+  border-radius: var(--radius-m3-small);
+}
+.m3-canvas {
+  background: var(--color-m3-surface-dim);
+}
+.m3-main-editor {
+  background: var(--color-m3-surface);
+}
+.m3-canvas-toolbar,
+.m3-page-toolbar {
+  background: var(--color-m3-surface);
+  box-shadow: var(--shadow-m3-2);
+}
+.m3-command-palette {
+  background: var(--color-m3-surface);
+  border-radius: var(--radius-m3-extra-large);
+  box-shadow: var(--shadow-m3-5);
+}
+.m3-component-palette {
+  background: var(--color-m3-surface);
+  border-radius: var(--radius-m3-large);
+  box-shadow: var(--shadow-m3-3);
+}
+.m3-locale-switcher {
+  background: var(--color-m3-surface-container-high);
+  border-radius: var(--radius-m3-small);
+}
+.m3-json-view {
+  background: var(--color-m3-surface-container-highest);
+  border-radius: var(--radius-m3-small);
+  font-family: monospace;
+}
+.m3-form {
+  background: var(--color-m3-surface-container-low);
+  padding: 16px;
+  border-radius: var(--radius-m3-medium);
+}
+.m3-properties-panel {
+  background: var(--color-m3-surface);
+  border-radius: var(--radius-m3-large);
+  box-shadow: var(--shadow-m3-3);
+}
+.m3-bottom-panel {
+  background: var(--color-m3-surface);
+  box-shadow: var(--shadow-m3-2);
+}
+.m3-designer-tree {
+  background: var(--color-m3-surface-container-low);
+  border-radius: var(--radius-m3-medium);
+}
+.m3-designer-sidebar {
+  background: var(--color-m3-surface);
+  box-shadow: var(--shadow-m3-2);
+}
+.m3-block {
+  background: var(--color-m3-surface);
+  border-radius: var(--radius-m3-medium);
+  box-shadow: var(--shadow-m3-2);
+}
 
 /* Missing component classes - Swap button */
 .m3-swap-btn {

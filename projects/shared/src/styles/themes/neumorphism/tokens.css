@@ -29,10 +29,18 @@
   --radius-neu-xl: 24px;
 
   /* Shadow presets */
-  --shadow-neu-outset: 6px 6px 12px var(--color-neu-shadow-dark), -6px -6px 12px var(--color-neu-shadow-light);
-  --shadow-neu-outset-strong: 10px 10px 20px var(--color-neu-shadow-dark-strong), -10px -10px 20px var(--color-neu-shadow-light-strong);
-  --shadow-neu-inset: inset 6px 6px 12px var(--color-neu-shadow-dark), inset -6px -6px 12px var(--color-neu-shadow-light);
-  --shadow-neu-inset-strong: inset 8px 8px 16px var(--color-neu-shadow-dark), inset -8px -8px 16px var(--color-neu-shadow-light);
+  --shadow-neu-outset:
+    6px 6px 12px var(--color-neu-shadow-dark),
+    -6px -6px 12px var(--color-neu-shadow-light);
+  --shadow-neu-outset-strong:
+    10px 10px 20px var(--color-neu-shadow-dark-strong),
+    -10px -10px 20px var(--color-neu-shadow-light-strong);
+  --shadow-neu-inset:
+    inset 6px 6px 12px var(--color-neu-shadow-dark),
+    inset -6px -6px 12px var(--color-neu-shadow-light);
+  --shadow-neu-inset-strong:
+    inset 8px 8px 16px var(--color-neu-shadow-dark),
+    inset -8px -8px 16px var(--color-neu-shadow-light);
 
   /* Semantic tokens */
   --accent: var(--color-neu-accent);

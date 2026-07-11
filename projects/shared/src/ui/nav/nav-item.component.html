@@ -1,11 +1,11 @@
-    <a
-      class="nav-item"
-      [class.active]="active"
-      [class.disabled]="disabled"
-      (click)="handleClick()"
-    >
-      @if (icon) {
-        <span class="nav-icon">{{ icon }}</span>
-      }
-      <span class="nav-label"><ng-content></ng-content></span>
-    </a>
+<a
+  class="nav-item"
+  [class.active]="active"
+  [class.disabled]="disabled"
+  (click)="handleClick()"
+>
+  @if (icon) {
+    <span class="nav-icon">{{ icon }}</span>
+  }
+  <span class="nav-label"><ng-content></ng-content></span>
+</a>

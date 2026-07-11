@@ -9,7 +9,7 @@ export function lerp(start: number, end: number, t: number): number {
 export function isClose(
   pos1: { x: number; z: number },
   pos2: { x: number; z: number },
-  threshold: number
+  threshold: number,
 ): boolean {
   const dx = pos1.x - pos2.x;
   const dz = pos1.z - pos2.z;
@@ -18,7 +18,7 @@ export function isClose(
 
 export function calculateDistance3D(
   pos1: { x: number; y: number; z: number },
-  pos2: { x: number; y: number; z: number }
+  pos2: { x: number; y: number; z: number },
 ): number {
   const dx = pos1.x - pos2.x;
   const dy = pos1.y - pos2.y;
@@ -51,7 +51,7 @@ export function easeInOutQuad(t: number): number {
 export function formatTime(seconds: number): string {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
-  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 }
 
 export function randomInterval(min: number, max: number): number {
@@ -76,4 +76,23 @@ export function randomPitchVariation(variation: number): number {
 
 export function generatePeerId(): number {
   return Math.floor(Math.random() * 1000000);
+}
+
+export function lerpVector3D(
+  a: [number, number, number],
+  b: [number, number, number],
+  t: number,
+): [number, number, number] {
+  return [
+    a[0] + (b[0] - a[0]) * t,
+    a[1] + (b[1] - a[1]) * t,
+    a[2] + (b[2] - a[2]) * t,
+  ];
+}
+
+export function lerpAngle(a: number, b: number, t: number): number {
+  let diff = b - a;
+  while (diff > Math.PI) diff -= 2 * Math.PI;
+  while (diff < -Math.PI) diff += 2 * Math.PI;
+  return a + diff * t;
 }

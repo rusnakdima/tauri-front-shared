@@ -9,7 +9,10 @@ import {
 } from "@angular/core";
 import { Subscription } from "rxjs";
 import { StyleThemeService } from "../../styles/theme.service";
-import { getComponentStyleClasses, getCurrentStyle } from "../../styles/style-registry";
+import {
+  getComponentStyleClasses,
+  getCurrentStyle,
+} from "../../styles/style-registry";
 
 @Directive({
   selector: "[appApplyTheme]",

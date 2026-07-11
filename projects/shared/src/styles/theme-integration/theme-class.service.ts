@@ -1,4 +1,8 @@
-import { getCurrentStyle, getComponentStyleClasses, type StyleVariant } from "../style-registry";
+import {
+  getCurrentStyle,
+  getComponentStyleClasses,
+  type StyleVariant,
+} from "../style-registry";
 
 export class ThemeClassService {
   private static instance: ThemeClassService;
@@ -18,9 +22,18 @@ export class ThemeClassService {
     // Intentionally empty - callback registration handles notifications
   }
 
-  getClasses(componentId: string, explicitVariant?: string, explicitSize?: string): string {
+  getClasses(
+    componentId: string,
+    explicitVariant?: string,
+    explicitSize?: string,
+  ): string {
     const theme = getCurrentStyle();
-    return getComponentStyleClasses(theme, componentId, explicitVariant, explicitSize);
+    return getComponentStyleClasses(
+      theme,
+      componentId,
+      explicitVariant,
+      explicitSize,
+    );
   }
 
   onThemeChange(callback: () => void): () => void {

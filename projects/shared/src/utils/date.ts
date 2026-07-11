@@ -1,5 +1,7 @@
 export function convertLocalToUtc(date: Date): Date {
-  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  return new Date(
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+  );
 }
 
 export function convertUtcToLocal(date: Date, timezone: string): Date {
@@ -24,13 +26,13 @@ export function convertUtcToLocal(date: Date, timezone: string): Date {
     parseInt(values.day!),
     parseInt(values.hour!),
     parseInt(values.minute!),
-    parseInt(values.second!)
+    parseInt(values.second!),
   );
 }
 
 export function normalizeDateFields(
   obj: Record<string, unknown>,
-  dateFieldNames: string[] = ["start_date", "end_date"]
+  dateFieldNames: string[] = ["start_date", "end_date"],
 ): Record<string, unknown> {
   const normalizedValue = { ...obj };
   for (const fieldName of dateFieldNames) {

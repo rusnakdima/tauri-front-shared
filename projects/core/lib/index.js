@@ -1,2 +1,0 @@
-export * from "./lib/public-api";
-//# sourceMappingURL=index.js.map

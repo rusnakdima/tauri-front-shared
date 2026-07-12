@@ -23,7 +23,7 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from "@angular/core";
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, Subject, map, distinctUntilChanged } from "rxjs";
 import * as i1 from "@angular/common";
 import { CommonModule } from "@angular/common";
 import { DomSanitizer } from "@angular/platform-browser";
@@ -12687,7 +12687,7 @@ class NavItemComponent {
     outputs: { clicked: "clicked" },
     ngImport: i0,
     template:
-      '    <a\n      class="nav-item"\n      [class.active]="active"\n      [class.disabled]="disabled"\n      (click)="handleClick()"\n    >\n      @if (icon) {\n        <span class="nav-icon">{{ icon }}</span>\n      }\n      <span class="nav-label"><ng-content></ng-content></span>\n    </a>',
+      '<a\n  class="nav-item"\n  [class.active]="active"\n  [class.disabled]="disabled"\n  (click)="handleClick()"\n>\n  @if (icon) {\n    <span class="nav-icon">{{ icon }}</span>\n  }\n  <span class="nav-label"><ng-content></ng-content></span>\n</a>\n',
     styles: [
       ":host{display:block}.nav-item{display:flex;align-items:center;gap:.75rem;padding:.5rem .75rem;border-radius:.375rem;color:var(--text-secondary);text-decoration:none;cursor:pointer;transition:all .15s}.nav-item:hover{background:var(--bg-hover);color:var(--text-primary)}.nav-item.active{background:var(--accent);color:var(--text-on-accent)}.nav-item.disabled{opacity:.4;cursor:not-allowed}.nav-icon{display:flex;align-items:center;font-size:1.25rem}.nav-label{flex:1}\n",
     ],
@@ -12706,7 +12706,7 @@ i0.ɵɵngDeclareClassMetadata({
           selector: "app-nav-item",
           standalone: true,
           template:
-            '    <a\n      class="nav-item"\n      [class.active]="active"\n      [class.disabled]="disabled"\n      (click)="handleClick()"\n    >\n      @if (icon) {\n        <span class="nav-icon">{{ icon }}</span>\n      }\n      <span class="nav-label"><ng-content></ng-content></span>\n    </a>',
+            '<a\n  class="nav-item"\n  [class.active]="active"\n  [class.disabled]="disabled"\n  (click)="handleClick()"\n>\n  @if (icon) {\n    <span class="nav-icon">{{ icon }}</span>\n  }\n  <span class="nav-label"><ng-content></ng-content></span>\n</a>\n',
           styles: [
             ":host{display:block}.nav-item{display:flex;align-items:center;gap:.75rem;padding:.5rem .75rem;border-radius:.375rem;color:var(--text-secondary);text-decoration:none;cursor:pointer;transition:all .15s}.nav-item:hover{background:var(--bg-hover);color:var(--text-primary)}.nav-item.active{background:var(--accent);color:var(--text-on-accent)}.nav-item.disabled{opacity:.4;cursor:not-allowed}.nav-icon{display:flex;align-items:center;font-size:1.25rem}.nav-label{flex:1}\n",
           ],
@@ -12763,7 +12763,7 @@ class NavGroupComponent {
     inputs: { label: "label" },
     ngImport: i0,
     template:
-      '    <div class="nav-group">\n      @if (label) {\n        <div class="nav-group-title">{{ label }}</div>\n      }\n      <ng-content></ng-content>\n    </div>',
+      '<div class="nav-group">\n  @if (label) {\n    <div class="nav-group-title">{{ label }}</div>\n  }\n  <ng-content></ng-content>\n</div>\n',
     styles: [
       ":host{display:block}.nav-group{margin-bottom:.5rem}.nav-group-title{padding:.5rem .75rem;font-size:.75rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}\n",
     ],
@@ -12782,7 +12782,7 @@ i0.ɵɵngDeclareClassMetadata({
           selector: "app-nav-group",
           standalone: true,
           template:
-            '    <div class="nav-group">\n      @if (label) {\n        <div class="nav-group-title">{{ label }}</div>\n      }\n      <ng-content></ng-content>\n    </div>',
+            '<div class="nav-group">\n  @if (label) {\n    <div class="nav-group-title">{{ label }}</div>\n  }\n  <ng-content></ng-content>\n</div>\n',
           styles: [
             ":host{display:block}.nav-group{margin-bottom:.5rem}.nav-group-title{padding:.5rem .75rem;font-size:.75rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em}\n",
           ],
@@ -15168,7 +15168,7 @@ class SchemaRouteViewerComponent {
     usesOnChanges: true,
     ngImport: i0,
     template:
-      '@if (headerRegion(); as region) {\n  <header class="schema-layout-header">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]="containerClass()" [ngStyle]="gridStyles()">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]="element"\n        [elements]="p.canvasElements"\n      ></app-schema-element>\n    }\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class="schema-layout-footer">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class="schema-layout-bottom-nav">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class="schema-layout-overlay">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </div>\n}\n',
+      '@if (headerRegion(); as region) {\n  <header class="schema-layout-header">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]="child"\n        [elements]="region.children || []"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]="containerClass()" [ngStyle]="gridStyles()">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]="element"\n        [elements]="p.canvasElements"\n      ></app-schema-element>\n    }\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class="schema-layout-footer">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]="child"\n        [elements]="region.children || []"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class="schema-layout-bottom-nav">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]="child"\n        [elements]="region.children || []"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class="schema-layout-overlay">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]="child"\n        [elements]="region.children || []"\n      />\n    }\n  </div>\n}\n',
     styles: [":host{display:block}.schema-page{min-height:100%}\n"],
     dependencies: [
       { kind: "ngmodule", type: CommonModule },
@@ -15202,7 +15202,7 @@ i0.ɵɵngDeclareClassMetadata({
           imports: [CommonModule, SchemaElementComponent],
           schemas: [CUSTOM_ELEMENTS_SCHEMA],
           template:
-            '@if (headerRegion(); as region) {\n  <header class="schema-layout-header">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]="containerClass()" [ngStyle]="gridStyles()">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]="element"\n        [elements]="p.canvasElements"\n      ></app-schema-element>\n    }\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class="schema-layout-footer">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class="schema-layout-bottom-nav">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class="schema-layout-overlay">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element [element]="child" [elements]="region.children || []" />\n    }\n  </div>\n}\n',
+            '@if (headerRegion(); as region) {\n  <header class="schema-layout-header">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]="child"\n        [elements]="region.children || []"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]="containerClass()" [ngStyle]="gridStyles()">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]="element"\n        [elements]="p.canvasElements"\n      ></app-schema-element>\n    }\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class="schema-layout-footer">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]="child"\n        [elements]="region.children || []"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class="schema-layout-bottom-nav">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]="child"\n        [elements]="region.children || []"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class="schema-layout-overlay">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]="child"\n        [elements]="region.children || []"\n      />\n    }\n  </div>\n}\n',
           styles: [":host{display:block}.schema-page{min-height:100%}\n"],
         },
       ],
@@ -18855,7 +18855,7 @@ function easeOutQuad(t) {
 function easeInOutQuad(t) {
   return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
-function formatTime(seconds) {
+function formatTime$1(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
@@ -18892,6 +18892,428 @@ function lerpAngle(a, b, t) {
   while (diff > Math.PI) diff -= 2 * Math.PI;
   while (diff < -Math.PI) diff += 2 * Math.PI;
   return a + diff * t;
+}
+
+function truncate(str, maxLength, suffix = "…") {
+  if (str.length <= maxLength) return str;
+  return str.slice(0, maxLength - suffix.length) + suffix;
+}
+function capitalize(str) {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+function slugify(str) {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function convertLocalToUtc(date) {
+  return new Date(
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+  );
+}
+function convertUtcToLocal(date, timezone) {
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+  const parts = formatter.formatToParts(date);
+  const values = {};
+  for (const part of parts) {
+    values[part.type] = part.value;
+  }
+  return new Date(
+    parseInt(values.year),
+    parseInt(values.month) - 1,
+    parseInt(values.day),
+    parseInt(values.hour),
+    parseInt(values.minute),
+    parseInt(values.second),
+  );
+}
+function normalizeDateFields(obj, dateFieldNames = ["start_date", "end_date"]) {
+  const normalizedValue = { ...obj };
+  for (const fieldName of dateFieldNames) {
+    if (fieldName in normalizedValue) {
+      const fieldValue = normalizedValue[fieldName];
+      if (fieldValue === null || fieldValue === undefined) {
+        normalizedValue[fieldName] = "";
+      }
+    }
+  }
+  return normalizedValue;
+}
+function formatDateRelative(date) {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+  const curDate = new Date();
+  const curYear = curDate.getFullYear();
+  const curMonth = curDate.getMonth();
+  const curDay = curDate.getDate();
+  if (day === curDay && month === curMonth && year === curYear) {
+    return formatTime(date);
+  }
+  const yesterday = new Date(curDate);
+  yesterday.setDate(curDate.getDate() - 1);
+  if (
+    day === yesterday.getDate() &&
+    month === yesterday.getMonth() &&
+    year === yesterday.getFullYear()
+  ) {
+    return `Yesterday ${formatTime(date)}`;
+  }
+  return formatLocaleDate(date);
+}
+function formatTime(date) {
+  if (typeof date === "string") {
+    date = new Date(date);
+  }
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
+function formatLocaleDate(date) {
+  if (typeof date === "string" && date === "") {
+    date = new Date();
+  }
+  if (typeof date === "string") {
+    date = new Date(date);
+  }
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+function generateCalendarDays(year, month) {
+  const firstDay = new Date(year, month, 1);
+  const startDate = new Date(firstDay);
+  startDate.setDate(startDate.getDate() - firstDay.getDay());
+  const days = [];
+  for (let i = 0; i < 42; i++) {
+    const date = new Date(startDate);
+    date.setDate(startDate.getDate() + i);
+    days.push(new Date(date));
+  }
+  return days;
+}
+function isSameDay(date1, date2) {
+  return date1.toDateString() === date2.toDateString();
+}
+/**
+ * Compare two entities by their created_at timestamp (descending - newest first)
+ */
+function compareByTimestamp(a, b) {
+  const aTime = getLatestTimestamp(a);
+  const bTime = getLatestTimestamp(b);
+  return bTime - aTime;
+}
+/**
+ * Get the latest timestamp from created_at/updated_at
+ */
+function getLatestTimestamp(entity) {
+  const created = entity.created_at ? new Date(entity.created_at).getTime() : 0;
+  const updated = entity.updated_at ? new Date(entity.updated_at).getTime() : 0;
+  return Math.max(created, updated);
+}
+
+function findById(items, id) {
+  return items.find((item) => item.id === id);
+}
+function findByIdOrThrow(items, id) {
+  const item = items.find((item) => item.id === id);
+  if (!item) throw new Error(`Item ${id} not found`);
+  return item;
+}
+function upsertEntity(items, entity) {
+  const index = items.findIndex((item) => item.id === entity.id);
+  if (index >= 0) {
+    const updated = [...items];
+    updated[index] = entity;
+    return updated;
+  }
+  return [...items, entity];
+}
+function deduplicateById(items) {
+  const seen = new Set();
+  return items.filter((item) => {
+    if (seen.has(item.id)) return false;
+    seen.add(item.id);
+    return true;
+  });
+}
+function groupByField(items, field) {
+  return items.reduce((groups, item) => {
+    const key = String(item[field]);
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(item);
+    return groups;
+  }, {});
+}
+
+function trackByRow(index, row) {
+  return String(row["_id"] || row["id"] || index);
+}
+function trackByIndex(index) {
+  return index;
+}
+/**
+ * Group entities by a key function, returning Map
+ */
+function groupByKey(entities, keyFn) {
+  const map = new Map();
+  for (const entity of entities) {
+    const key = keyFn(entity);
+    const list = map.get(key) || [];
+    list.push(entity);
+    map.set(key, list);
+  }
+  return map;
+}
+
+function evictLRU(cache, maxSize) {
+  if (cache.size <= maxSize) return cache;
+  const sorted = Array.from(cache.entries()).sort(
+    (a, b) => a[1].lastAccessed - b[1].lastAccessed,
+  );
+  const toRemove = sorted.slice(0, cache.size - maxSize);
+  const newCache = new Map(cache);
+  for (const [key] of toRemove) {
+    newCache.delete(key);
+  }
+  return newCache;
+}
+function evictLRUInPlace(map, maxSize) {
+  if (map.size <= maxSize) return;
+  const entries = Array.from(map.entries());
+  entries.sort((a, b) => a[1].lastAccessed - b[1].lastAccessed);
+  const toEvict = entries.slice(0, map.size - maxSize);
+  for (const [evictKey] of toEvict) {
+    map.delete(evictKey);
+  }
+}
+function isStale(timestamp, ttlMs) {
+  return Date.now() - timestamp > ttlMs;
+}
+
+function generateId(prefix) {
+  const id = crypto.randomUUID();
+  return prefix ? `${prefix}_${id}` : id;
+}
+const generateTransactionId = () => generateId("tx");
+const generateBatchId = () => generateId("batch");
+const generateLogId = () => generateId("log");
+const generateQueryId = () => generateId("query");
+const generateTabId = () => generateId("tab");
+
+function formatBytes(bytes) {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+}
+function formatCompactNumber(num) {
+  if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + "M";
+  if (num >= 1_000) return (num / 1_000).toFixed(1) + "K";
+  return num.toString();
+}
+
+function isNullOrUndefined(value) {
+  return value === null || value === undefined;
+}
+function isPresent(value) {
+  return value !== null && value !== undefined;
+}
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+function isValidBase64Image(data) {
+  if (!data.startsWith("data:image/")) return false;
+  const parts = data.split(",");
+  if (parts.length !== 2) return false;
+  const mimePart = parts[0];
+  const base64Part = parts[1];
+  const mimeMatch = mimePart.match(/^data:image\/(\w+);base64$/);
+  if (!mimeMatch) return false;
+  const validMimes = ["png", "jpeg", "gif", "webp", "svg+xml", "bmp"];
+  if (!validMimes.includes(mimeMatch[1])) return false;
+  try {
+    atob(base64Part);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function escapeSqlValue(value) {
+  if (value === null || value === undefined) return "NULL";
+  if (typeof value === "number") return String(value);
+  if (typeof value === "boolean") return value ? "1" : "0";
+  return `'${String(value).replace(/'/g, "''")}'`;
+}
+function escapeCsvValue(value) {
+  if (value === null || value === undefined) return "";
+  const str = String(value);
+  if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+}
+
+function deepClone(obj) {
+  if (obj === null || typeof obj !== "object") return obj;
+  if (obj instanceof Date) return new Date(obj.getTime());
+  if (obj instanceof Array) return obj.map((item) => deepClone(item));
+  if (obj instanceof Map) {
+    const cloned = new Map();
+    obj.forEach((value, key) => cloned.set(key, deepClone(value)));
+    return cloned;
+  }
+  if (obj instanceof Set) {
+    const cloned = new Set();
+    obj.forEach((value) => cloned.add(deepClone(value)));
+    return cloned;
+  }
+  const cloned = {};
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      cloned[key] = deepClone(obj[key]);
+    }
+  }
+  return cloned;
+}
+function getNestedValue$1(obj, path) {
+  if (!path) return obj;
+  const parts = path.split(".");
+  let current = obj;
+  for (const part of parts) {
+    if (current === null || current === undefined) return undefined;
+    if (typeof current !== "object") return undefined;
+    current = current[part];
+  }
+  return current;
+}
+function applyUpdate(target, update) {
+  return { ...target, ...update };
+}
+
+function debounce(fn, delayMs) {
+  let timeoutId = null;
+  return (...args) => {
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      fn(...args);
+      timeoutId = null;
+    }, delayMs);
+  };
+}
+function throttle(fn, delayMs) {
+  let lastCall = 0;
+  return (...args) => {
+    const now = Date.now();
+    if (now - lastCall >= delayMs) {
+      lastCall = now;
+      fn(...args);
+    }
+  };
+}
+function withLoading(fn, setLoading) {
+  return async (...args) => {
+    try {
+      setLoading(true);
+      return await fn(...args);
+    } finally {
+      setLoading(false);
+    }
+  };
+}
+
+function createState(initialValue) {
+  const subject = new BehaviorSubject(initialValue);
+  const signalFn = () => subject.getValue();
+  signalFn.set = (value) => subject.next(value);
+  signalFn.update = (fn) => subject.next(fn(subject.getValue()));
+  return signalFn;
+}
+function createStateSubject(initialValue) {
+  const subject = new BehaviorSubject(initialValue);
+  return {
+    state$: subject.asObservable(),
+    set: (value) => subject.next(value),
+    update: (fn) => subject.next(fn(subject.getValue())),
+  };
+}
+function createDerivedState(state$, derive) {
+  return state$.pipe(
+    map((state) => derive(state)),
+    distinctUntilChanged(),
+  );
+}
+
+class EventListenerManager {
+  listeners = new Map();
+  add(element, event, handler) {
+    element.addEventListener(event, handler);
+    if (!this.listeners.has(event)) {
+      this.listeners.set(event, new Set());
+    }
+    this.listeners.get(event).add(handler);
+  }
+  remove(element, event, handler) {
+    element.removeEventListener(event, handler);
+    this.listeners.get(event)?.delete(handler);
+  }
+  removeAll() {
+    this.listeners.forEach((handlers) => {
+      handlers.clear();
+    });
+    this.listeners.clear();
+  }
+}
+function createResizeObserver(callback) {
+  if (typeof ResizeObserver === "undefined") return null;
+  return new ResizeObserver(callback);
+}
+function observeElement(observer, element) {
+  observer.observe(element);
+}
+function unobserveElement(observer, element) {
+  observer.unobserve(element);
+}
+
+/**
+ * Filter array items by search query across multiple fields
+ */
+function filterBySearch(items, query, fields) {
+  if (!query.trim()) return items;
+  const lowerQuery = query.toLowerCase();
+  return items.filter((item) =>
+    fields.some((field) => {
+      const value = getNestedValue(item, field);
+      return (
+        typeof value === "string" && value.toLowerCase().includes(lowerQuery)
+      );
+    }),
+  );
+}
+function getNestedValue(obj, path) {
+  if (typeof path === "string" && path.includes(".")) {
+    return path.split(".").reduce((o, k) => o?.[k], obj);
+  }
+  return obj[path];
 }
 
 /**
@@ -19152,6 +19574,142 @@ i0.ɵɵngDeclareClassMetadata({
   },
 });
 
+/**
+ * Update service for checking, downloading, and installing app updates via Tauri backend.
+ */
+class UpdateService {
+  /**
+   * Check for available updates.
+   * Returns UpdateInfo if an update is available, null otherwise.
+   */
+  async checkForUpdates() {
+    try {
+      const result = await invoke("check_for_updates");
+      return result;
+    } catch {
+      return null;
+    }
+  }
+  /**
+   * Download an update with optional progress callback.
+   * Returns the path to the downloaded installer.
+   */
+  async downloadUpdate(info, onProgress) {
+    if (onProgress) {
+      // Subscribe to download progress events if the backend supports them
+      const unlisten = await invoke("subscribe_download_progress", {});
+      // The Rust backend should emit progress events that the frontend listens to
+      // For now, we invoke the download command which may stream progress
+      const path = await invoke("download_update", {
+        url: info.download_url,
+        assetName: info.asset_name,
+      });
+      return path;
+    }
+    return invoke("download_update", {
+      url: info.download_url,
+      assetName: info.asset_name,
+    });
+  }
+  /**
+   * Install the update from the given installer path.
+   */
+  async installUpdate(path) {
+    await invoke("install_update", { installerPath: path });
+  }
+  /**
+   * Get the current app version.
+   */
+  async getCurrentVersion() {
+    return invoke("get_current_version");
+  }
+}
+
+/**
+ * Reusable about/check-update pattern for apps that distribute via GitHub Releases.
+ * Fetches release info from GitHub API and uses UpdateService for download/install.
+ */
+class AboutService {
+  appName;
+  owner;
+  repo;
+  updateService;
+  constructor(appName, owner, repo) {
+    this.appName = appName;
+    this.owner = owner;
+    this.repo = repo;
+    this.updateService = new UpdateService();
+  }
+  /**
+   * Check for updates by fetching the latest GitHub release.
+   * Returns UpdateInfo if a newer version is available, null otherwise.
+   */
+  async checkUpdate() {
+    try {
+      const response = await fetch(
+        `https://api.github.com/repos/${this.owner}/${this.repo}/releases/latest`,
+      );
+      if (!response.ok) {
+        return null;
+      }
+      const release = await response.json();
+      const latestVersion = release.tag_name.startsWith("v")
+        ? release.tag_name.slice(1)
+        : release.tag_name;
+      const currentVersion = await this.updateService.getCurrentVersion();
+      // Compare versions - simple semver comparison
+      if (this.isNewerVersion(latestVersion, currentVersion)) {
+        // Find the primary asset (first non-source asset)
+        const asset = release.assets.find(
+          (a) => !a.name.endsWith(".tar.gz") && !a.name.endsWith(".zip"),
+        );
+        const downloadUrl =
+          asset?.browser_download_url ??
+          `https://github.com/${this.owner}/${this.repo}/releases/download/${release.tag_name}/${asset?.name ?? ""}`;
+        const assetSize = asset?.size ?? 0;
+        return {
+          current_version: currentVersion,
+          latest_version: latestVersion,
+          download_url: downloadUrl,
+          asset_name: asset?.name ?? "",
+          asset_size: assetSize,
+          release_notes: release.body ?? undefined,
+        };
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  }
+  /**
+   * Download and install the latest update.
+   * Requires checkUpdate() to have been called first to populate cached info.
+   */
+  async downloadAndInstall(onProgress) {
+    const info = await this.checkUpdate();
+    if (!info) {
+      throw new Error("No update available");
+    }
+    const path = await this.updateService.downloadUpdate(info, onProgress);
+    await this.updateService.installUpdate(path);
+  }
+  isNewerVersion(latest, current) {
+    const latestParts = latest.split(".").map(Number);
+    const currentParts = current.split(".").map(Number);
+    for (
+      let i = 0;
+      i < Math.max(latestParts.length, currentParts.length);
+      i++
+    ) {
+      const l = latestParts[i] ?? 0;
+      const c = currentParts[i] ?? 0;
+      if (l > c) return true;
+      if (l < c) return false;
+    }
+    return false;
+  }
+}
+
 // @tauri-front/shared - Unified shared library
 // Explicit re-exports to avoid name collisions
 // Side-effect import: registers ALL Angular components in SCHEMA_COMPONENT_MAP
@@ -19162,6 +19720,7 @@ i0.ɵɵngDeclareClassMetadata({
  */
 
 export {
+  AboutService,
   ApiCrudService,
   ApiException,
   BaseCrudService,
@@ -19171,6 +19730,7 @@ export {
   ErrorHandlerService,
   ErrorType,
   EventBusService,
+  EventListenerManager,
   GuardService,
   HandlerExecutorService,
   I18nService,
@@ -19182,6 +19742,7 @@ export {
   RbacHasPermissionDirective,
   RbacHasRoleDirective,
   CrudService as RemoteCrudService,
+  ResponseStatus,
   SCHEMA_COMPONENT_MAP,
   SchemaElementComponent,
   SchemaRendererService,
@@ -19200,34 +19761,76 @@ export {
   ToastService,
   TodoPermission,
   UnifiedStorageService,
+  UpdateService,
+  applyUpdate,
   calculateDistance3D,
+  capitalize,
   clamp,
+  compareByTimestamp,
+  createDerivedState,
+  createResizeObserver,
+  createState,
+  createStateSubject,
   dataComponents,
+  debounce,
+  deduplicateById,
+  deepClone,
   easeInOutQuad,
   easeOutQuad,
+  escapeCsvValue,
+  escapeSqlValue,
+  evictLRU,
+  evictLRUInPlace,
   feedbackComponents,
+  filterBySearch,
+  findById,
+  findByIdOrThrow,
+  formatBytes,
+  formatCompactNumber,
+  formatDateRelative,
   formatError,
-  formatTime,
+  formatLocaleDate,
+  formatTime$1 as formatTime,
+  formatTime as formatTimeFromDate,
+  generateBatchId,
+  generateCalendarDays,
+  generateId,
+  generateLogId,
   generatePeerId,
+  generateQueryId,
+  generateTabId,
+  generateTransactionId,
   getAllStyleVariants,
   getComponentStyleClasses,
   getCurrentStyle,
   getErrorMessage,
+  getLatestTimestamp,
+  getNestedValue$1 as getNestedValue,
   getStyleClassPrefix,
+  groupByField,
+  groupByKey,
   invokeCommand,
   invokeCommandWithResponse,
   invokeVoid,
   invokeWithError,
   isClose,
   isError,
+  isNullOrUndefined,
+  isPresent,
+  isSameDay,
+  isStale,
   isSuccess,
+  isValidBase64Image,
+  isValidEmail,
   layoutComponents,
   lerp,
   lerpAngle,
   lerpVector3D,
   loadStyleVariant,
   mapResponse,
+  observeElement,
   parseError,
+  parseJsonOrDefault,
   provideUnifiedApp,
   randomChoice,
   randomChoice as randomElement,
@@ -19239,9 +19842,17 @@ export {
   rbacRoleGuard,
   registerSchemaComponent,
   setCurrentStyle,
+  slugify,
   sortBy,
+  throttle,
+  trackByIndex,
+  trackByRow,
+  truncate,
   uiComponents,
+  unobserveElement,
   unwrapResponse,
+  upsertEntity,
   weightedRandom,
+  withLoading,
 };
 //# sourceMappingURL=tauri-front-shared.mjs.map

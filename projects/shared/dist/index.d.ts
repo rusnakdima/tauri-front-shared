@@ -6,7 +6,7 @@ import {
   OnChanges,
   SimpleChanges,
   Type,
-  Signal as Signal$1,
+  Signal as Signal$2,
   Provider,
   EnvironmentProviders,
   TemplateRef,
@@ -1590,8 +1590,8 @@ declare class StorageCacheService {
   clear(): void;
   clearPattern(pattern: string): void;
   hasCachedData(key: string): boolean;
-  getReactiveCache<T>(key: string): Signal$1<T> | undefined;
-  setReactiveCache<T>(key: string, value: Signal$1<T>): void;
+  getReactiveCache<T>(key: string): Signal$2<T> | undefined;
+  setReactiveCache<T>(key: string, value: Signal$2<T>): void;
   getCacheTimestamp(key: string): number | undefined;
   setCacheTimestamp(key: string, timestamp: number): void;
   isCacheValid(key: string, ttlMs?: number): boolean;
@@ -1795,7 +1795,7 @@ type AppProvider = Provider | EnvironmentProviders;
 declare function provideUnifiedApp(config?: UnifiedAppConfig): AppProvider[];
 
 /** Angular-signal-compatible callable that reads/writes a key in the store */
-type Signal<T> = {
+type Signal$1<T> = {
   (): T;
   set(value: T): void;
   update(fn: (prev: T) => T): void;
@@ -1847,9 +1847,9 @@ declare abstract class BaseCrudService<T extends BaseEntity> {
   protected readonly mainService: MainServiceForCrud;
   protected readonly cacheService: StorageCacheServiceForCrud;
   protected readonly queryService: StorageQueryServiceForCrud;
-  protected readonly entitiesSignal: Signal<T[]>;
-  protected readonly activeEntitySignal: Signal<T | null>;
-  protected readonly activeEntityIdSignal: Signal<string | null>;
+  protected readonly entitiesSignal: Signal$1<T[]>;
+  protected readonly activeEntitySignal: Signal$1<T | null>;
+  protected readonly activeEntityIdSignal: Signal$1<string | null>;
   /** Call as a function: entities() returns T[] */
   readonly entities: () => T[];
   readonly activeEntity: () => T | null;
@@ -1965,7 +1965,7 @@ declare function randomChoice<T>(array: T[]): T;
 declare function randomRange(min: number, max: number): number;
 declare function easeOutQuad(t: number): number;
 declare function easeInOutQuad(t: number): number;
-declare function formatTime(seconds: number): string;
+declare function formatTime$1(seconds: number): string;
 declare function randomInterval(min: number, max: number): number;
 declare function weightedRandom<T>(
   items: {
@@ -1981,6 +1981,194 @@ declare function lerpVector3D(
   t: number,
 ): [number, number, number];
 declare function lerpAngle(a: number, b: number, t: number): number;
+
+declare function truncate(
+  str: string,
+  maxLength: number,
+  suffix?: string,
+): string;
+declare function capitalize(str: string): string;
+declare function slugify(str: string): string;
+
+declare function formatDateRelative(date: Date): string;
+declare function formatTime(date: Date | string): string;
+declare function formatLocaleDate(date: Date | string): string;
+declare function generateCalendarDays(year: number, month: number): Date[];
+declare function isSameDay(date1: Date, date2: Date): boolean;
+/**
+ * Compare two entities by their created_at timestamp (descending - newest first)
+ */
+declare function compareByTimestamp(
+  a: {
+    created_at?: string;
+    updated_at?: string;
+  },
+  b: {
+    created_at?: string;
+    updated_at?: string;
+  },
+): number;
+/**
+ * Get the latest timestamp from created_at/updated_at
+ */
+declare function getLatestTimestamp(entity: {
+  created_at?: string;
+  updated_at?: string;
+}): number;
+
+/**
+ * Safe JSON parser with fallback for array types.
+ * Replaces 22+ duplicate patterns across the codebase.
+ */
+declare function parseJsonOrDefault<T>(
+  json: string | T[],
+  defaultValue?: T[],
+): T[];
+
+declare function findById<
+  T extends {
+    id: string;
+  },
+>(items: T[], id: string): T | undefined;
+declare function findByIdOrThrow<
+  T extends {
+    id: string;
+  },
+>(items: T[], id: string): T;
+declare function upsertEntity<
+  T extends {
+    id: string;
+  },
+>(items: T[], entity: T): T[];
+declare function deduplicateById<
+  T extends {
+    id: string;
+  },
+>(items: T[]): T[];
+declare function groupByField<T>(
+  items: T[],
+  field: keyof T,
+): Record<string, T[]>;
+
+declare function trackByRow(
+  index: number,
+  row: Record<string, unknown>,
+): string;
+declare function trackByIndex(index: number): number;
+/**
+ * Group entities by a key function, returning Map
+ */
+declare function groupByKey<T, K>(
+  entities: T[],
+  keyFn: (entity: T) => K,
+): Map<K, T[]>;
+
+interface LRUEntry {
+  lastAccessed: number;
+}
+declare function evictLRU<T extends LRUEntry>(
+  cache: Map<string, T>,
+  maxSize: number,
+): Map<string, T>;
+declare function evictLRUInPlace<T extends LRUEntry>(
+  map: Map<string, T>,
+  maxSize: number,
+): void;
+declare function isStale(timestamp: number, ttlMs: number): boolean;
+
+declare function generateId(prefix?: string): string;
+declare const generateTransactionId: () => string;
+declare const generateBatchId: () => string;
+declare const generateLogId: () => string;
+declare const generateQueryId: () => string;
+declare const generateTabId: () => string;
+
+declare function formatBytes(bytes: number): string;
+declare function formatCompactNumber(num: number): string;
+
+declare function isNullOrUndefined(value: unknown): value is null | undefined;
+declare function isPresent<T>(value: T): value is NonNullable<T>;
+declare function isValidEmail(email: string): boolean;
+declare function isValidBase64Image(data: string): boolean;
+
+declare function escapeSqlValue(value: unknown): string;
+declare function escapeCsvValue(value: unknown): string;
+
+declare function deepClone<T>(obj: T): T;
+declare function getNestedValue(obj: unknown, path: string): unknown;
+declare function applyUpdate<T extends object>(
+  target: T,
+  update: Partial<T>,
+): T;
+
+declare function debounce<T extends (...args: unknown[]) => unknown>(
+  fn: T,
+  delayMs: number,
+): (...args: Parameters<T>) => void;
+declare function throttle<T extends (...args: unknown[]) => unknown>(
+  fn: T,
+  delayMs: number,
+): (...args: Parameters<T>) => void;
+type LoadingState = {
+  loading: boolean;
+};
+declare function withLoading<
+  T extends (...args: unknown[]) => Promise<unknown>,
+>(
+  fn: T,
+  setLoading: (loading: boolean) => void,
+): (...args: Parameters<T>) => Promise<unknown>;
+
+type Signal<T> = {
+  (): T;
+  set(value: T): void;
+  update(fn: (prev: T) => T): void;
+};
+declare function createState<T>(initialValue: T): Signal<T>;
+declare function createStateSubject<T>(initialValue: T): {
+  state$: Observable<T>;
+  set: (value: T) => void;
+  update: (fn: (prev: T) => T) => void;
+};
+declare function createDerivedState<T, R>(
+  state$: Observable<T>,
+  derive: (state: T) => R,
+): Observable<R>;
+
+declare class EventListenerManager {
+  private listeners;
+  add(element: EventTarget, event: string, handler: EventListener): void;
+  remove(element: EventTarget, event: string, handler: EventListener): void;
+  removeAll(): void;
+}
+interface ResizeObserverEntry {
+  target: Element;
+  contentRect: DOMRectReadOnly;
+}
+type ResizeObserverCallback = (
+  entries: ResizeObserverEntry[],
+  observer: ResizeObserver,
+) => void;
+declare function createResizeObserver(
+  callback: ResizeObserverCallback,
+): ResizeObserver | null;
+declare function observeElement(
+  observer: ResizeObserver,
+  element: Element,
+): void;
+declare function unobserveElement(
+  observer: ResizeObserver,
+  element: Element,
+): void;
+
+/**
+ * Filter array items by search query across multiple fields
+ */
+declare function filterBySearch<T>(
+  items: T[],
+  query: string,
+  fields: (keyof T | string)[],
+): T[];
 
 /**
  * Route guard that checks resource-action permissions.
@@ -2081,7 +2269,71 @@ declare class RbacHasRoleDirective implements OnInit {
   >;
 }
 
+interface UpdateInfo {
+  current_version: string;
+  latest_version: string;
+  download_url: string;
+  asset_name: string;
+  asset_size: number;
+  release_notes?: string;
+}
+interface DownloadProgress {
+  bytes_downloaded: number;
+  total_bytes: number;
+  progress_pct: number;
+}
+/**
+ * Update service for checking, downloading, and installing app updates via Tauri backend.
+ */
+declare class UpdateService {
+  /**
+   * Check for available updates.
+   * Returns UpdateInfo if an update is available, null otherwise.
+   */
+  checkForUpdates(): Promise<UpdateInfo | null>;
+  /**
+   * Download an update with optional progress callback.
+   * Returns the path to the downloaded installer.
+   */
+  downloadUpdate(
+    info: UpdateInfo,
+    onProgress?: (p: DownloadProgress) => void,
+  ): Promise<string>;
+  /**
+   * Install the update from the given installer path.
+   */
+  installUpdate(path: string): Promise<void>;
+  /**
+   * Get the current app version.
+   */
+  getCurrentVersion(): Promise<string>;
+}
+
+/**
+ * Reusable about/check-update pattern for apps that distribute via GitHub Releases.
+ * Fetches release info from GitHub API and uses UpdateService for download/install.
+ */
+declare class AboutService {
+  appName: string;
+  owner: string;
+  repo: string;
+  private updateService;
+  constructor(appName: string, owner: string, repo: string);
+  /**
+   * Check for updates by fetching the latest GitHub release.
+   * Returns UpdateInfo if a newer version is available, null otherwise.
+   */
+  checkUpdate(): Promise<UpdateInfo | null>;
+  /**
+   * Download and install the latest update.
+   * Requires checkUpdate() to have been called first to populate cached info.
+   */
+  downloadAndInstall(onProgress?: (p: DownloadProgress) => void): Promise<void>;
+  private isNewerVersion;
+}
+
 export {
+  AboutService,
   ApiCrudService,
   ApiException,
   BaseCrudService,
@@ -2091,6 +2343,7 @@ export {
   ErrorHandlerService,
   ErrorType,
   EventBusService,
+  EventListenerManager,
   GuardService,
   HandlerExecutorService,
   I18nService,
@@ -2102,6 +2355,7 @@ export {
   RbacHasPermissionDirective,
   RbacHasRoleDirective,
   CrudService as RemoteCrudService,
+  ResponseStatus,
   SCHEMA_COMPONENT_MAP,
   SchemaElementComponent,
   SchemaRendererService,
@@ -2120,34 +2374,76 @@ export {
   ToastService,
   TodoPermission,
   UnifiedStorageService,
+  UpdateService,
+  applyUpdate,
   calculateDistance3D,
+  capitalize,
   clamp,
+  compareByTimestamp,
+  createDerivedState,
+  createResizeObserver,
+  createState,
+  createStateSubject,
   dataComponents,
+  debounce,
+  deduplicateById,
+  deepClone,
   easeInOutQuad,
   easeOutQuad,
+  escapeCsvValue,
+  escapeSqlValue,
+  evictLRU,
+  evictLRUInPlace,
   feedbackComponents,
+  filterBySearch,
+  findById,
+  findByIdOrThrow,
+  formatBytes,
+  formatCompactNumber,
+  formatDateRelative,
   formatError,
-  formatTime,
+  formatLocaleDate,
+  formatTime$1 as formatTime,
+  formatTime as formatTimeFromDate,
+  generateBatchId,
+  generateCalendarDays,
+  generateId,
+  generateLogId,
   generatePeerId,
+  generateQueryId,
+  generateTabId,
+  generateTransactionId,
   getAllStyleVariants,
   getComponentStyleClasses,
   getCurrentStyle,
   getErrorMessage,
+  getLatestTimestamp,
+  getNestedValue,
   getStyleClassPrefix,
+  groupByField,
+  groupByKey,
   invokeCommand,
   invokeCommandWithResponse,
   invokeVoid,
   invokeWithError,
   isClose,
   isError,
+  isNullOrUndefined,
+  isPresent,
+  isSameDay,
+  isStale,
   isSuccess,
+  isValidBase64Image,
+  isValidEmail,
   layoutComponents,
   lerp,
   lerpAngle,
   lerpVector3D,
   loadStyleVariant,
   mapResponse,
+  observeElement,
   parseError,
+  parseJsonOrDefault,
   provideUnifiedApp,
   randomChoice,
   randomChoice as randomElement,
@@ -2159,10 +2455,18 @@ export {
   rbacRoleGuard,
   registerSchemaComponent,
   setCurrentStyle,
+  slugify,
   sortBy,
+  throttle,
+  trackByIndex,
+  trackByRow,
+  truncate,
   uiComponents,
+  unobserveElement,
   unwrapResponse,
+  upsertEntity,
   weightedRandom,
+  withLoading,
 };
 export type {
   AppError,
@@ -2178,6 +2482,7 @@ export type {
   ComponentStyleMap,
   CrudFilter,
   DataBinding,
+  DownloadProgress,
   ElementConfig,
   ElementEvents,
   GridPosition,
@@ -2185,13 +2490,17 @@ export type {
   HandlerDefinition,
   Layout,
   LayoutElement,
+  LoadingState,
   Page,
   Permission,
   PermissionCheckResult,
   RenderContext,
+  ResizeObserverCallback,
+  ResizeObserverEntry,
   Response,
   Role,
   SchemaSetupOptions,
+  Signal,
   StorageValidator,
   StyleVariant,
   Theme,
@@ -2199,5 +2508,6 @@ export type {
   TodoPermissionContext,
   UiSchema,
   UnifiedAppConfig,
+  UpdateInfo,
   User,
 };

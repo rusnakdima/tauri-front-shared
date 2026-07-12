@@ -85,6 +85,7 @@ export {
 // Core API types
 export type { Response } from "./core-api/tauri/response";
 export {
+  ResponseStatus,
   isSuccess,
   isError,
   getErrorMessage,
@@ -124,6 +125,47 @@ export {
 // Utilities
 export { sortBy } from "./utils/sorting";
 export * from "./utils/math";
+export * from "./utils/string";
+export {
+  formatDateRelative,
+  formatLocaleDate,
+  generateCalendarDays,
+  isSameDay,
+  formatTime as formatTimeFromDate,
+  compareByTimestamp,
+  getLatestTimestamp,
+} from "./utils/date";
+export * from "./utils/json";
+export {
+  findById,
+  findByIdOrThrow,
+  upsertEntity,
+  deduplicateById,
+  groupByField,
+} from "./utils/array";
+export { trackByRow, trackByIndex, groupByKey } from "./utils/collection";
+export { evictLRU, evictLRUInPlace, isStale } from "./utils/cache";
+export {
+  generateId,
+  generateTransactionId,
+  generateBatchId,
+  generateLogId,
+  generateQueryId,
+  generateTabId,
+} from "./utils/id";
+export { formatBytes, formatCompactNumber } from "./utils/bytes";
+export {
+  isNullOrUndefined,
+  isPresent,
+  isValidEmail,
+  isValidBase64Image,
+} from "./utils/validation";
+export { escapeSqlValue, escapeCsvValue } from "./utils/escape";
+export * from "./utils/object";
+export * from "./utils/async";
+export * from "./utils/state";
+export * from "./utils/events";
+export { filterBySearch } from "./utils/filter";
 
 // Style system
 export {
@@ -157,3 +199,11 @@ export {
 
 // Components
 export { PaginationComponent } from "./components/pagination/pagination.component";
+
+// Update services
+export {
+  UpdateService,
+  type UpdateInfo,
+  type DownloadProgress,
+} from "./core/update/update.service";
+export { AboutService } from "./core/update/about.service";

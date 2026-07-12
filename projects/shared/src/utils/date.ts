@@ -112,3 +112,27 @@ export function generateCalendarDays(year: number, month: number): Date[] {
 export function isSameDay(date1: Date, date2: Date): boolean {
   return date1.toDateString() === date2.toDateString();
 }
+
+/**
+ * Compare two entities by their created_at timestamp (descending - newest first)
+ */
+export function compareByTimestamp(
+  a: { created_at?: string; updated_at?: string },
+  b: { created_at?: string; updated_at?: string },
+): number {
+  const aTime = getLatestTimestamp(a);
+  const bTime = getLatestTimestamp(b);
+  return bTime - aTime;
+}
+
+/**
+ * Get the latest timestamp from created_at/updated_at
+ */
+export function getLatestTimestamp(entity: {
+  created_at?: string;
+  updated_at?: string;
+}): number {
+  const created = entity.created_at ? new Date(entity.created_at).getTime() : 0;
+  const updated = entity.updated_at ? new Date(entity.updated_at).getTime() : 0;
+  return Math.max(created, updated);
+}

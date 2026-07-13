@@ -93,8 +93,8 @@ export class StyleResolver {
     const resolved: Record<string, string> = { ...css };
 
     if (theme) {
-      resolved["--theme-name"] = theme.name;
-      this.applyThemeColors(resolved, theme.colors);
+      if (theme.name) resolved["--theme-name"] = theme.name;
+      if (theme.colors) this.applyThemeColors(resolved, theme.colors);
     }
 
     return resolved;
@@ -180,22 +180,22 @@ export class StyleResolver {
     dest: Record<string, string>,
     colors: ThemeColors,
   ): void {
-    dest["--color-bg-primary"] = colors.bgPrimary;
-    dest["--color-bg-secondary"] = colors.bgSecondary;
-    dest["--color-bg-tertiary"] = colors.bgTertiary;
-    dest["--color-bg-elevated"] = colors.bgElevated;
-    dest["--color-bg-hover"] = colors.bgHover;
-    dest["--color-text-primary"] = colors.textPrimary;
-    dest["--color-text-secondary"] = colors.textSecondary;
-    dest["--color-text-muted"] = colors.textMuted;
-    dest["--color-border"] = colors.border;
-    dest["--color-border-light"] = colors.borderLight;
-    dest["--color-primary"] = colors.primary;
-    dest["--color-secondary"] = colors.secondary;
-    dest["--color-accent"] = colors.accent;
-    dest["--color-accent-hover"] = colors.accentHover;
-    dest["--color-success"] = colors.success;
-    dest["--color-warning"] = colors.warning;
-    dest["--color-error"] = colors.error;
+    if (colors.bgPrimary) dest["--color-bg-primary"] = colors.bgPrimary;
+    if (colors.bgSecondary) dest["--color-bg-secondary"] = colors.bgSecondary;
+    if (colors.bgTertiary) dest["--color-bg-tertiary"] = colors.bgTertiary;
+    if (colors.bgElevated) dest["--color-bg-elevated"] = colors.bgElevated;
+    if (colors.bgHover) dest["--color-bg-hover"] = colors.bgHover;
+    if (colors.textPrimary) dest["--color-text-primary"] = colors.textPrimary;
+    if (colors.textSecondary) dest["--color-text-secondary"] = colors.textSecondary;
+    if (colors.textMuted) dest["--color-text-muted"] = colors.textMuted;
+    if (colors.border) dest["--color-border"] = colors.border;
+    if (colors.borderLight) dest["--color-border-light"] = colors.borderLight;
+    if (colors.primary) dest["--color-primary"] = colors.primary;
+    if (colors.secondary) dest["--color-secondary"] = colors.secondary;
+    if (colors.accent) dest["--color-accent"] = colors.accent;
+    if (colors.accentHover) dest["--color-accent-hover"] = colors.accentHover;
+    if (colors.success) dest["--color-success"] = colors.success;
+    if (colors.warning) dest["--color-warning"] = colors.warning;
+    if (colors.error) dest["--color-error"] = colors.error;
   }
 }

@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
-import type { UiSchema, ValidationResult, ValidationError } from "./types";
-import { logger } from "../../../../utils/logger";
+import type { UiSchema, ValidationResult, ValidationError } from "../types";
 
 @Injectable({ providedIn: "root" })
 export class SchemaLoaderService {
@@ -54,7 +53,7 @@ export class SchemaLoaderService {
     const result = this.validateSchema(schema);
     if (!result.valid) {
       throw new Error(
-        `Schema validation failed: ${result.errors.map((e) => e.message).join(", ")}`,
+        `Schema validation failed: ${result.errors.map((e: ValidationError) => e.message).join(", ")}`,
       );
     }
     return schema as UiSchema;
@@ -69,7 +68,7 @@ export class SchemaLoaderService {
     const result = this.validateSchema(schema);
     if (!result.valid) {
       throw new Error(
-        `Schema validation failed: ${result.errors.map((e) => e.message).join(", ")}`,
+        `Schema validation failed: ${result.errors.map((e: ValidationError) => e.message).join(", ")}`,
       );
     }
     return schema as UiSchema;
@@ -88,11 +87,11 @@ export class SchemaLoaderService {
         },
       );
       if (cached?.status === "success" && cached.data) {
-        logger.log("[SchemaLoader] Loaded from local cache");
+        console.log("[SchemaLoader] Loaded from local cache");
         return cached.data;
       }
     } catch (e) {
-      logger.warn("[SchemaLoader] Local cache read failed:", e);
+      console.warn("[SchemaLoader] Local cache read failed:", e);
     }
 
     if (designerEndpoint) {
@@ -105,7 +104,7 @@ export class SchemaLoaderService {
           },
         );
         if (cloud?.status === "success" && cloud.data) {
-          logger.log("[SchemaLoader] Synced from cloud via Designer");
+          console.log("[SchemaLoader] Synced from cloud via Designer");
           await invoke("save_schema_local", {
             appId: this.appId,
             schema: cloud.data,
@@ -113,11 +112,11 @@ export class SchemaLoaderService {
           return cloud.data;
         }
       } catch (e) {
-        logger.warn("[SchemaLoader] Cloud sync failed:", e);
+        console.warn("[SchemaLoader] Cloud sync failed:", e);
       }
     }
 
-    logger.warn("[SchemaLoader] Using embedded fallback schema");
+    console.warn("[SchemaLoader] Using embedded fallback schema");
     return this.loadEmbedded();
   }
 
@@ -133,9 +132,9 @@ export class SchemaLoaderService {
       return { valid: false, errors };
     }
 
-    const s = schema as Record<string, unknown>;
+    const s = schema as UiSchema;
 
-    if (typeof s.schemaVersion !== "string") {
+    if (typeof s["schemaVersion"] !== "string") {
       errors.push({
         path: ".schemaVersion",
         message: "Schema must have a schemaVersion string",
@@ -151,7 +150,7 @@ export class SchemaLoaderService {
       });
     }
 
-    if (!s.components || !Array.isArray(s.components)) {
+    if (!s["components"] || !Array.isArray(s["components"])) {
       errors.push({
         path: ".components",
         message: "Schema must have a components array",

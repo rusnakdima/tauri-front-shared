@@ -11,6 +11,6 @@ export class RbacHasPermissionPipe implements PipeTransform {
 
   transform(user: User | null, permission: string): boolean {
     if (!user) return false;
-    return this.rbac.hasPermission(user, permission);
+    return this.rbac.hasPermission(permission);
   }
 }

@@ -28,6 +28,7 @@ export class FallbackService {
   getFallbackSchema(_errorMessage?: string): UiSchema {
     return {
       version: "1.0.0",
+      schemaVersion: "1.0.0",
       pages: [
         {
           id: "error-page",
@@ -35,10 +36,23 @@ export class FallbackService {
           route: "/schema-error",
           meta: { title: "Schema Error", icon: undefined },
           layouts: [],
-          canvasElements: [],
+          canvasElements: [
+            {
+              id: "error-icon",
+              componentId: "app-empty-state",
+              props: {
+                title: "Schema Error",
+                message: _errorMessage ?? "Failed to load application schema.",
+                variant: "danger",
+                actionLabel: "Retry",
+              },
+              gridPosition: { column: 1, row: 1 },
+            },
+          ],
         },
       ],
       layouts: [],
+      components: [],
     };
   }
 }

@@ -32,7 +32,7 @@ export class DataBindingExpressionResolver {
 
   resolveBinding(binding: DataBinding | null): unknown {
     if (!binding) return null;
-    return this.resolve(binding.entity, binding.field);
+    return this.resolve(binding.entity, binding.field ?? null);
   }
 
   resolveDataBinding(binding: DataBinding | null): unknown {

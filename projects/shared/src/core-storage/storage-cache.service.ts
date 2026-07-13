@@ -205,10 +205,7 @@ export class StorageCacheService {
 
   // ─── Request deduplication ───────────────────────────────────────────
 
-  getOrFetch<T>(
-    key: string,
-    fetchFn: () => Promise<T>,
-  ): Promise<T> {
+  getOrFetch<T>(key: string, fetchFn: () => Promise<T>): Promise<T> {
     const k = this.ns(key);
     const existing = this.shared.inFlightRequests.get(k);
     if (existing) return existing as Promise<T>;

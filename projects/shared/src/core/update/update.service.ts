@@ -42,10 +42,7 @@ export class UpdateService {
   ): Promise<string> {
     if (onProgress) {
       // Subscribe to download progress events if the backend supports them
-      await invoke<() => void>(
-        "subscribe_download_progress",
-        {},
-      );
+      await invoke<() => void>("subscribe_download_progress", {});
       // The Rust backend should emit progress events that the frontend listens to
       // For now, we invoke the download command which may stream progress
       const path = await invoke<string>("download_update", {

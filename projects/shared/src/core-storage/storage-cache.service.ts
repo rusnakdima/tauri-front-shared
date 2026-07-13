@@ -208,7 +208,6 @@ export class StorageCacheService {
   getOrFetch<T>(
     key: string,
     fetchFn: () => Promise<T>,
-    ttl = DEFAULT_CACHE_TTL_MS,
   ): Promise<T> {
     const k = this.ns(key);
     const existing = this.shared.inFlightRequests.get(k);

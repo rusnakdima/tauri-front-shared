@@ -42,7 +42,7 @@ export class UpdateService {
   ): Promise<string> {
     if (onProgress) {
       // Subscribe to download progress events if the backend supports them
-      const unlisten = await invoke<() => void>(
+      await invoke<() => void>(
         "subscribe_download_progress",
         {},
       );

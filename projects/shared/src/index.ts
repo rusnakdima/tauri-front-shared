@@ -192,9 +192,8 @@ export { StyleThemeService as ThemeService } from "./styles/theme.service";
 export { ThemeToggleService } from "./styles/theme-toggle.service";
 
 // RBAC / Permission Service
-export {
-  PermissionService,
-  TodoPermission,
+export { PermissionService, TodoPermission } from "./core/lib/rbac/permission.service";
+export type {
   Permission,
   Role,
   User,

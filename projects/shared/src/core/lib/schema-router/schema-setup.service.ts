@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, Optional } from "@angular/core";
+import { Injectable, inject, signal } from "@angular/core";
 import { Router, type Routes, type Route } from "@angular/router";
 import { InvokeWrapperService } from "../../../core-api/invoke-wrapper.service";
 import { SchemaRouterService } from "./schema-router.service";
@@ -163,7 +163,7 @@ export class SchemaSetupService {
   private async loadSchema(
     appId: string,
     commandName: string,
-    options?: SchemaSetupOptions,
+    _options?: SchemaSetupOptions,
   ): Promise<UiSchema | null> {
     const response = await this.invokeWrapper.invoke<any>(commandName, {
       id: appId,
@@ -244,7 +244,7 @@ export class SchemaSetupService {
   private applyTheme(
     schema: UiSchema,
     defaultVariant: string,
-    options?: SchemaSetupOptions,
+    _options?: SchemaSetupOptions,
   ): void {
     const variant = (schema as any).app?.style ?? defaultVariant;
     this.themeService.loadTheme(variant);

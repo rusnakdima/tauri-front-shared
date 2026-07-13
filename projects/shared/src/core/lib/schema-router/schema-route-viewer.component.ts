@@ -12,7 +12,7 @@ import {
 import { SchemaRouterService } from "./schema-router.service";
 import { SchemaRendererService } from "../schema-renderer/schema-renderer.service";
 import { SchemaElementComponent } from "./schema-element.component";
-import type { Page, Layout, LayoutElement, RegionType } from "../types";
+import type { Layout, LayoutElement, RegionType } from "../types";
 
 @Component({
   selector: "lib-schema-route-viewer",

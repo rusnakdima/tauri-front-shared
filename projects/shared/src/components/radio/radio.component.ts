@@ -17,7 +17,7 @@ export class RadioComponent {
   @Output() changed = new EventEmitter<string>();
   @Input() label = "";
 
-  handleChange(e: Event) {
+  handleChange(_e: Event) {
     this.checked = true;
     this.changed.emit(this.value);
   }

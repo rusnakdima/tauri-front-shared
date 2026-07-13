@@ -1,4 +1,4 @@
-import { Component, inject, computed, signal } from "@angular/core";
+import { Component, inject, computed } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { DesignerCanvasService } from "../../core/lib/designer/designer-canvas.service";

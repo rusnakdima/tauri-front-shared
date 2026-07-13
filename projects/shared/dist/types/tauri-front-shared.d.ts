@@ -3,6 +3,7 @@ import { EventEmitter, OnDestroy, OnInit, OnChanges, SimpleChanges, Type, Signal
 import { Subject, Observable } from 'rxjs';
 import * as _angular_router from '@angular/router';
 import { Routes, Router, CanActivateFn } from '@angular/router';
+import * as _tauri_front_shared from '@tauri-front/shared';
 
 type ColorMode = "light" | "dark" | "system";
 interface Theme {
@@ -309,6 +310,44 @@ declare class EventBusService {
     static ɵprov: i0.ɵɵInjectableDeclaration<EventBusService>;
 }
 
+interface ComponentDefinition {
+    selector: string;
+    module?: string;
+    behaviors?: ComponentBehavior;
+}
+declare class ComponentRegistryService {
+    private registry;
+    private componentManifest;
+    private _schemaComponents;
+    private _componentModules;
+    constructor();
+    private registerBuiltInComponents;
+    private loadComponentManifest;
+    register(componentId: string, definition: ComponentDefinition): void;
+    unregister(componentId: string): void;
+    get(componentId: string): ComponentDefinition | undefined;
+    getSelector(componentId: string): string;
+    has(componentId: string): boolean;
+    resolveBehavior(componentId: string): ComponentBehavior | undefined;
+    mergeBehavior(componentId: string, schemaBehavior?: ComponentBehavior): ComponentBehavior;
+    private mergeEventHandlers;
+    getAllComponentIds(): string[];
+    getComponentsByCategory(category: string): string[];
+    registerComponent(def: ComponentDef): void;
+    registerComponents(defs: ComponentDef[]): void;
+    getComponent(selector: string): ComponentDef | undefined;
+    registerComponentModule(selector: string, module: Record<string, unknown>): void;
+    loadComponentModule(selector: string): Promise<CustomElementConstructor>;
+    getComponentModules(): Map<string, Record<string, unknown>>;
+    loadComponentsFromSchema(pages: {
+        components?: ComponentDef[];
+    }[]): void;
+    hasComponent(selector: string): boolean;
+    getRegisteredSelectors(): string[];
+    static ɵfac: i0.ɵɵFactoryDeclaration<ComponentRegistryService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ComponentRegistryService>;
+}
+
 interface StorageServiceInterface {
     get<T>(key: string): T | null;
     set(key: string, value: unknown): void;
@@ -349,44 +388,6 @@ declare class CrudService$1 {
     batchDelete(collection: string, ids: string[]): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CrudService$1, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<CrudService$1>;
-}
-
-interface ComponentDefinition {
-    selector: string;
-    module?: string;
-    behaviors?: ComponentBehavior;
-}
-declare class ComponentRegistryService {
-    private registry;
-    private componentManifest;
-    private _schemaComponents;
-    private _componentModules;
-    constructor();
-    private registerBuiltInComponents;
-    private loadComponentManifest;
-    register(componentId: string, definition: ComponentDefinition): void;
-    unregister(componentId: string): void;
-    get(componentId: string): ComponentDefinition | undefined;
-    getSelector(componentId: string): string;
-    has(componentId: string): boolean;
-    resolveBehavior(componentId: string): ComponentBehavior | undefined;
-    mergeBehavior(componentId: string, schemaBehavior?: ComponentBehavior): ComponentBehavior;
-    private mergeEventHandlers;
-    getAllComponentIds(): string[];
-    getComponentsByCategory(category: string): string[];
-    registerComponent(def: ComponentDef): void;
-    registerComponents(defs: ComponentDef[]): void;
-    getComponent(selector: string): ComponentDef | undefined;
-    registerComponentModule(selector: string, module: Record<string, unknown>): void;
-    loadComponentModule(selector: string): Promise<CustomElementConstructor>;
-    getComponentModules(): Map<string, Record<string, unknown>>;
-    loadComponentsFromSchema(pages: {
-        components?: ComponentDef[];
-    }[]): void;
-    hasComponent(selector: string): boolean;
-    getRegisteredSelectors(): string[];
-    static ɵfac: i0.ɵɵFactoryDeclaration<ComponentRegistryService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ComponentRegistryService>;
 }
 
 interface DataBinding {
@@ -443,7 +444,7 @@ declare class LayoutEngineService {
         gridColumn: string;
         gridRow: string;
     };
-    applyLayoutStyles(container: HTMLElement, layout: Layout, children: string[], getComponentById: (id: string) => {
+    applyLayoutStyles(container: HTMLElement, layout: Layout, _children: string[], getComponentById: (id: string) => {
         selector: string;
     } | undefined, resolvePosition: (layout: Layout, childId: string) => GridPosition | null): Promise<void>;
     createGridTemplateString(columns: string[], rows: string[]): string;
@@ -513,7 +514,6 @@ interface PageSchema {
 }
 declare class SchemaRendererService {
     private dataStore;
-    private crudService;
     private eventBus;
     private componentRegistry;
     private dataBindingResolver;
@@ -523,15 +523,13 @@ declare class SchemaRendererService {
     private _currentPageId;
     private _navigationStack;
     private _appConfig;
-    constructor(dataStore: SignalStoreService, crudService: CrudService$1, eventBus: EventBusService, componentRegistry: ComponentRegistryService, dataBindingResolver: DataBindingResolverService, layoutEngine: LayoutEngineService, i18n: I18nService);
+    constructor(dataStore: SignalStoreService, eventBus: EventBusService, componentRegistry: ComponentRegistryService, dataBindingResolver: DataBindingResolverService, layoutEngine: LayoutEngineService, i18n: I18nService);
     private componentResolver;
     private routeResolver;
-    private _handlers;
-    private _stores;
     private _layoutRegions;
     private _currentRoute;
     pages: i0.Signal<Page[]>;
-    currentPageId: i0.Signal<string>;
+    currentPageId: i0.Signal<string | null>;
     layoutRegions: i0.Signal<LayoutElement[]>;
     registerComponent(def: ComponentDef): void;
     registerComponents(defs: ComponentDef[]): void;
@@ -584,7 +582,7 @@ declare class SchemaRendererService {
     render(container: HTMLElement, pageSchema: PageSchema, currentRoute?: string): Promise<void>;
     private renderNestedChildren;
     renderLayoutRegion(container: HTMLElement, regionId: string, currentRoute?: string): Promise<void>;
-    bindEvents(el: HTMLElement, events: Record<string, string | Function>, elementId: string): void;
+    bindEvents(el: HTMLElement, events: Record<string, string | Function>, _elementId: string): void;
     mapPropsToClasses(componentId: string, props: Record<string, unknown>, theme: StyleVariant, explicitVariant?: string, explicitSize?: string, globalContext?: GlobalStyleContext): string[];
     resolveClasses(elementClasses: string, defaultClasses: string): string;
     resolveDataBinding(binding: unknown): unknown;
@@ -661,7 +659,7 @@ declare class PermissionService {
     private _currentUser;
     private _roles;
     private _isAdmin;
-    readonly currentUser: i0.Signal<User>;
+    readonly currentUser: i0.Signal<User | null>;
     readonly roles: i0.Signal<Role[]>;
     readonly isAdmin: i0.Signal<boolean>;
     setUser(user: User | null): void;
@@ -801,16 +799,16 @@ declare class SchemaRouterService {
     private readonly _queryParams;
     private readonly _isLoading;
     private readonly _error;
-    readonly schema: i0.Signal<UiSchema>;
-    readonly currentPage: i0.Signal<Page>;
-    readonly currentLayout: i0.Signal<Layout>;
+    readonly schema: i0.Signal<UiSchema | null>;
+    readonly currentPage: i0.Signal<Page | null>;
+    readonly currentLayout: i0.Signal<Layout | null>;
     readonly currentRoute: i0.Signal<string>;
     readonly params: i0.Signal<Record<string, string>>;
     readonly queryParams: i0.Signal<Record<string, string>>;
     readonly isLoading: i0.Signal<boolean>;
-    readonly error: i0.Signal<string>;
+    readonly error: i0.Signal<string | null>;
     readonly hasSchema: i0.Signal<boolean>;
-    readonly currentPageId: i0.Signal<string>;
+    readonly currentPageId: i0.Signal<string | null>;
     readonly currentPageTitle: i0.Signal<string>;
     setSchema(schema: UiSchema): void;
     clearSchema(): void;
@@ -848,7 +846,7 @@ declare class SchemaRouteViewerComponent implements OnInit, OnChanges {
     route: string;
     /** When true, renders schema layoutRegions (header, footer, bottom-nav, overlay) */
     showLayoutRegions: boolean;
-    readonly page: i0.Signal<Page>;
+    readonly page: i0.Signal<_tauri_front_shared.Page | null>;
     /** CSS grid properties to apply via ngStyle */
     readonly gridStyles: i0.Signal<Record<string, string>>;
     /** CSS classes: schema-page + layout class */
@@ -858,9 +856,9 @@ declare class SchemaRouteViewerComponent implements OnInit, OnChanges {
     private getRegionType;
     private isRegionVisible;
     private regionByType;
-    readonly headerRegion: i0.Signal<LayoutElement>;
-    readonly footerRegion: i0.Signal<LayoutElement>;
-    readonly bottomNavRegion: i0.Signal<LayoutElement>;
+    readonly headerRegion: i0.Signal<LayoutElement | null>;
+    readonly footerRegion: i0.Signal<LayoutElement | null>;
+    readonly bottomNavRegion: i0.Signal<LayoutElement | null>;
     readonly overlayRegions: i0.Signal<LayoutElement[]>;
     constructor(router: SchemaRouterService, renderer: SchemaRendererService);
     ngOnInit(): void;
@@ -912,7 +910,6 @@ declare class StyleThemeService {
     private injectDarkModeVariables;
     private removeDarkModeVariables;
     private getDarkModeVariablesCSS;
-    private getDarkModeCSS;
     private getDarkModeCSSForVariant;
     private brutalismDarkCSS;
     private skeuomorphismDarkCSS;
@@ -947,7 +944,7 @@ interface FallbackResult<T> {
 }
 declare class FallbackService {
     parseSchemaWithFallback<T>(jsonString: string): FallbackResult<T>;
-    getFallbackSchema(errorMessage?: string): UiSchema;
+    getFallbackSchema(_errorMessage?: string): UiSchema;
     static ɵfac: i0.ɵɵFactoryDeclaration<FallbackService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<FallbackService>;
 }
@@ -1018,7 +1015,7 @@ declare class SchemaShellComponent implements OnInit, OnDestroy {
     /** When true, auto-renders app-toast-container and a full-screen loading overlay */
     includeOverlays: boolean;
     readonly loading: i0.WritableSignal<boolean>;
-    readonly error: i0.WritableSignal<string>;
+    readonly error: i0.WritableSignal<string | null>;
     private themeSubscription?;
     /** All raw layout regions from the renderer (unfiltered) */
     private readonly rawRegions;
@@ -1027,11 +1024,11 @@ declare class SchemaShellComponent implements OnInit, OnDestroy {
     private isRegionVisible;
     private regionByType;
     private regionsByType;
-    readonly headerRegion: i0.Signal<LayoutElement>;
-    readonly sidebarLeftRegion: i0.Signal<LayoutElement>;
-    readonly sidebarRightRegion: i0.Signal<LayoutElement>;
-    readonly footerRegion: i0.Signal<LayoutElement>;
-    readonly bottomNavRegion: i0.Signal<LayoutElement>;
+    readonly headerRegion: i0.Signal<LayoutElement | null>;
+    readonly sidebarLeftRegion: i0.Signal<LayoutElement | null>;
+    readonly sidebarRightRegion: i0.Signal<LayoutElement | null>;
+    readonly footerRegion: i0.Signal<LayoutElement | null>;
+    readonly bottomNavRegion: i0.Signal<LayoutElement | null>;
     readonly overlayRegions: i0.Signal<LayoutElement[]>;
     /** Unrecognized regions rendered in an extra row below the main layout */
     readonly otherRegions: i0.Signal<LayoutElement[]>;
@@ -1151,9 +1148,9 @@ declare class ErrorHandlerService {
 }
 
 declare class ApiException extends Error {
-    code?: string;
-    details?: unknown;
-    constructor(message: string, code?: string, details?: unknown);
+    code?: string | undefined;
+    details?: unknown | undefined;
+    constructor(message: string, code?: string | undefined, details?: unknown | undefined);
 }
 
 type LogLevel = "debug" | "info" | "warn" | "error";
@@ -1194,7 +1191,7 @@ declare class SignalSyncService {
     private _pendingChanges;
     private _syncEndpoint;
     syncStatus: i0.Signal<SyncStatus>;
-    lastSyncTime: i0.Signal<Date>;
+    lastSyncTime: i0.Signal<Date | null>;
     pendingChanges: i0.Signal<number>;
     syncEndpoint: i0.Signal<string>;
     setEndpoint(endpoint: string): void;
@@ -1214,7 +1211,7 @@ declare class SchemaElementComponent {
     private renderer;
     element: CanvasElement;
     elements: CanvasElement[];
-    get componentType(): i0.Type<any>;
+    get componentType(): i0.Type<any> | null;
     get tag(): string;
     get classes(): string;
     get childElements(): CanvasElement[];
@@ -1333,7 +1330,7 @@ declare class StorageCacheService {
     evictOldestCache(): void;
     invalidateCache(): void;
     clearAll(): void;
-    getOrFetch<T>(key: string, fetchFn: () => Promise<T>, ttl?: number): Promise<T>;
+    getOrFetch<T>(key: string, fetchFn: () => Promise<T>): Promise<T>;
     hasInFlightRequest(key: string): boolean;
     getInFlightRequest<T>(key: string): Promise<T> | undefined;
     /**
@@ -1481,7 +1478,7 @@ declare class SchemaSetupService {
     private handlerExecutor;
     private router;
     readonly schemaLoaded: i0.WritableSignal<boolean>;
-    readonly setupError: i0.WritableSignal<string>;
+    readonly setupError: i0.WritableSignal<string | null>;
     /**
      * Complete schema setup: load, validate, register, navigate.
      * This replaces per-app schema loading boilerplate.
@@ -1539,7 +1536,7 @@ interface BaseEntity {
     createdAt?: string | Date;
     updatedAt?: string | Date;
 }
-interface BaseServiceConfig<T extends BaseEntity> {
+interface BaseServiceConfig {
     /** API endpoint name (e.g., 'scene', 'source', 'profile') */
     endpoint: string;
     /** Entity name for notifications (e.g., 'Scene', 'Source', 'Profile') */
@@ -1577,7 +1574,7 @@ interface StorageCacheServiceForCrud {
 interface StorageQueryServiceForCrud {
 }
 declare abstract class BaseCrudService<T extends BaseEntity> {
-    protected readonly config: BaseServiceConfig<T>;
+    protected readonly config: BaseServiceConfig;
     protected readonly mainService: MainServiceForCrud;
     protected readonly cacheService: StorageCacheServiceForCrud;
     protected readonly queryService: StorageQueryServiceForCrud;
@@ -1588,15 +1585,15 @@ declare abstract class BaseCrudService<T extends BaseEntity> {
     readonly entities: () => T[];
     readonly activeEntity: () => T | null;
     readonly activeEntityId: () => string | null;
-    constructor(config: BaseServiceConfig<T>, mainService: MainServiceForCrud, cacheService: StorageCacheServiceForCrud, queryService: StorageQueryServiceForCrud);
+    constructor(config: BaseServiceConfig, mainService: MainServiceForCrud, cacheService: StorageCacheServiceForCrud, queryService: StorageQueryServiceForCrud);
     protected getEntityName(): string;
     protected getEndpoint(): string;
     load(filter?: Record<string, unknown>): Promise<T[]>;
     get(filter: Record<string, unknown>): Promise<T | null>;
-    create(data: Omit<T, "id" | "createdAt" | "updatedAt">, showSuccess?: boolean): Promise<T | null>;
-    update(id: string, updates: Partial<T>, showSuccess?: boolean): Promise<T | null>;
-    patch(id: string, updates: Partial<T>, showSuccess?: boolean): Promise<T | null>;
-    delete(id: string, showSuccess?: boolean): Promise<boolean>;
+    create(data: Omit<T, "id" | "createdAt" | "updatedAt">, _showSuccess?: boolean): Promise<T | null>;
+    update(id: string, updates: Partial<T>, _showSuccess?: boolean): Promise<T | null>;
+    patch(id: string, updates: Partial<T>, _showSuccess?: boolean): Promise<T | null>;
+    delete(id: string, _showSuccess?: boolean): Promise<boolean>;
     setActiveEntityId(id: string | null): void;
     private invalidateEndpointCache;
     protected setEntities(entities: T[]): void;

@@ -1,4 +1,4 @@
-import { Injectable, inject } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { PermissionService } from "../rbac/permission.service";
 
 export interface GuardConfig {

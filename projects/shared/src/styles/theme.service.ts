@@ -1,4 +1,4 @@
-import { Injectable, inject } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import {
   setCurrentStyle,
@@ -282,10 +282,6 @@ export class StyleThemeService {
 }`,
     };
     return vars[variant] ?? "";
-  }
-
-  private getDarkModeCSS(variant: StyleVariant): string {
-    return this.getDarkModeCSSForVariant(variant);
   }
 
   private getDarkModeCSSForVariant(variant: StyleVariant): string {

@@ -1,4 +1,4 @@
-import { Injectable, inject } from "@angular/core";
+import { Injectable } from "@angular/core";
 import type { ComponentBehavior, ElementEvents, ComponentDef } from "./types";
 
 export interface ComponentDefinition {

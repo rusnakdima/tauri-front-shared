@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import type { UiSchema, Page, CanvasElement } from "../types";
+import type { UiSchema } from "../types";
 
 export interface FallbackResult<T> {
   schema: T;
@@ -25,7 +25,7 @@ export class FallbackService {
     }
   }
 
-  getFallbackSchema(errorMessage?: string): UiSchema {
+  getFallbackSchema(_errorMessage?: string): UiSchema {
     return {
       version: "1.0.0",
       pages: [

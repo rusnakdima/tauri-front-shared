@@ -10,7 +10,6 @@ import {
 } from "../types";
 import { SignalStoreService } from "../signal-store/signal-store.service";
 import { EventBusService } from "../events/event-bus.service";
-import { CrudService } from "../crud/crud.service";
 import { ComponentRegistryService } from "../component-registry.service";
 import { DataBindingResolverService } from "./data-binding-resolver";
 import { LayoutEngineService, GridTemplate } from "./layout-engine";
@@ -18,7 +17,6 @@ import { I18nService } from "../i18n/i18n.service";
 import { logger } from "../../../utils/logger";
 import {
   StyleVariant,
-  getStyleClassPrefix,
   getCurrentStyle,
   getComponentStyleClasses,
   GlobalStyleContext,
@@ -44,7 +42,6 @@ export class SchemaRendererService {
 
   constructor(
     private dataStore: SignalStoreService,
-    private crudService: CrudService,
     private eventBus: EventBusService,
     private componentRegistry: ComponentRegistryService,
     private dataBindingResolver: DataBindingResolverService,
@@ -57,8 +54,6 @@ export class SchemaRendererService {
   private routeResolver: ((route: string) => string | null) | null = null;
 
   // Schema-level handlers and stores
-  private _handlers: Record<string, unknown> = {};
-  private _stores: Record<string, unknown> = {};
   private _layoutRegions = signal<LayoutElement[]>([]);
   private _currentRoute = signal<string>("");
 
@@ -119,15 +114,8 @@ export class SchemaRendererService {
       this._layoutRegions.set([]);
     }
 
-    // Extract handlers (AppSchema only)
-    if ("handlers" in schema && schema.handlers) {
-      this._handlers = schema.handlers;
-    }
-
-    // Extract stores (AppSchema only)
+    // Extract stores (AppSchema only) and register in data store
     if ("stores" in schema && schema.stores) {
-      this._stores = schema.stores;
-      // Register stores in data store
       for (const [key, value] of Object.entries(schema.stores)) {
         this.dataStore.set(key, value);
       }
@@ -668,7 +656,7 @@ export class SchemaRendererService {
   bindEvents(
     el: HTMLElement,
     events: Record<string, string | Function>,
-    elementId: string,
+    _elementId: string,
   ): void {
     for (const [eventName, handler] of Object.entries(events)) {
       if (typeof handler === "function") {

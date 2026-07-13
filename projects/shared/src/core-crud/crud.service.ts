@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
-import { invoke } from "@tauri-apps/api/core";
-import { CrudFilter, CrudQuery, CrudResult } from "./crud.types";
+import { CrudResult } from "./crud.types";
 
 export type { CrudFilter, CrudQuery, CrudResult } from "./crud.types";
 

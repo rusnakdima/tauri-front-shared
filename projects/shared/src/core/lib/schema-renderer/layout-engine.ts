@@ -108,7 +108,6 @@ export class LayoutEngineService {
     if (!ts) return;
 
     const root = document.documentElement;
-    const accent = ts.accentColor();
 
     // Copy theme CSS variables from root to the container
     // This ensures layout containers have explicit theme values even if
@@ -256,7 +255,7 @@ export class LayoutEngineService {
   async applyLayoutStyles(
     container: HTMLElement,
     layout: Layout,
-    children: string[],
+    _children: string[],
     getComponentById: (id: string) => { selector: string } | undefined,
     resolvePosition: (layout: Layout, childId: string) => GridPosition | null,
   ): Promise<void> {

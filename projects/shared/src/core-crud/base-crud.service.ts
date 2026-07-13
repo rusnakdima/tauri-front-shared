@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { SignalStore, Signal } from "../core-storage/signal-store";
-import { InvokeWrapperService } from "../core-api/invoke-wrapper.service";
 
 export interface BaseEntity {
   id: string;
@@ -8,7 +7,7 @@ export interface BaseEntity {
   updatedAt?: string | Date;
 }
 
-export interface BaseServiceConfig<T extends BaseEntity> {
+export interface BaseServiceConfig {
   /** API endpoint name (e.g., 'scene', 'source', 'profile') */
   endpoint: string;
   /** Entity name for notifications (e.g., 'Scene', 'Source', 'Profile') */
@@ -52,7 +51,7 @@ export interface StorageQueryServiceForCrud {
 
 @Injectable()
 export abstract class BaseCrudService<T extends BaseEntity> {
-  protected readonly config: BaseServiceConfig<T>;
+  protected readonly config: BaseServiceConfig;
   protected readonly mainService: MainServiceForCrud;
   protected readonly cacheService: StorageCacheServiceForCrud;
   protected readonly queryService: StorageQueryServiceForCrud;
@@ -67,7 +66,7 @@ export abstract class BaseCrudService<T extends BaseEntity> {
   readonly activeEntityId: () => string | null;
 
   constructor(
-    config: BaseServiceConfig<T>,
+    config: BaseServiceConfig,
     mainService: MainServiceForCrud,
     cacheService: StorageCacheServiceForCrud,
     queryService: StorageQueryServiceForCrud,
@@ -138,7 +137,7 @@ export abstract class BaseCrudService<T extends BaseEntity> {
 
   async create(
     data: Omit<T, "id" | "createdAt" | "updatedAt">,
-    showSuccess?: boolean,
+    _showSuccess?: boolean,
   ): Promise<T | null> {
     try {
       const entity = await this.mainService.create<T>(
@@ -158,7 +157,7 @@ export abstract class BaseCrudService<T extends BaseEntity> {
   async update(
     id: string,
     updates: Partial<T>,
-    showSuccess?: boolean,
+    _showSuccess?: boolean,
   ): Promise<T | null> {
     try {
       const entity = await this.mainService.update<T>(
@@ -179,7 +178,7 @@ export abstract class BaseCrudService<T extends BaseEntity> {
   async patch(
     id: string,
     updates: Partial<T>,
-    showSuccess?: boolean,
+    _showSuccess?: boolean,
   ): Promise<T | null> {
     try {
       const entity = await this.mainService.patch<T>(
@@ -197,7 +196,7 @@ export abstract class BaseCrudService<T extends BaseEntity> {
     }
   }
 
-  async delete(id: string, showSuccess?: boolean): Promise<boolean> {
+  async delete(id: string, _showSuccess?: boolean): Promise<boolean> {
     try {
       await this.mainService.delete(this.config.endpoint, id);
       this.removeEntity(id);

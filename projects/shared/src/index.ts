@@ -49,11 +49,17 @@ export {
 export { StorageService } from "./storage/storage.service";
 export { LocalStorageService } from "./storage/local-storage.service";
 export type { StorageValidator } from "./storage/local-storage.service";
+export { IndexedDbService } from "./storage/indexed-db.service";
 export { UnifiedStorageService } from "./core-storage/unified-storage.service";
 export {
   StorageCacheService,
   type CacheEntry,
 } from "./core-storage/storage-cache.service";
+export {
+  StorageQueryService,
+  type QueryFilter,
+} from "./core-storage/storage-query.service";
+export { SignalStore, createSignalStore } from "./core-storage/signal-store";
 
 // Existing working services
 export { InvokeWrapperService } from "./core-api/invoke-wrapper.service";

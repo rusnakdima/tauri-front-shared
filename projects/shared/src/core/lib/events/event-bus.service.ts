@@ -45,7 +45,7 @@ export class EventBusService {
   ): () => void {
     const wrapped = (...args: unknown[]) => {
       this.off(event, wrapped);
-      handler.apply(context, args);
+      handler.apply(context, [args[0]] as [data: unknown]);
     };
     return this.on(event, wrapped as (data: unknown) => void);
   }

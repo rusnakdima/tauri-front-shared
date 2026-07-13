@@ -14,7 +14,7 @@
     @for (element of p.canvasElements; track element.id) {
       <app-schema-element
         [element]="element"
-        [elements]="p.canvasElements"
+        [elements]="p.canvasElements || []"
       ></app-schema-element>
     }
   </div>

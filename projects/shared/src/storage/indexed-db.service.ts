@@ -1,18 +1,15 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { StorageService } from "./storage.service";
 
 @Injectable({ providedIn: "root" })
 export class IndexedDbService implements StorageService {
-  private dbName: string;
-  private storeName: string;
+  private readonly dbName: string;
+  private readonly storeName: string;
   private db: IDBDatabase | null = null;
 
-  constructor(
-    dbName: string = "tauri-app-db",
-    storeName: string = "key-value-store",
-  ) {
-    this.dbName = dbName;
-    this.storeName = storeName;
+  constructor() {
+    this.dbName = "tauri-app-db";
+    this.storeName = "key-value-store";
     this.initDb();
   }
 

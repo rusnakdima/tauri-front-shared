@@ -24,7 +24,7 @@ function parseErrorFromInvoke(error: unknown): AppError {
     if ("message" in e) {
       return {
         type: ErrorType.Internal,
-        message: String(e.message),
+        message: String(e["message"]),
       };
     }
   }

@@ -52,7 +52,7 @@ export class SchemaRouteViewerComponent implements OnInit, OnChanges {
       const styles: Record<string, string> = { display: "flex" };
       styles["flex-direction"] =
         layout.direction === "column" ? "column" : "row";
-      if (layout.gap) styles.gap = `${layout.gap * 0.25}rem`;
+      if (layout.gap) styles["gap"] = `${layout.gap * 0.25}rem`;
       if (layout.flexWrap) styles["flex-wrap"] = layout.flexWrap;
       return styles;
     }
@@ -86,18 +86,18 @@ export class SchemaRouteViewerComponent implements OnInit, OnChanges {
     if (rowGap !== undefined || colGap !== undefined) {
       const rg = rowGap ? `${rowGap * 0.25}rem` : "0";
       const cg = colGap ? `${colGap * 0.25}rem` : "0";
-      styles.gap = `${rg} ${cg}`;
+      styles["gap"] = `${rg} ${cg}`;
     }
 
     // Padding
     const px = layout.paddingX;
     const py = layout.paddingY;
     if (px !== undefined || py !== undefined) {
-      styles.padding = `${py ? py * 0.25 : 0}rem ${px ? px * 0.25 : 0}rem`;
+      styles["padding"] = `${py ? py * 0.25 : 0}rem ${px ? px * 0.25 : 0}rem`;
     }
 
     // Width
-    if (layout.width === "full") styles.width = "100%";
+    if (layout.width === "full") styles["width"] = "100%";
 
     return styles;
   });

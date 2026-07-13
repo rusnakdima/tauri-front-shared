@@ -106,7 +106,7 @@ export class CanvasComponent {
       if (data.type === "component") {
         this.designer.addElement(
           data.componentId,
-          this.dropIndicator?.parentId ?? null,
+          this.dropIndicator?.parentId ?? undefined,
         );
       } else if (data.type === "move" && data.id) {
         this.designer.moveElement(

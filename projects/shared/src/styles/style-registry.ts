@@ -122,7 +122,7 @@ export async function loadStyleVariant(variant: StyleVariant): Promise<void> {
   const style = document.createElement("style");
   style.textContent = config.cssString;
   style.id = `style-${variant}`;
-  style.dataset.styleVariant = variant;
+  style.dataset["styleVariant"] = variant;
   // Initially disable all styles - only current style will be enabled
   style.disabled = variant !== CURRENT_STYLE;
   document.head.appendChild(style);
@@ -266,7 +266,7 @@ export function applyStyleToElement(
   variant: StyleVariant,
 ): void {
   const prefix = getStyleClassPrefix(variant);
-  element.dataset.styleVariant = variant;
+  element.dataset["styleVariant"] = variant;
   element.classList.forEach((cls) => {
     if (
       cls.startsWith("clay-") ||
@@ -277,5 +277,5 @@ export function applyStyleToElement(
       element.classList.remove(cls);
     }
   });
-  element.classList.add(`${prefix}${element.dataset.baseClass || ""}`);
+  element.classList.add(`${prefix}${element.dataset["baseClass"] || ""}`);
 }

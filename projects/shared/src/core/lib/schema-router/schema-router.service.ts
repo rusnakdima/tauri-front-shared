@@ -92,8 +92,9 @@ export class SchemaRouterService {
 
       // Run guards if configured
       if (page && this.guardService) {
-        const pageGuards = (page as unknown as Record<string, unknown>)
-          .guards as RouteConfig["guards"] | undefined;
+        const pageGuards = (page as unknown as Record<string, unknown>)[
+          "guards"
+        ] as RouteConfig["guards"] | undefined;
         if (pageGuards?.length) {
           for (const guard of pageGuards) {
             const allowed = await this.guardService.canActivateWithConfig(
@@ -162,6 +163,7 @@ export class SchemaRouterService {
 
     // Try pattern matching with params
     for (const p of schema.pages) {
+      if (!p.route) continue;
       const { match, params } = this.matchRoute(p.route, route);
       if (match) {
         const layout = p.layout

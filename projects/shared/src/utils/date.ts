@@ -21,12 +21,12 @@ export function convertUtcToLocal(date: Date, timezone: string): Date {
     values[part.type] = part.value;
   }
   return new Date(
-    parseInt(values.year!),
-    parseInt(values.month!) - 1,
-    parseInt(values.day!),
-    parseInt(values.hour!),
-    parseInt(values.minute!),
-    parseInt(values.second!),
+    parseInt(values["year"]!),
+    parseInt(values["month"]!) - 1,
+    parseInt(values["day"]!),
+    parseInt(values["hour"]!),
+    parseInt(values["minute"]!),
+    parseInt(values["second"]!),
   );
 }
 

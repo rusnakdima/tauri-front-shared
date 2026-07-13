@@ -33,7 +33,7 @@ export class FallbackService {
           id: "error-page",
           name: "Schema Error",
           route: "/schema-error",
-          meta: { title: "Schema Error", icon: null },
+          meta: { title: "Schema Error", icon: undefined },
           layouts: [],
           canvasElements: [],
         },

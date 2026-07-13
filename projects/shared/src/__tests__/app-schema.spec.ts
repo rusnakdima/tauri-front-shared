@@ -23,12 +23,12 @@ describe("AppSchema contract", () => {
   });
 
   it("LayoutElement type is exported", () => {
-    const layout: LayoutElement = { id: "l1", type: "row", children: [] };
+    const layout: LayoutElement = { id: "l1", componentId: "header-region", region: "header", children: [] };
     expect(layout.id).toBe("l1");
   });
 
   it("CanvasElement type is exported", () => {
-    const canvas: CanvasElement = { id: "c1", component: "test", props: {} };
+    const canvas: CanvasElement = { id: "c1", componentId: "test", props: {} };
     expect(canvas.id).toBe("c1");
   });
 });

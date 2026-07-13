@@ -172,6 +172,7 @@ export * from "./utils/async";
 export * from "./utils/state";
 export * from "./utils/events";
 export { filterBySearch } from "./utils/filter";
+export { getErrorMessage as getErrorMessageFromUnknown, withErrorHandling } from "./utils/error";
 
 // Style system
 export {

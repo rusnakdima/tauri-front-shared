@@ -1262,10 +1262,10 @@ declare class LocalStorageService implements StorageService {
 }
 
 declare class IndexedDbService implements StorageService {
-    private dbName;
-    private storeName;
+    private readonly dbName;
+    private readonly storeName;
     private db;
-    constructor(dbName?: string, storeName?: string);
+    constructor();
     private initDb;
     private getStore;
     get<T>(key: string): T | null;
@@ -1411,7 +1411,7 @@ interface Response<T = unknown> {
 }
 declare function isSuccess<T>(response: Response<T>): boolean;
 declare function isError<T>(response: Response<T>): boolean;
-declare function getErrorMessage<T>(response: Response<T>): string | null;
+declare function getErrorMessage$1<T>(response: Response<T>): string | null;
 declare function unwrapResponse<T>(response: Response<T>): T;
 declare function mapResponse<U, T>(response: Response<T>, mapper: (data: T) => U): Response<U>;
 
@@ -1790,6 +1790,9 @@ declare function unobserveElement(observer: ResizeObserver, element: Element): v
  */
 declare function filterBySearch<T>(items: T[], query: string, fields: (keyof T | string)[]): T[];
 
+declare function getErrorMessage(error: unknown): string;
+declare function withErrorHandling<T>(fn: () => Promise<T>, onError?: (error: unknown) => void): Promise<T | undefined>;
+
 /**
  * Route guard that checks resource-action permissions.
  *
@@ -1921,5 +1924,5 @@ declare class AboutService {
     private isNewerVersion;
 }
 
-export { AboutService, ApiCrudService, ApiException, BaseCrudService, BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, LocalStorageService, PaginationComponent, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, CrudService as RemoteCrudService, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStore, SignalStoreService, SignalSyncService, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createSignalStore, createState, createStateSubject, dataComponents, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage, getLatestTimestamp, getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withLoading };
+export { AboutService, ApiCrudService, ApiException, BaseCrudService, BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, LocalStorageService, PaginationComponent, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, CrudService as RemoteCrudService, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStore, SignalStoreService, SignalSyncService, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createSignalStore, createState, createStateSubject, dataComponents, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
 export type { AppError, AppProvider, AppSchema, BaseEntity, BaseServiceConfig, CacheEntry, CanvasElement, ColorMode, ComponentBehavior, ComponentDef, ComponentStyleMap, CrudFilter, DataBinding, DownloadProgress, ElementConfig, ElementEvents, GridPosition, GridTemplate, HandlerDefinition, Layout, LayoutElement, LoadingState, Page, Permission, PermissionCheckResult, QueryFilter, RenderContext, ResizeObserverCallback, ResizeObserverEntry, Response, Role, SchemaSetupOptions, Signal, StorageValidator, StyleVariant, Theme, ToastNotification$1 as ToastNotification, TodoPermissionContext, UiSchema, UnifiedAppConfig, UpdateInfo, User };

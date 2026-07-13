@@ -4235,7 +4235,7 @@ async function loadStyleVariant(variant) {
     const style = document.createElement("style");
     style.textContent = config.cssString;
     style.id = `style-${variant}`;
-    style.dataset.styleVariant = variant;
+    style.dataset["styleVariant"] = variant;
     // Initially disable all styles - only current style will be enabled
     style.disabled = variant !== CURRENT_STYLE;
     document.head.appendChild(style);
@@ -4338,7 +4338,7 @@ function getStyleClass(variant, baseClass) {
 }
 function applyStyleToElement(element, variant) {
     const prefix = getStyleClassPrefix(variant);
-    element.dataset.styleVariant = variant;
+    element.dataset["styleVariant"] = variant;
     element.classList.forEach((cls) => {
         if (cls.startsWith("clay-") ||
             cls.startsWith("glass-") ||
@@ -4347,7 +4347,7 @@ function applyStyleToElement(element, variant) {
             element.classList.remove(cls);
         }
     });
-    element.classList.add(`${prefix}${element.dataset.baseClass || ""}`);
+    element.classList.add(`${prefix}${element.dataset["baseClass"] || ""}`);
 }
 
 const DARK_MODE_STORAGE_KEY = "tauri-front-dark-mode";
@@ -6284,7 +6284,7 @@ class EventBusService {
     once(event, handler, context) {
         const wrapped = (...args) => {
             this.off(event, wrapped);
-            handler.apply(context, args);
+            handler.apply(context, [args[0]]);
         };
         return this.on(event, wrapped);
     }
@@ -8671,7 +8671,7 @@ class CanvasComponent {
         try {
             const data = JSON.parse(raw);
             if (data.type === "component") {
-                this.designer.addElement(data.componentId, this.dropIndicator?.parentId ?? null);
+                this.designer.addElement(data.componentId, this.dropIndicator?.parentId ?? undefined);
             }
             else if (data.type === "move" && data.id) {
                 this.designer.moveElement(data.id, this.dropIndicator?.parentId ?? null, this.dropIndicator?.index);
@@ -10930,7 +10930,7 @@ class SchemaRouteViewerComponent {
             styles["flex-direction"] =
                 layout.direction === "column" ? "column" : "row";
             if (layout.gap)
-                styles.gap = `${layout.gap * 0.25}rem`;
+                styles["gap"] = `${layout.gap * 0.25}rem`;
             if (layout.flexWrap)
                 styles["flex-wrap"] = layout.flexWrap;
             return styles;
@@ -10963,17 +10963,17 @@ class SchemaRouteViewerComponent {
         if (rowGap !== undefined || colGap !== undefined) {
             const rg = rowGap ? `${rowGap * 0.25}rem` : "0";
             const cg = colGap ? `${colGap * 0.25}rem` : "0";
-            styles.gap = `${rg} ${cg}`;
+            styles["gap"] = `${rg} ${cg}`;
         }
         // Padding
         const px = layout.paddingX;
         const py = layout.paddingY;
         if (px !== undefined || py !== undefined) {
-            styles.padding = `${py ? py * 0.25 : 0}rem ${px ? px * 0.25 : 0}rem`;
+            styles["padding"] = `${py ? py * 0.25 : 0}rem ${px ? px * 0.25 : 0}rem`;
         }
         // Width
         if (layout.width === "full")
-            styles.width = "100%";
+            styles["width"] = "100%";
         return styles;
     }, ...(ngDevMode ? [{ debugName: "gridStyles" }] : []));
     /** CSS classes: schema-page + layout class */
@@ -11049,11 +11049,11 @@ class SchemaRouteViewerComponent {
             this.router.navigate(this.route);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouteViewerComponent, deps: [{ token: SchemaRouterService }, { token: SchemaRendererService }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: SchemaRouteViewerComponent, isStandalone: true, selector: "lib-schema-route-viewer", inputs: { route: "route", showLayoutRegions: "showLayoutRegions" }, usesOnChanges: true, ngImport: i0, template: "@if (headerRegion(); as region) {\n  <header class=\"schema-layout-header\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]=\"containerClass()\" [ngStyle]=\"gridStyles()\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]=\"element\"\n        [elements]=\"p.canvasElements\"\n      ></app-schema-element>\n    }\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class=\"schema-layout-footer\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class=\"schema-layout-bottom-nav\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class=\"schema-layout-overlay\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{min-height:100%}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.25", type: SchemaRouteViewerComponent, isStandalone: true, selector: "lib-schema-route-viewer", inputs: { route: "route", showLayoutRegions: "showLayoutRegions" }, usesOnChanges: true, ngImport: i0, template: "@if (headerRegion(); as region) {\n  <header class=\"schema-layout-header\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]=\"containerClass()\" [ngStyle]=\"gridStyles()\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]=\"element\"\n        [elements]=\"p.canvasElements || []\"\n      ></app-schema-element>\n    }\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class=\"schema-layout-footer\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class=\"schema-layout-bottom-nav\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class=\"schema-layout-overlay\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{min-height:100%}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: SchemaRouteViewerComponent, decorators: [{
             type: Component,
-            args: [{ selector: "lib-schema-route-viewer", standalone: true, imports: [CommonModule, SchemaElementComponent], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (headerRegion(); as region) {\n  <header class=\"schema-layout-header\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]=\"containerClass()\" [ngStyle]=\"gridStyles()\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]=\"element\"\n        [elements]=\"p.canvasElements\"\n      ></app-schema-element>\n    }\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class=\"schema-layout-footer\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class=\"schema-layout-bottom-nav\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class=\"schema-layout-overlay\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{min-height:100%}\n"] }]
+            args: [{ selector: "lib-schema-route-viewer", standalone: true, imports: [CommonModule, SchemaElementComponent], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (headerRegion(); as region) {\n  <header class=\"schema-layout-header\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]=\"containerClass()\" [ngStyle]=\"gridStyles()\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]=\"element\"\n        [elements]=\"p.canvasElements || []\"\n      ></app-schema-element>\n    }\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class=\"schema-layout-footer\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class=\"schema-layout-bottom-nav\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class=\"schema-layout-overlay\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{min-height:100%}\n"] }]
         }], ctorParameters: () => [{ type: SchemaRouterService }, { type: SchemaRendererService }], propDecorators: { route: [{
                 type: Input
             }], showLayoutRegions: [{
@@ -11469,8 +11469,7 @@ class SchemaRouterService {
             const { page, params } = matched;
             // Run guards if configured
             if (page && this.guardService) {
-                const pageGuards = page
-                    .guards;
+                const pageGuards = page["guards"];
                 if (pageGuards?.length) {
                     for (const guard of pageGuards) {
                         const allowed = await this.guardService.canActivateWithConfig(guard);
@@ -11521,6 +11520,8 @@ class SchemaRouterService {
         }
         // Try pattern matching with params
         for (const p of schema.pages) {
+            if (!p.route)
+                continue;
             const { match, params } = this.matchRoute(p.route, route);
             if (match) {
                 const layout = p.layout
@@ -11945,7 +11946,7 @@ class FallbackService {
                     id: "error-page",
                     name: "Schema Error",
                     route: "/schema-error",
-                    meta: { title: "Schema Error", icon: null },
+                    meta: { title: "Schema Error", icon: undefined },
                     layouts: [],
                     canvasElements: [],
                 },
@@ -12898,9 +12899,9 @@ class IndexedDbService {
     dbName;
     storeName;
     db = null;
-    constructor(dbName = "tauri-app-db", storeName = "key-value-store") {
-        this.dbName = dbName;
-        this.storeName = storeName;
+    constructor() {
+        this.dbName = "tauri-app-db";
+        this.storeName = "key-value-store";
         this.initDb();
     }
     initDb() {
@@ -12983,13 +12984,13 @@ class IndexedDbService {
             };
         });
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: IndexedDbService, deps: "invalid", target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: IndexedDbService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
     static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: IndexedDbService, providedIn: "root" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.25", ngImport: i0, type: IndexedDbService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
-        }], ctorParameters: () => [{ type: undefined }, { type: undefined }] });
+        }], ctorParameters: () => [] });
 
 class SignalStore {
     store = new Map();
@@ -13276,9 +13277,7 @@ class StorageCacheService {
      *   chatsCache.set('msg:1', data);    // stored as 'chats:msg:1'
      */
     getSubCache(name) {
-        const subNamespace = this.namespace
-            ? `${this.namespace}:${name}`
-            : name;
+        const subNamespace = this.namespace ? `${this.namespace}:${name}` : name;
         const sub = new StorageCacheService();
         sub.shared = this.shared;
         sub.namespace = subNamespace;
@@ -13902,7 +13901,7 @@ function isError(response) {
         response.status === ResponseStatus.Unauthorized ||
         response.status === ResponseStatus.Forbidden);
 }
-function getErrorMessage(response) {
+function getErrorMessage$1(response) {
     if (isError(response)) {
         return response.message;
     }
@@ -13933,7 +13932,7 @@ function parseErrorFromInvoke(error) {
         if ("message" in e) {
             return {
                 type: ErrorType.Internal,
-                message: String(e.message),
+                message: String(e["message"]),
             };
         }
     }
@@ -14163,7 +14162,7 @@ function convertUtcToLocal(date, timezone) {
     for (const part of parts) {
         values[part.type] = part.value;
     }
-    return new Date(parseInt(values.year), parseInt(values.month) - 1, parseInt(values.day), parseInt(values.hour), parseInt(values.minute), parseInt(values.second));
+    return new Date(parseInt(values["year"]), parseInt(values["month"]) - 1, parseInt(values["day"]), parseInt(values["hour"]), parseInt(values["minute"]), parseInt(values["second"]));
 }
 function normalizeDateFields(obj, dateFieldNames = ["start_date", "end_date"]) {
     const normalizedValue = { ...obj };
@@ -14556,6 +14555,23 @@ function getNestedValue(obj, path) {
     return obj[path];
 }
 
+function getErrorMessage(error) {
+    if (error instanceof Error)
+        return error.message;
+    if (typeof error === "string")
+        return error;
+    return String(error ?? "Unknown error");
+}
+async function withErrorHandling(fn, onError) {
+    try {
+        return await fn();
+    }
+    catch (error) {
+        onError?.(error);
+        return undefined;
+    }
+}
+
 /**
  * Route guard that checks resource-action permissions.
  *
@@ -14875,5 +14891,5 @@ class AboutService {
  * Generated bundle index. Do not edit.
  */
 
-export { AboutService, ApiCrudService, ApiException, BaseCrudService, BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, LocalStorageService, PaginationComponent, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, CrudService as RemoteCrudService, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStore, SignalStoreService, SignalSyncService, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createSignalStore, createState, createStateSubject, dataComponents, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage, getLatestTimestamp, getNestedValue$1 as getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withLoading };
+export { AboutService, ApiCrudService, ApiException, BaseCrudService, BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, LocalStorageService, PaginationComponent, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, CrudService as RemoteCrudService, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStore, SignalStoreService, SignalSyncService, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createSignalStore, createState, createStateSubject, dataComponents, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue$1 as getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
 //# sourceMappingURL=tauri-front-shared.mjs.map

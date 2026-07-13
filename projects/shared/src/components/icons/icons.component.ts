@@ -45,6 +45,9 @@ const FA_ICONS: Record<string, string> = {
   download: "fa-download",
   upload: "fa-upload",
   copy: "fa-copy",
+  // Translation & Input
+  translate: "fa-language",
+  keyboard: "fa-keyboard",
   // Additional
   search_off: "fa-magnifying-glass-minus",
   swap_vert: "fa-up-down",
@@ -58,6 +61,7 @@ const FA_ICONS: Record<string, string> = {
   chevron_left: "fa-chevron-left",
   chevron_right: "fa-chevron-right",
   content_copy: "fa-copy",
+  clear: "fa-xmark",
 };
 
 @Component({

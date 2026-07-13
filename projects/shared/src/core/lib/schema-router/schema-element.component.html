@@ -16,12 +16,10 @@
   } @else if (componentType) {
     <ng-container #dynamicHost></ng-container>
   }
-  @if (isNativeHtml) {
-    @for (child of childElements; track $index) {
-      <app-schema-element
-        [element]="child"
-        [elements]="elements"
-      ></app-schema-element>
-    }
+  @for (child of childElements; track $index) {
+    <app-schema-element
+      [element]="child"
+      [elements]="elements"
+    ></app-schema-element>
   }
 </div>

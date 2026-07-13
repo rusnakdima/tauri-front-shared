@@ -19,117 +19,123 @@
     <button class="btn btn-primary" (click)="retry()">Retry</button>
   </div>
 } @else {
-  <div
-    class="app-layout"
-    [style.grid-template-columns]="gridColumns()"
-    [style.grid-template-rows]="gridRows()"
-    [style.grid-template-areas]="gridAreas()"
-  >
-    @if (headerRegion(); as region) {
+  <div class="min-h-screen p-4 md:p-8 bg-gradient-to-br from-indigo-100 via-slate-50 to-indigo-100 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <div class="mx-auto max-w-6xl">
       <div
-        data-region="header"
-        [class]="getRegionClasses(region)"
-        style="grid-area: header"
+        class="app-layout"
+        [style.grid-template-columns]="gridColumns()"
+        [style.grid-template-rows]="gridRows()"
+        [style.grid-template-areas]="gridAreas()"
       >
-        @for (child of region.children || []; track child.id) {
-          <app-schema-element
-            [element]="child"
-            [elements]="region.children || []"
-          />
+        @if (headerRegion(); as region) {
+          <div
+            data-region="header"
+            [class]="getRegionClasses(region)"
+            style="grid-area: header"
+          >
+            @for (child of region.children || []; track child.id) {
+              <app-schema-element
+                [element]="child"
+                [elements]="region.children || []"
+              />
+            }
+          </div>
+        }
+
+        @if (sidebarLeftRegion(); as region) {
+          <div
+            data-region="sidebar-left"
+            [class]="getRegionClasses(region)"
+            style="grid-area: sidebar-left"
+          >
+            @for (child of region.children || []; track child.id) {
+              <app-schema-element
+                [element]="child"
+                [elements]="region.children || []"
+              />
+            }
+          </div>
+        }
+
+        <div data-region="content" style="grid-area: content">
+          <main class="rounded-2xl p-6 md:p-8 shadow-2xl backdrop-blur-lg bg-white/80 dark:bg-slate-800/80 dark:border-slate-700 border border-slate-300">
+            <lib-schema-route-viewer />
+          </main>
+        </div>
+
+        @if (sidebarRightRegion(); as region) {
+          <div
+            data-region="sidebar-right"
+            [class]="getRegionClasses(region)"
+            style="grid-area: sidebar-right"
+          >
+            @for (child of region.children || []; track child.id) {
+              <app-schema-element
+                [element]="child"
+                [elements]="region.children || []"
+              />
+            }
+          </div>
+        }
+
+        @if (footerRegion(); as region) {
+          <div
+            data-region="footer"
+            [class]="getRegionClasses(region)"
+            style="grid-area: footer"
+          >
+            @for (child of region.children || []; track child.id) {
+              <app-schema-element
+                [element]="child"
+                [elements]="region.children || []"
+              />
+            }
+          </div>
+        }
+
+        @if (bottomNavRegion(); as region) {
+          <div
+            data-region="bottom-nav"
+            [class]="getRegionClasses(region)"
+            style="grid-area: bottom-nav"
+          >
+            @for (child of region.children || []; track child.id) {
+              <app-schema-element
+                [element]="child"
+                [elements]="region.children || []"
+              />
+            }
+          </div>
+        }
+
+        @for (region of otherRegions(); track region.id) {
+          <div
+            data-region="other"
+            [class]="getRegionClasses(region)"
+            style="grid-area: other"
+          >
+            @for (child of region.children || []; track child.id) {
+              <app-schema-element
+                [element]="child"
+                [elements]="region.children || []"
+              />
+            }
+          </div>
         }
       </div>
-    }
 
-    @if (sidebarLeftRegion(); as region) {
-      <div
-        data-region="sidebar-left"
-        [class]="getRegionClasses(region)"
-        style="grid-area: sidebar-left"
-      >
-        @for (child of region.children || []; track child.id) {
-          <app-schema-element
-            [element]="child"
-            [elements]="region.children || []"
-          />
-        }
-      </div>
-    }
-
-    <div data-region="content" style="grid-area: content">
-      <lib-schema-route-viewer />
-    </div>
-
-    @if (sidebarRightRegion(); as region) {
-      <div
-        data-region="sidebar-right"
-        [class]="getRegionClasses(region)"
-        style="grid-area: sidebar-right"
-      >
-        @for (child of region.children || []; track child.id) {
-          <app-schema-element
-            [element]="child"
-            [elements]="region.children || []"
-          />
-        }
-      </div>
-    }
-
-    @if (footerRegion(); as region) {
-      <div
-        data-region="footer"
-        [class]="getRegionClasses(region)"
-        style="grid-area: footer"
-      >
-        @for (child of region.children || []; track child.id) {
-          <app-schema-element
-            [element]="child"
-            [elements]="region.children || []"
-          />
-        }
-      </div>
-    }
-
-    @if (bottomNavRegion(); as region) {
-      <div
-        data-region="bottom-nav"
-        [class]="getRegionClasses(region)"
-        style="grid-area: bottom-nav"
-      >
-        @for (child of region.children || []; track child.id) {
-          <app-schema-element
-            [element]="child"
-            [elements]="region.children || []"
-          />
-        }
-      </div>
-    }
-
-    @for (region of otherRegions(); track region.id) {
-      <div
-        data-region="other"
-        [class]="getRegionClasses(region)"
-        style="grid-area: other"
-      >
-        @for (child of region.children || []; track child.id) {
-          <app-schema-element
-            [element]="child"
-            [elements]="region.children || []"
-          />
-        }
-      </div>
-    }
-  </div>
-
-  @for (region of overlayRegions(); track region.id) {
-    <div class="layout-overlay" data-region="overlay">
-      @for (child of region.children || []; track child.id) {
-        <app-schema-element
-          [element]="child"
-          [elements]="region.children || []"
-        />
+      @for (region of overlayRegions(); track region.id) {
+        <div class="layout-overlay" data-region="overlay">
+          @for (child of region.children || []; track child.id) {
+            <app-schema-element
+              [element]="child"
+              [elements]="region.children || []"
+            />
+          }
+        </div>
       }
     </div>
-  }
+  </div>
 }
 
 @if (includeOverlays) {

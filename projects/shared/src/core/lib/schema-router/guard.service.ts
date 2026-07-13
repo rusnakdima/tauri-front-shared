@@ -1,6 +1,12 @@
 import { Injectable } from "@angular/core";
 import { PermissionService } from "../rbac/permission.service";
 
+export interface GuardEvaluationResult {
+  passed: boolean;
+  redirectTo?: string;
+  error?: string;
+}
+
 export interface GuardConfig {
   type: "auth" | "role" | "permission" | "admin";
   role?: string;

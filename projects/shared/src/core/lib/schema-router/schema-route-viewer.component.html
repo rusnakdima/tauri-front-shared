@@ -18,6 +18,19 @@
       ></app-schema-element>
     }
   </div>
+} @else if (router.schema() && router.schema()!.pages?.length) {
+  <div class="schema-page p-8 text-center">
+    <div class="text-4xl mb-4">&#9888;</div>
+    <h2 class="text-xl font-bold mb-2">Page Not Found</h2>
+    <p class="text-base-content/70">
+      Route "{{ router.currentRoute() }}" not found in schema.
+      Available pages: {{ getAvailableRoutes() }}
+    </p>
+  </div>
+} @else {
+  <div class="schema-page p-8 text-center">
+    <div class="text-base-content/50">Waiting for schema...</div>
+  </div>
 }
 
 @if (footerRegion(); as region) {

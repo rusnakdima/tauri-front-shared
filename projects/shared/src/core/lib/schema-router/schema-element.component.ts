@@ -1,4 +1,17 @@
-import { Component, Input, inject } from "@angular/core";
+import {
+  Component,
+  Input,
+  inject,
+  AfterViewInit,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+  ViewContainerRef,
+  ComponentRef,
+  ApplicationRef,
+  Injector,
+  Type,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { SCHEMA_COMPONENT_MAP } from "../schema-component.registry";
 import type { CanvasElement } from "../types";
@@ -12,15 +25,22 @@ import { getCurrentStyle } from "../../../styles/style-registry";
   templateUrl: "./schema-element.component.html",
   styleUrl: "./schema-element.component.css",
 })
-export class SchemaElementComponent {
-  private renderer = inject(SchemaRendererService);
+export class SchemaElementComponent
+  implements AfterViewInit, OnChanges
+{
+  private rendererService = inject(SchemaRendererService);
+  private appRef = inject(ApplicationRef);
+  private injector = inject(Injector);
 
   @Input({ required: true }) element!: CanvasElement;
   @Input({ required: true }) elements: CanvasElement[] = [];
 
-  get componentType() {
-    const type = SCHEMA_COMPONENT_MAP.get(this.tag);
-    return type ?? null;
+  @ViewChild("dynamicHost", { read: ViewContainerRef })
+  private dynamicHost!: ViewContainerRef;
+  private componentRef: ComponentRef<any> | null = null;
+
+  get componentType(): Type<any> | null {
+    return SCHEMA_COMPONENT_MAP.get(this.tag) ?? null;
   }
 
   get tag(): string {
@@ -31,7 +51,7 @@ export class SchemaElementComponent {
     const base = this.element.classes ?? "";
     if (!this.element.props) return base;
     const theme = getCurrentStyle();
-    const mapped = this.renderer.mapPropsToClasses(
+    const mapped = this.rendererService.mapPropsToClasses(
       this.element.componentId,
       this.element.props,
       theme,
@@ -47,6 +67,57 @@ export class SchemaElementComponent {
   get props(): Record<string, unknown> {
     return this.element.props ?? {};
   }
+
+  ngAfterViewInit() {
+    this.createDynamicComponent();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(
+      `[SchemaElement] ngOnChanges for "${this.element?.id}":`,
+      Object.keys(changes),
+    );
+    if (changes["element"] && this.dynamicHost) {
+      this.createDynamicComponent();
+    }
+  }
+
+  private createDynamicComponent() {
+    if (!this.dynamicHost) {
+      console.warn(
+        `[SchemaElement] createDynamicComponent: no dynamicHost for "${this.element.id}"`,
+      );
+      return;
+    }
+
+    if (this.componentRef) {
+      this.componentRef.destroy();
+      this.componentRef = null;
+    }
+
+    const componentType = this.componentType;
+    if (!componentType) {
+      console.warn(
+        `[SchemaElement] createDynamicComponent: componentType is null for "${this.element.id}", componentId="${this.element.componentId}", tag="${this.tag}"`,
+      );
+      return;
+    }
+
+    console.log(
+      `[SchemaElement] Creating dynamic component "${this.element.componentId}" for "${this.element.id}"`,
+    );
+    this.componentRef = this.dynamicHost.createComponent(componentType, {
+      injector: this.injector,
+    });
+
+    // Use setInput on ComponentRef for proper Angular input binding + change detection
+    for (const [key, value] of Object.entries(this.props)) {
+      this.componentRef.setInput(key, value);
+    }
+
+    this.componentRef.changeDetectorRef.detectChanges();
+  }
+
 
   get gridStyle(): Partial<CSSStyleDeclaration> {
     const gp = this.element.gridPosition;

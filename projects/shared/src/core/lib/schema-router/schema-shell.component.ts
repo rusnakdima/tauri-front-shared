@@ -215,7 +215,17 @@ export class SchemaShellComponent implements OnInit, OnDestroy {
         `[SchemaShell] invoke("${this.commandName}") response:`,
         response ? `data.pages=${response?.data?.pages?.length}` : "null",
       );
-      const schema = response?.data;
+
+      // Handle both Response envelope (response.data) and direct schema (response.pages)
+      let schema: any;
+      if (response?.data !== undefined) {
+        schema = response.data; // Response envelope
+      } else if (response?.pages) {
+        schema = response; // Direct schema (no envelope)
+      } else {
+        logger.error(`[SchemaShell] Unexpected response structure:`, response);
+        schema = null;
+      }
       if (!schema?.pages?.length) {
         logger.warn(`[SchemaShell] schema has no pages, schema=`, schema);
         this.error.set("Schema not found. Create it in the Designer and sync.");

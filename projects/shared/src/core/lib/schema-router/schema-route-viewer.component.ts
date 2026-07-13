@@ -163,7 +163,7 @@ export class SchemaRouteViewerComponent implements OnInit, OnChanges {
   );
 
   constructor(
-    private router: SchemaRouterService,
+    public router: SchemaRouterService,
     private renderer: SchemaRendererService,
   ) {
     // Sync router params to the data binding resolver when params change
@@ -173,6 +173,13 @@ export class SchemaRouteViewerComponent implements OnInit, OnChanges {
         this.renderer.setParams(params);
       }
     });
+  }
+
+  /** Returns a comma-separated list of available page routes for the error message */
+  getAvailableRoutes(): string {
+    const schema = this.router.schema();
+    if (!schema?.pages?.length) return "";
+    return schema.pages.map((p) => p.route || p.id).join(", ");
   }
 
   ngOnInit() {

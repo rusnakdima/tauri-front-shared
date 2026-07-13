@@ -64,9 +64,6 @@ import "./components/language-selector/language-selector.component";
 import "./components/swap-button/swap-button.component";
 import "./components/text-input/text-input.component";
 import "./components/translation-output/translation-output.component";
-import "./components/theme-toggle/theme-toggle.component";
-import "./components/shortcuts-overlay/shortcuts-overlay.component";
 
 // Layout/Text Components
-import "./components/block/block.component";
-import "./components/text/text.component";
+// (block.component and text.component not yet in dist - removed until library is rebuilt)

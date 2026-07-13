@@ -1,6 +1,17 @@
 export { sortBy } from "./sorting";
 export { parseJsonOrDefault } from "./json";
-export * from "./date";
+export {
+  convertLocalToUtc,
+  convertUtcToLocal,
+  normalizeDateFields,
+  formatDateRelative,
+  formatTime as formatTimeFromDate,
+  formatLocaleDate,
+  generateCalendarDays,
+  isSameDay,
+  compareByTimestamp,
+  getLatestTimestamp,
+} from "./date";
 export * from "./math";
 export * from "./string";
 export {

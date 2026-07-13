@@ -1,16 +1,62 @@
 export type ColorMode = "light" | "dark" | "system";
 
+export interface DataBinding {
+  entity: string;
+  field?: string;
+  path?: string;
+  operation?: "find" | "create" | "update" | "delete";
+  params?: Record<string, unknown>;
+}
+
+export interface ValidationError {
+  path: string;
+  message: string;
+  severity?: "error" | "warning";
+}
+
+export interface ValidationResult {
+  valid: boolean;
+  errors: ValidationError[];
+}
+
 export interface Theme {
   mode: ColorMode;
+  name?: string;
+  colors?: ThemeColors;
   accentColor?: string;
   cssVariables?: Record<string, string>;
 }
 
+export interface ThemeColors {
+  primary?: string;
+  secondary?: string;
+  background?: string;
+  foreground?: string;
+  bgPrimary?: string;
+  bgSecondary?: string;
+  bgTertiary?: string;
+  bgElevated?: string;
+  bgHover?: string;
+  textPrimary?: string;
+  textSecondary?: string;
+  textMuted?: string;
+  border?: string;
+  borderLight?: string;
+  accent?: string;
+  accentHover?: string;
+  success?: string;
+  warning?: string;
+  error?: string;
+}
+
 export interface UiSchema {
   version: string;
+  schemaVersion?: string;
   pages: Page[];
   layouts: Layout[];
   theme?: Theme;
+  /** @deprecated Use layouts or canvasElements in Page instead */
+  components?: unknown[];
 }
 
 export interface ComponentBehavior {

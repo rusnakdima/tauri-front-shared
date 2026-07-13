@@ -1,4 +1,4 @@
-export { BaseCrudService, type CrudParams } from "./base-crud.service";
+export { BaseCrudService } from "./base-crud.service";
 export {
   CrudService,
   type CrudFilter,

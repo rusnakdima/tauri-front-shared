@@ -40,8 +40,5 @@ export * from "./swap-button/swap-button.component";
 export * from "./text-input/text-input.component";
 export * from "./translation-output/translation-output.component";
 export * from "./toast/toast-component";
-export * from "./theme-toggle/theme-toggle.component";
-export * from "./shortcuts-overlay/shortcuts-overlay.component";
 export * from "./designer-tree/designer-tree.component";
-export * from "./block/block.component";
-export * from "./text/text.component";
+// block.component and text.component not yet in dist - re-add when library is rebuilt

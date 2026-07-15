@@ -32,6 +32,7 @@ import {
   wcagResult,
   isVarReference,
   isTransparent,
+  isOpaque,
   SEMANTIC_TEXT_TOKENS,
   SEMANTIC_BG_TOKENS,
   ContrastFailure,
@@ -216,7 +217,9 @@ describe("theme contrast — full text×bg matrix (AA + AAA)", () => {
         const bgVal = resolve(tokens, bgToken);
         if (!textVal || !bgVal) continue;
         if (isVarReference(textVal) || isVarReference(bgVal)) continue;
-        if (isTransparent(bgVal)) continue; // skip semi-transparent backgrounds
+        // Skip semi-transparent backgrounds — contrast can't be accurately measured
+        // without knowing the page background color (rgba() blends with page content)
+        if (isTransparent(bgVal) || !isOpaque(bgVal)) continue;
 
         const ratio = contrastRatio(textVal, bgVal);
         if (ratio === null) continue;
@@ -304,7 +307,9 @@ describe("theme contrast — dark mode maintained (AA + AAA)", () => {
         const bgVal = resolve(tokens, bgToken);
         if (!textVal || !bgVal) continue;
         if (isVarReference(textVal) || isVarReference(bgVal)) continue;
-        if (isTransparent(bgVal)) continue;
+        // Skip semi-transparent backgrounds — contrast can't be accurately measured
+        // without knowing the page background color (rgba() blends with page content)
+        if (isTransparent(bgVal) || !isOpaque(bgVal)) continue;
 
         const ratio = contrastRatio(textVal, bgVal);
         if (ratio === null) continue;

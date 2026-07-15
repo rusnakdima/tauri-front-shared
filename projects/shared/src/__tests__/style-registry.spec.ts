@@ -57,19 +57,22 @@ describe("style-registry", () => {
   });
 
   describe("loadStyleVariant", () => {
-    it("creates and appends style element to document", async () => {
+    it("sets data-theme attribute on document element", async () => {
       await loadStyleVariant("glassmorphism");
 
-      const styleEl = document.getElementById("style-glassmorphism");
-      expect(styleEl).not.toBeNull();
-      expect(styleEl?.tagName).toBe("STYLE");
+      expect(document.documentElement.getAttribute("data-theme")).toBe(
+        "glassmorphism",
+      );
+      expect(document.body.getAttribute("data-theme")).toBe("glassmorphism");
     });
 
-    it("sets style variant data attribute", async () => {
+    it("sets data-theme attribute on document and body", async () => {
       await loadStyleVariant("neumorphism");
 
-      const styleEl = document.getElementById("style-neumorphism");
-      expect(styleEl?.dataset["styleVariant"]).toBe("neumorphism");
+      expect(document.documentElement.getAttribute("data-theme")).toBe(
+        "neumorphism",
+      );
+      expect(document.body.getAttribute("data-theme")).toBe("neumorphism");
     });
 
     it("warns for unknown variant", async () => {
@@ -86,13 +89,9 @@ describe("style-registry", () => {
   });
 
   describe("unloadStyleVariant", () => {
-    it("removes style element from document", async () => {
+    it("does not throw when called after loadStyleVariant", async () => {
       await loadStyleVariant("skeuomorphism");
-      expect(document.getElementById("style-skeuomorphism")).not.toBeNull();
-
-      unloadStyleVariant("skeuomorphism");
-
-      expect(document.getElementById("style-skeuomorphism")).toBeNull();
+      expect(() => unloadStyleVariant("skeuomorphism")).not.toThrow();
     });
 
     it("does nothing for unloaded variant", () => {

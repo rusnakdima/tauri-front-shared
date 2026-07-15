@@ -27,9 +27,15 @@ export function upsertEntity<T extends { id: string }>(
   return [...items, entity];
 }
 
-export function deduplicateById<T extends { id: string }>(items: T[]): T[] {
+export function deduplicateById<T extends { id: string }>(
+  items: T[],
+  options?: { filterDeleted?: boolean }
+): T[] {
   const seen = new Set<string>();
-  return items.filter((item) => {
+  const source = options?.filterDeleted
+    ? (items as Array<T & { deleted_at?: unknown }>).filter((item) => !item.deleted_at)
+    : items;
+  return source.filter((item) => {
     if (seen.has(item.id)) return false;
     seen.add(item.id);
     return true;

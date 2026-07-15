@@ -1,4 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, beforeAll, afterEach } from "vitest";
+import { TestBed, runInInjectionContext } from "@angular/core/testing";
+import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from "@angular/platform-browser-dynamic/testing";
 import { StyleThemeService } from "../styles/theme.service";
 import { setCurrentStyle } from "../styles/style-registry";
 
@@ -20,8 +22,20 @@ const localStorageMock = (() => {
 })();
 Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
+// Initialize Angular TestBed environment before any tests run
+TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+
+// Helper to create StyleThemeService within Angular injection context
+function createService(): StyleThemeService {
+  return TestBed.runInInjectionContext(() => new StyleThemeService());
+}
+
 describe("StyleThemeService", () => {
   let service: StyleThemeService;
+
+  beforeAll(() => {
+    TestBed.configureTestingModule({});
+  });
 
   beforeEach(() => {
     // Reset DOM state
@@ -35,7 +49,7 @@ describe("StyleThemeService", () => {
     // Reset style registry
     setCurrentStyle("material-design-v3");
 
-    service = new StyleThemeService();
+    service = createService();
   });
 
   afterEach(() => {
@@ -137,7 +151,7 @@ describe("StyleThemeService", () => {
 
     it("should restore dark mode preference from localStorage", () => {
       localStorageMock.setItem("tauri-front-dark-mode", "true");
-      const newService = new StyleThemeService();
+      const newService = createService();
       expect(newService.isDarkMode()).toBe(true);
     });
 
@@ -195,62 +209,62 @@ describe("StyleThemeService", () => {
       expect(emissions.length).toBeGreaterThanOrEqual(2);
     });
   });
-});
 
-describe("StyleThemeService - all variants have required CSS variables", () => {
-  const variants = [
-    "material-design-v3",
-    "neumorphism",
-    "claymorphism",
-    "glassmorphism",
-    "brutalism",
-    "skeuomorphism",
-  ] as const;
+  describe("all variants have required CSS variables", () => {
+    const variants = [
+      "material-design-v3",
+      "neumorphism",
+      "claymorphism",
+      "glassmorphism",
+      "brutalism",
+      "skeuomorphism",
+    ] as const;
 
-  beforeEach(() => {
-    document.documentElement.classList.remove("dark");
-    const injected = document.getElementById("dark-mode-variables");
-    if (injected) injected.remove();
-    localStorageMock.clear();
-  });
-
-  for (const variant of variants) {
-    describe(`${variant} dark mode`, () => {
-      it(`should define --warning CSS variable`, () => {
-        const service = new StyleThemeService();
-        setCurrentStyle(variant);
-        service.setDarkMode(true);
-
-        const styleEl = document.getElementById("dark-mode-variables");
-        expect(styleEl?.textContent).toContain("--warning");
-      });
-
-      it(`should define --text-on-warning CSS variable`, () => {
-        const service = new StyleThemeService();
-        setCurrentStyle(variant);
-        service.setDarkMode(true);
-
-        const styleEl = document.getElementById("dark-mode-variables");
-        expect(styleEl?.textContent).toContain("--text-on-warning");
-      });
-
-      it(`should define --success CSS variable`, () => {
-        const service = new StyleThemeService();
-        setCurrentStyle(variant);
-        service.setDarkMode(true);
-
-        const styleEl = document.getElementById("dark-mode-variables");
-        expect(styleEl?.textContent).toContain("--success");
-      });
-
-      it(`should define --text-on-success CSS variable`, () => {
-        const service = new StyleThemeService();
-        setCurrentStyle(variant);
-        service.setDarkMode(true);
-
-        const styleEl = document.getElementById("dark-mode-variables");
-        expect(styleEl?.textContent).toContain("--text-on-success");
-      });
+    beforeEach(() => {
+      document.documentElement.classList.remove("dark");
+      const injected = document.getElementById("dark-mode-variables");
+      if (injected) injected.remove();
+      localStorageMock.clear();
     });
-  }
+
+    for (const variant of variants) {
+      describe(`${variant} dark mode`, () => {
+        it(`should define --warning CSS variable`, () => {
+          const service = createService();
+          setCurrentStyle(variant);
+          service.setDarkMode(true);
+
+          const styleEl = document.getElementById("dark-mode-variables");
+          expect(styleEl?.textContent).toContain("--warning");
+        });
+
+        it(`should define --text-on-warning CSS variable`, () => {
+          const service = createService();
+          setCurrentStyle(variant);
+          service.setDarkMode(true);
+
+          const styleEl = document.getElementById("dark-mode-variables");
+          expect(styleEl?.textContent).toContain("--text-on-warning");
+        });
+
+        it(`should define --success CSS variable`, () => {
+          const service = createService();
+          setCurrentStyle(variant);
+          service.setDarkMode(true);
+
+          const styleEl = document.getElementById("dark-mode-variables");
+          expect(styleEl?.textContent).toContain("--success");
+        });
+
+        it(`should define --text-on-success CSS variable`, () => {
+          const service = createService();
+          setCurrentStyle(variant);
+          service.setDarkMode(true);
+
+          const styleEl = document.getElementById("dark-mode-variables");
+          expect(styleEl?.textContent).toContain("--text-on-success");
+        });
+      });
+    }
+  });
 });

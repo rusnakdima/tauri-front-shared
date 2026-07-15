@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, signal, effect } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import {
   setCurrentStyle,
@@ -23,7 +23,17 @@ export class StyleThemeService {
     isDark: boolean;
   }> = this._themeChanged$.asObservable();
 
+  readonly theme = signal<StyleVariant>("material-design-v3");
+
   constructor() {
+    effect(() => {
+      document.documentElement.setAttribute("data-theme", this.theme());
+    });
+    effect(() => {
+      const isDark = this.loadDarkModePreference();
+      document.documentElement.setAttribute("data-theme-mode", isDark ? "dark" : "light");
+      document.body.setAttribute("data-theme-mode", isDark ? "dark" : "light");
+    });
     this.initializeDarkMode();
   }
 
@@ -31,11 +41,17 @@ export class StyleThemeService {
   init(): void {}
 
   async loadTheme(variant: StyleVariant): Promise<void> {
+    this.theme.set(variant);
     setCurrentStyle(variant);
-    this._themeChanged$.next({
-      variant,
-      isDark: this.isDarkMode(),
-    });
+    this.persistDarkModePreference(variant);
+    if (this.isDarkMode()) {
+      this.injectDarkModeVariables(variant);
+    }
+    this._themeChanged$.next({ variant, isDark: this.isDarkMode() });
+  }
+
+  private persistDarkModePreference(_variant: StyleVariant): void {
+    this.saveDarkModePreference(this.isDarkMode());
   }
 
   /** Convenience alias for apps that use simple theme names (e.g. "light", "dark"). */
@@ -68,11 +84,15 @@ export class StyleThemeService {
   }
 
   toggleDarkMode(): void {
-    const isCurrentlyDark = document.body.getAttribute("data-theme") === "dark";
+    const isCurrentlyDark = document.body.getAttribute("data-theme-mode") === "dark";
     if (isCurrentlyDark) {
-      document.body.setAttribute("data-theme", "light");
+      document.body.setAttribute("data-theme-mode", "light");
+      document.documentElement.classList.remove("dark");
+      this.removeDarkModeVariables();
     } else {
-      document.body.setAttribute("data-theme", "dark");
+      document.body.setAttribute("data-theme-mode", "dark");
+      document.documentElement.classList.add("dark");
+      this.injectDarkModeVariables(this.theme());
     }
     this.saveDarkModePreference(!isCurrentlyDark);
     this._themeChanged$.next({
@@ -82,16 +102,34 @@ export class StyleThemeService {
   }
 
   isDarkMode(): boolean {
-    return document.body.getAttribute("data-theme") === "dark";
+    return document.body.getAttribute("data-theme-mode") === "dark";
   }
 
   setDarkMode(enabled: boolean): void {
-    document.body.setAttribute("data-theme", enabled ? "dark" : "light");
+    document.body.setAttribute("data-theme-mode", enabled ? "dark" : "light");
+    if (enabled) {
+      document.documentElement.classList.add("dark");
+      this.injectDarkModeVariables(this.theme());
+    } else {
+      document.documentElement.classList.remove("dark");
+      this.removeDarkModeVariables();
+    }
     this.saveDarkModePreference(enabled);
     this._themeChanged$.next({
       variant: this.getCurrentTheme(),
       isDark: enabled,
     });
+  }
+
+  private static readonly THEMES: StyleVariant[] = [
+    "material-design-v3", "glassmorphism", "neumorphism",
+    "claymorphism", "brutalism", "skeuomorphism",
+  ];
+
+  cycle(): void {
+    const idx = StyleThemeService.THEMES.indexOf(this.theme());
+    const next = StyleThemeService.THEMES[(idx + 1) % StyleThemeService.THEMES.length];
+    this.loadTheme(next);
   }
 
   getCurrentTheme(): StyleVariant {
@@ -1031,7 +1069,7 @@ export class StyleThemeService {
 
   private initializeDarkMode(): void {
     const savedDarkMode = this.loadDarkModePreference();
-    document.body.setAttribute("data-theme", savedDarkMode ? "dark" : "light");
+    document.body.setAttribute("data-theme-mode", savedDarkMode ? "dark" : "light");
     this._themeChanged$.next({
       variant: this.getCurrentTheme(),
       isDark: savedDarkMode,

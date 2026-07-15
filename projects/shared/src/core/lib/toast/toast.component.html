@@ -1,19 +1,28 @@
 <div
-  class="relative flex items-start gap-3 rounded-lg border-l-4 bg-[var(--bg-toast)] p-4 text-[var(--text-main)] shadow-lg"
-  [class.border-[var(--color-success)]]="toast().type === 'success'"
-  [class.border-[var(--color-error)]]="toast().type === 'error'"
-  [class.border-[var(--color-warning)]]="toast().type === 'warning'"
-  [class.border-[var(--color-info)]]="toast().type === 'info'"
+  class="sf-relative sf-flex sf-items-start sf-gap-3 sf-border-l-4 sf-shadow-lg"
+  style="background: var(--bg-toast); color: var(--text-main)"
+  [style.border-left-color]="
+    toast().type === 'success'
+      ? 'var(--success)'
+      : toast().type === 'error'
+        ? 'var(--error)'
+        : toast().type === 'warning'
+          ? 'var(--warning)'
+          : toast().type === 'info'
+            ? 'var(--info)'
+            : 'var(--border)'
+  "
   role="alert"
 >
-  <div class="mt-0.5 flex-shrink-0">
+  <div class="sf-mt-0.5 sf-flex-shrink-0">
     @switch (toast().type) {
       @case ("success") {
         <svg
-          class="h-5 w-5 text-[var(--color-success)]"
+          class="sf-h-5 sf-w-5"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          style="color: var(--success)"
         >
           <path
             stroke-linecap="round"
@@ -25,10 +34,11 @@
       }
       @case ("error") {
         <svg
-          class="h-5 w-5 text-[var(--color-error)]"
+          class="sf-h-5 sf-w-5"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          style="color: var(--error)"
         >
           <path
             stroke-linecap="round"
@@ -40,10 +50,11 @@
       }
       @case ("warning") {
         <svg
-          class="h-5 w-5 text-[var(--color-warning)]"
+          class="sf-h-5 sf-w-5"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          style="color: var(--warning)"
         >
           <path
             stroke-linecap="round"
@@ -55,10 +66,11 @@
       }
       @case ("info") {
         <svg
-          class="h-5 w-5 text-[var(--color-info)]"
+          class="sf-h-5 sf-w-5"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          style="color: var(--info)"
         >
           <path
             stroke-linecap="round"
@@ -71,17 +83,17 @@
     }
   </div>
 
-  <div class="min-w-0 flex-1">
+  <div class="sf-min-w-0 sf-flex-1">
     @if (toast().title) {
-      <p class="text-sm font-semibold">{{ toast().title }}</p>
+      <p class="sf-font-semibold">{{ toast().title }}</p>
     }
-    <p class="text-sm" [class.font-medium]="!toast().title">
+    <p [class.sf-font-medium]="!toast().title">
       {{ toast().message }}
     </p>
     @if (toast().action) {
       <button
-        class="mt-2 text-sm font-medium text-[var(--color-success)] transition-colors hover:text-[var(--color-success)]"
-        (click)="onAction()"
+        class="sf-mt-2 sf-transition-colors"
+        style="color: var(--success)"
       >
         {{ toast().action!.label }}
       </button>
@@ -89,11 +101,17 @@
   </div>
 
   <button
-    class="flex-shrink-0 text-[var(--text-dim)] transition-colors hover:text-[var(--text-main)]"
+    class="sf-flex-shrink-0 sf-transition-colors sf-hover-text-main"
+    style="color: var(--text-dim)"
     (click)="onDismiss()"
     aria-label="Dismiss"
   >
-    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg
+      class="sf-h-4 sf-w-4"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
       <path
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -105,15 +123,22 @@
 
   @if (!toast().persistent && (toast().duration ?? 0) > 0) {
     <div
-      class="absolute right-0 bottom-0 left-0 h-1 overflow-hidden rounded-b-lg bg-[var(--bg-elevated)]"
+      class="sf-absolute sf-right-0 sf-bottom-0 sf-left-0 sf-h-1 sf-overflow-hidden"
+      style="background: var(--bg-elevated)"
     >
       <div
-        class="h-full"
-        [class.bg-[var(--color-success)]]="toast().type === 'success'"
-        [class.bg-[var(--color-error)]]="toast().type === 'error'"
-        [class.bg-[var(--color-warning)]]="toast().type === 'warning'"
-        [class.bg-[var(--color-info)]]="toast().type === 'info'"
-        class="w-full"
+        class="sf-h-full sf-w-full"
+        [style.background]="
+          toast().type === 'success'
+            ? 'var(--success)'
+            : toast().type === 'error'
+              ? 'var(--error)'
+              : toast().type === 'warning'
+                ? 'var(--warning)'
+                : toast().type === 'info'
+                  ? 'var(--info)'
+                  : 'var(--primary)'
+        "
       ></div>
     </div>
   }

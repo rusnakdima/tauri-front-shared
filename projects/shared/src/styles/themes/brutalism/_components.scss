@@ -1,0 +1,294 @@
+// Brutalism Component Styles
+
+/* Core components */
+.brut-card {
+  background: var(--bg-elevated);
+  border: 4px solid var(--color-brut-border);
+  border-radius: 0;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-brut-md);
+  font-family: var(--font-brut-sans);
+}
+.brut-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  font-family: var(--font-brut-sans);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 4px solid var(--color-brut-border);
+  border-radius: 0;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-brut-sm);
+  transition:
+    transform 0.05s,
+    box-shadow 0.05s;
+  cursor: pointer;
+  user-select: none;
+}
+.brut-btn:hover {
+  background: var(--color-brut-accent-2);
+}
+.brut-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 0 var(--color-brut-ink);
+}
+.brut-btn-primary {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+.brut-btn-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem 0.75rem;
+  font-family: var(--font-brut-sans);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 3px solid var(--color-brut-border);
+  border-radius: 0;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-brut-sm);
+  transition:
+    transform 0.05s,
+    box-shadow 0.05s;
+  cursor: pointer;
+  user-select: none;
+}
+.brut-btn-lg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1.75rem;
+  font-family: var(--font-brut-sans);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 4px solid var(--color-brut-border);
+  border-radius: 0;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-brut-lg);
+  transition:
+    transform 0.05s,
+    box-shadow 0.05s;
+  cursor: pointer;
+  user-select: none;
+}
+.brut-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-family: var(--font-brut-mono);
+  font-size: 0.9375rem;
+  border: 4px solid var(--color-brut-border);
+  border-radius: 0;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+.brut-input:focus {
+  outline: none;
+  background: var(--color-brut-accent-2);
+}
+.brut-modal {
+  background: var(--bg-elevated);
+  border: 4px solid var(--color-brut-border);
+  border-radius: 0;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-brut-lg);
+  font-family: var(--font-brut-sans);
+}
+.brut-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border: 3px solid var(--color-brut-border);
+  border-radius: 0;
+  background: var(--color-brut-accent-2);
+  color: var(--text-primary);
+  font-family: var(--font-brut-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+.brut-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border: 3px solid var(--color-brut-border);
+  border-radius: 0;
+  background: var(--accent);
+  color: var(--text-on-accent);
+  font-family: var(--font-brut-mono);
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+.brut-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 4px solid var(--color-brut-border);
+  font-family: var(--font-brut-sans);
+}
+.brut-tab {
+  padding: 0.75rem 1.25rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  border: 4px solid var(--color-brut-border);
+  border-bottom: none;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  cursor: pointer;
+  margin-right: 4px;
+}
+.brut-tab.active {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+.brut-divider {
+  height: 4px;
+  background: var(--color-brut-border);
+  width: 100%;
+  margin: 1rem 0;
+}
+.brut-spinner {
+  width: 32px;
+  height: 32px;
+  border: 4px solid var(--color-brut-border);
+  border-top-color: var(--accent);
+  border-radius: 0;
+  animation: theme-spin 0.5s linear infinite;
+}
+
+/* Layout components with CSS variable shadows */
+.brut-data-table {
+  border: 4px solid var(--color-brut-border);
+  box-shadow: var(--shadow-brut-md);
+}
+.brut-sidebar {
+  border-right: 4px solid var(--color-brut-border);
+}
+.brut-header,
+.brut-footer {
+  border-bottom: 4px solid var(--color-brut-border);
+  background: var(--bg-elevated);
+}
+.brut-page-container {
+  background: var(--bg-primary);
+}
+.brut-panel {
+  border: 4px solid var(--color-brut-border);
+  box-shadow: var(--shadow-brut-md);
+  border-radius: 0;
+  padding: 16px;
+}
+.brut-segment-selector {
+  border: 3px solid var(--color-brut-border);
+  border-radius: 0;
+  background: var(--bg-elevated);
+}
+.brut-split-view {
+  background: var(--bg-primary);
+}
+.brut-stats-card {
+  border: 4px solid var(--color-brut-border);
+  box-shadow: var(--shadow-brut-lg);
+  padding: 24px;
+  background: var(--bg-elevated);
+}
+.brut-table {
+  border: 4px solid var(--color-brut-border);
+}
+.brut-tree {
+  background: var(--bg-elevated);
+}
+.brut-canvas {
+  background: var(--color-brut-base);
+  border: 4px solid var(--color-brut-border);
+}
+.brut-main-editor {
+  background: var(--color-brut-base);
+}
+.brut-canvas-toolbar,
+.brut-page-toolbar {
+  border-bottom: 4px solid var(--color-brut-border);
+  background: var(--bg-elevated);
+}
+.brut-command-palette {
+  border: 4px solid var(--color-brut-border);
+  box-shadow: var(--shadow-brut-lg);
+  border-radius: 0;
+  background: var(--bg-elevated);
+}
+.brut-component-palette {
+  border: 4px solid var(--color-brut-border);
+  box-shadow: var(--shadow-brut-md);
+  background: var(--bg-elevated);
+}
+.brut-locale-switcher {
+  border: 3px solid var(--color-brut-border);
+  background: var(--bg-elevated);
+}
+.brut-json-view {
+  border: 3px solid var(--color-brut-border);
+  background: var(--bg-elevated);
+  font-family: monospace;
+}
+.brut-form {
+  border: 4px solid var(--color-brut-border);
+  padding: 16px;
+  background: var(--bg-elevated);
+}
+.brut-properties-panel {
+  border: 4px solid var(--color-brut-border);
+  box-shadow: var(--shadow-brut-md);
+}
+.brut-bottom-panel {
+  border-top: 4px solid var(--color-brut-border);
+}
+.brut-designer-tree {
+  background: var(--bg-elevated);
+  border: 3px solid var(--color-brut-border);
+}
+.brut-designer-sidebar {
+  border-right: 4px solid var(--color-brut-border);
+}
+.brut-block {
+  border: 4px solid var(--color-brut-border);
+  box-shadow: var(--shadow-brut-md);
+  background: var(--bg-elevated);
+}
+
+/* Dark mode overrides for layout components */
+:root.dark .brut-data-table,
+:root.dark .brut-sidebar,
+:root.dark .brut-header,
+:root.dark .brut-footer,
+:root.dark .brut-page-container,
+:root.dark .brut-panel,
+:root.dark .brut-segment-selector,
+:root.dark .brut-split-view,
+:root.dark .brut-stats-card,
+:root.dark .brut-table,
+:root.dark .brut-tree,
+:root.dark .brut-canvas,
+:root.dark .brut-main-editor,
+:root.dark .brut-canvas-toolbar,
+:root.dark .brut-page-toolbar,
+:root.dark .brut-command-palette,
+:root.dark .brut-component-palette,
+:root.dark .brut-locale-switcher,
+:root.dark .brut-json-view,
+:root.dark .brut-form,
+:root.dark .brut-properties-panel,
+:root.dark .brut-bottom-panel,
+:root.dark .brut-designer-tree,
+:root.dark .brut-designer-sidebar,
+:root.dark .brut-block {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-brut-md);
+}

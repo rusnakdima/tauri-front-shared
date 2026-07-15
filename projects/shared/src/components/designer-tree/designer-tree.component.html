@@ -1,13 +1,6 @@
-<div
-  appApplyTheme="app-designer-tree"
-  class="flex flex-col h-full bg-[var(--bg-elevated)]"
->
-  <div
-    class="px-4 py-3 text-xs font-semibold uppercase tracking-wide border-b text-[var(--text-secondary)] border-[var(--border-color)]"
-  >
-    Layers
-  </div>
-  <div class="flex-1 overflow-y-auto py-1 text-sm">
+<div class="ui-designer-tree">
+  <div class="ui-designer-tree-header">Layers</div>
+  <div class="ui-designer-tree-body">
     @for (node of treeNodes(); track node.id) {
       <app-designer-tree-node
         [node]="node"
@@ -16,9 +9,7 @@
       ></app-designer-tree-node>
     }
     @if (treeNodes().length === 0) {
-      <div class="px-4 py-3 text-center text-[var(--text-muted)]">
-        No elements
-      </div>
+      <div class="ui-designer-tree-empty">No elements</div>
     }
   </div>
 </div>

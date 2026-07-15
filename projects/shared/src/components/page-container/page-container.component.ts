@@ -1,11 +1,10 @@
 import { Component, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 @Component({
   selector: "app-page-container",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./page-container.component.html",
   styleUrls: ["./page-container.component.css"],
 })

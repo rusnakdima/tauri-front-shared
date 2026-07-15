@@ -1,67 +1,69 @@
 import { Component, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 
-// Font Awesome icon mapping - no MatIcon, no SVG injection
-const FA_ICONS: Record<string, string> = {
+// Material Icons mapping - using Google Material Icons names
+const MI_ICONS: Record<string, string> = {
   // Navigation
-  home: "fa-home",
-  menu: "fa-bars",
-  close: "fa-xmark",
-  check: "fa-check",
-  "chevron-down": "fa-chevron-down",
-  "chevron-right": "fa-chevron-right",
+  home: "home",
+  menu: "menu",
+  close: "close",
+  check: "check",
+  "chevron-down": "expand_more",
+  "chevron-right": "chevron_right",
   // Actions
-  edit: "fa-pen",
-  delete: "fa-trash",
-  add: "fa-plus",
-  search: "fa-magnifying-glass",
-  undo: "fa-rotate-left",
-  redo: "fa-rotate-right",
-  remove: "fa-minus",
-  fit_screen: "fa-expand",
-  grid: "fa-table-cells",
-  grid_on: "fa-table-cells",
-  zoom_in: "fa-plus",
-  zoom_out: "fa-minus",
+  edit: "edit",
+  delete: "delete",
+  add: "add",
+  search: "search",
+  undo: "undo",
+  redo: "redo",
+  remove: "remove",
+  fit_screen: "fullscreen",
+  grid: "grid_view",
+  grid_on: "grid_view",
+  zoom_in: "zoom_in",
+  zoom_out: "zoom_out",
   // Status
-  info: "fa-circle-info",
-  warning: "fa-triangle-exclamation",
-  error: "fa-circle-xmark",
-  success: "fa-circle-check",
+  info: "info",
+  warning: "warning",
+  error: "error",
+  success: "check_circle",
   // Content
-  user: "fa-user",
-  settings: "fa-gear",
-  star: "fa-star",
-  heart: "fa-heart",
+  user: "person",
+  settings: "settings",
+  star: "star",
+  heart: "favorite",
   // Media
-  image: "fa-image",
-  camera: "fa-camera",
+  image: "image",
+  camera: "camera_alt",
   // Files
-  file: "fa-file",
-  folder: "fa-folder",
+  file: "description",
+  folder: "folder",
   // Misc
-  sun: "fa-sun",
-  moon: "fa-moon",
-  download: "fa-download",
-  upload: "fa-upload",
-  copy: "fa-copy",
+  sun: "light_mode",
+  moon: "dark_mode",
+  download: "download",
+  upload: "upload",
+  copy: "content_copy",
   // Translation & Input
-  translate: "fa-language",
-  keyboard: "fa-keyboard",
+  translate: "translate",
+  keyboard: "keyboard",
   // Additional
-  search_off: "fa-magnifying-glass-minus",
-  swap_vert: "fa-up-down",
-  expand_more: "fa-chevron-down",
-  dark_mode: "fa-moon",
-  light_mode: "fa-sun",
-  arrow_back: "fa-arrow-left",
-  arrow_forward: "fa-arrow-right",
-  first_page: "fa-angles-left",
-  last_page: "fa-angles-right",
-  chevron_left: "fa-chevron-left",
-  chevron_right: "fa-chevron-right",
-  content_copy: "fa-copy",
-  clear: "fa-xmark",
+  search_off: "search_off",
+  swap_vert: "swap_vert",
+  expand_more: "expand_more",
+  dark_mode: "dark_mode",
+  light_mode: "light_mode",
+  arrow_back: "arrow_back",
+  arrow_forward: "arrow_forward",
+  first_page: "first_page",
+  last_page: "last_page",
+  chevron_left: "chevron_left",
+  chevron_right: "chevron_right",
+  content_copy: "content_copy",
+  clear: "close",
+  language: "translate",
+  xmark: "close",
 };
 
 @Component({
@@ -74,11 +76,9 @@ const FA_ICONS: Record<string, string> = {
 export class IconComponent {
   @Input() icon = "";
   @Input() size = 24;
+  @Input() classes = "";
 
-  get faClass(): string {
-    const faIcon = FA_ICONS[this.icon] || FA_ICONS["info"];
-    return `fa-fw ${faIcon}`;
+  get materialIcon(): string {
+    return MI_ICONS[this.icon] || MI_ICONS["info"] || "help";
   }
 }
-
-registerSchemaComponent("app-icon", IconComponent);

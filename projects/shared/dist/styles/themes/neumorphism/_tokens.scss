@@ -1,0 +1,117 @@
+// Neumorphism Design Tokens
+// Light mode + Dark mode
+
+:root {
+  /* Palette */
+  --primary: #6d5dfc;
+  --primary-fg: #ffffff;
+  --primary-hover: #5a4cdb;
+  --secondary: #7c8db0;
+  --secondary-fg: #ffffff;
+  --background: #e0e5ec;
+  --surface: #e0e5ec;
+  --surface-variant: #e0e5ec;
+  --surface-hover: #e6ebf2;
+  --text: #2d3748;
+  --text-muted: #718096;
+  --border: transparent;
+
+  /* Semantic Colors */
+  --success: #48bb78;
+  --warning: #ff9800;
+  --error: #e53e3e;
+  --info: #4299e1;
+  --semantic-fg: #ffffff;
+
+  /* Structural */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  --border-width: 1px;
+  --border-style: solid;
+
+  /* Effects */
+  --shadow-sm: 5px 5px 10px #a3b1c6, -5px -5px 10px #ffffff;
+  --shadow-md: 9px 9px 16px #a3b1c6, -9px -9px 16px #ffffff;
+  --shadow-lg: 12px 12px 24px #a3b1c6, -12px -12px 24px #ffffff;
+  --shadow-inset: inset 6px 6px 12px #a3b1c6, inset -6px -6px 12px #ffffff;
+  --shadow-focus: inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #ffffff;
+  --glass-blur: none;
+
+  /* Typography */
+  --font-family: 'Nunito', sans-serif;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Neumorphism-specific variables */
+  --color-neu-base: #e0e5ec;
+  --color-neu-base-dark: #c8ccd4;
+  --color-neu-base-light: #f8fafc;
+  --color-neu-shadow-dark: #a3b1c6;
+  --color-neu-shadow-light: #ffffff;
+  --shadow-neu-outset: 6px 6px 12px var(--color-neu-shadow-dark), -6px -6px 12px var(--color-neu-shadow-light);
+  --shadow-neu-inset: inset 6px 6px 12px var(--color-neu-shadow-dark), inset -6px -6px 12px var(--color-neu-shadow-light);
+
+  /* Semantic aliases */
+  --accent: var(--primary);
+  --accent-hover: var(--primary-hover);
+  --text-on-accent: var(--primary-fg);
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --bg-elevated: #e8ecf4;
+  --border-subtle: transparent;
+  --bg-primary: var(--background);
+  --bg-secondary: var(--surface);
+  --bg-tertiary: var(--surface-variant);
+}
+
+body[data-style="neumorphism"] {
+  --font-family: 'Nunito', sans-serif;
+  --background: #e0e5ec;
+  --surface: #e0e5ec;
+  --surface-variant: #e0e5ec;
+  --surface-hover: #e6ebf2;
+  --primary: #e0e5ec;
+  --primary-fg: #1c1b1f;
+  --border: transparent;
+  --shadow-sm: 5px 5px 10px #a3b1c6, -5px -5px 10px #ffffff;
+  --shadow-md: 9px 9px 16px #a3b1c6, -9px -9px 16px #ffffff;
+  --shadow-lg: 12px 12px 24px #a3b1c6, -12px -12px 24px #ffffff;
+  --shadow-inset: inset 6px 6px 12px #a3b1c6, inset -6px -6px 12px #ffffff;
+  --shadow-focus: inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #ffffff;
+  --radius-md: 16px;
+  --text: #2d3748;
+  --text-muted: #718096;
+}
+
+body[data-style="neumorphism"][data-theme="dark"] {
+  --background: #292d32;
+  --surface: #292d32;
+  --surface-variant: #292d32;
+  --surface-hover: #2e3238;
+  --primary: #292d32;
+  --primary-fg: #e0e5e5;
+  --secondary: #4a5568;
+  --text: #e0e5e5;
+  --text-muted: #94a3b8;
+  --border: transparent;
+  --shadow-sm: 4px 4px 8px #1d1f23, -4px -4px 8px #353b41;
+  --shadow-md: 7px 7px 14px #1d1f23, -7px -7px 14px #353b41;
+  --shadow-lg: 10px 10px 20px #1d1f23, -10px -10px 20px #353b41;
+  --shadow-inset: inset 5px 5px 10px #1d1f23, inset -5px -5px 10px #353b41;
+  --shadow-focus: inset 2px 2px 5px #1d1f23, inset -2px -2px 5px #353b41;
+
+  /* Neumorphism dark variables */
+  --color-neu-base: #292d32;
+  --color-neu-shadow-dark: #1d1f23;
+  --color-neu-shadow-light: #353b41;
+
+  /* Semantic aliases */
+  --accent: var(--primary);
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --bg-elevated: var(--surface);
+  --bg-primary: var(--background);
+  --bg-secondary: var(--surface);
+  --bg-tertiary: var(--surface-variant);
+}

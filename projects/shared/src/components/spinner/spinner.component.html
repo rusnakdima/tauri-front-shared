@@ -1,10 +1,12 @@
-<div appApplyTheme="app-spinner" class="inline-flex items-center gap-2">
+<div class="ui-spinner">
   <div
-    class="border-2 rounded-full animate-spin border-[var(--border-color)]"
-    [class]="'spinner-' + size"
+    class="ui-spinner-icon"
+    [class.ui-spinner-sm]="size === 'sm'"
+    [class.ui-spinner-md]="size === 'md'"
+    [class.ui-spinner-lg]="size === 'lg'"
     [style.borderTopColor]="color || 'var(--accent)'"
   ></div>
   @if (label) {
-    <span class="text-sm text-[var(--text-secondary)]">{{ label }}</span>
+    <span>{{ label }}</span>
   }
 </div>

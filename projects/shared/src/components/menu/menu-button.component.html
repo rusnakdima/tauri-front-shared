@@ -1,0 +1,13 @@
+<button
+  type="button"
+  class="ui-menu-button"
+  (click)="toggle.emit()"
+  [attr.aria-expanded]="isOpen"
+  aria-label="Open menu"
+>
+  <span class="ui-menu-icon" [class.open]="isOpen">
+    <span class="ui-menu-line"></span>
+    <span class="ui-menu-line"></span>
+    <span class="ui-menu-line"></span>
+  </span>
+</button>

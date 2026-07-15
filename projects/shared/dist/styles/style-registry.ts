@@ -104,10 +104,6 @@ let CURRENT_STYLE: StyleVariant = "material-design-v3";
 const STYLE_ELEMENTS: Map<StyleVariant, HTMLStyleElement> = new Map();
 
 export async function loadStyleVariant(variant: StyleVariant): Promise<void> {
-  if (LOADED_STYLES.has(variant)) {
-    return;
-  }
-
   const config = STYLE_VARIANTS[variant];
   if (!config) {
     console.warn(`Unknown style variant: ${variant}`);
@@ -119,13 +115,24 @@ export async function loadStyleVariant(variant: StyleVariant): Promise<void> {
     return;
   }
 
+  // Clear any existing combined theme style element
+  const existingThemeStyle = document.getElementById("style-theme");
+  if (existingThemeStyle) {
+    existingThemeStyle.remove();
+  }
+
+  // Inject combined theme CSS as a single <style id="style-theme"> element
   const style = document.createElement("style");
   style.textContent = config.cssString;
-  style.id = `style-${variant}`;
-  style.dataset["styleVariant"] = variant;
-  // Initially disable all styles - only current style will be enabled
-  style.disabled = variant !== CURRENT_STYLE;
+  style.id = "style-theme";
   document.head.appendChild(style);
+
+  // Set body[data-style] attribute
+  document.body.setAttribute("data-style", variant);
+
+  // Set body[data-theme] based on current dark mode state (default to light)
+  const isDark = document.body.getAttribute("data-theme") === "dark";
+  document.body.setAttribute("data-theme", isDark ? "dark" : "light");
 
   LOADED_STYLES.add(variant);
   STYLE_ELEMENTS.set(variant, style);
@@ -150,14 +157,10 @@ export function setCurrentStyle(variant: StyleVariant): void {
     return;
   }
 
-  const oldVariant = CURRENT_STYLE;
   CURRENT_STYLE = variant;
 
-  // Enable new variant and disable old variant
-  enableStyle(variant);
-  if (oldVariant !== variant) {
-    disableStyle(oldVariant);
-  }
+  // Inject the combined theme CSS and set body[data-style]
+  loadStyleVariant(variant);
 
   if (typeof window !== "undefined" && window.localStorage) {
     window.localStorage.setItem("tauri-front-style", variant);
@@ -229,7 +232,7 @@ export function getComponentStyleClasses(
   }
 
   if (classes.length === 0) {
-    return componentMap.default || "";
+    return componentMap.default || componentMap.variants?.default || "";
   }
 
   return classes.join(" ");
@@ -266,7 +269,6 @@ export function applyStyleToElement(
   variant: StyleVariant,
 ): void {
   const prefix = getStyleClassPrefix(variant);
-  element.dataset["styleVariant"] = variant;
   element.classList.forEach((cls) => {
     if (
       cls.startsWith("clay-") ||

@@ -3,14 +3,13 @@ import { CommonModule } from "@angular/common";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { DesignerCanvasService } from "../../core/lib/designer/designer-canvas.service";
 import { CanvasComponent } from "../canvas/canvas.component";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 import { IconComponent } from "../icons/icons.component";
 
 @Component({
   selector: "app-main-editor",
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [CommonModule, CanvasComponent, IconComponent, ApplyThemeDirective],
+  imports: [CommonModule, CanvasComponent, IconComponent],
   templateUrl: "./main-editor.component.html",
 })
 export class MainEditorComponent {

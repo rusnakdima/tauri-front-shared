@@ -1,33 +1,20 @@
-<div appApplyTheme="app-text-input" class="relative">
+<div class="ui-text-input">
   <textarea
     #textareaEl
+    class="ui-textarea"
     [placeholder]="placeholder"
     [value]="value"
     [attr.maxlength]="maxChars || null"
     (input)="handleInput($event)"
     (focus)="focused = true"
     (blur)="focused = false"
-    [style.--tw-border-color]="
-      focused ? 'var(--accent)' : 'var(--border-color)'
-    "
-    class="w-full p-2 px-3 rounded-lg border box-border outline-none resize-none min-h-10 font-inherit text-base bg-[var(--bg-primary)] text-[var(--text-primary)]"
-    [class.focused]="focused"
   ></textarea>
   @if (clearable && value) {
-    <button
-      class="absolute right-2 top-2 bg-transparent border-none cursor-pointer p-0 leading-none text-xl text-[var(--text-secondary)]"
-      (mouseenter)="hovered = true"
-      (mouseleave)="hovered = false"
-      [style.color]="hovered ? 'var(--text-primary)' : 'var(--text-secondary)'"
-      (click)="clear()"
-      aria-label="Clear"
-    >
+    <button class="ui-text-input-clear" (click)="clear()" aria-label="Clear">
       &times;
     </button>
   }
   @if (maxChars) {
-    <span class="absolute right-2 bottom-1 text-xs text-[var(--text-muted)]"
-      >{{ value.length }}/{{ maxChars }}</span
-    >
+    <span class="ui-text-input-counter">{{ value.length }}/{{ maxChars }}</span>
   }
 </div>

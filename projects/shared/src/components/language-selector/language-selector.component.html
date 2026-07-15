@@ -1,19 +1,11 @@
-<div
-  appApplyTheme="app-language-selector"
-  class="relative inline-flex items-center gap-2"
->
+<div class="ui-language-selector">
   @if (label) {
-    <label
-      [attr.id]="labelId"
-      class="text-sm text-[var(--text-secondary)] whitespace-nowrap"
-      >{{ label }}</label
-    >
+    <label [attr.id]="labelId">{{ label }}</label>
   }
   <select
     [value]="value"
     (change)="handleChange($event)"
     [attr.aria-labelledby]="labelId || null"
-    class="p-1.5 pr-8 rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)] text-[var(--text-primary)] text-sm cursor-pointer appearance-none min-w-28"
   >
     @for (lang of parsedLanguages; track lang.value) {
       <option [value]="lang.value" [selected]="lang.value === value">
@@ -21,9 +13,5 @@
       </option>
     }
   </select>
-  <app-icon
-    class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"
-    icon="chevron-down"
-    [size]="16"
-  />
+  <app-icon class="ui-language-selector-icon" icon="chevron-down" [size]="16" />
 </div>

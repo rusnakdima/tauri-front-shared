@@ -1,21 +1,16 @@
-<form appApplyTheme="app-form" (submit)="handleSubmit($event)">
+<form (submit)="handleSubmit($event)">
   @if (heading) {
-    <h3 class="text-lg font-semibold text-[var(--text-primary)] m-0 mb-4">
-      {{ heading }}
-    </h3>
+    <h3>{{ heading }}</h3>
   }
   <ng-content></ng-content>
   @if (showActions) {
-    <div class="flex gap-3 justify-end mt-6">
-      <button
-        type="submit"
-        class="px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]"
-      >
+    <div class="ui-form-actions">
+      <button type="submit" class="ui-btn ui-btn-primary">
         {{ submitText }}
       </button>
       <button
         type="button"
-        class="px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"
+        class="ui-btn ui-btn-secondary"
         (click)="handleCancel()"
       >
         {{ cancelText }}

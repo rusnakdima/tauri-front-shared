@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 import { parseJsonOrDefault } from "../../utils/json";
 import { IconComponent } from "../icons/icons.component";
 
@@ -14,7 +13,7 @@ interface ToolbarAction {
 @Component({
   selector: "app-page-toolbar",
   standalone: true,
-  imports: [IconComponent, ApplyThemeDirective],
+  imports: [IconComponent],
   templateUrl: "./page-toolbar.component.html",
   styleUrls: ["./page-toolbar.component.css"],
 })

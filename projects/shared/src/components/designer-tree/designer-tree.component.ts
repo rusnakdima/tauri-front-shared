@@ -7,12 +7,11 @@ import {
   type TreeNode,
 } from "./designer-tree-node.component";
 import type { CanvasElement } from "../../core/lib/types";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 @Component({
   selector: "app-designer-tree",
   standalone: true,
-  imports: [CommonModule, DesignerTreeNodeComponent, ApplyThemeDirective],
+  imports: [CommonModule, DesignerTreeNodeComponent],
   templateUrl: "./designer-tree.component.html",
 })
 export class DesignerTreeComponent {

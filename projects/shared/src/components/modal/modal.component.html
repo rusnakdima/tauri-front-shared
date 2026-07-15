@@ -1,15 +1,7 @@
 @if (open) {
-  <div
-    appApplyTheme="app-modal"
-    class="fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]"
-    (click)="handleOverlayClick($event)"
-  >
+  <div class="ui-modal-overlay" (click)="handleOverlayClick($event)">
     <div
-      [class]="
-        'modal modal-' +
-        size +
-        ' bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-xl min-w-[320px] max-h-[90vh] flex flex-col shadow-2xl'
-      "
+      class="ui-modal ui-modal-{{ size }}"
       [style.width]="
         size === 'sm'
           ? '320px'
@@ -20,21 +12,13 @@
               : '480px'
       "
     >
-      <header
-        class="flex items-center justify-between p-4 border-b border-[var(--border-color)]"
-      >
-        <h3 class="m-0 text-lg font-semibold text-[var(--text-primary)]">
-          {{ title }}
-        </h3>
-        <button
-          class="bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"
-          (click)="close()"
-          aria-label="Close"
-        >
+      <header class="ui-modal-header">
+        <h3>{{ title }}</h3>
+        <button class="ui-modal-close" (click)="close()" aria-label="Close">
           &times;
         </button>
       </header>
-      <div class="p-5 overflow-y-auto text-[var(--text-primary)]">
+      <div class="ui-modal-body">
         <ng-content></ng-content>
       </div>
     </div>

@@ -1,25 +1,17 @@
 <div
-  appApplyTheme="app-card"
-  class="overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)]"
-  [class.shadow-md]="elevated"
+  class="ui-card"
+  [class.ui-card-elevated]="elevated"
   [style.borderRadius.px]="borderRadius"
 >
   @if (title) {
-    <div class="p-4 border-b border-[var(--border-color)]">
-      <h3 class="m-0 text-base font-semibold text-[var(--text-primary)]">
-        {{ title }}
-      </h3>
+    <div class="ui-card-header">
+      <h3>{{ title }}</h3>
       @if (subtitle) {
-        <p class="m-0 mt-1 text-sm text-[var(--text-secondary)]">
-          {{ subtitle }}
-        </p>
+        <p>{{ subtitle }}</p>
       }
     </div>
   }
-  <div
-    class="p-4 text-sm leading-relaxed text-[var(--text-secondary)]"
-    [style.padding.px]="padding"
-  >
+  <div [style.padding.px]="padding">
     @if (content) {
       {{ content }}
     }

@@ -10,7 +10,9 @@ export default defineConfig({
   optimizeDeps: {
     include: [
       "zone.js",
+      "@angular/compiler",
       "@angular/platform-browser",
+      "@angular/platform-browser/animations/async",
       "@angular/common",
       "@angular/core",
       "@angular/forms",

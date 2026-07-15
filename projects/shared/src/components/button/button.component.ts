@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter, inject } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { I18nService } from "../../core/lib/i18n/i18n.service";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 import { IconComponent } from "../icons/icons.component";
 
 export type ButtonStyle = "solid" | "outline" | "soft" | "ghost";
@@ -12,7 +11,7 @@ export type ButtonSize = "sm" | "md" | "lg";
 @Component({
   selector: "app-button",
   standalone: true,
-  imports: [IconComponent, ApplyThemeDirective],
+  imports: [IconComponent],
   templateUrl: "./button.component.html",
   styleUrls: ["./button.component.css"],
 })

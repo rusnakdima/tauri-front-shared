@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 import { parseJsonOrDefault } from "../../utils/json";
 
 export interface TreeNode {
@@ -16,7 +15,7 @@ export interface TreeNode {
 @Component({
   selector: "app-tree-node",
   standalone: true,
-  imports: [CommonModule, ApplyThemeDirective],
+  imports: [CommonModule],
   templateUrl: "./tree-node.component.html",
   styleUrls: ["./tree-node.component.css"],
 })
@@ -45,7 +44,7 @@ export class TreeNodeComponent {
 @Component({
   selector: "app-tree",
   standalone: true,
-  imports: [CommonModule, TreeNodeComponent, ApplyThemeDirective],
+  imports: [CommonModule, TreeNodeComponent],
   templateUrl: "./tree.component.html",
   styleUrls: ["./tree.component.css"],
 })

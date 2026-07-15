@@ -1,14 +1,11 @@
-<span
-  appApplyTheme="app-chip"
-  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-sm font-medium transition-colors hover:bg-[var(--bg-hover)] bg-[var(--bg-elevated)] border-[var(--border-color)] text-[var(--text-primary)]"
->
+<span class="ui-badge">
   @if (icon) {
-    <app-icon class="text-base" [icon]="icon" [size]="16" />
+    <app-icon [icon]="icon" [size]="16" />
   }
   <span>{{ label }}</span>
   @if (removable || closeable) {
     <button
-      class="inline-flex items-center justify-center w-4 h-4 p-0 border-0 bg-transparent rounded-full transition-colors ms-0.5 hover:bg-[var(--border-color)] hover:text-[var(--text-primary)] text-[var(--text-secondary)]"
+      class="ui-chip-remove"
       (click)="handleRemove($event)"
       aria-label="Remove"
     >

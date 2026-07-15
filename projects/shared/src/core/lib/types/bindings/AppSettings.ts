@@ -5,7 +5,6 @@ import type { Theme } from "./Theme";
 export interface AppSettings {
   defaultLocale: string;
   supportedLocales: Array<string>;
-  tailwindPreset: string;
   theme: string;
   themes: Array<Theme>;
   colorMode: ColorMode;

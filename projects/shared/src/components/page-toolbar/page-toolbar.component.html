@@ -1,59 +1,19 @@
-<div
-  appApplyTheme="app-page-toolbar"
-  class="flex items-center px-6 py-4 gap-4 flex-wrap border-b border-[var(--border-color)] bg-[var(--bg-elevated)]"
->
-  <div class="flex-1 flex flex-col gap-1 min-w-[200px]">
-    <h2 class="text-lg font-semibold m-0 text-[var(--text-primary)]">
-      {{ title }}
-    </h2>
+<div class="ui-page-toolbar">
+  <div class="ui-page-toolbar-title">
+    <h2>{{ title }}</h2>
     <ng-content select="[slot=subtitle]"></ng-content>
   </div>
-  <div class="flex items-center gap-2 flex-wrap">
+  <div class="ui-page-toolbar-actions">
     @for (action of parsedActions; track action.label) {
       <button
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm cursor-pointer transition-all duration-150"
-        [style.border-color]="
-          action.variant === 'primary'
-            ? 'var(--accent)'
-            : action.variant === 'danger'
-              ? 'var(--error)'
-              : action.variant === 'ghost'
-                ? 'transparent'
-                : 'var(--border-color)'
-        "
-        [style.background]="
-          action.variant === 'primary'
-            ? 'var(--accent)'
-            : action.variant === 'danger'
-              ? 'var(--error)'
-              : action.variant === 'ghost'
-                ? 'transparent'
-                : 'var(--bg-elevated)'
-        "
-        [style.color]="
-          action.variant === 'primary'
-            ? 'var(--text-on-accent)'
-            : action.variant === 'danger'
-              ? 'var(--text-on-error)'
-              : action.variant === 'ghost'
-                ? 'var(--text-secondary)'
-                : 'var(--text-primary)'
-        "
-        (mouseenter)="$any($event.target).style.background = 'var(--bg-hover)'"
-        (mouseleave)="
-          $any($event.target).style.background =
-            action.variant === 'primary'
-              ? 'var(--accent)'
-              : action.variant === 'danger'
-                ? 'var(--error)'
-                : action.variant === 'ghost'
-                  ? 'transparent'
-                  : 'var(--bg-elevated)'
-        "
+        class="ui-btn"
+        [class.ui-btn-primary]="action.variant === 'primary'"
+        [class.ui-btn-danger]="action.variant === 'danger'"
+        [class.ui-btn-ghost]="action.variant === 'ghost'"
         (click)="handleAction(action)"
       >
         @if (action.icon) {
-          <app-icon class="text-lg" [icon]="action.icon" [size]="18" />
+          <app-icon [icon]="action.icon" [size]="18" />
         }
         {{ action.label }}
       </button>

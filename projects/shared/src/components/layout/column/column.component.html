@@ -1,0 +1,8 @@
+<div class="ui-column">
+  <ng-container *ngFor="let child of children">
+    <app-schema-element
+      [element]="child"
+      [elements]="children"
+    ></app-schema-element>
+  </ng-container>
+</div>

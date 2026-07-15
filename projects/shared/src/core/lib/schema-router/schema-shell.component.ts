@@ -314,7 +314,7 @@ export class SchemaShellComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Returns CSS classes for a region container by mapping its props to Tailwind-style classes.
+   * Returns CSS classes for a region container by mapping its props to sf-prefixed classes.
    * Uses the same mapPropsToClasses() logic as schema elements for consistent styling.
    */
   getRegionClasses(region: LayoutElement | null): string {

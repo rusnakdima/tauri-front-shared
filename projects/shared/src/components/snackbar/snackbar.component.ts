@@ -8,14 +8,13 @@ import {
   SimpleChanges,
 } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 export type SnackbarType = "default" | "success" | "error" | "warning" | "info";
 
 @Component({
   selector: "app-snackbar",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./snackbar.component.html",
   styleUrls: ["./snackbar.component.css"],
 })

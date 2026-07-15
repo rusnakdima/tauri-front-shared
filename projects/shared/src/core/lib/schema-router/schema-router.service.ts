@@ -250,6 +250,43 @@ export class SchemaRouterService {
         ],
       } as Page;
     }
+    if (route === "/about") {
+      return {
+        id: "about-page",
+        name: "About",
+        route: "/about",
+        layouts: [],
+        canvasElements: [
+          {
+            id: "about-container",
+            componentId: "app-stack",
+            props: { gap: 16, align: "center", justify: "center" },
+            children: [
+              {
+                id: "about-icon",
+                componentId: "app-icon",
+                props: { icon: "info", size: 64 },
+              },
+              {
+                id: "about-title",
+                componentId: "app-text",
+                props: { text: "Application Name", variant: "h2" },
+              },
+              {
+                id: "about-version",
+                componentId: "app-text",
+                props: { text: "Version 1.0.0" },
+              },
+              {
+                id: "about-desc",
+                componentId: "app-text",
+                props: { text: "A modern desktop application" },
+              },
+            ],
+          },
+        ],
+      } as Page;
+    }
     return null;
   }
 

@@ -1,44 +1,33 @@
-<table appApplyTheme="app-data-table" class="w-full border-collapse text-sm">
+<table class="ui-data-table">
   <thead>
     <tr>
       @if (selectable) {
-        <th class="w-8"></th>
+        <th class="ui-data-table-checkbox"></th>
       }
       @for (col of parsedColumns; track col.key) {
-        <th
-          class="text-left p-3 font-semibold border-b bg-[var(--bg-secondary)] text-[var(--text-primary)] border-[var(--border-color)]"
-        >
-          {{ col.name }}
-        </th>
+        <th>{{ col.name }}</th>
       }
     </tr>
   </thead>
   <tbody>
     @for (row of parsedData; track row; let idx = $index) {
       <tr
-        class="cursor-default"
-        [class.cursor-pointer]="selectable"
-        [class.bg-[var(--accent)]]="selectedIndex === idx"
-        [class.text-[var(--text-on-accent)]]="selectedIndex === idx"
+        class="ui-data-table-row"
+        [class.ui-data-table-row-selected]="selectedIndex === idx"
         (click)="selectRow(idx)"
       >
         @if (selectable) {
-          <td class="p-3 border-b border-[var(--border-color)]">
+          <td>
             <span
-              class="inline-block w-4 h-4 rounded-full border-2"
-              [class.border-[var(--text-on-accent)]]="selectedIndex === idx"
-              [class.border-[var(--border-color)]]="selectedIndex !== idx"
-              [class.bg-[var(--text-on-accent)]]="selectedIndex === idx"
-              [class.bg-transparent]="selectedIndex !== idx"
+              class="ui-data-table-checkbox-dot"
+              [class.ui-data-table-checkbox-dot-selected]="
+                selectedIndex === idx
+              "
             ></span>
           </td>
         }
         @for (col of parsedColumns; track col.key) {
-          <td
-            class="p-3 border-b text-[var(--text-primary)] border-[var(--border-color)]"
-          >
-            {{ row[col.key] }}
-          </td>
+          <td>{{ row[col.key] }}</td>
         }
       </tr>
     }

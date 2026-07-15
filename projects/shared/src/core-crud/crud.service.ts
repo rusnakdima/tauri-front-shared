@@ -4,7 +4,7 @@ import { CrudResult } from "./crud.types";
 export type { CrudFilter, CrudQuery, CrudResult } from "./crud.types";
 
 @Injectable({ providedIn: "root" })
-export abstract class CrudService {
+export abstract class LocalCrudService {
   abstract execute<T>(
     operation: string,
     entity: string,

@@ -32,9 +32,6 @@ export class StyleThemeService {
 
   async loadTheme(variant: StyleVariant): Promise<void> {
     setCurrentStyle(variant);
-    if (this.isDarkMode()) {
-      this.injectDarkModeVariables(variant);
-    }
     this._themeChanged$.next({
       variant,
       isDark: this.isDarkMode(),
@@ -71,14 +68,11 @@ export class StyleThemeService {
   }
 
   toggleDarkMode(): void {
-    const html = document.documentElement;
-    const isCurrentlyDark = html.classList.contains("dark");
+    const isCurrentlyDark = document.body.getAttribute("data-theme") === "dark";
     if (isCurrentlyDark) {
-      html.classList.remove("dark");
-      this.removeDarkModeVariables();
+      document.body.setAttribute("data-theme", "light");
     } else {
-      html.classList.add("dark");
-      this.injectDarkModeVariables(this.getCurrentTheme());
+      document.body.setAttribute("data-theme", "dark");
     }
     this.saveDarkModePreference(!isCurrentlyDark);
     this._themeChanged$.next({
@@ -88,18 +82,11 @@ export class StyleThemeService {
   }
 
   isDarkMode(): boolean {
-    return document.documentElement.classList.contains("dark");
+    return document.body.getAttribute("data-theme") === "dark";
   }
 
   setDarkMode(enabled: boolean): void {
-    const html = document.documentElement;
-    if (enabled) {
-      html.classList.add("dark");
-      this.injectDarkModeVariables(this.getCurrentTheme());
-    } else {
-      html.classList.remove("dark");
-      this.removeDarkModeVariables();
-    }
+    document.body.setAttribute("data-theme", enabled ? "dark" : "light");
     this.saveDarkModePreference(enabled);
     this._themeChanged$.next({
       variant: this.getCurrentTheme(),
@@ -1044,9 +1031,7 @@ export class StyleThemeService {
 
   private initializeDarkMode(): void {
     const savedDarkMode = this.loadDarkModePreference();
-    if (savedDarkMode) {
-      document.documentElement.classList.add("dark");
-    }
+    document.body.setAttribute("data-theme", savedDarkMode ? "dark" : "light");
     this._themeChanged$.next({
       variant: this.getCurrentTheme(),
       isDark: savedDarkMode,

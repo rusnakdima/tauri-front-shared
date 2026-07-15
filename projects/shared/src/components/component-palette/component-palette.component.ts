@@ -1,6 +1,5 @@
 import { Component, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 import { parseJsonOrDefault } from "../../utils/json";
 
 export interface PaletteCategory {
@@ -11,7 +10,7 @@ export interface PaletteCategory {
 @Component({
   selector: "app-component-palette",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./component-palette.component.html",
   styleUrls: ["./component-palette.component.css"],
 })

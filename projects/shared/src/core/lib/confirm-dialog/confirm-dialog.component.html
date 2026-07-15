@@ -7,29 +7,26 @@
   [showCloseButton]="false"
   (closed)="onCancel()"
 >
-  <div class="text-[var(--text-main)]">
-    <p class="mb-2">{{ options.message }}</p>
+  <div style="color: var(--text-main)">
+    <p>{{ options.message }}</p>
     @if (options.itemName) {
       <p
-        class="rounded-lg bg-[var(--bg-elevated)] px-3 py-2 font-mono text-sm text-[var(--accent)]"
+        class="sf-font-mono"
+        style="background: var(--bg-elevated); color: var(--accent)"
       >
         {{ options.itemName }}
       </p>
     }
   </div>
 
-  <div modal-footer class="flex justify-end gap-3">
-    <button
-      type="button"
-      (click)="onCancel()"
-      class="form-btn form-btn-secondary"
-    >
+  <div modal-footer class="sf-flex sf-justify-end sf-gap-3">
+    <button type="button" (click)="onCancel()" class="ui-btn ui-btn-outline">
       {{ options.cancelText || "Cancel" }}
     </button>
     <button
       type="button"
       (click)="onConfirm()"
-      [class]="options.confirmClass || 'form-btn form-btn-primary'"
+      [class]="options.confirmClass || 'ui-btn ui-btn-primary'"
     >
       {{ options.confirmText || "Confirm" }}
     </button>

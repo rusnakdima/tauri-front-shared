@@ -1,11 +1,9 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
-
 @Component({
   selector: "app-designer-sidebar",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./designer-sidebar.component.html",
   styleUrls: ["./designer-sidebar.component.css"],
 })

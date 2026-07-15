@@ -1,14 +1,3 @@
-<button
-  appApplyTheme="app-swap-button"
-  class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-color)] bg-[var(--bg-elevated)] cursor-pointer transition-all p-0 text-[var(--text-secondary)]"
-  (mouseenter)="hovered = true"
-  (mouseleave)="hovered = false"
-  [class.bg-[var(--bg-hover)]]]="hovered"
-  [class.bg-[var(--bg-elevated)]]]="!hovered"
-  [class.text-[var(--text-primary)]]]="hovered"
-  [class.text-[var(--text-secondary)]]]="!hovered"
-  (click)="clicked.emit($event)"
-  aria-label="Swap"
->
+<button class="ui-swap-button" (click)="clicked.emit($event)" aria-label="Swap">
   <app-icon icon="chevron-down" [size]="20" style="transform: rotate(90deg)" />
 </button>

@@ -1,6 +1,6 @@
 @if (visibleToasts().length > 0) {
   <div
-    class="fixed z-50 flex w-80 max-w-full flex-col gap-2 p-4"
+    class="sf-fixed sf-z-50 sf-flex sf-w-80 sf-max-w-full sf-flex-col sf-gap-2 sf-p-4"
     [ngClass]="positionClass"
   >
     @for (toast of visibleToasts(); track toast.id) {

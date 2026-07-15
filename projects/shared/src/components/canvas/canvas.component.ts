@@ -3,7 +3,6 @@ import { CommonModule } from "@angular/common";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { DesignerCanvasService } from "../../core/lib/designer/designer-canvas.service";
 import type { CanvasElement } from "../../core/lib/types";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 interface DropIndicator {
   parentId: string | null;
@@ -14,7 +13,7 @@ interface DropIndicator {
 @Component({
   selector: "app-canvas",
   standalone: true,
-  imports: [CommonModule, ApplyThemeDirective],
+  imports: [CommonModule],
   templateUrl: "./canvas.component.html",
   styleUrls: ["./canvas.component.css"],
 })

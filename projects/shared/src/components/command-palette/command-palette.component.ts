@@ -7,7 +7,6 @@ import {
   HostListener,
 } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 import { IconComponent } from "../icons/icons.component";
 
 export interface Command {
@@ -22,7 +21,7 @@ export interface Command {
 @Component({
   selector: "app-command-palette",
   standalone: true,
-  imports: [IconComponent, ApplyThemeDirective],
+  imports: [IconComponent],
   templateUrl: "./command-palette.component.html",
   styleUrls: ["./command-palette.component.css"],
 })

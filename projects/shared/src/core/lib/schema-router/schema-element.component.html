@@ -15,11 +15,12 @@
     </ng-container>
   } @else if (componentType) {
     <ng-container #dynamicHost></ng-container>
-  }
-  @for (child of childElements; track $index) {
-    <app-schema-element
-      [element]="child"
-      [elements]="elements"
-    ></app-schema-element>
+  } @else {
+    @for (child of childElements; track $index) {
+      <app-schema-element
+        [element]="child"
+        [elements]="elements"
+      ></app-schema-element>
+    }
   }
 </div>

@@ -70,15 +70,15 @@ const M3_TOKENS_CSS = `
   --text-on-accent: var(--color-m3-on-primary);
   --text-primary: var(--color-m3-on-background);
   --text-secondary: var(--color-m3-on-surface-variant);
-  --text-muted: var(--color-m3-outline);
+  --text-muted: #6d6b74;
   --text-on-error: var(--color-m3-on-error);
   --text-on-warning: #ffffff;
   --text-on-success: #ffffff;
   --bg-elevated: var(--color-m3-surface-container);
   --border-color: var(--color-m3-outline);
   --error: var(--color-m3-error);
-  --warning: #ff9800;
-  --success: #48bb78;
+  --warning: #b34700;
+  --success: #2d7a3a;
   --info: #0066ff;
   --bg-primary: var(--color-m3-background);
   --bg-secondary: var(--color-m3-surface-container-low);
@@ -87,7 +87,7 @@ const M3_TOKENS_CSS = `
 }
 
 /* Dark mode */
-:root.dark {
+body[data-style="m3"][data-theme="dark"] {
   --color-m3-primary: #d0bcff;
   --color-m3-primary-container: #4f378b;
   --color-m3-on-primary: #381e72;
@@ -973,6 +973,39 @@ const M3_COMPONENTS_CSS = `
 
 .m3-swap-btn:active {
   box-shadow: var(--shadow-m3-1);
+}
+
+/* Theme toggle button */
+.m3-toggle {
+  background: transparent;
+  color: var(--color-m3-on-surface-variant);
+  border-radius: var(--radius-m3-full);
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-m3-outline);
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.m3-toggle:hover {
+  background: var(--color-m3-state-hover);
+}
+
+.m3-toggle:active {
+  background: var(--color-m3-state-pressed);
+}
+
+.m3-toggle:focus-visible {
+  outline: 2px solid var(--color-m3-primary);
+  outline-offset: 2px;
+}
+
+body[data-style="m3"][data-theme="dark"] .m3-toggle {
+  color: var(--color-m3-on-surface-variant);
+  border-color: var(--color-m3-outline-variant);
 }
 
 /* Missing component classes - Language selector */

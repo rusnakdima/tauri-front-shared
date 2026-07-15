@@ -1,0 +1,163 @@
+// Skeuomorphism Design Tokens
+// Light mode + Dark mode
+
+:root {
+  /* Palette */
+  --primary: linear-gradient(180deg, #8ba8df 0%, #4671c6 100%);
+  --primary-fg: #ffffff;
+  --primary-hover: linear-gradient(180deg, #9bb8ef 0%, #5681d6 100%);
+  --secondary: #625b4d;
+  --secondary-fg: #ffffff;
+  --background: #d4d0c8;
+  --surface: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
+  --surface-variant: linear-gradient(180deg, #e0e0e0 0%, #cccccc 100%);
+  --surface-hover: linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%);
+  --text: #2b1810;
+  --text-muted: #5c3d20;
+  --border: #888888;
+
+  /* Semantic Colors */
+  --success: #2d5016;
+  --warning: #c47700;
+  --error: #8b0000;
+  --info: #1e4d6b;
+  --semantic-fg: #fff5e6;
+
+  /* Structural */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+  --border-width: 1px;
+  --border-style: solid;
+
+  /* Effects */
+  --shadow-sm:
+    0 1px 1px rgba(255, 255, 255, 0.8) inset, 0 2px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md:
+    0 1px 1px rgba(255, 255, 255, 0.8) inset, 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg:
+    0 2px 2px rgba(255, 255, 255, 0.9) inset, 0 8px 16px rgba(0, 0, 0, 0.5);
+  --shadow-inset:
+    inset 0 3px 5px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.8);
+  --shadow-focus: 0 0 5px 2px rgba(70, 113, 198, 0.6);
+  --glass-blur: none;
+
+  /* Typography */
+  --font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Skeuomorphism-specific variables */
+  --color-skeu-base: #e8dcc4;
+  --color-skeu-leather: #6b4423;
+  --color-skeu-leather-dark: #4a2e18;
+  --color-skeu-paper: #f5e6c8;
+  --color-skeu-ink: #2b1810;
+  --color-skeu-accent: #b8860b;
+  --color-skeu-accent-dark: #8b6508;
+  --color-skeu-cream: #faf3e0;
+  --color-skeu-glass: rgba(255, 255, 255, 0.2);
+  --gradient-leather: linear-gradient(
+    180deg,
+    var(--color-skeu-leather) 0%,
+    var(--color-skeu-leather-dark) 100%
+  );
+  --gradient-paper: linear-gradient(
+    180deg,
+    var(--color-skeu-paper) 0%,
+    #e8d9b3 100%
+  );
+  --gradient-input: linear-gradient(180deg, #dcc99e 0%, #c4b58a 100%);
+  --gradient-accent: linear-gradient(
+    180deg,
+    #d4a017 0%,
+    var(--color-skeu-accent-dark) 100%
+  );
+
+  /* Semantic aliases */
+  --accent: var(--color-skeu-accent);
+  --accent-hover: var(--color-skeu-accent-dark);
+  --text-on-accent: var(--color-skeu-cream);
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --bg-elevated: var(--color-skeu-paper);
+  --border-subtle: #a8916b;
+  --bg-primary: var(--background);
+  --bg-secondary: var(--surface);
+  --bg-tertiary: #c4b58a;
+}
+
+body[data-style="skeuomorphism"] {
+  --font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --background: #d4d0c8;
+  --surface: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
+  --surface-variant: linear-gradient(180deg, #e0e0e0 0%, #cccccc 100%);
+  --surface-hover: linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%);
+  --primary: linear-gradient(180deg, #8ba8df 0%, #4671c6 100%);
+  --primary-fg: #ffffff;
+  --primary-hover: linear-gradient(180deg, #9bb8ef 0%, #5681d6 100%);
+  --border: #888888;
+  --shadow-sm:
+    0 1px 1px rgba(255, 255, 255, 0.8) inset, 0 2px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md:
+    0 1px 1px rgba(255, 255, 255, 0.8) inset, 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg:
+    0 2px 2px rgba(255, 255, 255, 0.9) inset, 0 8px 16px rgba(0, 0, 0, 0.5);
+  --shadow-inset:
+    inset 0 3px 5px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.8);
+  --shadow-focus: 0 0 5px 2px rgba(70, 113, 198, 0.6);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --text: #2b1810;
+  --text-muted: #5c3d20;
+}
+
+body[data-style="skeuomorphism"][data-theme="dark"] {
+  --background: #2a2a2a;
+  --surface: linear-gradient(180deg, #444 0%, #222 100%);
+  --surface-variant: linear-gradient(180deg, #333 0%, #111 100%);
+  --surface-hover: linear-gradient(180deg, #555 0%, #333 100%);
+  --primary: linear-gradient(180deg, #5c7cb9 0%, #2b4987 100%);
+  --primary-fg: #ffffff;
+  --primary-hover: linear-gradient(180deg, #6c8cc9 0%, #3b5997 100%);
+  --secondary: #4a4a4a;
+  --text: #e0e0e0;
+  --text-muted: #a0a0a0;
+  --border: #111111;
+  --shadow-sm:
+    0 1px 1px rgba(255, 255, 255, 0.1) inset, 0 2px 5px rgba(0, 0, 0, 0.8);
+  --shadow-md:
+    0 1px 1px rgba(255, 255, 255, 0.1) inset, 0 5px 15px rgba(0, 0, 0, 0.9);
+  --shadow-lg:
+    0 2px 2px rgba(255, 255, 255, 0.1) inset, 0 10px 25px rgba(0, 0, 0, 0.95);
+  --shadow-inset:
+    inset 0 3px 6px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(255, 255, 255, 0.1);
+  --shadow-focus: 0 0 5px 2px rgba(92, 124, 185, 0.6);
+
+  /* Skeuomorphism dark variables */
+  --color-skeu-base: #2a2a2a;
+  --color-skeu-leather: #8b6508;
+  --color-skeu-leather-dark: #5a3d1a;
+  --color-skeu-paper: #3d2b1f;
+  --color-skeu-ink: #f5e6c8;
+  --gradient-leather: linear-gradient(
+    180deg,
+    var(--color-skeu-leather) 0%,
+    var(--color-skeu-leather-dark) 100%
+  );
+  --gradient-paper: linear-gradient(
+    180deg,
+    var(--color-skeu-paper) 0%,
+    #2d2015 100%
+  );
+
+  /* Semantic aliases */
+  --accent: var(--color-skeu-accent);
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --bg-elevated: var(--surface);
+  --border-subtle: var(--border);
+  --bg-primary: var(--background);
+  --bg-secondary: var(--surface);
+  --bg-tertiary: #1f140f;
+}

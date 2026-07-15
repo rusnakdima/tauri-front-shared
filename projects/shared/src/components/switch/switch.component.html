@@ -1,23 +1,13 @@
-<label
-  appApplyTheme="app-switch"
-  class="switch flex items-center gap-2 cursor-pointer relative"
-  [class.switch-checked]="checked"
-  [class.bg-[var(--accent)]]="checked"
->
+<label class="ui-switch" [class.ui-switch-checked]="checked">
   <input
     type="checkbox"
     [checked]="checked"
     [disabled]="disabled"
     (change)="handleChange($event)"
-    class="absolute opacity-0 w-0 h-0"
+    class="ui-switch-input"
   />
-  <span
-    class="slider w-10 h-5 rounded-full transition-colors relative"
-    style="background-color: var(--border-color)"
-  ></span>
+  <span class="ui-switch-slider"></span>
   @if (label) {
-    <span class="switch-label text-sm select-none text-[var(--text-primary)]">{{
-      label
-    }}</span>
+    <span class="ui-switch-label">{{ label }}</span>
   }
 </label>

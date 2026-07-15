@@ -1,6 +1,5 @@
 <div
-  appApplyTheme="app-tooltip"
-  class="inline-flex relative cursor-pointer"
+  class="ui-tooltip"
   (mouseenter)="show = true"
   (mouseleave)="show = false"
   (focus)="show = true"
@@ -10,11 +9,11 @@
   <ng-content></ng-content>
   @if (show) {
     <div
-      class="absolute z-50 px-3 py-1.5 rounded-md text-xs whitespace-nowrap shadow-md pointer-events-none tooltip-bubble bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--border-color)]"
-      [class.top]="!position || position === 'top'"
-      [class.bottom]="position === 'bottom'"
-      [class.left]="position === 'left'"
-      [class.right]="position === 'right'"
+      class="ui-tooltip-bubble"
+      [class.ui-tooltip-top]="!position || position === 'top'"
+      [class.ui-tooltip-bottom]="position === 'bottom'"
+      [class.ui-tooltip-left]="position === 'left'"
+      [class.ui-tooltip-right]="position === 'right'"
     >
       {{ text || content }}
     </div>

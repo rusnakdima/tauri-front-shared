@@ -368,8 +368,3 @@ export const feedbackComponents: SharedComponentDef[] = [
     category: "forms",
   },
 ];
-
-export const components = uiComponents;
-
-// Data Components (placeholder for @tauri-front/data package)
-export const dataComponents: SharedComponentDef[] = [];

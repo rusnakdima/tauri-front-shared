@@ -6,7 +6,6 @@ import {
   HostListener,
 } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 import { parseJsonOrDefault } from "../../utils/json";
 
 interface Shortcut {
@@ -17,7 +16,7 @@ interface Shortcut {
 @Component({
   selector: "app-shortcuts-overlay",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./shortcuts-overlay.component.html",
   styleUrls: ["./shortcuts-overlay.component.css"],
 })

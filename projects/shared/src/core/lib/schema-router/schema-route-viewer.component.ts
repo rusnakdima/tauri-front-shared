@@ -80,7 +80,7 @@ export class SchemaRouteViewerComponent implements OnInit, OnChanges {
       }
     }
 
-    // Gap: schema value is a Tailwind spacing token (4 = 1rem)
+    // Gap: schema value is a spacing token (4 = 1rem)
     const rowGap = layout.rowGap ?? layout.gap;
     const colGap = layout.colGap ?? layout.gap;
     if (rowGap !== undefined || colGap !== undefined) {

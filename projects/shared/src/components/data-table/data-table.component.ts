@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 import { parseJsonOrDefault } from "../../utils/json";
 
 interface ColumnDef {
@@ -12,7 +11,7 @@ type RowData = Record<string, unknown>;
 @Component({
   selector: "app-data-table",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./data-table.component.html",
   styleUrls: ["./data-table.component.css"],
 })

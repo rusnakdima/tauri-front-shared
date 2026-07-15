@@ -1,8 +1,8 @@
 import * as i0 from '@angular/core';
-import { signal, Injectable, inject, ElementRef, Renderer2, Input, Directive, Component, EventEmitter, Output, HostListener, computed, Injector, ApplicationRef, ViewContainerRef, ViewChild, ChangeDetectionStrategy, CUSTOM_ELEMENTS_SCHEMA, effect, Optional, input, output, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
-import { BehaviorSubject, Subject, map, distinctUntilChanged } from 'rxjs';
+import { signal, Injectable, Input, Component, inject, EventEmitter, Output, HostListener, computed, Injector, ApplicationRef, ViewContainerRef, ViewChild, input, output, ChangeDetectionStrategy, CUSTOM_ELEMENTS_SCHEMA, effect, Optional, provideBrowserGlobalErrorListeners, provideZoneChangeDetection, Directive } from '@angular/core';
 import * as i1 from '@angular/common';
 import { CommonModule } from '@angular/common';
+import { BehaviorSubject, Subject, map, distinctUntilChanged } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
@@ -103,10 +103,536 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             args: [{ providedIn: "root" }]
         }] });
 
+// Material Icons mapping - using Google Material Icons names
+const MI_ICONS = {
+    // Navigation
+    home: "home",
+    menu: "menu",
+    close: "close",
+    check: "check",
+    "chevron-down": "expand_more",
+    "chevron-right": "chevron_right",
+    // Actions
+    edit: "edit",
+    delete: "delete",
+    add: "add",
+    search: "search",
+    undo: "undo",
+    redo: "redo",
+    remove: "remove",
+    fit_screen: "fullscreen",
+    grid: "grid_view",
+    grid_on: "grid_view",
+    zoom_in: "zoom_in",
+    zoom_out: "zoom_out",
+    // Status
+    info: "info",
+    warning: "warning",
+    error: "error",
+    success: "check_circle",
+    // Content
+    user: "person",
+    settings: "settings",
+    star: "star",
+    heart: "favorite",
+    // Media
+    image: "image",
+    camera: "camera_alt",
+    // Files
+    file: "description",
+    folder: "folder",
+    // Misc
+    sun: "light_mode",
+    moon: "dark_mode",
+    download: "download",
+    upload: "upload",
+    copy: "content_copy",
+    // Translation & Input
+    translate: "translate",
+    keyboard: "keyboard",
+    // Additional
+    search_off: "search_off",
+    swap_vert: "swap_vert",
+    expand_more: "expand_more",
+    dark_mode: "dark_mode",
+    light_mode: "light_mode",
+    arrow_back: "arrow_back",
+    arrow_forward: "arrow_forward",
+    first_page: "first_page",
+    last_page: "last_page",
+    chevron_left: "chevron_left",
+    chevron_right: "chevron_right",
+    content_copy: "content_copy",
+    clear: "close",
+    language: "translate",
+    "xmark": "close",
+};
+class IconComponent {
+    icon = "";
+    size = 24;
+    classes = "";
+    get materialIcon() {
+        return MI_ICONS[this.icon] || MI_ICONS["info"] || "help";
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: IconComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: IconComponent, isStandalone: true, selector: "app-icon", inputs: { icon: "icon", size: "size", classes: "classes" }, ngImport: i0, template: "<span class=\"ui-icon\">\n  <i\n    class=\"material-icons\"\n    [style.font-size.px]=\"size\"\n  >{{ materialIcon }}</i>\n</span>\n", styles: [""] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: IconComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-icon", standalone: true, imports: [], template: "<span class=\"ui-icon\">\n  <i\n    class=\"material-icons\"\n    [style.font-size.px]=\"size\"\n  >{{ materialIcon }}</i>\n</span>\n" }]
+        }], propDecorators: { icon: [{
+                type: Input
+            }], size: [{
+                type: Input
+            }], classes: [{
+                type: Input
+            }] } });
+
+class ButtonComponent {
+    i18n = inject(I18nService);
+    variant = "primary";
+    buttonStyle = "solid";
+    size = "md";
+    disabled = false;
+    loading = false;
+    icon = null;
+    iconPosition = "left";
+    fullWidth = false;
+    type = "button";
+    label = "";
+    set i18nKey(value) {
+        if (value !== undefined && value !== null) {
+            this.label = this.i18n.t(value);
+        }
+    }
+    classes = "";
+    ariaLabel = "";
+    align = "";
+    direction = "";
+    height = "";
+    justify = "";
+    layout = "";
+    width = "";
+    clicked = new EventEmitter();
+    handleClick(e) {
+        if (this.disabled || this.loading) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+        this.clicked.emit(e);
+    }
+    getButtonClass() {
+        const sizeClass = this.size === "sm"
+            ? "py-1 px-2 text-sm"
+            : this.size === "lg"
+                ? "py-3 px-6 text-lg"
+                : "";
+        return [sizeClass, this.fullWidth ? "w-full" : ""]
+            .filter(Boolean)
+            .join(" ");
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ButtonComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ButtonComponent, isStandalone: true, selector: "app-button", inputs: { variant: "variant", buttonStyle: "buttonStyle", size: "size", disabled: "disabled", loading: "loading", icon: "icon", iconPosition: "iconPosition", fullWidth: "fullWidth", type: "type", label: "label", i18nKey: "i18nKey", classes: "classes", ariaLabel: "ariaLabel", align: "align", direction: "direction", height: "height", justify: "justify", layout: "layout", width: "width" }, outputs: { clicked: "clicked" }, ngImport: i0, template: "<button\n  [attr.type]=\"type || 'button'\"\n  class=\"ui-btn ui-btn-primary\"\n  [class]=\"classes\"\n  [disabled]=\"disabled || loading\"\n  (click)=\"handleClick($event)\"\n>\n  @if (loading) {\n    <span class=\"app-btn-spinner\"></span>\n  } @else {\n    @if (icon && iconPosition === \"left\") {\n      <app-icon class=\"app-btn-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n    @if (label) {\n      <span>{{ label }}</span>\n    } @else {\n      <ng-content></ng-content>\n    }\n    @if (icon && iconPosition === \"right\") {\n      <app-icon class=\"app-btn-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n  }\n</button>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ButtonComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-button", standalone: true, imports: [IconComponent], template: "<button\n  [attr.type]=\"type || 'button'\"\n  class=\"ui-btn ui-btn-primary\"\n  [class]=\"classes\"\n  [disabled]=\"disabled || loading\"\n  (click)=\"handleClick($event)\"\n>\n  @if (loading) {\n    <span class=\"app-btn-spinner\"></span>\n  } @else {\n    @if (icon && iconPosition === \"left\") {\n      <app-icon class=\"app-btn-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n    @if (label) {\n      <span>{{ label }}</span>\n    } @else {\n      <ng-content></ng-content>\n    }\n    @if (icon && iconPosition === \"right\") {\n      <app-icon class=\"app-btn-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n  }\n</button>\n" }]
+        }], propDecorators: { variant: [{
+                type: Input
+            }], buttonStyle: [{
+                type: Input
+            }], size: [{
+                type: Input
+            }], disabled: [{
+                type: Input
+            }], loading: [{
+                type: Input
+            }], icon: [{
+                type: Input
+            }], iconPosition: [{
+                type: Input
+            }], fullWidth: [{
+                type: Input
+            }], type: [{
+                type: Input
+            }], label: [{
+                type: Input
+            }], i18nKey: [{
+                type: Input
+            }], classes: [{
+                type: Input
+            }], ariaLabel: [{
+                type: Input
+            }], align: [{
+                type: Input
+            }], direction: [{
+                type: Input
+            }], height: [{
+                type: Input
+            }], justify: [{
+                type: Input
+            }], layout: [{
+                type: Input
+            }], width: [{
+                type: Input
+            }], clicked: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-button", ButtonComponent);
+
+class InputComponent {
+    type = "text";
+    placeholder = "";
+    label = "";
+    icon = "";
+    disabled = false;
+    value = "";
+    error = "";
+    input = new EventEmitter();
+    blurred = new EventEmitter();
+    focused = false;
+    handleInput(e) {
+        this.value = e.target.value;
+        this.input.emit(this.value);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: InputComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: InputComponent, isStandalone: true, selector: "app-input", inputs: { type: "type", placeholder: "placeholder", label: "label", icon: "icon", disabled: "disabled", value: "value", error: "error" }, outputs: { input: "input", blurred: "blurred" }, ngImport: i0, template: "<div class=\"ui-input-group\">\n  @if (label) {\n    <label>{{ label }}</label>\n  }\n  <div class=\"ui-input-wrap\" [class.ui-input-focused]=\"focused\">\n    @if (icon) {\n      <app-icon\n        class=\"ui-input-icon\"\n        [icon]=\"icon\"\n        [size]=\"20\"\n      />\n    }\n    <input\n      #inputEl\n      [attr.type]=\"type\"\n      class=\"ui-input\"\n      [class.ui-input-with-icon]=\"!!icon\"\n      [placeholder]=\"placeholder\"\n      [disabled]=\"disabled\"\n      [value]=\"value\"\n      (input)=\"handleInput($event)\"\n      (focus)=\"focused = true\"\n      (blur)=\"focused = false\"\n    />\n  </div>\n  @if (error) {\n    <span class=\"ui-input-error\">{{ error }}</span>\n  }\n</div>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: InputComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-input", standalone: true, imports: [IconComponent], template: "<div class=\"ui-input-group\">\n  @if (label) {\n    <label>{{ label }}</label>\n  }\n  <div class=\"ui-input-wrap\" [class.ui-input-focused]=\"focused\">\n    @if (icon) {\n      <app-icon\n        class=\"ui-input-icon\"\n        [icon]=\"icon\"\n        [size]=\"20\"\n      />\n    }\n    <input\n      #inputEl\n      [attr.type]=\"type\"\n      class=\"ui-input\"\n      [class.ui-input-with-icon]=\"!!icon\"\n      [placeholder]=\"placeholder\"\n      [disabled]=\"disabled\"\n      [value]=\"value\"\n      (input)=\"handleInput($event)\"\n      (focus)=\"focused = true\"\n      (blur)=\"focused = false\"\n    />\n  </div>\n  @if (error) {\n    <span class=\"ui-input-error\">{{ error }}</span>\n  }\n</div>\n" }]
+        }], propDecorators: { type: [{
+                type: Input
+            }], placeholder: [{
+                type: Input
+            }], label: [{
+                type: Input
+            }], icon: [{
+                type: Input
+            }], disabled: [{
+                type: Input
+            }], value: [{
+                type: Input
+            }], error: [{
+                type: Input
+            }], input: [{
+                type: Output
+            }], blurred: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-input", InputComponent);
+
+class EmptyStateComponent {
+    title = "";
+    message = "";
+    icon = "";
+    variant = "default";
+    action = "";
+    classes = "";
+    actionClicked = new EventEmitter();
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: EmptyStateComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: EmptyStateComponent, isStandalone: true, selector: "app-empty-state", inputs: { title: "title", message: "message", icon: "icon", variant: "variant", action: "action", classes: "classes" }, outputs: { actionClicked: "actionClicked" }, ngImport: i0, template: "<div\n  class=\"ui-empty-state-icon\"\n  [class.ui-empty-state-danger]=\"variant === 'danger'\"\n  [class.ui-empty-state-success]=\"variant === 'success'\"\n>\n  @if (icon) {\n    <span>{{ icon }}</span>\n  }\n</div>\n@if (title) {\n  <h3>{{ title }}</h3>\n}\n@if (message) {\n  <p>{{ message }}</p>\n}\n@if (action) {\n  <div>\n    <button\n      class=\"ui-btn ui-btn-primary\"\n      (click)=\"actionClicked.emit($event)\"\n    >\n      {{ action }}\n    </button>\n  </div>\n}\n", styles: [""] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: EmptyStateComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-empty-state", standalone: true, imports: [], template: "<div\n  class=\"ui-empty-state-icon\"\n  [class.ui-empty-state-danger]=\"variant === 'danger'\"\n  [class.ui-empty-state-success]=\"variant === 'success'\"\n>\n  @if (icon) {\n    <span>{{ icon }}</span>\n  }\n</div>\n@if (title) {\n  <h3>{{ title }}</h3>\n}\n@if (message) {\n  <p>{{ message }}</p>\n}\n@if (action) {\n  <div>\n    <button\n      class=\"ui-btn ui-btn-primary\"\n      (click)=\"actionClicked.emit($event)\"\n    >\n      {{ action }}\n    </button>\n  </div>\n}\n" }]
+        }], propDecorators: { title: [{
+                type: Input
+            }], message: [{
+                type: Input
+            }], icon: [{
+                type: Input
+            }], variant: [{
+                type: Input
+            }], action: [{
+                type: Input
+            }], classes: [{
+                type: Input
+            }], actionClicked: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-empty-state", EmptyStateComponent);
+
+class DialogComponent {
+    open = false;
+    title = "";
+    size = "md";
+    showHeader = true;
+    showFooter = false;
+    closed = new EventEmitter();
+    handleOverlayClick(e) {
+        if (e.target.classList.contains("overlay")) {
+            this.close();
+        }
+    }
+    close() {
+        this.open = false;
+        this.closed.emit();
+    }
+    onEscape() {
+        if (this.open)
+            this.close();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DialogComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: DialogComponent, isStandalone: true, selector: "app-dialog", inputs: { open: "open", title: "title", size: "size", showHeader: "showHeader", showFooter: "showFooter" }, outputs: { closed: "closed" }, host: { listeners: { "window:keydown.escape": "onEscape()" } }, ngImport: i0, template: "@if (open) {\n  <div\n    class=\"ui-modal-overlay\"\n    (click)=\"handleOverlayClick($event)\"\n  >\n    <div class=\"ui-dialog ui-dialog-{{ size }}\">\n      <header class=\"ui-dialog-header\">\n        <h2>{{ title }}</h2>\n        <button\n          class=\"ui-dialog-close\"\n          (click)=\"close()\"\n          aria-label=\"Close\"\n        >\n          &times;\n        </button>\n      </header>\n      <div class=\"ui-dialog-body\">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n", styles: [""] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DialogComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-dialog", standalone: true, imports: [], template: "@if (open) {\n  <div\n    class=\"ui-modal-overlay\"\n    (click)=\"handleOverlayClick($event)\"\n  >\n    <div class=\"ui-dialog ui-dialog-{{ size }}\">\n      <header class=\"ui-dialog-header\">\n        <h2>{{ title }}</h2>\n        <button\n          class=\"ui-dialog-close\"\n          (click)=\"close()\"\n          aria-label=\"Close\"\n        >\n          &times;\n        </button>\n      </header>\n      <div class=\"ui-dialog-body\">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n" }]
+        }], propDecorators: { open: [{
+                type: Input
+            }], title: [{
+                type: Input
+            }], size: [{
+                type: Input
+            }], showHeader: [{
+                type: Input
+            }], showFooter: [{
+                type: Input
+            }], closed: [{
+                type: Output
+            }], onEscape: [{
+                type: HostListener,
+                args: ["window:keydown.escape"]
+            }] } });
+registerSchemaComponent("app-dialog", DialogComponent);
+
+class LoadingComponent {
+    size = "md";
+    color = "";
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LoadingComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: LoadingComponent, isStandalone: true, selector: "app-loading", inputs: { size: "size", color: "color" }, ngImport: i0, template: "<div class=\"ui-loading ui-loading-{{ size }}\"></div>\n", styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LoadingComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-loading", standalone: true, imports: [], template: "<div class=\"ui-loading ui-loading-{{ size }}\"></div>\n", styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"] }]
+        }], propDecorators: { size: [{
+                type: Input
+            }], color: [{
+                type: Input
+            }] } });
+registerSchemaComponent("app-loading", LoadingComponent);
+
+class RadioComponent {
+    name = "";
+    value = "";
+    checked = false;
+    disabled = false;
+    changed = new EventEmitter();
+    label = "";
+    handleChange(_e) {
+        this.checked = true;
+        this.changed.emit(this.value);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: RadioComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: RadioComponent, isStandalone: true, selector: "app-radio", inputs: { name: "name", value: "value", checked: "checked", disabled: "disabled", label: "label" }, outputs: { changed: "changed" }, ngImport: i0, template: "<label class=\"ui-control-wrap\">\n  <input\n    type=\"radio\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [name]=\"name\"\n    [value]=\"value\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n  />\n  <span><ng-content></ng-content></span>\n</label>\n", styles: [""] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: RadioComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-radio", standalone: true, imports: [], template: "<label class=\"ui-control-wrap\">\n  <input\n    type=\"radio\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [name]=\"name\"\n    [value]=\"value\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n  />\n  <span><ng-content></ng-content></span>\n</label>\n" }]
+        }], propDecorators: { name: [{
+                type: Input
+            }], value: [{
+                type: Input
+            }], checked: [{
+                type: Input
+            }], disabled: [{
+                type: Input
+            }], changed: [{
+                type: Output
+            }], label: [{
+                type: Input
+            }] } });
+registerSchemaComponent("app-radio", RadioComponent);
+
+class SliderComponent {
+    min = 0;
+    max = 100;
+    value = 0;
+    step = 1;
+    disabled = false;
+    input = new EventEmitter();
+    handleInput(e) {
+        this.value = Number(e.target.value);
+        this.input.emit(this.value);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SliderComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SliderComponent, isStandalone: true, selector: "app-slider", inputs: { min: "min", max: "max", value: "value", step: "step", disabled: "disabled" }, outputs: { input: "input" }, ngImport: i0, template: "<div class=\"ui-slider\">\n  <input\n    type=\"range\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [value]=\"value\"\n    [min]=\"min\"\n    [max]=\"max\"\n    [step]=\"step\"\n    [disabled]=\"disabled\"\n    (input)=\"handleInput($event)\"\n  />\n</div>\n", styles: [""] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SliderComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-slider", standalone: true, imports: [], template: "<div class=\"ui-slider\">\n  <input\n    type=\"range\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [value]=\"value\"\n    [min]=\"min\"\n    [max]=\"max\"\n    [step]=\"step\"\n    [disabled]=\"disabled\"\n    (input)=\"handleInput($event)\"\n  />\n</div>\n" }]
+        }], propDecorators: { min: [{
+                type: Input
+            }], max: [{
+                type: Input
+            }], value: [{
+                type: Input
+            }], step: [{
+                type: Input
+            }], disabled: [{
+                type: Input
+            }], input: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-slider", SliderComponent);
+
+class SwitchComponent {
+    checked = false;
+    label = "";
+    disabled = false;
+    changed = new EventEmitter();
+    handleChange(e) {
+        this.changed.emit(e.target.checked);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SwitchComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SwitchComponent, isStandalone: true, selector: "app-switch", inputs: { checked: "checked", label: "label", disabled: "disabled" }, outputs: { changed: "changed" }, ngImport: i0, template: "<label\n  class=\"ui-switch\"\n  [class.ui-switch-checked]=\"checked\"\n>\n  <input\n    type=\"checkbox\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n    class=\"ui-switch-input\"\n  />\n  <span class=\"ui-switch-slider\"></span>\n  @if (label) {\n    <span class=\"ui-switch-label\">{{ label }}</span>\n  }\n</label>\n", styles: [":host{display:inline-flex;align-items:center}.slider:before{content:\"\";position:absolute;width:1rem;height:1rem;left:2px;top:2px;background-color:#fff;border-radius:50%;transition:transform .2s}.switch-checked .slider:before{transform:translate(1.25rem)}input:disabled~.slider{opacity:.5;cursor:not-allowed}\n"] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SwitchComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-switch", standalone: true, imports: [], template: "<label\n  class=\"ui-switch\"\n  [class.ui-switch-checked]=\"checked\"\n>\n  <input\n    type=\"checkbox\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n    class=\"ui-switch-input\"\n  />\n  <span class=\"ui-switch-slider\"></span>\n  @if (label) {\n    <span class=\"ui-switch-label\">{{ label }}</span>\n  }\n</label>\n", styles: [":host{display:inline-flex;align-items:center}.slider:before{content:\"\";position:absolute;width:1rem;height:1rem;left:2px;top:2px;background-color:#fff;border-radius:50%;transition:transform .2s}.switch-checked .slider:before{transform:translate(1.25rem)}input:disabled~.slider{opacity:.5;cursor:not-allowed}\n"] }]
+        }], propDecorators: { checked: [{
+                type: Input
+            }], label: [{
+                type: Input
+            }], disabled: [{
+                type: Input
+            }], changed: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-switch", SwitchComponent);
+
+class TextareaComponent {
+    label = "";
+    placeholder = "";
+    disabled = false;
+    value = "";
+    flexGrow = false;
+    input = new EventEmitter();
+    handleInput(e) {
+        this.value = e.target.value;
+        this.input.emit(this.value);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextareaComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TextareaComponent, isStandalone: true, selector: "app-textarea", inputs: { label: "label", placeholder: "placeholder", disabled: "disabled", value: "value", flexGrow: "flexGrow" }, outputs: { input: "input" }, ngImport: i0, template: "@if (label) {\n  <label>{{ label }}</label>\n}\n<textarea\n  class=\"ui-textarea\"\n  [style.flexGrow]=\"flexGrow ? 1 : null\"\n  [placeholder]=\"placeholder\"\n  [disabled]=\"disabled\"\n  (input)=\"handleInput($event)\"\n></textarea>\n", styles: [""] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextareaComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-textarea", standalone: true, imports: [], template: "@if (label) {\n  <label>{{ label }}</label>\n}\n<textarea\n  class=\"ui-textarea\"\n  [style.flexGrow]=\"flexGrow ? 1 : null\"\n  [placeholder]=\"placeholder\"\n  [disabled]=\"disabled\"\n  (input)=\"handleInput($event)\"\n></textarea>\n" }]
+        }], propDecorators: { label: [{
+                type: Input
+            }], placeholder: [{
+                type: Input
+            }], disabled: [{
+                type: Input
+            }], value: [{
+                type: Input
+            }], flexGrow: [{
+                type: Input
+            }], input: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-textarea", TextareaComponent);
+
+class BadgeComponent {
+    variant = "default";
+    size = "md";
+    label = "";
+    get badgeSizeClass() {
+        const sizeClasses = {
+            sm: "px-1 py-0.5 text-xs",
+            md: "px-2 py-1 text-sm",
+            lg: "px-3 py-1.5 text-base",
+        };
+        return sizeClasses[this.size] || sizeClasses["md"];
+    }
+    get badgeVariantClass() {
+        const variantClasses = {
+            default: "bg-[var(--bg-elevated)] text-[var(--text-primary)] border-[var(--border-color)]",
+            primary: "bg-[var(--accent)] text-[var(--text-on-accent)]",
+            success: "bg-[var(--success)] text-[var(--text-on-success)]",
+            warning: "bg-[var(--warning)] text-[var(--text-on-warning)]",
+            danger: "bg-[var(--error)] text-[var(--text-on-error)]",
+        };
+        return variantClasses[this.variant] || variantClasses["default"];
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BadgeComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: BadgeComponent, isStandalone: true, selector: "app-badge", inputs: { variant: "variant", size: "size", label: "label" }, ngImport: i0, template: "<span class=\"ui-badge\">{{ label }}</span>\n", styles: [""] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BadgeComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-badge", standalone: true, imports: [], template: "<span class=\"ui-badge\">{{ label }}</span>\n" }]
+        }], propDecorators: { variant: [{
+                type: Input
+            }], size: [{
+                type: Input
+            }], label: [{
+                type: Input
+            }] } });
+registerSchemaComponent("app-badge", BadgeComponent);
+
+/**
+ * Safe JSON parser with fallback for array types.
+ * Replaces 22+ duplicate patterns across the codebase.
+ */
+function parseJsonOrDefault(json, defaultValue = []) {
+    if (Array.isArray(json))
+        return json;
+    try {
+        return JSON.parse(json);
+    }
+    catch {
+        return defaultValue;
+    }
+}
+
+class SelectComponent {
+    options = "[]";
+    value = "";
+    placeholder = "Select an option";
+    disabled = false;
+    changed = new EventEmitter();
+    get parsedOptions() {
+        return parseJsonOrDefault(this.options);
+    }
+    handleChange(e) {
+        this.value = e.target.value;
+        this.changed.emit(this.value);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SelectComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SelectComponent, isStandalone: true, selector: "app-select", inputs: { options: "options", value: "value", placeholder: "placeholder", disabled: "disabled" }, outputs: { changed: "changed" }, ngImport: i0, template: "<select\n  class=\"ui-select\"\n  [disabled]=\"disabled\"\n  (change)=\"handleChange($event)\"\n>\n  <option value=\"\" disabled selected hidden>{{ placeholder }}</option>\n  @for (opt of parsedOptions; track opt) {\n    <option [value]=\"opt\" [selected]=\"opt === value\">{{ opt }}</option>\n  }\n</select>\n", styles: [""] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SelectComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-select", standalone: true, imports: [], template: "<select\n  class=\"ui-select\"\n  [disabled]=\"disabled\"\n  (change)=\"handleChange($event)\"\n>\n  <option value=\"\" disabled selected hidden>{{ placeholder }}</option>\n  @for (opt of parsedOptions; track opt) {\n    <option [value]=\"opt\" [selected]=\"opt === value\">{{ opt }}</option>\n  }\n</select>\n" }]
+        }], propDecorators: { options: [{
+                type: Input
+            }], value: [{
+                type: Input
+            }], placeholder: [{
+                type: Input
+            }], disabled: [{
+                type: Input
+            }], changed: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-select", SelectComponent);
+
+/**
+ * Centralized logging utility.
+ * Allows silencing in production and redirecting to external loggers.
+ */
+const logger = {
+    log: (message, ...args) => console.log(`[SCHEMA] ${message}`, ...args),
+    warn: (message, ...args) => console.warn(`[SCHEMA] ${message}`, ...args),
+    error: (message, ...args) => console.error(`[SCHEMA] ${message}`, ...args),
+};
+
 const TOKENS_CSS = `
 /**
  * Claymorphism Design Tokens
- * Light mode (default) + Dark mode via :root.dark
+ * Light mode (default) + Dark mode via body[data-style="claymorphism"][data-theme="dark"]
  */
 
 /* Base colors */
@@ -114,8 +640,8 @@ const TOKENS_CSS = `
   --color-clay-base: #e0e5ec;
   --color-clay-raised: #e0e5ec;
   --color-clay-inset: #d1d9e6;
-  --color-clay-accent: #6d5dfc;
-  --color-clay-accent-hover: #5a4cdb;
+  --color-clay-accent: #3d1fcc;
+  --color-clay-accent-hover: #2d0fcc;
   --color-clay-shadow-light: rgba(255, 255, 255, 0.8);
   --color-clay-shadow-dark: rgba(163, 177, 198, 0.6);
   --color-clay-shadow-dark-strong: rgba(94, 108, 132, 0.4);
@@ -143,8 +669,8 @@ const TOKENS_CSS = `
   --border-color: #a3b1c6;
   --border-subtle: #a3b1c6;
   --error: #e53e3e;
-  --warning: #ff9800;
-  --success: #48bb78;
+  --warning: #b34700;
+  --success: #2d7a3a;
   --info: #4299e1;
 
   /* Gradient color stops for raised/inset surfaces */
@@ -153,7 +679,7 @@ const TOKENS_CSS = `
 }
 
 /* Dark mode */
-:root.dark {
+body[data-style="claymorphism"][data-theme="dark"] {
   --color-clay-base: #1a1a2e;
   --color-clay-raised: #252540;
   --color-clay-inset: #1a1a2e;
@@ -164,7 +690,7 @@ const TOKENS_CSS = `
   --color-clay-shadow-dark-strong: rgba(0, 0, 0, 0.6);
   --text-primary: #e2e8f0;
   --text-secondary: #a0aec0;
-  --text-muted: #718096;
+  --text-muted: #8899aa;
   --bg-elevated: #252540;
   --bg-primary: #1a1a2e;
   --bg-secondary: #252540;
@@ -174,7 +700,7 @@ const TOKENS_CSS = `
 }
 `;
 const COMPONENTS_CSS = `
-/* Claymorphism Style System for TailwindCSS v4 */
+/* Claymorphism Style System */
 /* Class prefix: clay- */
 
 .clay {
@@ -726,7 +1252,7 @@ const claymorphismComponentStyles = {
 
 // Glassmorphism CSS - inline for reliable loading
 const GLASSMORPHISM_CSS = `
-/* Glassmorphism Style System for TailwindCSS v4 */
+/* Glassmorphism Style System */
 /* Class prefix: glass- */
 
 /* Glass-specific variables */
@@ -762,8 +1288,8 @@ const GLASSMORPHISM_CSS = `
   --bg-elevated: rgba(255, 255, 255, 0.15);
   --border-color: rgba(255, 255, 255, 0.45);
   --error: #e53e3e;
-  --warning: #ff9800;
-  --success: #48bb78;
+  --warning: #b34700;
+  --success: #2d7a3a;
   --info: #4299e1;
   --bg-primary: rgba(15, 15, 30, 0.9);
   --bg-secondary: rgba(25, 25, 45, 0.75);
@@ -772,7 +1298,7 @@ const GLASSMORPHISM_CSS = `
 }
 
 /* Dark mode — lighter glass surfaces for contrast */
-:root.dark {
+body[data-style="glassmorphism"][data-theme="dark"] {
   --color-glass-bg: rgba(255, 255, 255, 0.08);
   --color-glass-bg-hover: rgba(255, 255, 255, 0.12);
   --color-glass-bg-active: rgba(255, 255, 255, 0.18);
@@ -1432,14 +1958,16 @@ const NEUMORPHISM_TOKENS_CSS = `
   --bg-elevated: #e8ecf4;
   --border-color: #a3b1c6;
   --error: #e53e3e;
-  --warning: #ff9800;
-  --success: #48bb78;
+  --warning: #b34700;
+  --success: #2d7a3a;
   --info: #4299e1;
   --bg-primary: #e0e5ec;
+  --bg-secondary: #d8dce8;
+  --bg-tertiary: #d0d4e0;
 }
 
 /* Dark mode */
-:root.dark {
+body[data-style="neumorphism"][data-theme="dark"] {
   --color-neu-base: #2d3748;
   --color-neu-base-dark: #1a202c;
   --color-neu-base-light: #4a5568;
@@ -1454,10 +1982,12 @@ const NEUMORPHISM_TOKENS_CSS = `
   --gradient-neu-dark: #2d3748;
   --text-primary: #f8fafc;
   --text-secondary: #a0aec0;
-  --text-muted: #718096;
+  --text-muted: #a0aec0;
   --bg-elevated: #2d3748;
   --border-color: #4a5568;
   --bg-primary: #2d3748;
+  --bg-secondary: #252a33;
+  --bg-tertiary: #1e242e;
 }
 `;
 const NEUMORPHISM_COMPONENTS_CSS = `
@@ -2379,15 +2909,15 @@ const M3_TOKENS_CSS = `
   --text-on-accent: var(--color-m3-on-primary);
   --text-primary: var(--color-m3-on-background);
   --text-secondary: var(--color-m3-on-surface-variant);
-  --text-muted: var(--color-m3-outline);
+  --text-muted: #6d6b74;
   --text-on-error: var(--color-m3-on-error);
   --text-on-warning: #ffffff;
   --text-on-success: #ffffff;
   --bg-elevated: var(--color-m3-surface-container);
   --border-color: var(--color-m3-outline);
   --error: var(--color-m3-error);
-  --warning: #ff9800;
-  --success: #48bb78;
+  --warning: #b34700;
+  --success: #2d7a3a;
   --info: #0066ff;
   --bg-primary: var(--color-m3-background);
   --bg-secondary: var(--color-m3-surface-container-low);
@@ -2396,7 +2926,7 @@ const M3_TOKENS_CSS = `
 }
 
 /* Dark mode */
-:root.dark {
+body[data-style="m3"][data-theme="dark"] {
   --color-m3-primary: #d0bcff;
   --color-m3-primary-container: #4f378b;
   --color-m3-on-primary: #381e72;
@@ -3283,6 +3813,39 @@ const M3_COMPONENTS_CSS = `
   box-shadow: var(--shadow-m3-1);
 }
 
+/* Theme toggle button */
+.m3-toggle {
+  background: transparent;
+  color: var(--color-m3-on-surface-variant);
+  border-radius: var(--radius-m3-full);
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-m3-outline);
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.m3-toggle:hover {
+  background: var(--color-m3-state-hover);
+}
+
+.m3-toggle:active {
+  background: var(--color-m3-state-pressed);
+}
+
+.m3-toggle:focus-visible {
+  outline: 2px solid var(--color-m3-primary);
+  outline-offset: 2px;
+}
+
+body[data-style="m3"][data-theme="dark"] .m3-toggle {
+  color: var(--color-m3-on-surface-variant);
+  border-color: var(--color-m3-outline-variant);
+}
+
 /* Missing component classes - Language selector */
 .m3-lang-selector {
   background: var(--color-m3-surface-container-high);
@@ -3460,7 +4023,7 @@ const BRUTALISM_CSS = `
 :root {
   --color-brut-base: #f5f5f0;
   --color-brut-ink: #0a0a0a;
-  --color-brut-accent: #ff3b30;
+  --color-brut-accent: #d63000;
   --color-brut-accent-2: #ffd60a;
   --color-brut-success: #00c853;
   --color-brut-border: var(--color-brut-ink);
@@ -3480,13 +4043,14 @@ const BRUTALISM_CSS = `
   --text-on-accent: #ffffff;
   --text-primary: var(--color-brut-ink);
   --text-secondary: #3d3d3d;
-  --text-muted: #6b6b6b;
+  --text-muted: #686870;
   --text-on-error: #ffffff;
   --text-on-warning: #0a0a0a;
-  --text-on-success: #ffffff;
+  --text-on-success: var(--color-brut-ink);
   --bg-primary: var(--color-brut-base);
   --bg-elevated: #ffffff;
   --bg-hover: #e8e8e3;
+  --bg-secondary: #ecece7;
   --bg-tertiary: #d4d4cf;
   --border-color: var(--color-brut-ink);
   --border-subtle: var(--color-brut-ink);
@@ -3619,7 +4183,7 @@ const BRUTALISM_CSS = `
 .brut-block { border: 4px solid var(--color-brut-border); box-shadow: var(--shadow-brut-md); background: var(--bg-elevated); }
 
 /* Dark mode overrides for layout components */
-:root.dark {
+body[data-style="brutalism"][data-theme="dark"] {
   --color-brut-base: #1a1a1a;
   --color-brut-ink: #f5f5f0;
   --color-brut-accent: #ff453a;
@@ -3631,100 +4195,101 @@ const BRUTALISM_CSS = `
   --bg-primary: #1a1a1a;
   --bg-elevated: #2a2a2a;
   --bg-hover: #3a3a3a;
+  --bg-secondary: #252525;
   --bg-tertiary: #404040;
   --border-color: #f5f5f0;
   --border-subtle: #c0c0c0;
   --error: #ff453a;
 }
 
-:root.dark .brut-data-table,
-:root.dark .brut-sidebar,
-:root.dark .brut-header,
-:root.dark .brut-footer,
-:root.dark .brut-page-container,
-:root.dark .brut-panel,
-:root.dark .brut-segment-selector,
-:root.dark .brut-split-view,
-:root.dark .brut-stats-card,
-:root.dark .brut-table,
-:root.dark .brut-tree,
-:root.dark .brut-canvas,
-:root.dark .brut-main-editor,
-:root.dark .brut-canvas-toolbar,
-:root.dark .brut-page-toolbar,
-:root.dark .brut-command-palette,
-:root.dark .brut-component-palette,
-:root.dark .brut-locale-switcher,
-:root.dark .brut-json-view,
-:root.dark .brut-form,
-:root.dark .brut-properties-panel,
-:root.dark .brut-bottom-panel,
-:root.dark .brut-designer-tree,
-:root.dark .brut-designer-sidebar,
-:root.dark .brut-block {
+body[data-style="brutalism"][data-theme="dark"] .brut-data-table,
+body[data-style="brutalism"][data-theme="dark"] .brut-sidebar,
+body[data-style="brutalism"][data-theme="dark"] .brut-header,
+body[data-style="brutalism"][data-theme="dark"] .brut-footer,
+body[data-style="brutalism"][data-theme="dark"] .brut-page-container,
+body[data-style="brutalism"][data-theme="dark"] .brut-panel,
+body[data-style="brutalism"][data-theme="dark"] .brut-segment-selector,
+body[data-style="brutalism"][data-theme="dark"] .brut-split-view,
+body[data-style="brutalism"][data-theme="dark"] .brut-stats-card,
+body[data-style="brutalism"][data-theme="dark"] .brut-table,
+body[data-style="brutalism"][data-theme="dark"] .brut-tree,
+body[data-style="brutalism"][data-theme="dark"] .brut-canvas,
+body[data-style="brutalism"][data-theme="dark"] .brut-main-editor,
+body[data-style="brutalism"][data-theme="dark"] .brut-canvas-toolbar,
+body[data-style="brutalism"][data-theme="dark"] .brut-page-toolbar,
+body[data-style="brutalism"][data-theme="dark"] .brut-command-palette,
+body[data-style="brutalism"][data-theme="dark"] .brut-component-palette,
+body[data-style="brutalism"][data-theme="dark"] .brut-locale-switcher,
+body[data-style="brutalism"][data-theme="dark"] .brut-json-view,
+body[data-style="brutalism"][data-theme="dark"] .brut-form,
+body[data-style="brutalism"][data-theme="dark"] .brut-properties-panel,
+body[data-style="brutalism"][data-theme="dark"] .brut-bottom-panel,
+body[data-style="brutalism"][data-theme="dark"] .brut-designer-tree,
+body[data-style="brutalism"][data-theme="dark"] .brut-designer-sidebar,
+body[data-style="brutalism"][data-theme="dark"] .brut-block {
   background: var(--bg-elevated);
   box-shadow: var(--shadow-brut-md);
 }
 
-/* Brut card dark mode - uses var(--bg-elevated) which is overridden in :root.dark */
-:root.dark .brut-card {
+/* Brut card dark mode - uses var(--bg-elevated) which is overridden in body[data-style="brutalism"][data-theme="dark"] */
+body[data-style="brutalism"][data-theme="dark"] .brut-card {
   background: var(--bg-elevated);
   border-color: var(--border-color);
   color: var(--text-primary);
 }
 
 /* Brut button dark mode */
-:root.dark .brut-btn {
+body[data-style="brutalism"][data-theme="dark"] .brut-btn {
   background: var(--bg-elevated);
   border-color: var(--border-color);
   color: var(--text-primary);
 }
 
 /* Brut input dark mode */
-:root.dark .brut-input {
+body[data-style="brutalism"][data-theme="dark"] .brut-input {
   background: var(--bg-elevated);
   border-color: var(--border-color);
   color: var(--text-primary);
 }
 
 /* Brut modal dark mode */
-:root.dark .brut-modal {
+body[data-style="brutalism"][data-theme="dark"] .brut-modal {
   background: var(--bg-elevated);
   border-color: var(--border-color);
   color: var(--text-primary);
 }
 
 /* Brut chip dark mode */
-:root.dark .brut-chip {
+body[data-style="brutalism"][data-theme="dark"] .brut-chip {
   background: var(--accent);
   color: var(--text-on-accent);
 }
 
 /* Brut badge dark mode */
-:root.dark .brut-badge {
+body[data-style="brutalism"][data-theme="dark"] .brut-badge {
   background: var(--accent);
   color: var(--text-on-accent);
 }
 
 /* Brut tab dark mode */
-:root.dark .brut-tab {
+body[data-style="brutalism"][data-theme="dark"] .brut-tab {
   background: var(--bg-elevated);
   border-color: var(--border-color);
   color: var(--text-primary);
 }
 
-:root.dark .brut-tab.active {
+body[data-style="brutalism"][data-theme="dark"] .brut-tab.active {
   background: var(--accent);
   color: var(--text-on-accent);
 }
 
 /* Brut divider dark mode */
-:root.dark .brut-divider {
+body[data-style="brutalism"][data-theme="dark"] .brut-divider {
   background: var(--border-color);
 }
 
 /* Brut spinner dark mode */
-:root.dark .brut-spinner {
+body[data-style="brutalism"][data-theme="dark"] .brut-spinner {
   border-color: var(--border-color);
   border-top-color: var(--accent);
 }
@@ -3794,8 +4359,8 @@ const SKEUOMORPHISM_TOKENS_CSS = `
   --color-skeu-leather-dark: #4a2e18;
   --color-skeu-paper: #f5e6c8;
   --color-skeu-ink: #2b1810;
-  --color-skeu-accent: #b8860b;
-  --color-skeu-accent-dark: #8b6508;
+  --color-skeu-accent: #7a5200;
+  --color-skeu-accent-dark: #5c3d00;
   --color-skeu-cream: #faf3e0;
   --color-skeu-glass: rgba(255,255,255,0.2);
 
@@ -3838,6 +4403,7 @@ const SKEUOMORPHISM_TOKENS_CSS = `
   --bg-primary: var(--color-skeu-base);
   --bg-elevated: var(--color-skeu-paper);
   --bg-hover: #dcc99e;
+  --bg-secondary: #d4c99e;
   --bg-tertiary: #c4b58a;
   --border-color: var(--color-skeu-leather-dark);
   --border-subtle: #a8916b;
@@ -3851,7 +4417,7 @@ const SKEUOMORPHISM_TOKENS_CSS = `
 }
 
 /* Dark mode */
-:root.dark {
+body[data-style="skeuomorphism"][data-theme="dark"] {
   --color-skeu-base: #2b1810;
   --color-skeu-leather: #8b6508;
   --color-skeu-leather-dark: #5a3d1a;
@@ -3866,10 +4432,11 @@ const SKEUOMORPHISM_TOKENS_CSS = `
   --gradient-input: linear-gradient(180deg, #5a4030 0%, #3d2b1f 100%);
   --text-primary: #f5e6c8;
   --text-secondary: #dcc99e;
-  --text-muted: #a8916b;
+  --text-muted: #9f9f9f;
   --bg-primary: #2b1810;
   --bg-elevated: #3d2b1f;
   --bg-hover: #4a3025;
+  --bg-secondary: #352a20;
   --bg-tertiary: #1f140f;
   --border-color: #8b6508;
   --border-subtle: #5a3d1a;
@@ -4019,98 +4586,98 @@ const SKEUOMORPHISM_COMPONENTS_CSS = `
 .skeu-block { background: var(--gradient-paper); border: 1px solid var(--color-skeu-leather-dark); border-radius: 8px; box-shadow: var(--shadow-skeu-outset); }
 
 /* Skeuomorphism Dark Mode Overrides */
-:root.dark .skeu-card {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-card {
   background: var(--gradient-leather);
   border-color: var(--color-skeu-leather-dark);
   color: var(--color-skeu-cream);
 }
 
-:root.dark .skeu-card.paper {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-card.paper {
   background: var(--gradient-paper);
   border-color: #5a3d1a;
   color: var(--text-primary);
 }
 
-:root.dark .skeu-btn {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-btn {
   background: var(--gradient-leather);
   border-color: var(--color-skeu-leather-dark);
   color: var(--color-skeu-cream);
 }
 
-:root.dark .skeu-btn-primary {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-btn-primary {
   background: var(--gradient-accent);
   color: var(--color-skeu-cream);
   border-color: #5a4406;
 }
 
-:root.dark .skeu-input {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-input {
   background: var(--gradient-input);
   border-color: var(--color-skeu-leather-dark);
   color: var(--text-primary);
 }
 
-:root.dark .skeu-modal {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-modal {
   background: var(--gradient-paper);
   border-color: var(--color-skeu-leather-dark);
   color: var(--text-primary);
 }
 
-:root.dark .skeu-chip {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-chip {
   background: var(--gradient-leather);
   color: var(--color-skeu-cream);
   border-color: var(--color-skeu-leather-dark);
 }
 
-:root.dark .skeu-badge {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-badge {
   background: var(--gradient-accent);
   color: var(--color-skeu-cream);
   border-color: #5a4406;
 }
 
-:root.dark .skeu-tab {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-tab {
   background: var(--gradient-tab);
   color: var(--text-primary);
   border-color: var(--color-skeu-leather-dark);
 }
 
-:root.dark .skeu-tab.active {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-tab.active {
   background: var(--gradient-paper);
   color: var(--text-primary);
 }
 
-:root.dark .skeu-divider {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-divider {
   background: var(--gradient-divider);
 }
 
-:root.dark .skeu-spinner {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-spinner {
   background: conic-gradient(from 0deg, transparent 0deg, var(--accent) 360deg);
 }
 
-:root.dark .skeu-sidebar,
-:root.dark .skeu-header,
-:root.dark .skeu-footer,
-:root.dark .skeu-canvas-toolbar,
-:root.dark .skeu-page-toolbar,
-:root.dark .skeu-component-palette,
-:root.dark .skeu-locale-switcher,
-:root.dark .skeu-properties-panel,
-:root.dark .skeu-designer-sidebar {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-sidebar,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-header,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-footer,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-canvas-toolbar,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-page-toolbar,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-component-palette,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-locale-switcher,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-properties-panel,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-designer-sidebar {
   background: var(--gradient-leather);
   border-color: var(--color-skeu-leather-dark);
 }
 
-:root.dark .skeu-page-container,
-:root.dark .skeu-split-view,
-:root.dark .skeu-canvas,
-:root.dark .skeu-main-editor,
-:root.dark .skeu-bottom-panel {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-page-container,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-split-view,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-canvas,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-main-editor,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-bottom-panel {
   background: var(--bg-primary);
 }
 
-:root.dark .skeu-panel,
-:root.dark .skeu-form,
-:root.dark .skeu-designer-tree,
-:root.dark .skeu-block {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-panel,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-form,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-designer-tree,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-block {
   background: var(--gradient-paper);
   border-color: var(--color-skeu-leather-dark);
 }
@@ -4221,9 +4788,6 @@ const LOADED_STYLES = new Set();
 let CURRENT_STYLE = "material-design-v3";
 const STYLE_ELEMENTS = new Map();
 async function loadStyleVariant(variant) {
-    if (LOADED_STYLES.has(variant)) {
-        return;
-    }
     const config = STYLE_VARIANTS[variant];
     if (!config) {
         console.warn(`Unknown style variant: ${variant}`);
@@ -4233,13 +4797,21 @@ async function loadStyleVariant(variant) {
         console.warn(`No CSS loaded for variant: ${variant}`);
         return;
     }
+    // Clear any existing combined theme style element
+    const existingThemeStyle = document.getElementById("style-theme");
+    if (existingThemeStyle) {
+        existingThemeStyle.remove();
+    }
+    // Inject combined theme CSS as a single <style id="style-theme"> element
     const style = document.createElement("style");
     style.textContent = config.cssString;
-    style.id = `style-${variant}`;
-    style.dataset["styleVariant"] = variant;
-    // Initially disable all styles - only current style will be enabled
-    style.disabled = variant !== CURRENT_STYLE;
+    style.id = "style-theme";
     document.head.appendChild(style);
+    // Set body[data-style] attribute
+    document.body.setAttribute("data-style", variant);
+    // Set body[data-theme] based on current dark mode state (default to light)
+    const isDark = document.body.getAttribute("data-theme") === "dark";
+    document.body.setAttribute("data-theme", isDark ? "dark" : "light");
     LOADED_STYLES.add(variant);
     STYLE_ELEMENTS.set(variant, style);
 }
@@ -4258,13 +4830,9 @@ function setCurrentStyle(variant) {
     if (variant === CURRENT_STYLE) {
         return;
     }
-    const oldVariant = CURRENT_STYLE;
     CURRENT_STYLE = variant;
-    // Enable new variant and disable old variant
-    enableStyle(variant);
-    if (oldVariant !== variant) {
-        disableStyle(oldVariant);
-    }
+    // Inject the combined theme CSS and set body[data-style]
+    loadStyleVariant(variant);
     if (typeof window !== "undefined" && window.localStorage) {
         window.localStorage.setItem("tauri-front-style", variant);
     }
@@ -4316,7 +4884,7 @@ function getComponentStyleClasses(theme, componentId, explicitVariant, explicitS
         }
     }
     if (classes.length === 0) {
-        return componentMap.default || "";
+        return componentMap.default || componentMap.variants?.default || "";
     }
     return classes.join(" ");
 }
@@ -4339,7 +4907,6 @@ function getStyleClass(variant, baseClass) {
 }
 function applyStyleToElement(element, variant) {
     const prefix = getStyleClassPrefix(variant);
-    element.dataset["styleVariant"] = variant;
     element.classList.forEach((cls) => {
         if (cls.startsWith("clay-") ||
             cls.startsWith("glass-") ||
@@ -4350,6 +4917,1213 @@ function applyStyleToElement(element, variant) {
     });
     element.classList.add(`${prefix}${element.dataset["baseClass"] || ""}`);
 }
+
+// Maps semantic props to theme CSS classes using global style registry
+// Supports:
+//   - styleName: named style lookup in componentStyles registry
+//   - layout: "flex" | "grid" → sf-flex/sf-grid classes
+//   - direction: "row" | "col" → sf-flex-row/sf-flex-col
+//   - gap: "xs"|"sm"|"md"|"lg"|"xl" → sf-gap spacing
+//   - align: "start"|"center"|"end"|"stretch" → sf-items-*
+//   - justify: "start"|"center"|"end"|"between"|"around" → sf-justify-*
+//   - padding: "none"|"xs"|"sm"|"md"|"lg"|"xl" → sf-p-*
+//   - marginTop|marginBottom: "none"|"xs"|"sm"|"md"|"lg"|"xl"
+//   - maxWidth: "sm"|"md"|"lg"|"xl"|"2xl"|... → sf-max-w-*
+//   - mx: "auto" → sf-mx-auto
+//   - fullHeight: true → sf-h-full
+//   - rounded: true → sf-rounded-lg
+//   - elevation: "low"|"medium"|"high" → elevation classes (theme-specific)
+function mapPropsToClasses(componentId, props, theme, explicitVariant, explicitSize, globalContext) {
+    const classes = [];
+    if (!props)
+        return classes;
+    // 1. Named style from variant/size (explicit props OR globalContext fallback)
+    const hasStyle = explicitVariant ||
+        explicitSize ||
+        globalContext?.variant ||
+        globalContext?.size;
+    if (hasStyle) {
+        const classesStr = getComponentStyleClasses(theme, componentId, explicitVariant, explicitSize, globalContext);
+        if (classesStr) {
+            classes.push(...classesStr.split(" ").filter((c) => c.trim()));
+        }
+    }
+    // 2. Layout type (flex/grid)
+    const layout = props["layout"];
+    if (layout === "flex")
+        classes.push("sf-flex");
+    else if (layout === "grid")
+        classes.push("sf-grid");
+    else if (layout === "stack")
+        classes.push("sf-flex", "sf-flex-col");
+    // 3. Flex direction
+    const direction = props["direction"];
+    if (direction === "row")
+        classes.push("sf-flex-row");
+    else if (direction === "col")
+        classes.push("sf-flex-col");
+    else if (direction === "row-reverse")
+        classes.push("sf-flex-row-reverse");
+    else if (direction === "col-reverse")
+        classes.push("sf-flex-col-reverse");
+    // 4. Gap spacing (supports both string tokens and numeric values)
+    const gap = props["gap"];
+    if (gap === "xs" || gap === 1)
+        classes.push("sf-gap-1");
+    else if (gap === "sm" || gap === 2)
+        classes.push("sf-gap-2");
+    else if (gap === "md" || gap === 3)
+        classes.push("sf-gap-3");
+    else if (gap === "lg" || gap === 4)
+        classes.push("sf-gap-4");
+    else if (gap === "xl" || gap === 6)
+        classes.push("sf-gap-6");
+    else if (gap === "2xl" || gap === 8)
+        classes.push("sf-gap-8");
+    // 5. Align items
+    const align = props["align"];
+    if (align === "start")
+        classes.push("sf-items-start");
+    else if (align === "center")
+        classes.push("sf-items-center");
+    else if (align === "end")
+        classes.push("sf-items-end");
+    else if (align === "stretch")
+        classes.push("sf-items-stretch");
+    // 6. Justify content
+    const justify = props["justify"];
+    if (justify === "start")
+        classes.push("sf-justify-start");
+    else if (justify === "center")
+        classes.push("sf-justify-center");
+    else if (justify === "end")
+        classes.push("sf-justify-end");
+    else if (justify === "between")
+        classes.push("sf-justify-between");
+    else if (justify === "around")
+        classes.push("sf-justify-around");
+    // 7. Padding
+    const padding = props["padding"];
+    if (padding === "xs")
+        classes.push("sf-p-1");
+    else if (padding === "sm")
+        classes.push("sf-p-2");
+    else if (padding === "md")
+        classes.push("sf-p-4");
+    else if (padding === "lg")
+        classes.push("sf-p-6");
+    else if (padding === "xl")
+        classes.push("sf-p-8");
+    // 8. Margin top/bottom
+    const marginTop = props["marginTop"];
+    if (marginTop === "xs")
+        classes.push("sf-mt-1");
+    else if (marginTop === "sm")
+        classes.push("sf-mt-2");
+    else if (marginTop === "md")
+        classes.push("sf-mt-4");
+    else if (marginTop === "lg")
+        classes.push("sf-mt-6");
+    else if (marginTop === "xl")
+        classes.push("sf-mt-8");
+    const marginBottom = props["marginBottom"];
+    if (marginBottom === "xs")
+        classes.push("sf-mb-1");
+    else if (marginBottom === "sm")
+        classes.push("sf-mb-2");
+    else if (marginBottom === "md")
+        classes.push("sf-mb-4");
+    else if (marginBottom === "lg")
+        classes.push("sf-mb-6");
+    else if (marginBottom === "xl")
+        classes.push("sf-mb-8");
+    // 9. Max width
+    const maxWidth = props["maxWidth"];
+    if (maxWidth === "sm")
+        classes.push("sf-max-w-sm");
+    else if (maxWidth === "md")
+        classes.push("sf-max-w-md");
+    else if (maxWidth === "lg")
+        classes.push("sf-max-w-lg");
+    else if (maxWidth === "xl")
+        classes.push("sf-max-w-xl");
+    else if (maxWidth === "2xl")
+        classes.push("sf-max-w-2xl");
+    else if (maxWidth === "3xl")
+        classes.push("sf-max-w-3xl");
+    else if (maxWidth === "6xl")
+        classes.push("sf-max-w-6xl");
+    else if (maxWidth === "7xl")
+        classes.push("sf-max-w-7xl");
+    // 10. MX auto
+    const mx = props["mx"];
+    if (mx === "auto")
+        classes.push("sf-mx-auto");
+    // 11. Full height
+    const fullHeight = props["fullHeight"];
+    if (fullHeight)
+        classes.push("sf-h-full");
+    // 12. Rounded
+    const rounded = props["rounded"];
+    if (rounded)
+        classes.push("sf-rounded-lg");
+    // 13. Columns (grid)
+    const columns = props["columns"];
+    if (columns) {
+        // Support CSS grid column strings like "1fr auto 1fr"
+        classes.push(`sf-grid-cols-${columns.replace(/\s+/g, "-")}`);
+    }
+    // 14. Flex wrap
+    const flexWrap = props["flexWrap"];
+    if (flexWrap === "wrap")
+        classes.push("sf-flex-wrap");
+    else if (flexWrap === "nowrap")
+        classes.push("sf-flex-nowrap");
+    else if (flexWrap === "wrap-reverse")
+        classes.push("sf-flex-wrap-reverse");
+    // 15. Flex grow
+    const flexGrow = props["flexGrow"];
+    if (flexGrow === true)
+        classes.push("sf-flex-grow");
+    else if (flexGrow === false)
+        classes.push("sf-flex-grow-0");
+    // 16. Flex shrink
+    const flexShrink = props["flexShrink"];
+    if (flexShrink === true)
+        classes.push("sf-flex-shrink");
+    else if (flexShrink === false)
+        classes.push("sf-flex-shrink-0");
+    // 17. Flex basis
+    const flexBasis = props["flexBasis"];
+    if (flexBasis === "auto")
+        classes.push("sf-basis-auto");
+    else if (flexBasis === "full")
+        classes.push("sf-basis-full");
+    else if (flexBasis === "half")
+        classes.push("sf-basis-1/2");
+    else if (flexBasis === "third")
+        classes.push("sf-basis-1/3");
+    else if (flexBasis === "quarter")
+        classes.push("sf-basis-1/4");
+    // 18. Align items (container-level)
+    const alignItems = props["alignItems"];
+    if (alignItems === "start")
+        classes.push("sf-items-start");
+    else if (alignItems === "center")
+        classes.push("sf-items-center");
+    else if (alignItems === "end")
+        classes.push("sf-items-end");
+    else if (alignItems === "stretch")
+        classes.push("sf-items-stretch");
+    else if (alignItems === "baseline")
+        classes.push("sf-items-baseline");
+    // 19. Align content (container-level, multi-row)
+    const alignContent = props["alignContent"];
+    if (alignContent === "start")
+        classes.push("sf-content-start");
+    else if (alignContent === "center")
+        classes.push("sf-content-center");
+    else if (alignContent === "end")
+        classes.push("sf-content-end");
+    else if (alignContent === "between")
+        classes.push("sf-content-between");
+    else if (alignContent === "around")
+        classes.push("sf-content-around");
+    else if (alignContent === "evenly")
+        classes.push("sf-content-evenly");
+    // 20. Justify items
+    const justifyItems = props["justifyItems"];
+    if (justifyItems === "start")
+        classes.push("sf-justify-items-start");
+    else if (justifyItems === "center")
+        classes.push("sf-justify-items-center");
+    else if (justifyItems === "end")
+        classes.push("sf-justify-items-end");
+    else if (justifyItems === "stretch")
+        classes.push("sf-justify-items-stretch");
+    // 21. Justify self (item-level)
+    const justifySelf = props["justifySelf"];
+    if (justifySelf === "start")
+        classes.push("sf-justify-self-start");
+    else if (justifySelf === "center")
+        classes.push("sf-justify-self-center");
+    else if (justifySelf === "end")
+        classes.push("sf-justify-self-end");
+    else if (justifySelf === "stretch")
+        classes.push("sf-justify-self-stretch");
+    else if (justifySelf === "auto")
+        classes.push("sf-justify-self-auto");
+    // 22. Align self (item-level)
+    const alignSelf = props["alignSelf"];
+    if (alignSelf === "start")
+        classes.push("sf-self-start");
+    else if (alignSelf === "center")
+        classes.push("sf-self-center");
+    else if (alignSelf === "end")
+        classes.push("sf-self-end");
+    else if (alignSelf === "stretch")
+        classes.push("sf-self-stretch");
+    else if (alignSelf === "auto")
+        classes.push("sf-self-auto");
+    // 23. Row gap (gap-y)
+    const rowGap = props["rowGap"];
+    if (rowGap === "xs")
+        classes.push("sf-gap-y-1");
+    else if (rowGap === "sm")
+        classes.push("sf-gap-y-2");
+    else if (rowGap === "md")
+        classes.push("sf-gap-y-4");
+    else if (rowGap === "lg")
+        classes.push("sf-gap-y-6");
+    else if (rowGap === "xl")
+        classes.push("sf-gap-y-8");
+    // 24. Column gap (gap-x)
+    const colGap = props["colGap"];
+    if (colGap === "xs")
+        classes.push("sf-gap-x-1");
+    else if (colGap === "sm")
+        classes.push("sf-gap-x-2");
+    else if (colGap === "md")
+        classes.push("sf-gap-x-4");
+    else if (colGap === "lg")
+        classes.push("sf-gap-x-6");
+    else if (colGap === "xl")
+        classes.push("sf-gap-x-8");
+    // 25. Width
+    const width = props["width"];
+    if (width === "full")
+        classes.push("sf-w-full");
+    else if (width === "auto")
+        classes.push("sf-w-auto");
+    else if (width === "screen")
+        classes.push("sf-w-screen");
+    else if (width === "fit")
+        classes.push("sf-w-fit");
+    // 26. Height
+    const height = props["height"];
+    if (height === "full")
+        classes.push("sf-h-full");
+    else if (height === "auto")
+        classes.push("sf-h-auto");
+    else if (height === "screen")
+        classes.push("sf-h-screen");
+    else if (height === "fit")
+        classes.push("sf-h-fit");
+    // 27. Margin X (mx)
+    const marginX = props["marginX"];
+    if (marginX === "auto")
+        classes.push("sf-mx-auto");
+    else if (marginX === "xs")
+        classes.push("sf-mx-1");
+    else if (marginX === "sm")
+        classes.push("sf-mx-2");
+    else if (marginX === "md")
+        classes.push("sf-mx-4");
+    else if (marginX === "lg")
+        classes.push("sf-mx-6");
+    else if (marginX === "xl")
+        classes.push("sf-mx-8");
+    // 28. Margin Y (my)
+    const marginY = props["marginY"];
+    if (marginY === "xs")
+        classes.push("sf-my-1");
+    else if (marginY === "sm")
+        classes.push("sf-my-2");
+    else if (marginY === "md")
+        classes.push("sf-my-4");
+    else if (marginY === "lg")
+        classes.push("sf-my-6");
+    else if (marginY === "xl")
+        classes.push("sf-my-8");
+    // 29. Padding X (px)
+    const paddingX = props["paddingX"];
+    if (paddingX === "xs")
+        classes.push("sf-px-1");
+    else if (paddingX === "sm")
+        classes.push("sf-px-2");
+    else if (paddingX === "md")
+        classes.push("sf-px-4");
+    else if (paddingX === "lg")
+        classes.push("sf-px-6");
+    else if (paddingX === "xl")
+        classes.push("sf-px-8");
+    // 30. Padding Y (py)
+    const paddingY = props["paddingY"];
+    if (paddingY === "xs")
+        classes.push("sf-py-1");
+    else if (paddingY === "sm")
+        classes.push("sf-py-2");
+    else if (paddingY === "md")
+        classes.push("sf-py-4");
+    else if (paddingY === "lg")
+        classes.push("sf-py-6");
+    else if (paddingY === "xl")
+        classes.push("sf-py-8");
+    // 31. Responsive breakpoints (sm:, md:, lg:)
+    const responsive = props["responsive"];
+    if (responsive) {
+        const gapMap = {
+            xs: "1",
+            sm: "2",
+            md: "4",
+            lg: "6",
+            xl: "8",
+        };
+        // sm: breakpoint (640px+)
+        if (responsive["sm"]) {
+            const sm = responsive["sm"];
+            if (sm["layout"] === "flex")
+                classes.push("sf-sm:flex");
+            if (sm["layout"] === "grid")
+                classes.push("sf-sm:grid");
+            if (sm["direction"] === "row")
+                classes.push("sf-sm:flex-row");
+            if (sm["direction"] === "col")
+                classes.push("sf-sm:flex-col");
+            if (sm["gap"] && gapMap[sm["gap"]])
+                classes.push(`sf-sm:gap-${gapMap[sm["gap"]]}`);
+            if (sm["align"] === "center")
+                classes.push("sf-sm:items-center");
+            if (sm["align"] === "start")
+                classes.push("sf-sm:items-start");
+            if (sm["align"] === "end")
+                classes.push("sf-sm:items-end");
+            if (sm["justify"] === "center")
+                classes.push("sf-sm:justify-center");
+            if (sm["justify"] === "start")
+                classes.push("sf-sm:justify-start");
+            if (sm["justify"] === "end")
+                classes.push("sf-sm:justify-end");
+            if (sm["flexWrap"] === "wrap")
+                classes.push("sf-sm:flex-wrap");
+            if (sm["padding"] === "md")
+                classes.push("sf-sm:p-4");
+            if (sm["padding"] === "lg")
+                classes.push("sf-sm:p-6");
+        }
+        // md: breakpoint (768px+)
+        if (responsive["md"]) {
+            const md = responsive["md"];
+            if (md["layout"] === "flex")
+                classes.push("sf-md:flex");
+            if (md["layout"] === "grid")
+                classes.push("sf-md:grid");
+            if (md["direction"] === "row")
+                classes.push("sf-md:flex-row");
+            if (md["direction"] === "col")
+                classes.push("sf-md:flex-col");
+            if (md["gap"] && gapMap[md["gap"]])
+                classes.push(`sf-md:gap-${gapMap[md["gap"]]}`);
+            if (md["align"] === "center")
+                classes.push("sf-md:items-center");
+            if (md["align"] === "start")
+                classes.push("sf-md:items-start");
+            if (md["align"] === "end")
+                classes.push("sf-md:items-end");
+            if (md["justify"] === "center")
+                classes.push("sf-md:justify-center");
+            if (md["justify"] === "start")
+                classes.push("sf-md:justify-start");
+            if (md["justify"] === "end")
+                classes.push("sf-md:justify-end");
+            if (md["justify"] === "between")
+                classes.push("sf-md:justify-between");
+            if (md["flexWrap"] === "wrap")
+                classes.push("sf-md:flex-wrap");
+            if (md["padding"] === "md")
+                classes.push("sf-md:p-4");
+            if (md["padding"] === "lg")
+                classes.push("sf-md:p-6");
+        }
+        // lg: breakpoint (1024px+)
+        if (responsive["lg"]) {
+            const lg = responsive["lg"];
+            if (lg["layout"] === "flex")
+                classes.push("sf-lg:flex");
+            if (lg["layout"] === "grid")
+                classes.push("sf-lg:grid");
+            if (lg["direction"] === "row")
+                classes.push("sf-lg:flex-row");
+            if (lg["direction"] === "col")
+                classes.push("sf-lg:flex-col");
+            if (lg["gap"] && gapMap[lg["gap"]])
+                classes.push(`sf-lg:gap-${gapMap[lg["gap"]]}`);
+            if (lg["align"] === "center")
+                classes.push("sf-lg:items-center");
+            if (lg["justify"] === "center")
+                classes.push("sf-lg:justify-center");
+            if (lg["justify"] === "between")
+                classes.push("sf-lg:justify-between");
+            if (lg["padding"] === "md")
+                classes.push("sf-lg:p-4");
+            if (lg["padding"] === "lg")
+                classes.push("sf-lg:p-6");
+        }
+    }
+    // 32. Text size
+    const textSize = props["textSize"];
+    if (textSize === "xs")
+        classes.push("sf-text-xs");
+    else if (textSize === "sm")
+        classes.push("sf-text-sm");
+    else if (textSize === "base")
+        classes.push("sf-text-base");
+    else if (textSize === "lg")
+        classes.push("sf-text-lg");
+    else if (textSize === "xl")
+        classes.push("sf-text-xl");
+    else if (textSize === "2xl")
+        classes.push("sf-text-2xl");
+    else if (textSize === "3xl")
+        classes.push("sf-text-3xl");
+    // 33. Font weight
+    const fontWeight = props["fontWeight"];
+    if (fontWeight === "light")
+        classes.push("sf-font-light");
+    else if (fontWeight === "normal")
+        classes.push("sf-font-normal");
+    else if (fontWeight === "medium")
+        classes.push("sf-font-medium");
+    else if (fontWeight === "semibold")
+        classes.push("sf-font-semibold");
+    else if (fontWeight === "bold")
+        classes.push("sf-font-bold");
+    // 34. Position
+    const position = props["position"];
+    if (position === "relative")
+        classes.push("sf-relative");
+    else if (position === "absolute")
+        classes.push("sf-absolute");
+    else if (position === "fixed")
+        classes.push("sf-fixed");
+    else if (position === "sticky")
+        classes.push("sf-sticky");
+    // 35. Z-index
+    const zIndex = props["zIndex"];
+    if (zIndex === 10 || zIndex === "10")
+        classes.push("sf-z-10");
+    else if (zIndex === 20 || zIndex === "20")
+        classes.push("sf-z-20");
+    else if (zIndex === 30 || zIndex === "30")
+        classes.push("sf-z-30");
+    else if (zIndex === 40 || zIndex === "40")
+        classes.push("sf-z-40");
+    else if (zIndex === 50 || zIndex === "50")
+        classes.push("sf-z-50");
+    return classes;
+}
+
+class SignalStoreService {
+    _state = signal({}, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "_state" }] : /* istanbul ignore next */ []));
+    state = computed(() => this._state(), /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "state" }] : /* istanbul ignore next */ []));
+    set(key, value) {
+        this._state.update((state) => ({
+            ...state,
+            [key]: value,
+        }));
+    }
+    get(key) {
+        return this._state()[key];
+    }
+    update(key, fn) {
+        const current = this.get(key);
+        this.set(key, fn(current));
+    }
+    delete(key) {
+        this._state.update((state) => {
+            const { [key]: _, ...rest } = state;
+            return rest;
+        });
+    }
+    keys() {
+        return Object.keys(this._state());
+    }
+    has(key) {
+        return key in this._state();
+    }
+    clear() {
+        this._state.set({});
+    }
+    toJSON() {
+        return this._state();
+    }
+    fromJSON(json) {
+        this._state.set(json);
+    }
+    patch(patch) {
+        this._state.update((state) => ({
+            ...state,
+            ...patch,
+        }));
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SignalStoreService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SignalStoreService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SignalStoreService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }] });
+
+class EventBusService {
+    handlers = new Map();
+    emit(event, data) {
+        const eventHandlers = this.handlers.get(event);
+        if (eventHandlers) {
+            eventHandlers.forEach((handler) => handler(data));
+        }
+    }
+    on(event, handler, context) {
+        if (!this.handlers.has(event)) {
+            this.handlers.set(event, new Set());
+        }
+        const eventHandlers = this.handlers.get(event);
+        const wrapped = context ? handler.bind(context) : handler;
+        eventHandlers.add(wrapped);
+        return () => this.off(event, wrapped);
+    }
+    once(event, handler, context) {
+        const wrapped = (...args) => {
+            this.off(event, wrapped);
+            handler.apply(context, [args[0]]);
+        };
+        return this.on(event, wrapped);
+    }
+    off(event, handler) {
+        if (!handler) {
+            this.handlers.delete(event);
+            return;
+        }
+        const eventHandlers = this.handlers.get(event);
+        if (eventHandlers) {
+            eventHandlers.delete(handler);
+            if (eventHandlers.size === 0) {
+                this.handlers.delete(event);
+            }
+        }
+    }
+    offAll(event) {
+        if (event) {
+            this.handlers.delete(event);
+        }
+        else {
+            this.handlers.clear();
+        }
+    }
+    hasListeners(event) {
+        const handlers = this.handlers.get(event);
+        return handlers !== undefined && handlers.size > 0;
+    }
+    getListenerCount(event) {
+        return this.handlers.get(event)?.size ?? 0;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: EventBusService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: EventBusService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: EventBusService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }] });
+
+class ComponentRegistryService {
+    registry = new Map();
+    componentManifest = {};
+    _schemaComponents = new Map();
+    _componentModules = new Map();
+    constructor() {
+        this.registerBuiltInComponents();
+        this.loadComponentManifest();
+    }
+    registerBuiltInComponents() {
+        // Built-in UI components
+        const components = {
+            // Layout
+            header: { selector: "app-header" },
+            footer: { selector: "app-footer" },
+            sidebar: { selector: "app-sidebar" },
+            "page-container": { selector: "app-page-container" },
+            "page-toolbar": { selector: "app-page-toolbar" },
+            "split-view": { selector: "app-split-view" },
+            "main-editor": { selector: "app-main-editor" },
+            // UI
+            button: { selector: "app-button" },
+            input: { selector: "app-input" },
+            textarea: { selector: "app-textarea" },
+            select: { selector: "app-select" },
+            checkbox: { selector: "app-checkbox" },
+            radio: { selector: "app-radio" },
+            switch: { selector: "app-switch" },
+            slider: { selector: "app-slider" },
+            badge: { selector: "app-badge" },
+            avatar: { selector: "app-avatar" },
+            chip: { selector: "app-chip" },
+            tabs: { selector: "app-tabs" },
+            "empty-state": { selector: "app-empty-state" },
+            loading: { selector: "app-loading" },
+            "progress-bar": { selector: "app-progress-bar" },
+            pagination: { selector: "app-pagination" },
+            tooltip: { selector: "app-tooltip" },
+            // Data
+            card: { selector: "app-card" },
+            "stats-card": { selector: "app-stats-card" },
+            "table-view": { selector: "app-table-view" },
+            "data-table": { selector: "app-data-table" },
+            "json-view": { selector: "app-json-view" },
+            "segment-selector": { selector: "app-segment-selector" },
+            // Feedback
+            dialog: { selector: "app-dialog" },
+            "confirm-dialog": { selector: "app-confirm-dialog" },
+            toast: { selector: "app-toast" },
+            snackbar: { selector: "app-snackbar" },
+            modal: { selector: "app-modal" },
+            "command-palette": { selector: "app-command-palette" },
+            // Grid
+            "grid-container": { selector: "app-grid-container" },
+            "grid-item": { selector: "app-grid-item" },
+            "grid-area": { selector: "app-grid-area" },
+            // Designer
+            "designer-sidebar": { selector: "app-designer-sidebar" },
+            "component-palette": { selector: "app-component-palette" },
+            canvas: { selector: "app-canvas" },
+            "canvas-toolbar": { selector: "app-canvas-toolbar" },
+            "properties-panel": { selector: "app-properties-panel" },
+            "bottom-panel": { selector: "app-bottom-panel" },
+        };
+        Object.entries(components).forEach(([id, def]) => {
+            this.register(id, def);
+        });
+    }
+    async loadComponentManifest() {
+        try {
+            const response = await fetch("/assets/component-manifest.json");
+            if (response.ok) {
+                this.componentManifest = await response.json();
+            }
+        }
+        catch {
+            // Manifest not found, use built-in registry only
+        }
+    }
+    register(componentId, definition) {
+        this.registry.set(componentId, definition);
+    }
+    unregister(componentId) {
+        this.registry.delete(componentId);
+    }
+    get(componentId) {
+        return this.registry.get(componentId);
+    }
+    getSelector(componentId) {
+        const def = this.registry.get(componentId);
+        if (!def) {
+            console.warn(`ComponentRegistry: Unknown component "${componentId}", using fallback selector`);
+            return `app-${componentId}`;
+        }
+        return def.selector;
+    }
+    has(componentId) {
+        return this.registry.has(componentId);
+    }
+    resolveBehavior(componentId) {
+        const def = this.registry.get(componentId);
+        return def?.behaviors;
+    }
+    mergeBehavior(componentId, schemaBehavior) {
+        const registered = this.resolveBehavior(componentId) ?? {};
+        if (!schemaBehavior)
+            return registered;
+        return {
+            selfMethods: { ...registered.selfMethods, ...schemaBehavior.selfMethods },
+            classSetters: {
+                ...registered.classSetters,
+                ...schemaBehavior.classSetters,
+            },
+            eventHandlers: this.mergeEventHandlers(registered.eventHandlers, schemaBehavior.eventHandlers),
+        };
+    }
+    mergeEventHandlers(base, override) {
+        if (!base && !override)
+            return undefined;
+        if (!base)
+            return override;
+        if (!override)
+            return base;
+        const merged = { ...base };
+        Object.entries(override).forEach(([event, handlers]) => {
+            const existing = merged[event] ?? [];
+            merged[event] = [...existing, ...handlers];
+        });
+        return merged;
+    }
+    getAllComponentIds() {
+        return Array.from(this.registry.keys());
+    }
+    getComponentsByCategory(category) {
+        // Filter components by category from manifest
+        const manifest = this.componentManifest[category];
+        if (!manifest)
+            return [];
+        return Object.keys(manifest);
+    }
+    // Schema-based component registration (delegated from schema-renderer/component-registry.ts)
+    registerComponent(def) {
+        this._schemaComponents.set(def.selector, def);
+    }
+    registerComponents(defs) {
+        for (const def of defs) {
+            this.registerComponent(def);
+        }
+    }
+    getComponent(selector) {
+        return this._schemaComponents.get(selector);
+    }
+    registerComponentModule(selector, module) {
+        const modules = new Map(this._componentModules);
+        modules.set(selector, module);
+        this._componentModules = modules;
+    }
+    async loadComponentModule(selector) {
+        const cached = this._componentModules.get(selector);
+        if (cached) {
+            const constructor = cached["default"];
+            if (constructor)
+                return constructor;
+        }
+        const def = this._schemaComponents.get(selector);
+        if (!def) {
+            throw new Error(`Component not found: ${selector}`);
+        }
+        const module = (await import(/* @vite-ignore */ def.selector));
+        this.registerComponentModule(selector, module);
+        const constructor = module["default"];
+        if (!constructor) {
+            throw new Error(`Module ${selector} does not export a default CustomElementConstructor`);
+        }
+        return constructor;
+    }
+    getComponentModules() {
+        return this._componentModules;
+    }
+    loadComponentsFromSchema(pages) {
+        const registry = new Map();
+        for (const page of pages) {
+            for (const comp of page.components || []) {
+                registry.set(comp.selector, comp);
+            }
+        }
+        this._schemaComponents = registry;
+    }
+    hasComponent(selector) {
+        return this._schemaComponents.has(selector);
+    }
+    getRegisteredSelectors() {
+        return Array.from(this._schemaComponents.keys());
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ComponentRegistryService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ComponentRegistryService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ComponentRegistryService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }], ctorParameters: () => [] });
+
+class CrudService {
+    storage = signal(null, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "storage" }] : /* istanbul ignore next */ []));
+    init(storage) {
+        this.storage.set(storage);
+    }
+    getStorage() {
+        const s = this.storage();
+        if (!s)
+            throw new Error("CrudService not initialized");
+        return s;
+    }
+    getCollection(collection) {
+        const data = this.getStorage().get(collection);
+        return data || [];
+    }
+    saveCollection(collection, data) {
+        this.getStorage().set(collection, data);
+    }
+    create(collection, item) {
+        const data = this.getCollection(collection);
+        const timestamp = Date.now();
+        const entity = {
+            ...item,
+            created_at: timestamp,
+            updated_at: timestamp,
+        };
+        data.push(entity);
+        this.saveCollection(collection, data);
+        this.addPending({
+            _op: "create",
+            _ts: timestamp,
+            id: entity.id,
+        });
+    }
+    read(collection, id) {
+        const data = this.getCollection(collection);
+        return (data.find((item) => item.id === id) || null);
+    }
+    update(collection, id, changes) {
+        const data = this.getCollection(collection);
+        const index = data.findIndex((item) => item.id === id);
+        if (index === -1)
+            return;
+        const timestamp = Date.now();
+        const updated = {
+            ...data[index],
+            ...changes,
+            updated_at: timestamp,
+        };
+        data[index] = updated;
+        this.saveCollection(collection, data);
+        this.addPending({
+            _op: "update",
+            _ts: timestamp,
+            id,
+            data: changes,
+        });
+    }
+    delete(collection, id) {
+        const data = this.getCollection(collection);
+        const filtered = data.filter((item) => item.id !== id);
+        this.saveCollection(collection, filtered);
+        this.addPending({
+            _op: "delete",
+            _ts: Date.now(),
+            id,
+        });
+    }
+    query(collection, q) {
+        let data = this.getCollection(collection);
+        if (q.filters) {
+            for (const filter of q.filters) {
+                data = this.applyFilter(data, filter);
+            }
+        }
+        if (q.sortBy) {
+            data = this.applySort(data, q.sortBy, q.sortAsc ?? true);
+        }
+        if (q.offset) {
+            data = data.slice(q.offset);
+        }
+        if (q.limit) {
+            data = data.slice(0, q.limit);
+        }
+        return data;
+    }
+    applyFilter(data, filter) {
+        return data.filter((item) => {
+            const value = item[filter.field];
+            switch (filter.operator) {
+                case "eq":
+                    return value === filter.value;
+                case "ne":
+                    return value !== filter.value;
+                case "gt":
+                    return value > filter.value;
+                case "gte":
+                    return value >= filter.value;
+                case "lt":
+                    return value < filter.value;
+                case "lte":
+                    return value <= filter.value;
+                case "contains":
+                    return String(value)
+                        .toLowerCase()
+                        .includes(String(filter.value).toLowerCase());
+                case "startsWith":
+                    return String(value)
+                        .toLowerCase()
+                        .startsWith(String(filter.value).toLowerCase());
+                case "endsWith":
+                    return String(value)
+                        .toLowerCase()
+                        .endsWith(String(filter.value).toLowerCase());
+                default:
+                    return true;
+            }
+        });
+    }
+    applySort(data, sortBy, asc) {
+        return [...data].sort((a, b) => {
+            const aVal = a[sortBy];
+            const bVal = b[sortBy];
+            if (aVal == null)
+                return 1;
+            if (bVal == null)
+                return -1;
+            const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+            return asc ? cmp : -cmp;
+        });
+    }
+    addPending(op) {
+        const pending = this.getStorage().get("_pending_ops") || [];
+        pending.push(op);
+        this.getStorage().set("_pending_ops", pending);
+    }
+    batchCreate(collection, items) {
+        const data = this.getCollection(collection);
+        const timestamp = Date.now();
+        for (const item of items) {
+            const entity = {
+                ...item,
+                created_at: timestamp,
+                updated_at: timestamp,
+            };
+            data.push(entity);
+        }
+        this.saveCollection(collection, data);
+    }
+    batchDelete(collection, ids) {
+        const data = this.getCollection(collection);
+        const filtered = data.filter((item) => !ids.includes(item.id));
+        this.saveCollection(collection, filtered);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CrudService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CrudService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CrudService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }] });
+
+class DataBindingResolverService {
+    signalStore;
+    crudService;
+    _params = {};
+    _functions = {};
+    constructor(signalStore, crudService) {
+        this.signalStore = signalStore;
+        this.crudService = crudService;
+    }
+    setParams(params) {
+        this._params = params;
+    }
+    registerFunction(name, fn) {
+        this._functions[name] = fn;
+    }
+    registerFunctions(fns) {
+        this._functions = { ...this._functions, ...fns };
+    }
+    resolveDataBinding(binding) {
+        if (typeof binding === "string") {
+            // Resolve {{functions.name(args)}} pattern
+            const fnPattern = /\{\{functions\.([^}]+)\}\}/g;
+            const fnResult = binding.replace(fnPattern, (_, callExpr) => {
+                const value = this.resolveFunctionCall(callExpr);
+                return value !== undefined ? String(value) : binding;
+            });
+            if (fnResult !== binding)
+                return fnResult;
+            // Resolve {{params.*}} pattern
+            const paramsPattern = /\{\{params\.([^}]+)\}\}/g;
+            const paramsResult = binding.replace(paramsPattern, (_, path) => {
+                const value = this.resolveParamsPath(path);
+                return value !== undefined ? String(value) : binding;
+            });
+            if (paramsResult !== binding)
+                return paramsResult;
+            // Resolve {{data.*}} pattern
+            const dataPattern = /\{\{data\.([^}]+)\}\}/g;
+            const dataResult = binding.replace(dataPattern, (_, path) => {
+                const value = this.getDataBindingValue(path);
+                return value !== undefined ? String(value) : binding;
+            });
+            return dataResult;
+        }
+        if (binding && typeof binding === "object" && "entity" in binding) {
+            const db = binding;
+            if (db.operation) {
+                return this.executeCrudOperation(db);
+            }
+            const entityValue = this.signalStore.get(db.entity);
+            if (db.field !== undefined) {
+                return this.getNestedValue(entityValue, db.field);
+            }
+            return entityValue;
+        }
+        return binding;
+    }
+    resolveFunctionCall(callExpr) {
+        // Parse "name(arg1, arg2)" or "name(arg1, 'string', key: value)"
+        const match = callExpr.match(/^(\w+)\((.*)\)$/);
+        if (!match) {
+            // No args — treat as property access on functions registry
+            return this._functions[callExpr];
+        }
+        const [, fnName, argsStr] = match;
+        const fn = this._functions[fnName];
+        if (typeof fn !== "function")
+            return undefined;
+        const args = this.parseCallArgs(argsStr);
+        // Resolve each argument (may contain nested bindings)
+        const resolvedArgs = args.map((arg) => this.resolveDataBinding(arg));
+        return fn(...resolvedArgs);
+    }
+    parseCallArgs(argsStr) {
+        if (!argsStr.trim())
+            return [];
+        const result = [];
+        let current = "";
+        let depth = 0;
+        let inString = false;
+        let stringChar = "";
+        for (const char of argsStr) {
+            if ((char === '"' || char === "'") && !inString) {
+                inString = true;
+                stringChar = char;
+                current += char;
+            }
+            else if (char === stringChar && inString) {
+                inString = false;
+                stringChar = "";
+                current += char;
+            }
+            else if (char === "(" && !inString) {
+                depth++;
+                current += char;
+            }
+            else if (char === ")" && !inString) {
+                depth--;
+                current += char;
+            }
+            else if (char === "," && depth === 0 && !inString) {
+                result.push(current.trim());
+                current = "";
+            }
+            else {
+                current += char;
+            }
+        }
+        if (current.trim())
+            result.push(current.trim());
+        return result;
+    }
+    resolveParamsPath(path) {
+        return this.getNestedValue(this._params, path);
+    }
+    resolveProps(props, _componentId) {
+        const resolved = {};
+        for (const [key, value] of Object.entries(props)) {
+            resolved[key] = this.resolveDataBinding(value);
+        }
+        return resolved;
+    }
+    executeCrudOperation(binding) {
+        const { entity, operation, params } = binding;
+        const resolvedParams = this.resolveParams(params || {});
+        switch (operation) {
+            case "find": {
+                const query = this.buildCrudQuery(resolvedParams);
+                return this.crudService.query(entity, query);
+            }
+            case "create": {
+                const item = resolvedParams;
+                this.crudService.create(entity, item);
+                return;
+            }
+            case "update": {
+                const id = params["id"];
+                this.crudService.update(entity, id, resolvedParams);
+                return;
+            }
+            case "delete": {
+                const id = params["id"];
+                this.crudService.delete(entity, id);
+                return;
+            }
+            default:
+                return this.signalStore.get(entity);
+        }
+    }
+    resolveParams(params) {
+        const resolved = {};
+        for (const [key, value] of Object.entries(params)) {
+            resolved[key] = this.resolveDataBinding(value);
+        }
+        return resolved;
+    }
+    buildCrudQuery(params) {
+        const query = {};
+        if (params["filter"]) {
+            query.filters = this.buildFilters(params["filter"]);
+        }
+        if (params["sortBy"]) {
+            query.sortBy = params["sortBy"];
+            query.sortAsc = params["sortAsc"] !== false;
+        }
+        if (params["limit"]) {
+            query.limit = params["limit"];
+        }
+        if (params["offset"]) {
+            query.offset = params["offset"];
+        }
+        return query;
+    }
+    buildFilters(filterObj) {
+        const filters = [];
+        for (const [field, value] of Object.entries(filterObj)) {
+            filters.push({ field, operator: "eq", value });
+        }
+        return filters;
+    }
+    getDataBindingValue(path) {
+        const parts = this.parseBindingPath(path);
+        let current = this.signalStore.get(parts[0]);
+        for (let i = 1; i < parts.length; i++) {
+            if (current === null || current === undefined)
+                return undefined;
+            const part = parts[i];
+            const arrayMatch = part.match(/^(\w+)\[(\d+)\]$/);
+            if (arrayMatch) {
+                const [, arrayKey, indexStr] = arrayMatch;
+                const arr = this.getNestedValue(current, arrayKey);
+                if (Array.isArray(arr)) {
+                    const index = parseInt(indexStr, 10);
+                    current = arr[index];
+                }
+                else {
+                    current = undefined;
+                }
+            }
+            else {
+                current = this.getNestedValue(current, part);
+            }
+        }
+        return current;
+    }
+    parseBindingPath(path) {
+        const result = [];
+        const regex = /([^\.]+)\[(\d+)\]|([^\.\[\]]+)/g;
+        let match;
+        while ((match = regex.exec(path)) !== null) {
+            if (match[1] && match[2]) {
+                result.push(`${match[1]}[${match[2]}]`);
+            }
+            else if (match[3]) {
+                result.push(match[3]);
+            }
+        }
+        return result;
+    }
+    getNestedValue(obj, key) {
+        if (obj === null || obj === undefined)
+            return undefined;
+        if (typeof obj !== "object")
+            return undefined;
+        return obj[key];
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DataBindingResolverService, deps: [{ token: SignalStoreService }, { token: CrudService }], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DataBindingResolverService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DataBindingResolverService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }], ctorParameters: () => [{ type: SignalStoreService }, { type: CrudService }] });
 
 const DARK_MODE_STORAGE_KEY = "tauri-front-dark-mode";
 class StyleThemeService {
@@ -4365,9 +6139,6 @@ class StyleThemeService {
     init() { }
     async loadTheme(variant) {
         setCurrentStyle(variant);
-        if (this.isDarkMode()) {
-            this.injectDarkModeVariables(variant);
-        }
         this._themeChanged$.next({
             variant,
             isDark: this.isDarkMode(),
@@ -4400,15 +6171,12 @@ class StyleThemeService {
         return this.isDarkMode() ? "dark" : "light";
     }
     toggleDarkMode() {
-        const html = document.documentElement;
-        const isCurrentlyDark = html.classList.contains("dark");
+        const isCurrentlyDark = document.body.getAttribute("data-theme") === "dark";
         if (isCurrentlyDark) {
-            html.classList.remove("dark");
-            this.removeDarkModeVariables();
+            document.body.setAttribute("data-theme", "light");
         }
         else {
-            html.classList.add("dark");
-            this.injectDarkModeVariables(this.getCurrentTheme());
+            document.body.setAttribute("data-theme", "dark");
         }
         this.saveDarkModePreference(!isCurrentlyDark);
         this._themeChanged$.next({
@@ -4417,18 +6185,10 @@ class StyleThemeService {
         });
     }
     isDarkMode() {
-        return document.documentElement.classList.contains("dark");
+        return document.body.getAttribute("data-theme") === "dark";
     }
     setDarkMode(enabled) {
-        const html = document.documentElement;
-        if (enabled) {
-            html.classList.add("dark");
-            this.injectDarkModeVariables(this.getCurrentTheme());
-        }
-        else {
-            html.classList.remove("dark");
-            this.removeDarkModeVariables();
-        }
+        document.body.setAttribute("data-theme", enabled ? "dark" : "light");
         this.saveDarkModePreference(enabled);
         this._themeChanged$.next({
             variant: this.getCurrentTheme(),
@@ -5362,9 +7122,7 @@ class StyleThemeService {
     }
     initializeDarkMode() {
         const savedDarkMode = this.loadDarkModePreference();
-        if (savedDarkMode) {
-            document.documentElement.classList.add("dark");
-        }
+        document.body.setAttribute("data-theme", savedDarkMode ? "dark" : "light");
         this._themeChanged$.next({
             variant: this.getCurrentTheme(),
             isDark: savedDarkMode,
@@ -5397,1422 +7155,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             type: Injectable,
             args: [{ providedIn: "root" }]
         }], ctorParameters: () => [] });
-
-class ApplyThemeDirective {
-    componentId;
-    themedVariant;
-    themedSize;
-    styleThemeService = inject(StyleThemeService);
-    elementRef = inject(ElementRef);
-    renderer = inject(Renderer2);
-    subscription;
-    currentClasses = [];
-    ngOnInit() {
-        this.applyThemeClasses();
-        this.subscription = this.styleThemeService.themeChanged$.subscribe(() => {
-            this.applyThemeClasses();
-        });
-    }
-    ngOnDestroy() {
-        this.subscription?.unsubscribe();
-    }
-    applyThemeClasses() {
-        const theme = getCurrentStyle();
-        const newClasses = getComponentStyleClasses(theme, this.componentId, this.themedVariant, this.themedSize);
-        const classList = newClasses.split(" ").filter((c) => c);
-        this.currentClasses.forEach((cls) => {
-            this.renderer.removeClass(this.elementRef.nativeElement, cls);
-        });
-        classList.forEach((cls) => {
-            this.renderer.addClass(this.elementRef.nativeElement, cls);
-        });
-        this.currentClasses = classList;
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ApplyThemeDirective, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "22.0.6", type: ApplyThemeDirective, isStandalone: true, selector: "[appApplyTheme]", inputs: { componentId: ["appApplyTheme", "componentId"], themedVariant: "themedVariant", themedSize: "themedSize" }, ngImport: i0 });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ApplyThemeDirective, decorators: [{
-            type: Directive,
-            args: [{
-                    selector: "[appApplyTheme]",
-                    standalone: true,
-                }]
-        }], propDecorators: { componentId: [{
-                type: Input,
-                args: ["appApplyTheme"]
-            }], themedVariant: [{
-                type: Input
-            }], themedSize: [{
-                type: Input
-            }] } });
-
-// Font Awesome icon mapping - no MatIcon, no SVG injection
-const FA_ICONS = {
-    // Navigation
-    home: "fa-home",
-    menu: "fa-bars",
-    close: "fa-xmark",
-    check: "fa-check",
-    "chevron-down": "fa-chevron-down",
-    "chevron-right": "fa-chevron-right",
-    // Actions
-    edit: "fa-pen",
-    delete: "fa-trash",
-    add: "fa-plus",
-    search: "fa-magnifying-glass",
-    undo: "fa-rotate-left",
-    redo: "fa-rotate-right",
-    remove: "fa-minus",
-    fit_screen: "fa-expand",
-    grid: "fa-table-cells",
-    grid_on: "fa-table-cells",
-    zoom_in: "fa-plus",
-    zoom_out: "fa-minus",
-    // Status
-    info: "fa-circle-info",
-    warning: "fa-triangle-exclamation",
-    error: "fa-circle-xmark",
-    success: "fa-circle-check",
-    // Content
-    user: "fa-user",
-    settings: "fa-gear",
-    star: "fa-star",
-    heart: "fa-heart",
-    // Media
-    image: "fa-image",
-    camera: "fa-camera",
-    // Files
-    file: "fa-file",
-    folder: "fa-folder",
-    // Misc
-    sun: "fa-sun",
-    moon: "fa-moon",
-    download: "fa-download",
-    upload: "fa-upload",
-    copy: "fa-copy",
-    // Translation & Input
-    translate: "fa-language",
-    keyboard: "fa-keyboard",
-    // Additional
-    search_off: "fa-magnifying-glass-minus",
-    swap_vert: "fa-up-down",
-    expand_more: "fa-chevron-down",
-    dark_mode: "fa-moon",
-    light_mode: "fa-sun",
-    arrow_back: "fa-arrow-left",
-    arrow_forward: "fa-arrow-right",
-    first_page: "fa-angles-left",
-    last_page: "fa-angles-right",
-    chevron_left: "fa-chevron-left",
-    chevron_right: "fa-chevron-right",
-    content_copy: "fa-copy",
-    clear: "fa-xmark",
-};
-class IconComponent {
-    icon = "";
-    size = 24;
-    get faClass() {
-        const faIcon = FA_ICONS[this.icon] || FA_ICONS["info"];
-        return `fa-fw ${faIcon}`;
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: IconComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: IconComponent, isStandalone: true, selector: "app-icon", inputs: { icon: "icon", size: "size" }, ngImport: i0, template: "<span class=\"inline-flex items-center justify-center icon-wrapper\">\n  <i\n    [class]=\"faClass\"\n    style=\"font-size: 16px; width: 1.2em; text-align: center\"\n  ></i>\n</span>\n", styles: [""] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: IconComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-icon", standalone: true, imports: [], template: "<span class=\"inline-flex items-center justify-center icon-wrapper\">\n  <i\n    [class]=\"faClass\"\n    style=\"font-size: 16px; width: 1.2em; text-align: center\"\n  ></i>\n</span>\n" }]
-        }], propDecorators: { icon: [{
-                type: Input
-            }], size: [{
-                type: Input
-            }] } });
-registerSchemaComponent("app-icon", IconComponent);
-
-class ButtonComponent {
-    i18n = inject(I18nService);
-    variant = "primary";
-    buttonStyle = "solid";
-    size = "md";
-    disabled = false;
-    loading = false;
-    icon = null;
-    iconPosition = "left";
-    fullWidth = false;
-    type = "button";
-    label = "";
-    set i18nKey(value) {
-        if (value !== undefined && value !== null) {
-            this.label = this.i18n.t(value);
-        }
-    }
-    classes = "";
-    ariaLabel = "";
-    align = "";
-    direction = "";
-    height = "";
-    justify = "";
-    layout = "";
-    width = "";
-    clicked = new EventEmitter();
-    handleClick(e) {
-        if (this.disabled || this.loading) {
-            e.preventDefault();
-            e.stopPropagation();
-            return;
-        }
-        this.clicked.emit(e);
-    }
-    getButtonClass() {
-        const sizeClass = this.size === "sm"
-            ? "py-1 px-2 text-sm"
-            : this.size === "lg"
-                ? "py-3 px-6 text-lg"
-                : "";
-        return [sizeClass, this.fullWidth ? "w-full" : ""]
-            .filter(Boolean)
-            .join(" ");
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ButtonComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ButtonComponent, isStandalone: true, selector: "app-button", inputs: { variant: "variant", buttonStyle: "buttonStyle", size: "size", disabled: "disabled", loading: "loading", icon: "icon", iconPosition: "iconPosition", fullWidth: "fullWidth", type: "type", label: "label", i18nKey: "i18nKey", classes: "classes", ariaLabel: "ariaLabel", align: "align", direction: "direction", height: "height", justify: "justify", layout: "layout", width: "width" }, outputs: { clicked: "clicked" }, ngImport: i0, template: "<button\n  appApplyTheme=\"app-button\"\n  [themedVariant]=\"buttonStyle\"\n  [themedSize]=\"size\"\n  [attr.type]=\"type || 'button'\"\n  [class]=\"getButtonClass()\"\n  [disabled]=\"disabled || loading\"\n  (click)=\"handleClick($event)\"\n  class=\"inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-center font-medium transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed\"\n>\n  @if (loading) {\n    <span\n      class=\"app-btn-spinner w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin\"\n    ></span>\n  } @else {\n    @if (icon && iconPosition === \"left\") {\n      <app-icon class=\"app-btn-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n    @if (label) {\n      <span>{{ label }}</span>\n    } @else {\n      <ng-content></ng-content>\n    }\n    @if (icon && iconPosition === \"right\") {\n      <app-icon class=\"app-btn-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n  }\n</button>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size"] }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ButtonComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-button", standalone: true, imports: [IconComponent, ApplyThemeDirective], template: "<button\n  appApplyTheme=\"app-button\"\n  [themedVariant]=\"buttonStyle\"\n  [themedSize]=\"size\"\n  [attr.type]=\"type || 'button'\"\n  [class]=\"getButtonClass()\"\n  [disabled]=\"disabled || loading\"\n  (click)=\"handleClick($event)\"\n  class=\"inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-center font-medium transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed\"\n>\n  @if (loading) {\n    <span\n      class=\"app-btn-spinner w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin\"\n    ></span>\n  } @else {\n    @if (icon && iconPosition === \"left\") {\n      <app-icon class=\"app-btn-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n    @if (label) {\n      <span>{{ label }}</span>\n    } @else {\n      <ng-content></ng-content>\n    }\n    @if (icon && iconPosition === \"right\") {\n      <app-icon class=\"app-btn-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n  }\n</button>\n" }]
-        }], propDecorators: { variant: [{
-                type: Input
-            }], buttonStyle: [{
-                type: Input
-            }], size: [{
-                type: Input
-            }], disabled: [{
-                type: Input
-            }], loading: [{
-                type: Input
-            }], icon: [{
-                type: Input
-            }], iconPosition: [{
-                type: Input
-            }], fullWidth: [{
-                type: Input
-            }], type: [{
-                type: Input
-            }], label: [{
-                type: Input
-            }], i18nKey: [{
-                type: Input
-            }], classes: [{
-                type: Input
-            }], ariaLabel: [{
-                type: Input
-            }], align: [{
-                type: Input
-            }], direction: [{
-                type: Input
-            }], height: [{
-                type: Input
-            }], justify: [{
-                type: Input
-            }], layout: [{
-                type: Input
-            }], width: [{
-                type: Input
-            }], clicked: [{
-                type: Output
-            }] } });
-registerSchemaComponent("app-button", ButtonComponent);
-
-class InputComponent {
-    type = "text";
-    placeholder = "";
-    label = "";
-    icon = "";
-    disabled = false;
-    value = "";
-    error = "";
-    input = new EventEmitter();
-    blurred = new EventEmitter();
-    focused = false;
-    handleInput(e) {
-        this.value = e.target.value;
-        this.input.emit(this.value);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: InputComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: InputComponent, isStandalone: true, selector: "app-input", inputs: { type: "type", placeholder: "placeholder", label: "label", icon: "icon", disabled: "disabled", value: "value", error: "error" }, outputs: { input: "input", blurred: "blurred" }, ngImport: i0, template: "<div appApplyTheme=\"app-input\" class=\"flex flex-col gap-1\">\n  @if (label) {\n    <label class=\"text-sm font-medium text-[var(--text-primary)]\">{{\n      label\n    }}</label>\n  }\n  <div class=\"relative flex items-center\" [class.app-input-focused]=\"focused\">\n    @if (icon) {\n      <app-icon\n        class=\"absolute left-3 text-xl\"\n        [icon]=\"icon\"\n        [size]=\"20\"\n        [class]=\"focused ? 'text-[var(--accent)]' : 'text-[var(--text-muted)]'\"\n      />\n    }\n    <input\n      #inputEl\n      [attr.type]=\"type\"\n      class=\"w-full px-3 py-2 rounded-lg border transition-all outline-none focus:shadow-[0_0_0_1px_var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed\"\n      [class.ps-10]=\"!!icon\"\n      [class.border-[var(--error)]]=\"error\"\n      [class.border-[var(--accent)]]=\"!error && focused\"\n      [class.border-[var(--border-color)]]=\"!error && !focused\"\n      [class.bg-[var(--bg-tertiary)]]=\"disabled\"\n      [class.bg-[var(--bg-primary)]]=\"!disabled\"\n      [placeholder]=\"placeholder\"\n      [disabled]=\"disabled\"\n      [value]=\"value\"\n      (input)=\"handleInput($event)\"\n      (focus)=\"focused = true\"\n      (blur)=\"focused = false\"\n    />\n  </div>\n  @if (error) {\n    <span class=\"text-xs text-[var(--error)]\">{{ error }}</span>\n  }\n</div>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size"] }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: InputComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-input", standalone: true, imports: [IconComponent, ApplyThemeDirective], template: "<div appApplyTheme=\"app-input\" class=\"flex flex-col gap-1\">\n  @if (label) {\n    <label class=\"text-sm font-medium text-[var(--text-primary)]\">{{\n      label\n    }}</label>\n  }\n  <div class=\"relative flex items-center\" [class.app-input-focused]=\"focused\">\n    @if (icon) {\n      <app-icon\n        class=\"absolute left-3 text-xl\"\n        [icon]=\"icon\"\n        [size]=\"20\"\n        [class]=\"focused ? 'text-[var(--accent)]' : 'text-[var(--text-muted)]'\"\n      />\n    }\n    <input\n      #inputEl\n      [attr.type]=\"type\"\n      class=\"w-full px-3 py-2 rounded-lg border transition-all outline-none focus:shadow-[0_0_0_1px_var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed\"\n      [class.ps-10]=\"!!icon\"\n      [class.border-[var(--error)]]=\"error\"\n      [class.border-[var(--accent)]]=\"!error && focused\"\n      [class.border-[var(--border-color)]]=\"!error && !focused\"\n      [class.bg-[var(--bg-tertiary)]]=\"disabled\"\n      [class.bg-[var(--bg-primary)]]=\"!disabled\"\n      [placeholder]=\"placeholder\"\n      [disabled]=\"disabled\"\n      [value]=\"value\"\n      (input)=\"handleInput($event)\"\n      (focus)=\"focused = true\"\n      (blur)=\"focused = false\"\n    />\n  </div>\n  @if (error) {\n    <span class=\"text-xs text-[var(--error)]\">{{ error }}</span>\n  }\n</div>\n" }]
-        }], propDecorators: { type: [{
-                type: Input
-            }], placeholder: [{
-                type: Input
-            }], label: [{
-                type: Input
-            }], icon: [{
-                type: Input
-            }], disabled: [{
-                type: Input
-            }], value: [{
-                type: Input
-            }], error: [{
-                type: Input
-            }], input: [{
-                type: Output
-            }], blurred: [{
-                type: Output
-            }] } });
-registerSchemaComponent("app-input", InputComponent);
-
-class EmptyStateComponent {
-    title = "";
-    message = "";
-    icon = "";
-    variant = "default";
-    action = "";
-    actionClicked = new EventEmitter();
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: EmptyStateComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: EmptyStateComponent, isStandalone: true, selector: "app-empty-state", inputs: { title: "title", message: "message", icon: "icon", variant: "variant", action: "action" }, outputs: { actionClicked: "actionClicked" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-empty-state\"\n  class=\"w-16 h-16 rounded-full flex items-center justify-center border-2\"\n  [class]=\"variant\"\n  [class]=\"\n    variant === 'danger'\n      ? 'bg-[var(--error)] border-[var(--error)]'\n      : variant === 'success'\n        ? 'bg-[var(--success)] border-[var(--success)]'\n        : 'bg-[var(--bg-elevated)] border-[var(--border-color)]'\n  \"\n>\n  @if (icon) {\n    <span class=\"text-4xl size-8\">{{ icon }}</span>\n  }\n</div>\n@if (title) {\n  <h3 class=\"text-2xl font-semibold m-0 text-[var(--text-primary)]\">\n    {{ title }}\n  </h3>\n}\n@if (message) {\n  <p class=\"text-base m-0 max-w-[400px] mt-2 text-[var(--text-secondary)]\">\n    {{ message }}\n  </p>\n}\n@if (action) {\n  <div class=\"mt-2\">\n    <button\n      class=\"inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-150 bg-[var(--accent)] border-[var(--accent)] text-[var(--text-on-accent)]\"\n      (mouseenter)=\"\n        $any($event.target).style.background = 'var(--accent-hover)';\n        $any($event.target).style.borderColor = 'var(--accent-hover)'\n      \"\n      (mouseleave)=\"\n        $any($event.target).style.background = 'var(--accent)';\n        $any($event.target).style.borderColor = 'var(--accent)'\n      \"\n      (click)=\"actionClicked.emit($event)\"\n    >\n      {{ action }}\n    </button>\n  </div>\n}\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: EmptyStateComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-empty-state", standalone: true, imports: [ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-empty-state\"\n  class=\"w-16 h-16 rounded-full flex items-center justify-center border-2\"\n  [class]=\"variant\"\n  [class]=\"\n    variant === 'danger'\n      ? 'bg-[var(--error)] border-[var(--error)]'\n      : variant === 'success'\n        ? 'bg-[var(--success)] border-[var(--success)]'\n        : 'bg-[var(--bg-elevated)] border-[var(--border-color)]'\n  \"\n>\n  @if (icon) {\n    <span class=\"text-4xl size-8\">{{ icon }}</span>\n  }\n</div>\n@if (title) {\n  <h3 class=\"text-2xl font-semibold m-0 text-[var(--text-primary)]\">\n    {{ title }}\n  </h3>\n}\n@if (message) {\n  <p class=\"text-base m-0 max-w-[400px] mt-2 text-[var(--text-secondary)]\">\n    {{ message }}\n  </p>\n}\n@if (action) {\n  <div class=\"mt-2\">\n    <button\n      class=\"inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-150 bg-[var(--accent)] border-[var(--accent)] text-[var(--text-on-accent)]\"\n      (mouseenter)=\"\n        $any($event.target).style.background = 'var(--accent-hover)';\n        $any($event.target).style.borderColor = 'var(--accent-hover)'\n      \"\n      (mouseleave)=\"\n        $any($event.target).style.background = 'var(--accent)';\n        $any($event.target).style.borderColor = 'var(--accent)'\n      \"\n      (click)=\"actionClicked.emit($event)\"\n    >\n      {{ action }}\n    </button>\n  </div>\n}\n" }]
-        }], propDecorators: { title: [{
-                type: Input
-            }], message: [{
-                type: Input
-            }], icon: [{
-                type: Input
-            }], variant: [{
-                type: Input
-            }], action: [{
-                type: Input
-            }], actionClicked: [{
-                type: Output
-            }] } });
-registerSchemaComponent("app-empty-state", EmptyStateComponent);
-
-class ModalComponent {
-    open = false;
-    title = "";
-    size = "md";
-    closed = new EventEmitter();
-    handleOverlayClick(e) {
-        if (e.target.classList.contains("overlay")) {
-            this.close();
-        }
-    }
-    close() {
-        this.open = false;
-        this.closed.emit();
-    }
-    onEscape() {
-        if (this.open)
-            this.close();
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ModalComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ModalComponent, isStandalone: true, selector: "app-modal", inputs: { open: "open", title: "title", size: "size" }, outputs: { closed: "closed" }, host: { listeners: { "window:keydown.escape": "onEscape()" } }, ngImport: i0, template: "@if (open) {\n  <div\n    appApplyTheme=\"app-modal\"\n    class=\"fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]\"\n    (click)=\"handleOverlayClick($event)\"\n  >\n    <div\n      [class]=\"\n        'modal modal-' +\n        size +\n        ' bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-xl min-w-[320px] max-h-[90vh] flex flex-col shadow-2xl'\n      \"\n      [style.width]=\"\n        size === 'sm'\n          ? '320px'\n          : size === 'md'\n            ? '480px'\n            : size === 'lg'\n              ? '640px'\n              : '480px'\n      \"\n    >\n      <header\n        class=\"flex items-center justify-between p-4 border-b border-[var(--border-color)]\"\n      >\n        <h3 class=\"m-0 text-lg font-semibold text-[var(--text-primary)]\">\n          {{ title }}\n        </h3>\n        <button\n          class=\"bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]\"\n          (click)=\"close()\"\n          aria-label=\"Close\"\n        >\n          &times;\n        </button>\n      </header>\n      <div class=\"p-5 overflow-y-auto text-[var(--text-primary)]\">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ModalComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-modal", standalone: true, imports: [ApplyThemeDirective], template: "@if (open) {\n  <div\n    appApplyTheme=\"app-modal\"\n    class=\"fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]\"\n    (click)=\"handleOverlayClick($event)\"\n  >\n    <div\n      [class]=\"\n        'modal modal-' +\n        size +\n        ' bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-xl min-w-[320px] max-h-[90vh] flex flex-col shadow-2xl'\n      \"\n      [style.width]=\"\n        size === 'sm'\n          ? '320px'\n          : size === 'md'\n            ? '480px'\n            : size === 'lg'\n              ? '640px'\n              : '480px'\n      \"\n    >\n      <header\n        class=\"flex items-center justify-between p-4 border-b border-[var(--border-color)]\"\n      >\n        <h3 class=\"m-0 text-lg font-semibold text-[var(--text-primary)]\">\n          {{ title }}\n        </h3>\n        <button\n          class=\"bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]\"\n          (click)=\"close()\"\n          aria-label=\"Close\"\n        >\n          &times;\n        </button>\n      </header>\n      <div class=\"p-5 overflow-y-auto text-[var(--text-primary)]\">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n" }]
-        }], propDecorators: { open: [{
-                type: Input
-            }], title: [{
-                type: Input
-            }], size: [{
-                type: Input
-            }], closed: [{
-                type: Output
-            }], onEscape: [{
-                type: HostListener,
-                args: ["window:keydown.escape"]
-            }] } });
-registerSchemaComponent("app-modal", ModalComponent);
-
-class DialogComponent {
-    open = false;
-    title = "";
-    size = "md";
-    showHeader = true;
-    showFooter = false;
-    closed = new EventEmitter();
-    handleOverlayClick(e) {
-        if (e.target.classList.contains("overlay")) {
-            this.close();
-        }
-    }
-    close() {
-        this.open = false;
-        this.closed.emit();
-    }
-    onEscape() {
-        if (this.open)
-            this.close();
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DialogComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: DialogComponent, isStandalone: true, selector: "app-dialog", inputs: { open: "open", title: "title", size: "size", showHeader: "showHeader", showFooter: "showFooter" }, outputs: { closed: "closed" }, host: { listeners: { "window:keydown.escape": "onEscape()" } }, ngImport: i0, template: "@if (open) {\n  <div\n    appApplyTheme=\"app-dialog\"\n    class=\"fixed inset-0 flex items-center justify-center z-[1000] bg-[var(--bg-overlay,rgba(0,0,0,0.5))]\"\n    (click)=\"handleOverlayClick($event)\"\n  >\n    <div\n      [class]=\"\n        'flex flex-col bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-3xl min-w-[360px] max-h-[90vh] shadow-2xl dialog-' +\n        size\n      \"\n    >\n      <header\n        class=\"flex items-center justify-between px-5 py-4 border-b border-[var(--border-color)] bg-[var(--bg-elevated)] rounded-t-3xl\"\n      >\n        <h2 class=\"m-0 text-xl font-bold text-[var(--text-primary)]\">\n          {{ title }}\n        </h2>\n        <button\n          class=\"bg-transparent border-0 cursor-pointer px-2 py-1 rounded-md text-2xl leading-none font-light transition-colors duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]\"\n          (click)=\"close()\"\n          aria-label=\"Close\"\n        >\n          &times;\n        </button>\n      </header>\n      <div class=\"px-6 py-5 overflow-y-auto text-[var(--text-primary)]\">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DialogComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-dialog", standalone: true, imports: [ApplyThemeDirective], template: "@if (open) {\n  <div\n    appApplyTheme=\"app-dialog\"\n    class=\"fixed inset-0 flex items-center justify-center z-[1000] bg-[var(--bg-overlay,rgba(0,0,0,0.5))]\"\n    (click)=\"handleOverlayClick($event)\"\n  >\n    <div\n      [class]=\"\n        'flex flex-col bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-3xl min-w-[360px] max-h-[90vh] shadow-2xl dialog-' +\n        size\n      \"\n    >\n      <header\n        class=\"flex items-center justify-between px-5 py-4 border-b border-[var(--border-color)] bg-[var(--bg-elevated)] rounded-t-3xl\"\n      >\n        <h2 class=\"m-0 text-xl font-bold text-[var(--text-primary)]\">\n          {{ title }}\n        </h2>\n        <button\n          class=\"bg-transparent border-0 cursor-pointer px-2 py-1 rounded-md text-2xl leading-none font-light transition-colors duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]\"\n          (click)=\"close()\"\n          aria-label=\"Close\"\n        >\n          &times;\n        </button>\n      </header>\n      <div class=\"px-6 py-5 overflow-y-auto text-[var(--text-primary)]\">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n" }]
-        }], propDecorators: { open: [{
-                type: Input
-            }], title: [{
-                type: Input
-            }], size: [{
-                type: Input
-            }], showHeader: [{
-                type: Input
-            }], showFooter: [{
-                type: Input
-            }], closed: [{
-                type: Output
-            }], onEscape: [{
-                type: HostListener,
-                args: ["window:keydown.escape"]
-            }] } });
-registerSchemaComponent("app-dialog", DialogComponent);
-
-class ConfirmDialogComponent {
-    open = false;
-    title = "Confirm";
-    message = "";
-    confirmText = "Confirm";
-    cancelText = "Cancel";
-    confirmed = new EventEmitter();
-    cancelled = new EventEmitter();
-    confirm() {
-        this.open = false;
-        this.confirmed.emit();
-    }
-    cancel() {
-        this.open = false;
-        this.cancelled.emit();
-    }
-    onEscape() {
-        if (this.open)
-            this.cancel();
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ConfirmDialogComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ConfirmDialogComponent, isStandalone: true, selector: "app-confirm-dialog", inputs: { open: "open", title: "title", message: "message", confirmText: "confirmText", cancelText: "cancelText" }, outputs: { confirmed: "confirmed", cancelled: "cancelled" }, host: { listeners: { "window:keydown.escape": "onEscape()" } }, ngImport: i0, template: "@if (open) {\n  <div\n    appApplyTheme=\"app-confirm-dialog\"\n    class=\"fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]\"\n    (click)=\"cancel()\"\n  >\n    <div\n      class=\"dialog bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-2xl w-[400px] max-w-[90vw] shadow-2xl\"\n      (click)=\"$event.stopPropagation()\"\n    >\n      <header\n        class=\"flex items-center justify-between p-5 border-b border-[var(--border-color)]\"\n      >\n        <h2 class=\"m-0 text-lg font-semibold text-[var(--text-primary)]\">\n          {{ title || \"Confirm\" }}\n        </h2>\n        <button\n          class=\"bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]\"\n          (click)=\"cancel()\"\n          aria-label=\"Close\"\n        >\n          &times;\n        </button>\n      </header>\n      <div class=\"p-6 text-[var(--text-secondary)] text-[15px] leading-6\">\n        {{ message }}\n      </div>\n      <footer\n        class=\"flex gap-3 p-4 border-t border-[var(--border-color)] justify-end\"\n      >\n        <button\n          class=\"px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] font-medium cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]\"\n          (click)=\"cancel()\"\n        >\n          {{ cancelText || \"Cancel\" }}\n        </button>\n        <button\n          class=\"px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]\"\n          (click)=\"confirm()\"\n        >\n          {{ confirmText || \"Confirm\" }}\n        </button>\n      </footer>\n    </div>\n  </div>\n}\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ConfirmDialogComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-confirm-dialog", standalone: true, imports: [ApplyThemeDirective], template: "@if (open) {\n  <div\n    appApplyTheme=\"app-confirm-dialog\"\n    class=\"fixed inset-0 bg-[var(--bg-overlay,rgba(0,0,0,0.5))] flex items-center justify-center z-[1000]\"\n    (click)=\"cancel()\"\n  >\n    <div\n      class=\"dialog bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-2xl w-[400px] max-w-[90vw] shadow-2xl\"\n      (click)=\"$event.stopPropagation()\"\n    >\n      <header\n        class=\"flex items-center justify-between p-5 border-b border-[var(--border-color)]\"\n      >\n        <h2 class=\"m-0 text-lg font-semibold text-[var(--text-primary)]\">\n          {{ title || \"Confirm\" }}\n        </h2>\n        <button\n          class=\"bg-transparent border-none cursor-pointer p-1 rounded text-xl leading-none text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]\"\n          (click)=\"cancel()\"\n          aria-label=\"Close\"\n        >\n          &times;\n        </button>\n      </header>\n      <div class=\"p-6 text-[var(--text-secondary)] text-[15px] leading-6\">\n        {{ message }}\n      </div>\n      <footer\n        class=\"flex gap-3 p-4 border-t border-[var(--border-color)] justify-end\"\n      >\n        <button\n          class=\"px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] font-medium cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]\"\n          (click)=\"cancel()\"\n        >\n          {{ cancelText || \"Cancel\" }}\n        </button>\n        <button\n          class=\"px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]\"\n          (click)=\"confirm()\"\n        >\n          {{ confirmText || \"Confirm\" }}\n        </button>\n      </footer>\n    </div>\n  </div>\n}\n" }]
-        }], propDecorators: { open: [{
-                type: Input
-            }], title: [{
-                type: Input
-            }], message: [{
-                type: Input
-            }], confirmText: [{
-                type: Input
-            }], cancelText: [{
-                type: Input
-            }], confirmed: [{
-                type: Output
-            }], cancelled: [{
-                type: Output
-            }], onEscape: [{
-                type: HostListener,
-                args: ["window:keydown.escape"]
-            }] } });
-registerSchemaComponent("app-confirm-dialog", ConfirmDialogComponent);
-
-class LoadingComponent {
-    size = "md";
-    color = "";
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LoadingComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: LoadingComponent, isStandalone: true, selector: "app-loading", inputs: { size: "size", color: "color" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-loading\"\n  class=\"border-2 rounded-full animate-spin border-[var(--border-color)] border-t-[var(--accent)]\"\n  [class]=\"'spinner-' + size\"\n></div>\n", styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LoadingComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-loading", standalone: true, imports: [ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-loading\"\n  class=\"border-2 rounded-full animate-spin border-[var(--border-color)] border-t-[var(--accent)]\"\n  [class]=\"'spinner-' + size\"\n></div>\n", styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"] }]
-        }], propDecorators: { size: [{
-                type: Input
-            }], color: [{
-                type: Input
-            }] } });
-registerSchemaComponent("app-loading", LoadingComponent);
-
-class RadioComponent {
-    name = "";
-    value = "";
-    checked = false;
-    disabled = false;
-    changed = new EventEmitter();
-    label = "";
-    handleChange(_e) {
-        this.checked = true;
-        this.changed.emit(this.value);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: RadioComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: RadioComponent, isStandalone: true, selector: "app-radio", inputs: { name: "name", value: "value", checked: "checked", disabled: "disabled", label: "label" }, outputs: { changed: "changed" }, ngImport: i0, template: "<label appApplyTheme=\"app-radio\" class=\"flex items-center gap-2 cursor-pointer\">\n  <input\n    type=\"radio\"\n    class=\"w-4 h-4 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [name]=\"name\"\n    [value]=\"value\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n  />\n  <span class=\"text-sm select-none text-[var(--text-primary)]\"\n    ><ng-content></ng-content\n  ></span>\n</label>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: RadioComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-radio", standalone: true, imports: [ApplyThemeDirective], template: "<label appApplyTheme=\"app-radio\" class=\"flex items-center gap-2 cursor-pointer\">\n  <input\n    type=\"radio\"\n    class=\"w-4 h-4 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [name]=\"name\"\n    [value]=\"value\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n  />\n  <span class=\"text-sm select-none text-[var(--text-primary)]\"\n    ><ng-content></ng-content\n  ></span>\n</label>\n" }]
-        }], propDecorators: { name: [{
-                type: Input
-            }], value: [{
-                type: Input
-            }], checked: [{
-                type: Input
-            }], disabled: [{
-                type: Input
-            }], changed: [{
-                type: Output
-            }], label: [{
-                type: Input
-            }] } });
-registerSchemaComponent("app-radio", RadioComponent);
-
-class SliderComponent {
-    min = 0;
-    max = 100;
-    value = 0;
-    step = 1;
-    disabled = false;
-    input = new EventEmitter();
-    handleInput(e) {
-        this.value = Number(e.target.value);
-        this.input.emit(this.value);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SliderComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SliderComponent, isStandalone: true, selector: "app-slider", inputs: { min: "min", max: "max", value: "value", step: "step", disabled: "disabled" }, outputs: { input: "input" }, ngImport: i0, template: "<div appApplyTheme=\"app-slider\" class=\"w-full\">\n  <input\n    type=\"range\"\n    class=\"w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [value]=\"value\"\n    [min]=\"min\"\n    [max]=\"max\"\n    [step]=\"step\"\n    [disabled]=\"disabled\"\n    (input)=\"handleInput($event)\"\n  />\n</div>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SliderComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-slider", standalone: true, imports: [ApplyThemeDirective], template: "<div appApplyTheme=\"app-slider\" class=\"w-full\">\n  <input\n    type=\"range\"\n    class=\"w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [value]=\"value\"\n    [min]=\"min\"\n    [max]=\"max\"\n    [step]=\"step\"\n    [disabled]=\"disabled\"\n    (input)=\"handleInput($event)\"\n  />\n</div>\n" }]
-        }], propDecorators: { min: [{
-                type: Input
-            }], max: [{
-                type: Input
-            }], value: [{
-                type: Input
-            }], step: [{
-                type: Input
-            }], disabled: [{
-                type: Input
-            }], input: [{
-                type: Output
-            }] } });
-registerSchemaComponent("app-slider", SliderComponent);
-
-class SwitchComponent {
-    checked = false;
-    label = "";
-    disabled = false;
-    changed = new EventEmitter();
-    handleChange(e) {
-        this.changed.emit(e.target.checked);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SwitchComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SwitchComponent, isStandalone: true, selector: "app-switch", inputs: { checked: "checked", label: "label", disabled: "disabled" }, outputs: { changed: "changed" }, ngImport: i0, template: "<label\n  appApplyTheme=\"app-switch\"\n  class=\"switch flex items-center gap-2 cursor-pointer relative\"\n  [class.switch-checked]=\"checked\"\n  [class.bg-[var(--accent)]]=\"checked\"\n>\n  <input\n    type=\"checkbox\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n    class=\"absolute opacity-0 w-0 h-0\"\n  />\n  <span\n    class=\"slider w-10 h-5 rounded-full transition-colors relative\"\n    style=\"background-color: var(--border-color)\"\n  ></span>\n  @if (label) {\n    <span class=\"switch-label text-sm select-none text-[var(--text-primary)]\">{{\n      label\n    }}</span>\n  }\n</label>\n", styles: [":host{display:inline-flex;align-items:center}.slider:before{content:\"\";position:absolute;width:1rem;height:1rem;left:2px;top:2px;background-color:#fff;border-radius:50%;transition:transform .2s}.switch-checked .slider:before{transform:translate(1.25rem)}input:disabled~.slider{opacity:.5;cursor:not-allowed}\n"], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SwitchComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-switch", standalone: true, imports: [ApplyThemeDirective], template: "<label\n  appApplyTheme=\"app-switch\"\n  class=\"switch flex items-center gap-2 cursor-pointer relative\"\n  [class.switch-checked]=\"checked\"\n  [class.bg-[var(--accent)]]=\"checked\"\n>\n  <input\n    type=\"checkbox\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n    class=\"absolute opacity-0 w-0 h-0\"\n  />\n  <span\n    class=\"slider w-10 h-5 rounded-full transition-colors relative\"\n    style=\"background-color: var(--border-color)\"\n  ></span>\n  @if (label) {\n    <span class=\"switch-label text-sm select-none text-[var(--text-primary)]\">{{\n      label\n    }}</span>\n  }\n</label>\n", styles: [":host{display:inline-flex;align-items:center}.slider:before{content:\"\";position:absolute;width:1rem;height:1rem;left:2px;top:2px;background-color:#fff;border-radius:50%;transition:transform .2s}.switch-checked .slider:before{transform:translate(1.25rem)}input:disabled~.slider{opacity:.5;cursor:not-allowed}\n"] }]
-        }], propDecorators: { checked: [{
-                type: Input
-            }], label: [{
-                type: Input
-            }], disabled: [{
-                type: Input
-            }], changed: [{
-                type: Output
-            }] } });
-registerSchemaComponent("app-switch", SwitchComponent);
-
-class TextareaComponent {
-    label = "";
-    placeholder = "";
-    disabled = false;
-    value = "";
-    flexGrow = false;
-    input = new EventEmitter();
-    handleInput(e) {
-        this.value = e.target.value;
-        this.input.emit(this.value);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextareaComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TextareaComponent, isStandalone: true, selector: "app-textarea", inputs: { label: "label", placeholder: "placeholder", disabled: "disabled", value: "value", flexGrow: "flexGrow" }, outputs: { input: "input" }, ngImport: i0, template: "@if (label) {\n  <label class=\"block text-sm font-medium mb-1 text-[var(--text-primary)]\">{{\n    label\n  }}</label>\n}\n<textarea\n  appApplyTheme=\"app-textarea\"\n  class=\"w-full px-3 py-2 rounded-lg border outline-none resize-y min-h-20 font-inherit focus:border-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)]\"\n  [style.flexGrow]=\"flexGrow ? 1 : null\"\n  [placeholder]=\"placeholder\"\n  [disabled]=\"disabled\"\n  (input)=\"handleInput($event)\"\n></textarea>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextareaComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-textarea", standalone: true, imports: [ApplyThemeDirective], template: "@if (label) {\n  <label class=\"block text-sm font-medium mb-1 text-[var(--text-primary)]\">{{\n    label\n  }}</label>\n}\n<textarea\n  appApplyTheme=\"app-textarea\"\n  class=\"w-full px-3 py-2 rounded-lg border outline-none resize-y min-h-20 font-inherit focus:border-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed border-[var(--border-color)] bg-[var(--bg-primary)] text-[var(--text-primary)]\"\n  [style.flexGrow]=\"flexGrow ? 1 : null\"\n  [placeholder]=\"placeholder\"\n  [disabled]=\"disabled\"\n  (input)=\"handleInput($event)\"\n></textarea>\n" }]
-        }], propDecorators: { label: [{
-                type: Input
-            }], placeholder: [{
-                type: Input
-            }], disabled: [{
-                type: Input
-            }], value: [{
-                type: Input
-            }], flexGrow: [{
-                type: Input
-            }], input: [{
-                type: Output
-            }] } });
-registerSchemaComponent("app-textarea", TextareaComponent);
-
-class BadgeComponent {
-    variant = "default";
-    size = "md";
-    label = "";
-    get badgeSizeClass() {
-        const sizeClasses = {
-            sm: "px-1 py-0.5 text-xs",
-            md: "px-2 py-1 text-sm",
-            lg: "px-3 py-1.5 text-base",
-        };
-        return sizeClasses[this.size] || sizeClasses["md"];
-    }
-    get badgeVariantClass() {
-        const variantClasses = {
-            default: "bg-[var(--bg-elevated)] text-[var(--text-primary)] border-[var(--border-color)]",
-            primary: "bg-[var(--accent)] text-[var(--text-on-accent)]",
-            success: "bg-[var(--success)] text-[var(--text-on-success)]",
-            warning: "bg-[var(--warning)] text-[var(--text-on-warning)]",
-            danger: "bg-[var(--error)] text-[var(--text-on-error)]",
-        };
-        return variantClasses[this.variant] || variantClasses["default"];
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BadgeComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: BadgeComponent, isStandalone: true, selector: "app-badge", inputs: { variant: "variant", size: "size", label: "label" }, ngImport: i0, template: "<span\n  appApplyTheme=\"app-badge\"\n  [themedVariant]=\"variant\"\n  [themedSize]=\"size\"\n  [class]=\"\n    'inline-flex items-center rounded border font-medium ' +\n    badgeSizeClass +\n    ' ' +\n    badgeVariantClass\n  \"\n  >{{ label }}</span\n>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BadgeComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-badge", standalone: true, imports: [ApplyThemeDirective], template: "<span\n  appApplyTheme=\"app-badge\"\n  [themedVariant]=\"variant\"\n  [themedSize]=\"size\"\n  [class]=\"\n    'inline-flex items-center rounded border font-medium ' +\n    badgeSizeClass +\n    ' ' +\n    badgeVariantClass\n  \"\n  >{{ label }}</span\n>\n" }]
-        }], propDecorators: { variant: [{
-                type: Input
-            }], size: [{
-                type: Input
-            }], label: [{
-                type: Input
-            }] } });
-registerSchemaComponent("app-badge", BadgeComponent);
-
-/**
- * Safe JSON parser with fallback for array types.
- * Replaces 22+ duplicate patterns across the codebase.
- */
-function parseJsonOrDefault(json, defaultValue = []) {
-    if (Array.isArray(json))
-        return json;
-    try {
-        return JSON.parse(json);
-    }
-    catch {
-        return defaultValue;
-    }
-}
-
-class SelectComponent {
-    options = "[]";
-    value = "";
-    placeholder = "Select an option";
-    disabled = false;
-    changed = new EventEmitter();
-    get parsedOptions() {
-        return parseJsonOrDefault(this.options);
-    }
-    handleChange(e) {
-        this.value = e.target.value;
-        this.changed.emit(this.value);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SelectComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SelectComponent, isStandalone: true, selector: "app-select", inputs: { options: "options", value: "value", placeholder: "placeholder", disabled: "disabled" }, outputs: { changed: "changed" }, ngImport: i0, template: "<select\n  appApplyTheme=\"app-select\"\n  class=\"inline-flex items-center px-4 py-2 rounded-lg border text-base font-medium cursor-pointer transition-all min-w-36 hover:bg-[var(--bg-hover)] disabled:opacity-50 disabled:cursor-not-allowed border-[var(--border-color)] bg-[var(--bg-elevated)] text-[var(--text-primary)]\"\n  [style.--tw-border-color]=\"'var(--border-color)'\"\n  [disabled]=\"disabled\"\n  (change)=\"handleChange($event)\"\n>\n  <option value=\"\" disabled selected hidden>{{ placeholder }}</option>\n  @for (opt of parsedOptions; track opt) {\n    <option [value]=\"opt\" [selected]=\"opt === value\">{{ opt }}</option>\n  }\n</select>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SelectComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-select", standalone: true, imports: [ApplyThemeDirective], template: "<select\n  appApplyTheme=\"app-select\"\n  class=\"inline-flex items-center px-4 py-2 rounded-lg border text-base font-medium cursor-pointer transition-all min-w-36 hover:bg-[var(--bg-hover)] disabled:opacity-50 disabled:cursor-not-allowed border-[var(--border-color)] bg-[var(--bg-elevated)] text-[var(--text-primary)]\"\n  [style.--tw-border-color]=\"'var(--border-color)'\"\n  [disabled]=\"disabled\"\n  (change)=\"handleChange($event)\"\n>\n  <option value=\"\" disabled selected hidden>{{ placeholder }}</option>\n  @for (opt of parsedOptions; track opt) {\n    <option [value]=\"opt\" [selected]=\"opt === value\">{{ opt }}</option>\n  }\n</select>\n" }]
-        }], propDecorators: { options: [{
-                type: Input
-            }], value: [{
-                type: Input
-            }], placeholder: [{
-                type: Input
-            }], disabled: [{
-                type: Input
-            }], changed: [{
-                type: Output
-            }] } });
-registerSchemaComponent("app-select", SelectComponent);
-
-/**
- * Centralized logging utility.
- * Allows silencing in production and redirecting to external loggers.
- */
-const logger = {
-    log: (message, ...args) => console.log(`[SCHEMA] ${message}`, ...args),
-    warn: (message, ...args) => console.warn(`[SCHEMA] ${message}`, ...args),
-    error: (message, ...args) => console.error(`[SCHEMA] ${message}`, ...args),
-};
-
-class SignalStoreService {
-    _state = signal({}, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "_state" }] : /* istanbul ignore next */ []));
-    state = computed(() => this._state(), /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "state" }] : /* istanbul ignore next */ []));
-    set(key, value) {
-        this._state.update((state) => ({
-            ...state,
-            [key]: value,
-        }));
-    }
-    get(key) {
-        return this._state()[key];
-    }
-    update(key, fn) {
-        const current = this.get(key);
-        this.set(key, fn(current));
-    }
-    delete(key) {
-        this._state.update((state) => {
-            const { [key]: _, ...rest } = state;
-            return rest;
-        });
-    }
-    keys() {
-        return Object.keys(this._state());
-    }
-    has(key) {
-        return key in this._state();
-    }
-    clear() {
-        this._state.set({});
-    }
-    toJSON() {
-        return this._state();
-    }
-    fromJSON(json) {
-        this._state.set(json);
-    }
-    patch(patch) {
-        this._state.update((state) => ({
-            ...state,
-            ...patch,
-        }));
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SignalStoreService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SignalStoreService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SignalStoreService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-class EventBusService {
-    handlers = new Map();
-    toasts = signal([], /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "toasts" }] : /* istanbul ignore next */ []));
-    pendingToasts = this.toasts.asReadonly();
-    hasToasts = () => this.toasts().length > 0;
-    emit(event, data) {
-        const eventHandlers = this.handlers.get(event);
-        if (eventHandlers) {
-            eventHandlers.forEach((handler) => handler(data));
-        }
-    }
-    on(event, handler, context) {
-        if (!this.handlers.has(event)) {
-            this.handlers.set(event, new Set());
-        }
-        const eventHandlers = this.handlers.get(event);
-        const wrapped = context ? handler.bind(context) : handler;
-        eventHandlers.add(wrapped);
-        return () => this.off(event, wrapped);
-    }
-    once(event, handler, context) {
-        const wrapped = (...args) => {
-            this.off(event, wrapped);
-            handler.apply(context, [args[0]]);
-        };
-        return this.on(event, wrapped);
-    }
-    off(event, handler) {
-        if (!handler) {
-            this.handlers.delete(event);
-            return;
-        }
-        const eventHandlers = this.handlers.get(event);
-        if (eventHandlers) {
-            eventHandlers.delete(handler);
-            if (eventHandlers.size === 0) {
-                this.handlers.delete(event);
-            }
-        }
-    }
-    offAll(event) {
-        if (event) {
-            this.handlers.delete(event);
-        }
-        else {
-            this.handlers.clear();
-        }
-    }
-    hasListeners(event) {
-        const handlers = this.handlers.get(event);
-        return handlers !== undefined && handlers.size > 0;
-    }
-    getListenerCount(event) {
-        return this.handlers.get(event)?.size ?? 0;
-    }
-    generateId() {
-        return `toast-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-    }
-    showToast(message, type, duration = 3000) {
-        const notification = {
-            id: this.generateId(),
-            message,
-            type: type ?? "info",
-            duration,
-        };
-        this.toasts.update((t) => [...t, notification]);
-        if (duration > 0) {
-            setTimeout(() => this.dismissToast(notification.id), duration);
-        }
-        return notification.id;
-    }
-    success(message, duration = 3000) {
-        return this.showToast(message, "success", duration);
-    }
-    error(message, duration = 3000) {
-        return this.showToast(message, "error", duration);
-    }
-    warning(message, duration = 3000) {
-        return this.showToast(message, "warning", duration);
-    }
-    info(message, duration = 3000) {
-        return this.showToast(message, "info", duration);
-    }
-    dismissToast(id) {
-        this.toasts.update((t) => t.filter((n) => n.id !== id));
-    }
-    dismissAllToasts() {
-        this.toasts.set([]);
-    }
-    notify(notification) {
-        const id = notification.id ?? this.generateId();
-        this.toasts.update((t) => [...t, { ...notification, id }]);
-        if (notification.duration > 0) {
-            setTimeout(() => this.dismissToast(id), notification.duration);
-        }
-        return id;
-    }
-    getToast(id) {
-        return this.toasts().find((t) => t.id === id);
-    }
-    clearHistory() {
-        this.toasts.set([]);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: EventBusService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: EventBusService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: EventBusService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-class ComponentRegistryService {
-    registry = new Map();
-    componentManifest = {};
-    _schemaComponents = new Map();
-    _componentModules = new Map();
-    constructor() {
-        this.registerBuiltInComponents();
-        this.loadComponentManifest();
-    }
-    registerBuiltInComponents() {
-        // Built-in UI components
-        const components = {
-            // Layout
-            header: { selector: "app-header" },
-            footer: { selector: "app-footer" },
-            sidebar: { selector: "app-sidebar" },
-            "page-container": { selector: "app-page-container" },
-            "page-toolbar": { selector: "app-page-toolbar" },
-            "split-view": { selector: "app-split-view" },
-            "main-editor": { selector: "app-main-editor" },
-            // UI
-            button: { selector: "app-button" },
-            input: { selector: "app-input" },
-            textarea: { selector: "app-textarea" },
-            select: { selector: "app-select" },
-            checkbox: { selector: "app-checkbox" },
-            radio: { selector: "app-radio" },
-            switch: { selector: "app-switch" },
-            slider: { selector: "app-slider" },
-            badge: { selector: "app-badge" },
-            avatar: { selector: "app-avatar" },
-            chip: { selector: "app-chip" },
-            tabs: { selector: "app-tabs" },
-            "empty-state": { selector: "app-empty-state" },
-            loading: { selector: "app-loading" },
-            "progress-bar": { selector: "app-progress-bar" },
-            pagination: { selector: "app-pagination" },
-            tooltip: { selector: "app-tooltip" },
-            // Data
-            card: { selector: "app-card" },
-            "stats-card": { selector: "app-stats-card" },
-            "table-view": { selector: "app-table-view" },
-            "data-table": { selector: "app-data-table" },
-            "json-view": { selector: "app-json-view" },
-            "segment-selector": { selector: "app-segment-selector" },
-            // Feedback
-            dialog: { selector: "app-dialog" },
-            "confirm-dialog": { selector: "app-confirm-dialog" },
-            toast: { selector: "app-toast" },
-            snackbar: { selector: "app-snackbar" },
-            modal: { selector: "app-modal" },
-            "command-palette": { selector: "app-command-palette" },
-            // Grid
-            "grid-container": { selector: "app-grid-container" },
-            "grid-item": { selector: "app-grid-item" },
-            "grid-area": { selector: "app-grid-area" },
-            // Designer
-            "designer-sidebar": { selector: "app-designer-sidebar" },
-            "component-palette": { selector: "app-component-palette" },
-            canvas: { selector: "app-canvas" },
-            "canvas-toolbar": { selector: "app-canvas-toolbar" },
-            "properties-panel": { selector: "app-properties-panel" },
-            "bottom-panel": { selector: "app-bottom-panel" },
-        };
-        Object.entries(components).forEach(([id, def]) => {
-            this.register(id, def);
-        });
-    }
-    async loadComponentManifest() {
-        try {
-            const response = await fetch("/assets/component-manifest.json");
-            if (response.ok) {
-                this.componentManifest = await response.json();
-            }
-        }
-        catch {
-            // Manifest not found, use built-in registry only
-        }
-    }
-    register(componentId, definition) {
-        this.registry.set(componentId, definition);
-    }
-    unregister(componentId) {
-        this.registry.delete(componentId);
-    }
-    get(componentId) {
-        return this.registry.get(componentId);
-    }
-    getSelector(componentId) {
-        const def = this.registry.get(componentId);
-        if (!def) {
-            console.warn(`ComponentRegistry: Unknown component "${componentId}", using fallback selector`);
-            return `app-${componentId}`;
-        }
-        return def.selector;
-    }
-    has(componentId) {
-        return this.registry.has(componentId);
-    }
-    resolveBehavior(componentId) {
-        const def = this.registry.get(componentId);
-        return def?.behaviors;
-    }
-    mergeBehavior(componentId, schemaBehavior) {
-        const registered = this.resolveBehavior(componentId) ?? {};
-        if (!schemaBehavior)
-            return registered;
-        return {
-            selfMethods: { ...registered.selfMethods, ...schemaBehavior.selfMethods },
-            classSetters: {
-                ...registered.classSetters,
-                ...schemaBehavior.classSetters,
-            },
-            eventHandlers: this.mergeEventHandlers(registered.eventHandlers, schemaBehavior.eventHandlers),
-        };
-    }
-    mergeEventHandlers(base, override) {
-        if (!base && !override)
-            return undefined;
-        if (!base)
-            return override;
-        if (!override)
-            return base;
-        const merged = { ...base };
-        Object.entries(override).forEach(([event, handlers]) => {
-            const existing = merged[event] ?? [];
-            merged[event] = [...existing, ...handlers];
-        });
-        return merged;
-    }
-    getAllComponentIds() {
-        return Array.from(this.registry.keys());
-    }
-    getComponentsByCategory(category) {
-        // Filter components by category from manifest
-        const manifest = this.componentManifest[category];
-        if (!manifest)
-            return [];
-        return Object.keys(manifest);
-    }
-    // Schema-based component registration (delegated from schema-renderer/component-registry.ts)
-    registerComponent(def) {
-        this._schemaComponents.set(def.selector, def);
-    }
-    registerComponents(defs) {
-        for (const def of defs) {
-            this.registerComponent(def);
-        }
-    }
-    getComponent(selector) {
-        return this._schemaComponents.get(selector);
-    }
-    registerComponentModule(selector, module) {
-        const modules = new Map(this._componentModules);
-        modules.set(selector, module);
-        this._componentModules = modules;
-    }
-    async loadComponentModule(selector) {
-        const cached = this._componentModules.get(selector);
-        if (cached) {
-            const constructor = cached["default"];
-            if (constructor)
-                return constructor;
-        }
-        const def = this._schemaComponents.get(selector);
-        if (!def) {
-            throw new Error(`Component not found: ${selector}`);
-        }
-        const module = (await import(/* @vite-ignore */ def.selector));
-        this.registerComponentModule(selector, module);
-        const constructor = module["default"];
-        if (!constructor) {
-            throw new Error(`Module ${selector} does not export a default CustomElementConstructor`);
-        }
-        return constructor;
-    }
-    getComponentModules() {
-        return this._componentModules;
-    }
-    loadComponentsFromSchema(pages) {
-        const registry = new Map();
-        for (const page of pages) {
-            for (const comp of page.components || []) {
-                registry.set(comp.selector, comp);
-            }
-        }
-        this._schemaComponents = registry;
-    }
-    hasComponent(selector) {
-        return this._schemaComponents.has(selector);
-    }
-    getRegisteredSelectors() {
-        return Array.from(this._schemaComponents.keys());
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ComponentRegistryService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ComponentRegistryService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ComponentRegistryService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }], ctorParameters: () => [] });
-
-let CrudService$1 = class CrudService {
-    storage = signal(null, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "storage" }] : /* istanbul ignore next */ []));
-    init(storage) {
-        this.storage.set(storage);
-    }
-    getStorage() {
-        const s = this.storage();
-        if (!s)
-            throw new Error("CrudService not initialized");
-        return s;
-    }
-    getCollection(collection) {
-        const data = this.getStorage().get(collection);
-        return data || [];
-    }
-    saveCollection(collection, data) {
-        this.getStorage().set(collection, data);
-    }
-    create(collection, item) {
-        const data = this.getCollection(collection);
-        const timestamp = Date.now();
-        const entity = {
-            ...item,
-            created_at: timestamp,
-            updated_at: timestamp,
-        };
-        data.push(entity);
-        this.saveCollection(collection, data);
-        this.addPending({
-            _op: "create",
-            _ts: timestamp,
-            id: entity.id,
-        });
-    }
-    read(collection, id) {
-        const data = this.getCollection(collection);
-        return (data.find((item) => item.id === id) || null);
-    }
-    update(collection, id, changes) {
-        const data = this.getCollection(collection);
-        const index = data.findIndex((item) => item.id === id);
-        if (index === -1)
-            return;
-        const timestamp = Date.now();
-        const updated = {
-            ...data[index],
-            ...changes,
-            updated_at: timestamp,
-        };
-        data[index] = updated;
-        this.saveCollection(collection, data);
-        this.addPending({
-            _op: "update",
-            _ts: timestamp,
-            id,
-            data: changes,
-        });
-    }
-    delete(collection, id) {
-        const data = this.getCollection(collection);
-        const filtered = data.filter((item) => item.id !== id);
-        this.saveCollection(collection, filtered);
-        this.addPending({
-            _op: "delete",
-            _ts: Date.now(),
-            id,
-        });
-    }
-    query(collection, q) {
-        let data = this.getCollection(collection);
-        if (q.filters) {
-            for (const filter of q.filters) {
-                data = this.applyFilter(data, filter);
-            }
-        }
-        if (q.sortBy) {
-            data = this.applySort(data, q.sortBy, q.sortAsc ?? true);
-        }
-        if (q.offset) {
-            data = data.slice(q.offset);
-        }
-        if (q.limit) {
-            data = data.slice(0, q.limit);
-        }
-        return data;
-    }
-    applyFilter(data, filter) {
-        return data.filter((item) => {
-            const value = item[filter.field];
-            switch (filter.operator) {
-                case "eq":
-                    return value === filter.value;
-                case "ne":
-                    return value !== filter.value;
-                case "gt":
-                    return value > filter.value;
-                case "gte":
-                    return value >= filter.value;
-                case "lt":
-                    return value < filter.value;
-                case "lte":
-                    return value <= filter.value;
-                case "contains":
-                    return String(value)
-                        .toLowerCase()
-                        .includes(String(filter.value).toLowerCase());
-                case "startsWith":
-                    return String(value)
-                        .toLowerCase()
-                        .startsWith(String(filter.value).toLowerCase());
-                case "endsWith":
-                    return String(value)
-                        .toLowerCase()
-                        .endsWith(String(filter.value).toLowerCase());
-                default:
-                    return true;
-            }
-        });
-    }
-    applySort(data, sortBy, asc) {
-        return [...data].sort((a, b) => {
-            const aVal = a[sortBy];
-            const bVal = b[sortBy];
-            if (aVal == null)
-                return 1;
-            if (bVal == null)
-                return -1;
-            const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-            return asc ? cmp : -cmp;
-        });
-    }
-    addPending(op) {
-        const pending = this.getStorage().get("_pending_ops") || [];
-        pending.push(op);
-        this.getStorage().set("_pending_ops", pending);
-    }
-    batchCreate(collection, items) {
-        const data = this.getCollection(collection);
-        const timestamp = Date.now();
-        for (const item of items) {
-            const entity = {
-                ...item,
-                created_at: timestamp,
-                updated_at: timestamp,
-            };
-            data.push(entity);
-        }
-        this.saveCollection(collection, data);
-    }
-    batchDelete(collection, ids) {
-        const data = this.getCollection(collection);
-        const filtered = data.filter((item) => !ids.includes(item.id));
-        this.saveCollection(collection, filtered);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CrudService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CrudService, providedIn: "root" });
-};
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CrudService$1, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-class DataBindingResolverService {
-    signalStore;
-    crudService;
-    _params = {};
-    _functions = {};
-    constructor(signalStore, crudService) {
-        this.signalStore = signalStore;
-        this.crudService = crudService;
-    }
-    setParams(params) {
-        this._params = params;
-    }
-    registerFunction(name, fn) {
-        this._functions[name] = fn;
-    }
-    registerFunctions(fns) {
-        this._functions = { ...this._functions, ...fns };
-    }
-    resolveDataBinding(binding) {
-        if (typeof binding === "string") {
-            // Resolve {{functions.name(args)}} pattern
-            const fnPattern = /\{\{functions\.([^}]+)\}\}/g;
-            const fnResult = binding.replace(fnPattern, (_, callExpr) => {
-                const value = this.resolveFunctionCall(callExpr);
-                return value !== undefined ? String(value) : binding;
-            });
-            if (fnResult !== binding)
-                return fnResult;
-            // Resolve {{params.*}} pattern
-            const paramsPattern = /\{\{params\.([^}]+)\}\}/g;
-            const paramsResult = binding.replace(paramsPattern, (_, path) => {
-                const value = this.resolveParamsPath(path);
-                return value !== undefined ? String(value) : binding;
-            });
-            if (paramsResult !== binding)
-                return paramsResult;
-            // Resolve {{data.*}} pattern
-            const dataPattern = /\{\{data\.([^}]+)\}\}/g;
-            const dataResult = binding.replace(dataPattern, (_, path) => {
-                const value = this.getDataBindingValue(path);
-                return value !== undefined ? String(value) : binding;
-            });
-            return dataResult;
-        }
-        if (binding && typeof binding === "object" && "entity" in binding) {
-            const db = binding;
-            if (db.operation) {
-                return this.executeCrudOperation(db);
-            }
-            const entityValue = this.signalStore.get(db.entity);
-            if (db.field !== undefined) {
-                return this.getNestedValue(entityValue, db.field);
-            }
-            return entityValue;
-        }
-        return binding;
-    }
-    resolveFunctionCall(callExpr) {
-        // Parse "name(arg1, arg2)" or "name(arg1, 'string', key: value)"
-        const match = callExpr.match(/^(\w+)\((.*)\)$/);
-        if (!match) {
-            // No args — treat as property access on functions registry
-            return this._functions[callExpr];
-        }
-        const [, fnName, argsStr] = match;
-        const fn = this._functions[fnName];
-        if (typeof fn !== "function")
-            return undefined;
-        const args = this.parseCallArgs(argsStr);
-        // Resolve each argument (may contain nested bindings)
-        const resolvedArgs = args.map((arg) => this.resolveDataBinding(arg));
-        return fn(...resolvedArgs);
-    }
-    parseCallArgs(argsStr) {
-        if (!argsStr.trim())
-            return [];
-        const result = [];
-        let current = "";
-        let depth = 0;
-        let inString = false;
-        let stringChar = "";
-        for (const char of argsStr) {
-            if ((char === '"' || char === "'") && !inString) {
-                inString = true;
-                stringChar = char;
-                current += char;
-            }
-            else if (char === stringChar && inString) {
-                inString = false;
-                stringChar = "";
-                current += char;
-            }
-            else if (char === "(" && !inString) {
-                depth++;
-                current += char;
-            }
-            else if (char === ")" && !inString) {
-                depth--;
-                current += char;
-            }
-            else if (char === "," && depth === 0 && !inString) {
-                result.push(current.trim());
-                current = "";
-            }
-            else {
-                current += char;
-            }
-        }
-        if (current.trim())
-            result.push(current.trim());
-        return result;
-    }
-    resolveParamsPath(path) {
-        return this.getNestedValue(this._params, path);
-    }
-    resolveProps(props, _componentId) {
-        const resolved = {};
-        for (const [key, value] of Object.entries(props)) {
-            resolved[key] = this.resolveDataBinding(value);
-        }
-        return resolved;
-    }
-    executeCrudOperation(binding) {
-        const { entity, operation, params } = binding;
-        const resolvedParams = this.resolveParams(params || {});
-        switch (operation) {
-            case "find": {
-                const query = this.buildCrudQuery(resolvedParams);
-                return this.crudService.query(entity, query);
-            }
-            case "create": {
-                const item = resolvedParams;
-                this.crudService.create(entity, item);
-                return;
-            }
-            case "update": {
-                const id = params["id"];
-                this.crudService.update(entity, id, resolvedParams);
-                return;
-            }
-            case "delete": {
-                const id = params["id"];
-                this.crudService.delete(entity, id);
-                return;
-            }
-            default:
-                return this.signalStore.get(entity);
-        }
-    }
-    resolveParams(params) {
-        const resolved = {};
-        for (const [key, value] of Object.entries(params)) {
-            resolved[key] = this.resolveDataBinding(value);
-        }
-        return resolved;
-    }
-    buildCrudQuery(params) {
-        const query = {};
-        if (params["filter"]) {
-            query.filters = this.buildFilters(params["filter"]);
-        }
-        if (params["sortBy"]) {
-            query.sortBy = params["sortBy"];
-            query.sortAsc = params["sortAsc"] !== false;
-        }
-        if (params["limit"]) {
-            query.limit = params["limit"];
-        }
-        if (params["offset"]) {
-            query.offset = params["offset"];
-        }
-        return query;
-    }
-    buildFilters(filterObj) {
-        const filters = [];
-        for (const [field, value] of Object.entries(filterObj)) {
-            filters.push({ field, operator: "eq", value });
-        }
-        return filters;
-    }
-    getDataBindingValue(path) {
-        const parts = this.parseBindingPath(path);
-        let current = this.signalStore.get(parts[0]);
-        for (let i = 1; i < parts.length; i++) {
-            if (current === null || current === undefined)
-                return undefined;
-            const part = parts[i];
-            const arrayMatch = part.match(/^(\w+)\[(\d+)\]$/);
-            if (arrayMatch) {
-                const [, arrayKey, indexStr] = arrayMatch;
-                const arr = this.getNestedValue(current, arrayKey);
-                if (Array.isArray(arr)) {
-                    const index = parseInt(indexStr, 10);
-                    current = arr[index];
-                }
-                else {
-                    current = undefined;
-                }
-            }
-            else {
-                current = this.getNestedValue(current, part);
-            }
-        }
-        return current;
-    }
-    parseBindingPath(path) {
-        const result = [];
-        const regex = /([^\.]+)\[(\d+)\]|([^\.\[\]]+)/g;
-        let match;
-        while ((match = regex.exec(path)) !== null) {
-            if (match[1] && match[2]) {
-                result.push(`${match[1]}[${match[2]}]`);
-            }
-            else if (match[3]) {
-                result.push(match[3]);
-            }
-        }
-        return result;
-    }
-    getNestedValue(obj, key) {
-        if (obj === null || obj === undefined)
-            return undefined;
-        if (typeof obj !== "object")
-            return undefined;
-        return obj[key];
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DataBindingResolverService, deps: [{ token: SignalStoreService }, { token: CrudService$1 }], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DataBindingResolverService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DataBindingResolverService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }], ctorParameters: () => [{ type: SignalStoreService }, { type: CrudService$1 }] });
 
 class LayoutEngineService {
     injector = inject(Injector);
@@ -7619,483 +7961,7 @@ class SchemaRendererService {
     //   - rounded: true → rounded-lg
     //   - elevation: "low"|"medium"|"high" → elevation classes (theme-specific)
     mapPropsToClasses(componentId, props, theme, explicitVariant, explicitSize, globalContext) {
-        const classes = [];
-        if (!props)
-            return classes;
-        // 1. Named style from variant/size (explicit props OR globalContext fallback)
-        const hasStyle = explicitVariant ||
-            explicitSize ||
-            globalContext?.variant ||
-            globalContext?.size;
-        if (hasStyle) {
-            const classesStr = getComponentStyleClasses(theme, componentId, explicitVariant, explicitSize, globalContext);
-            if (classesStr) {
-                classes.push(...classesStr.split(" ").filter((c) => c.trim()));
-            }
-        }
-        // 2. Layout type (flex/grid)
-        const layout = props["layout"];
-        if (layout === "flex")
-            classes.push("flex");
-        else if (layout === "grid")
-            classes.push("grid");
-        else if (layout === "stack")
-            classes.push("flex", "flex-col");
-        // 3. Flex direction
-        const direction = props["direction"];
-        if (direction === "row")
-            classes.push("flex-row");
-        else if (direction === "col")
-            classes.push("flex-col");
-        else if (direction === "row-reverse")
-            classes.push("flex-row-reverse");
-        else if (direction === "col-reverse")
-            classes.push("flex-col-reverse");
-        // 4. Gap spacing (supports both string tokens and numeric values)
-        const gap = props["gap"];
-        if (gap === "xs" || gap === 1)
-            classes.push("gap-1");
-        else if (gap === "sm" || gap === 2)
-            classes.push("gap-2");
-        else if (gap === "md" || gap === 3)
-            classes.push("gap-3");
-        else if (gap === "lg" || gap === 4)
-            classes.push("gap-4");
-        else if (gap === "xl" || gap === 6)
-            classes.push("gap-6");
-        else if (gap === "2xl" || gap === 8)
-            classes.push("gap-8");
-        // 5. Align items
-        const align = props["align"];
-        if (align === "start")
-            classes.push("items-start");
-        else if (align === "center")
-            classes.push("items-center");
-        else if (align === "end")
-            classes.push("items-end");
-        else if (align === "stretch")
-            classes.push("items-stretch");
-        // 6. Justify content
-        const justify = props["justify"];
-        if (justify === "start")
-            classes.push("justify-start");
-        else if (justify === "center")
-            classes.push("justify-center");
-        else if (justify === "end")
-            classes.push("justify-end");
-        else if (justify === "between")
-            classes.push("justify-between");
-        else if (justify === "around")
-            classes.push("justify-around");
-        // 7. Padding
-        const padding = props["padding"];
-        if (padding === "xs")
-            classes.push("p-1");
-        else if (padding === "sm")
-            classes.push("p-2");
-        else if (padding === "md")
-            classes.push("p-4");
-        else if (padding === "lg")
-            classes.push("p-6");
-        else if (padding === "xl")
-            classes.push("p-8");
-        // 8. Margin top/bottom
-        const marginTop = props["marginTop"];
-        if (marginTop === "xs")
-            classes.push("mt-1");
-        else if (marginTop === "sm")
-            classes.push("mt-2");
-        else if (marginTop === "md")
-            classes.push("mt-4");
-        else if (marginTop === "lg")
-            classes.push("mt-6");
-        else if (marginTop === "xl")
-            classes.push("mt-8");
-        const marginBottom = props["marginBottom"];
-        if (marginBottom === "xs")
-            classes.push("mb-1");
-        else if (marginBottom === "sm")
-            classes.push("mb-2");
-        else if (marginBottom === "md")
-            classes.push("mb-4");
-        else if (marginBottom === "lg")
-            classes.push("mb-6");
-        else if (marginBottom === "xl")
-            classes.push("mb-8");
-        // 9. Max width
-        const maxWidth = props["maxWidth"];
-        if (maxWidth === "sm")
-            classes.push("max-w-sm");
-        else if (maxWidth === "md")
-            classes.push("max-w-md");
-        else if (maxWidth === "lg")
-            classes.push("max-w-lg");
-        else if (maxWidth === "xl")
-            classes.push("max-w-xl");
-        else if (maxWidth === "2xl")
-            classes.push("max-w-2xl");
-        else if (maxWidth === "3xl")
-            classes.push("max-w-3xl");
-        else if (maxWidth === "6xl")
-            classes.push("max-w-6xl");
-        else if (maxWidth === "7xl")
-            classes.push("max-w-7xl");
-        // 10. MX auto
-        const mx = props["mx"];
-        if (mx === "auto")
-            classes.push("mx-auto");
-        // 11. Full height
-        const fullHeight = props["fullHeight"];
-        if (fullHeight)
-            classes.push("h-full");
-        // 12. Rounded
-        const rounded = props["rounded"];
-        if (rounded)
-            classes.push("rounded-lg");
-        // 13. Columns (grid)
-        const columns = props["columns"];
-        if (columns) {
-            // Support CSS grid column strings like "1fr auto 1fr"
-            classes.push(`grid-cols-${columns.replace(/\s+/g, "-")}`);
-        }
-        // 14. Flex wrap
-        const flexWrap = props["flexWrap"];
-        if (flexWrap === "wrap")
-            classes.push("flex-wrap");
-        else if (flexWrap === "nowrap")
-            classes.push("flex-nowrap");
-        else if (flexWrap === "wrap-reverse")
-            classes.push("flex-wrap-reverse");
-        // 15. Flex grow
-        const flexGrow = props["flexGrow"];
-        if (flexGrow === true)
-            classes.push("flex-grow");
-        else if (flexGrow === false)
-            classes.push("flex-grow-0");
-        // 16. Flex shrink
-        const flexShrink = props["flexShrink"];
-        if (flexShrink === true)
-            classes.push("flex-shrink");
-        else if (flexShrink === false)
-            classes.push("flex-shrink-0");
-        // 17. Flex basis
-        const flexBasis = props["flexBasis"];
-        if (flexBasis === "auto")
-            classes.push("basis-auto");
-        else if (flexBasis === "full")
-            classes.push("basis-full");
-        else if (flexBasis === "half")
-            classes.push("basis-1/2");
-        else if (flexBasis === "third")
-            classes.push("basis-1/3");
-        else if (flexBasis === "quarter")
-            classes.push("basis-1/4");
-        // 18. Align items (container-level)
-        const alignItems = props["alignItems"];
-        if (alignItems === "start")
-            classes.push("items-start");
-        else if (alignItems === "center")
-            classes.push("items-center");
-        else if (alignItems === "end")
-            classes.push("items-end");
-        else if (alignItems === "stretch")
-            classes.push("items-stretch");
-        else if (alignItems === "baseline")
-            classes.push("items-baseline");
-        // 19. Align content (container-level, multi-row)
-        const alignContent = props["alignContent"];
-        if (alignContent === "start")
-            classes.push("content-start");
-        else if (alignContent === "center")
-            classes.push("content-center");
-        else if (alignContent === "end")
-            classes.push("content-end");
-        else if (alignContent === "between")
-            classes.push("content-between");
-        else if (alignContent === "around")
-            classes.push("content-around");
-        else if (alignContent === "evenly")
-            classes.push("content-evenly");
-        // 20. Justify items
-        const justifyItems = props["justifyItems"];
-        if (justifyItems === "start")
-            classes.push("justify-items-start");
-        else if (justifyItems === "center")
-            classes.push("justify-items-center");
-        else if (justifyItems === "end")
-            classes.push("justify-items-end");
-        else if (justifyItems === "stretch")
-            classes.push("justify-items-stretch");
-        // 21. Justify self (item-level)
-        const justifySelf = props["justifySelf"];
-        if (justifySelf === "start")
-            classes.push("justify-self-start");
-        else if (justifySelf === "center")
-            classes.push("justify-self-center");
-        else if (justifySelf === "end")
-            classes.push("justify-self-end");
-        else if (justifySelf === "stretch")
-            classes.push("justify-self-stretch");
-        else if (justifySelf === "auto")
-            classes.push("justify-self-auto");
-        // 22. Align self (item-level)
-        const alignSelf = props["alignSelf"];
-        if (alignSelf === "start")
-            classes.push("self-start");
-        else if (alignSelf === "center")
-            classes.push("self-center");
-        else if (alignSelf === "end")
-            classes.push("self-end");
-        else if (alignSelf === "stretch")
-            classes.push("self-stretch");
-        else if (alignSelf === "auto")
-            classes.push("self-auto");
-        // 23. Row gap (gap-y)
-        const rowGap = props["rowGap"];
-        if (rowGap === "xs")
-            classes.push("gap-y-1");
-        else if (rowGap === "sm")
-            classes.push("gap-y-2");
-        else if (rowGap === "md")
-            classes.push("gap-y-4");
-        else if (rowGap === "lg")
-            classes.push("gap-y-6");
-        else if (rowGap === "xl")
-            classes.push("gap-y-8");
-        // 24. Column gap (gap-x)
-        const colGap = props["colGap"];
-        if (colGap === "xs")
-            classes.push("gap-x-1");
-        else if (colGap === "sm")
-            classes.push("gap-x-2");
-        else if (colGap === "md")
-            classes.push("gap-x-4");
-        else if (colGap === "lg")
-            classes.push("gap-x-6");
-        else if (colGap === "xl")
-            classes.push("gap-x-8");
-        // 25. Width
-        const width = props["width"];
-        if (width === "full")
-            classes.push("w-full");
-        else if (width === "auto")
-            classes.push("w-auto");
-        else if (width === "screen")
-            classes.push("w-screen");
-        else if (width === "fit")
-            classes.push("w-fit");
-        // 26. Height
-        const height = props["height"];
-        if (height === "full")
-            classes.push("h-full");
-        else if (height === "auto")
-            classes.push("h-auto");
-        else if (height === "screen")
-            classes.push("h-screen");
-        else if (height === "fit")
-            classes.push("h-fit");
-        // 27. Margin X (mx)
-        const marginX = props["marginX"];
-        if (marginX === "auto")
-            classes.push("mx-auto");
-        else if (marginX === "xs")
-            classes.push("mx-1");
-        else if (marginX === "sm")
-            classes.push("mx-2");
-        else if (marginX === "md")
-            classes.push("mx-4");
-        else if (marginX === "lg")
-            classes.push("mx-6");
-        else if (marginX === "xl")
-            classes.push("mx-8");
-        // 28. Margin Y (my)
-        const marginY = props["marginY"];
-        if (marginY === "xs")
-            classes.push("my-1");
-        else if (marginY === "sm")
-            classes.push("my-2");
-        else if (marginY === "md")
-            classes.push("my-4");
-        else if (marginY === "lg")
-            classes.push("my-6");
-        else if (marginY === "xl")
-            classes.push("my-8");
-        // 29. Padding X (px)
-        const paddingX = props["paddingX"];
-        if (paddingX === "xs")
-            classes.push("px-1");
-        else if (paddingX === "sm")
-            classes.push("px-2");
-        else if (paddingX === "md")
-            classes.push("px-4");
-        else if (paddingX === "lg")
-            classes.push("px-6");
-        else if (paddingX === "xl")
-            classes.push("px-8");
-        // 30. Padding Y (py)
-        const paddingY = props["paddingY"];
-        if (paddingY === "xs")
-            classes.push("py-1");
-        else if (paddingY === "sm")
-            classes.push("py-2");
-        else if (paddingY === "md")
-            classes.push("py-4");
-        else if (paddingY === "lg")
-            classes.push("py-6");
-        else if (paddingY === "xl")
-            classes.push("py-8");
-        // 31. Responsive breakpoints (sm:, md:, lg:)
-        const responsive = props["responsive"];
-        if (responsive) {
-            const gapMap = {
-                xs: "1",
-                sm: "2",
-                md: "4",
-                lg: "6",
-                xl: "8",
-            };
-            // sm: breakpoint (640px+)
-            if (responsive["sm"]) {
-                const sm = responsive["sm"];
-                if (sm["layout"] === "flex")
-                    classes.push("sm:flex");
-                if (sm["layout"] === "grid")
-                    classes.push("sm:grid");
-                if (sm["direction"] === "row")
-                    classes.push("sm:flex-row");
-                if (sm["direction"] === "col")
-                    classes.push("sm:flex-col");
-                if (sm["gap"] && gapMap[sm["gap"]])
-                    classes.push(`sm:gap-${gapMap[sm["gap"]]}`);
-                if (sm["align"] === "center")
-                    classes.push("sm:items-center");
-                if (sm["align"] === "start")
-                    classes.push("sm:items-start");
-                if (sm["align"] === "end")
-                    classes.push("sm:items-end");
-                if (sm["justify"] === "center")
-                    classes.push("sm:justify-center");
-                if (sm["justify"] === "start")
-                    classes.push("sm:justify-start");
-                if (sm["justify"] === "end")
-                    classes.push("sm:justify-end");
-                if (sm["flexWrap"] === "wrap")
-                    classes.push("sm:flex-wrap");
-                if (sm["padding"] === "md")
-                    classes.push("sm:p-4");
-                if (sm["padding"] === "lg")
-                    classes.push("sm:p-6");
-            }
-            // md: breakpoint (768px+)
-            if (responsive["md"]) {
-                const md = responsive["md"];
-                if (md["layout"] === "flex")
-                    classes.push("md:flex");
-                if (md["layout"] === "grid")
-                    classes.push("md:grid");
-                if (md["direction"] === "row")
-                    classes.push("md:flex-row");
-                if (md["direction"] === "col")
-                    classes.push("md:flex-col");
-                if (md["gap"] && gapMap[md["gap"]])
-                    classes.push(`md:gap-${gapMap[md["gap"]]}`);
-                if (md["align"] === "center")
-                    classes.push("md:items-center");
-                if (md["align"] === "start")
-                    classes.push("md:items-start");
-                if (md["align"] === "end")
-                    classes.push("md:items-end");
-                if (md["justify"] === "center")
-                    classes.push("md:justify-center");
-                if (md["justify"] === "start")
-                    classes.push("md:justify-start");
-                if (md["justify"] === "end")
-                    classes.push("md:justify-end");
-                if (md["justify"] === "between")
-                    classes.push("md:justify-between");
-                if (md["flexWrap"] === "wrap")
-                    classes.push("md:flex-wrap");
-                if (md["padding"] === "md")
-                    classes.push("md:p-4");
-                if (md["padding"] === "lg")
-                    classes.push("md:p-6");
-            }
-            // lg: breakpoint (1024px+)
-            if (responsive["lg"]) {
-                const lg = responsive["lg"];
-                if (lg["layout"] === "flex")
-                    classes.push("lg:flex");
-                if (lg["layout"] === "grid")
-                    classes.push("lg:grid");
-                if (lg["direction"] === "row")
-                    classes.push("lg:flex-row");
-                if (lg["direction"] === "col")
-                    classes.push("lg:flex-col");
-                if (lg["gap"] && gapMap[lg["gap"]])
-                    classes.push(`lg:gap-${gapMap[lg["gap"]]}`);
-                if (lg["align"] === "center")
-                    classes.push("lg:items-center");
-                if (lg["justify"] === "center")
-                    classes.push("lg:justify-center");
-                if (lg["justify"] === "between")
-                    classes.push("lg:justify-between");
-                if (lg["padding"] === "md")
-                    classes.push("lg:p-4");
-                if (lg["padding"] === "lg")
-                    classes.push("lg:p-6");
-            }
-        }
-        // 32. Text size
-        const textSize = props["textSize"];
-        if (textSize === "xs")
-            classes.push("text-xs");
-        else if (textSize === "sm")
-            classes.push("text-sm");
-        else if (textSize === "base")
-            classes.push("text-base");
-        else if (textSize === "lg")
-            classes.push("text-lg");
-        else if (textSize === "xl")
-            classes.push("text-xl");
-        else if (textSize === "2xl")
-            classes.push("text-2xl");
-        else if (textSize === "3xl")
-            classes.push("text-3xl");
-        // 33. Font weight
-        const fontWeight = props["fontWeight"];
-        if (fontWeight === "light")
-            classes.push("font-light");
-        else if (fontWeight === "normal")
-            classes.push("font-normal");
-        else if (fontWeight === "medium")
-            classes.push("font-medium");
-        else if (fontWeight === "semibold")
-            classes.push("font-semibold");
-        else if (fontWeight === "bold")
-            classes.push("font-bold");
-        // 34. Position
-        const position = props["position"];
-        if (position === "relative")
-            classes.push("relative");
-        else if (position === "absolute")
-            classes.push("absolute");
-        else if (position === "fixed")
-            classes.push("fixed");
-        else if (position === "sticky")
-            classes.push("sticky");
-        // 35. Z-index
-        const zIndex = props["zIndex"];
-        if (zIndex === 10 || zIndex === "10")
-            classes.push("z-10");
-        else if (zIndex === 20 || zIndex === "20")
-            classes.push("z-20");
-        else if (zIndex === 30 || zIndex === "30")
-            classes.push("z-30");
-        else if (zIndex === 40 || zIndex === "40")
-            classes.push("z-40");
-        else if (zIndex === 50 || zIndex === "50")
-            classes.push("z-50");
-        return classes;
+        return mapPropsToClasses(componentId, props, theme, explicitVariant, explicitSize, globalContext);
     }
     resolveClasses(elementClasses, defaultClasses) {
         const classes = new Set();
@@ -8109,9 +7975,6 @@ class SchemaRendererService {
                 .forEach((c) => classes.add(c));
         }
         return Array.from(classes).join(" ");
-    }
-    resolveDataBinding(binding) {
-        return this.dataBindingResolver.resolveDataBinding(binding);
     }
     getDataBindingValue(path) {
         const parts = this.parseBindingPath(path);
@@ -8224,10 +8087,20 @@ class SchemaElementComponent {
             injector: this.injector,
         });
         // Use setInput on ComponentRef for proper Angular input binding + change detection
+        this.componentRef.setInput('classes', this.classes);
         for (const [key, value] of Object.entries(this.props)) {
             this.componentRef.setInput(key, value);
         }
-        this.componentRef.changeDetectorRef.detectChanges();
+        // Pass children to container components (e.g., app-block with nested elements)
+        if (this.element.children && this.element.children.length > 0) {
+            this.componentRef.setInput('children', this.element.children);
+        }
+        // Use microtask to allow child ngOnInit to run before change detection.
+        // Without this, the child's @if (isDark) in ThemeToggleComponent evaluates
+        // before ngOnInit sets isDark, rendering an empty container.
+        Promise.resolve().then(() => {
+            this.componentRef?.changeDetectorRef.detectChanges();
+        });
     }
     get gridStyle() {
         const gp = this.element.gridPosition;
@@ -8273,11 +8146,11 @@ class SchemaElementComponent {
         ].includes(this.tag);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaElementComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaElementComponent, isStandalone: true, selector: "app-schema-element", inputs: { element: "element", elements: "elements" }, viewQueries: [{ propertyName: "dynamicHost", first: true, predicate: ["dynamicHost"], descendants: true, read: ViewContainerRef }], usesOnChanges: true, ngImport: i0, template: "<div\n  [id]=\"element.id\"\n  [class]=\"classes\"\n  [style]=\"gridStyle\"\n  [attr.data-element-id]=\"element.id\"\n  [ngStyle]=\"elementStyles\"\n>\n  @if (isNativeHtml && props[\"text\"]) {\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props[\"text\"] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props[\"text\"] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props[\"text\"] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props[\"text\"] }}</footer>\n      <span *ngSwitchDefault>{{ props[\"text\"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container #dynamicHost></ng-container>\n  }\n  @for (child of childElements; track $index) {\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"elements\"\n    ></app-schema-element>\n  }\n</div>\n", styles: [":host{display:contents}\n"], dependencies: [{ kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "directive", type: i1.NgSwitch, selector: "[ngSwitch]", inputs: ["ngSwitch"] }, { kind: "directive", type: i1.NgSwitchCase, selector: "[ngSwitchCase]", inputs: ["ngSwitchCase"] }, { kind: "directive", type: i1.NgSwitchDefault, selector: "[ngSwitchDefault]" }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaElementComponent, isStandalone: true, selector: "app-schema-element", inputs: { element: "element", elements: "elements" }, viewQueries: [{ propertyName: "dynamicHost", first: true, predicate: ["dynamicHost"], descendants: true, read: ViewContainerRef }], usesOnChanges: true, ngImport: i0, template: "<div\n  [id]=\"element.id\"\n  [class]=\"classes\"\n  [style]=\"gridStyle\"\n  [attr.data-element-id]=\"element.id\"\n  [ngStyle]=\"elementStyles\"\n>\n  @if (isNativeHtml && props[\"text\"]) {\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props[\"text\"] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props[\"text\"] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props[\"text\"] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props[\"text\"] }}</footer>\n      <span *ngSwitchDefault>{{ props[\"text\"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container #dynamicHost></ng-container>\n  } @else {\n    @for (child of childElements; track $index) {\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"elements\"\n    ></app-schema-element>\n    }\n  }\n</div>\n", styles: [":host{display:contents}\n"], dependencies: [{ kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "directive", type: i1.NgSwitch, selector: "[ngSwitch]", inputs: ["ngSwitch"] }, { kind: "directive", type: i1.NgSwitchCase, selector: "[ngSwitchCase]", inputs: ["ngSwitchCase"] }, { kind: "directive", type: i1.NgSwitchDefault, selector: "[ngSwitchDefault]" }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaElementComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-schema-element", standalone: true, imports: [CommonModule], template: "<div\n  [id]=\"element.id\"\n  [class]=\"classes\"\n  [style]=\"gridStyle\"\n  [attr.data-element-id]=\"element.id\"\n  [ngStyle]=\"elementStyles\"\n>\n  @if (isNativeHtml && props[\"text\"]) {\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props[\"text\"] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props[\"text\"] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props[\"text\"] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props[\"text\"] }}</footer>\n      <span *ngSwitchDefault>{{ props[\"text\"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container #dynamicHost></ng-container>\n  }\n  @for (child of childElements; track $index) {\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"elements\"\n    ></app-schema-element>\n  }\n</div>\n", styles: [":host{display:contents}\n"] }]
+            args: [{ selector: "app-schema-element", standalone: true, imports: [CommonModule], template: "<div\n  [id]=\"element.id\"\n  [class]=\"classes\"\n  [style]=\"gridStyle\"\n  [attr.data-element-id]=\"element.id\"\n  [ngStyle]=\"elementStyles\"\n>\n  @if (isNativeHtml && props[\"text\"]) {\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props[\"text\"] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props[\"text\"] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props[\"text\"] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props[\"text\"] }}</footer>\n      <span *ngSwitchDefault>{{ props[\"text\"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container #dynamicHost></ng-container>\n  } @else {\n    @for (child of childElements; track $index) {\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"elements\"\n    ></app-schema-element>\n    }\n  }\n</div>\n", styles: [":host{display:contents}\n"] }]
         }], propDecorators: { element: [{
                 type: Input,
                 args: [{ required: true }]
@@ -8297,12 +8170,13 @@ class CardComponent {
     borderRadius = 8;
     padding = 16;
     children = [];
+    classes = "";
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CardComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CardComponent, isStandalone: true, selector: "app-card", inputs: { title: "title", subtitle: "subtitle", content: "content", elevated: "elevated", borderRadius: "borderRadius", padding: "padding", children: "children" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-card\"\n  class=\"overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)]\"\n  [class.shadow-md]=\"elevated\"\n  [style.borderRadius.px]=\"borderRadius\"\n>\n  @if (title) {\n    <div class=\"p-4 border-b border-[var(--border-color)]\">\n      <h3 class=\"m-0 text-base font-semibold text-[var(--text-primary)]\">\n        {{ title }}\n      </h3>\n      @if (subtitle) {\n        <p class=\"m-0 mt-1 text-sm text-[var(--text-secondary)]\">\n          {{ subtitle }}\n        </p>\n      }\n    </div>\n  }\n  <div\n    class=\"p-4 text-sm leading-relaxed text-[var(--text-secondary)]\"\n    [style.padding.px]=\"padding\"\n  >\n    @if (content) {\n      {{ content }}\n    }\n    @for (child of children; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"children\"\n      ></app-schema-element>\n    }\n  </div>\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CardComponent, isStandalone: true, selector: "app-card", inputs: { title: "title", subtitle: "subtitle", content: "content", elevated: "elevated", borderRadius: "borderRadius", padding: "padding", children: "children", classes: "classes" }, ngImport: i0, template: "<div\n  class=\"ui-card\"\n  [class.ui-card-elevated]=\"elevated\"\n  [style.borderRadius.px]=\"borderRadius\"\n>\n  @if (title) {\n    <div class=\"ui-card-header\">\n      <h3>{{ title }}</h3>\n      @if (subtitle) {\n        <p>{{ subtitle }}</p>\n      }\n    </div>\n  }\n  <div\n    [style.padding.px]=\"padding\"\n  >\n    @if (content) {\n      {{ content }}\n    }\n    @for (child of children; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"children\"\n      ></app-schema-element>\n    }\n  </div>\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CardComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-card", standalone: true, imports: [CommonModule, SchemaElementComponent, ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-card\"\n  class=\"overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)]\"\n  [class.shadow-md]=\"elevated\"\n  [style.borderRadius.px]=\"borderRadius\"\n>\n  @if (title) {\n    <div class=\"p-4 border-b border-[var(--border-color)]\">\n      <h3 class=\"m-0 text-base font-semibold text-[var(--text-primary)]\">\n        {{ title }}\n      </h3>\n      @if (subtitle) {\n        <p class=\"m-0 mt-1 text-sm text-[var(--text-secondary)]\">\n          {{ subtitle }}\n        </p>\n      }\n    </div>\n  }\n  <div\n    class=\"p-4 text-sm leading-relaxed text-[var(--text-secondary)]\"\n    [style.padding.px]=\"padding\"\n  >\n    @if (content) {\n      {{ content }}\n    }\n    @for (child of children; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"children\"\n      ></app-schema-element>\n    }\n  </div>\n</div>\n" }]
+            args: [{ selector: "app-card", standalone: true, imports: [CommonModule, SchemaElementComponent], template: "<div\n  class=\"ui-card\"\n  [class.ui-card-elevated]=\"elevated\"\n  [style.borderRadius.px]=\"borderRadius\"\n>\n  @if (title) {\n    <div class=\"ui-card-header\">\n      <h3>{{ title }}</h3>\n      @if (subtitle) {\n        <p>{{ subtitle }}</p>\n      }\n    </div>\n  }\n  <div\n    [style.padding.px]=\"padding\"\n  >\n    @if (content) {\n      {{ content }}\n    }\n    @for (child of children; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"children\"\n      ></app-schema-element>\n    }\n  </div>\n</div>\n" }]
         }], propDecorators: { title: [{
                 type: Input
             }], subtitle: [{
@@ -8317,6 +8191,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
                 type: Input
             }], children: [{
                 type: Input
+            }], classes: [{
+                type: Input
             }] } });
 registerSchemaComponent("app-card", CardComponent);
 
@@ -8326,11 +8202,11 @@ class StatsCardComponent {
     unit = "";
     icon = "";
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: StatsCardComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: StatsCardComponent, isStandalone: true, selector: "app-stats-card", inputs: { label: "label", value: "value", unit: "unit", icon: "icon" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-stats-card\"\n  class=\"flex flex-col gap-2 p-6 rounded-xl border bg-[color:var(--bg-elevated)] border-[color:var(--border-color)]\"\n>\n  @if (icon) {\n    <div class=\"text-2xl text-[color:var(--accent)]\">{{ icon }}</div>\n  }\n  <div class=\"text-2xl font-bold leading-none text-[color:var(--text-primary)]\">\n    {{ value }}{{ unit }}\n  </div>\n  @if (label) {\n    <div class=\"text-sm text-[color:var(--text-secondary)]\">{{ label }}</div>\n  }\n</div>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: StatsCardComponent, isStandalone: true, selector: "app-stats-card", inputs: { label: "label", value: "value", unit: "unit", icon: "icon" }, ngImport: i0, template: "<div class=\"ui-stats-card\">\n  @if (icon) {\n    <div class=\"ui-stats-card-icon\">{{ icon }}</div>\n  }\n  <div class=\"ui-stats-card-value\">\n    {{ value }}{{ unit }}\n  </div>\n  @if (label) {\n    <div class=\"ui-stats-card-label\">{{ label }}</div>\n  }\n</div>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: StatsCardComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-stats-card", standalone: true, imports: [ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-stats-card\"\n  class=\"flex flex-col gap-2 p-6 rounded-xl border bg-[color:var(--bg-elevated)] border-[color:var(--border-color)]\"\n>\n  @if (icon) {\n    <div class=\"text-2xl text-[color:var(--accent)]\">{{ icon }}</div>\n  }\n  <div class=\"text-2xl font-bold leading-none text-[color:var(--text-primary)]\">\n    {{ value }}{{ unit }}\n  </div>\n  @if (label) {\n    <div class=\"text-sm text-[color:var(--text-secondary)]\">{{ label }}</div>\n  }\n</div>\n" }]
+            args: [{ selector: "app-stats-card", standalone: true, imports: [], template: "<div class=\"ui-stats-card\">\n  @if (icon) {\n    <div class=\"ui-stats-card-icon\">{{ icon }}</div>\n  }\n  <div class=\"ui-stats-card-value\">\n    {{ value }}{{ unit }}\n  </div>\n  @if (label) {\n    <div class=\"ui-stats-card-label\">{{ label }}</div>\n  }\n</div>\n" }]
         }], propDecorators: { label: [{
                 type: Input
             }], value: [{
@@ -8352,11 +8228,11 @@ class TableViewComponent {
         return parseJsonOrDefault(this.data);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TableViewComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TableViewComponent, isStandalone: true, selector: "app-table-view", inputs: { columns: "columns", data: "data" }, ngImport: i0, template: "<table appApplyTheme=\"app-table-view\" class=\"w-full border-collapse text-sm\">\n  <thead>\n    <tr>\n      @for (col of parsedColumns; track col.key) {\n        <th\n          class=\"text-left p-3 bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)] font-semibold border-b border-[color:var(--border-color)]\"\n        >\n          {{ col.name }}\n        </th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row) {\n      <tr class=\"hover:bg-[color:var(--bg-hover)]\">\n        @for (col of parsedColumns; track col.key) {\n          <td\n            class=\"p-3 text-[color:var(--text-primary)] border-b border-[color:var(--border-color)]\"\n          >\n            {{ row[col.key] }}\n          </td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TableViewComponent, isStandalone: true, selector: "app-table-view", inputs: { columns: "columns", data: "data" }, ngImport: i0, template: "<table class=\"ui-table\">\n  <thead>\n    <tr>\n      @for (col of parsedColumns; track col.key) {\n        <th>{{ col.name }}</th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row) {\n      <tr>\n        @for (col of parsedColumns; track col.key) {\n          <td>{{ row[col.key] }}</td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TableViewComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-table-view", standalone: true, imports: [ApplyThemeDirective], template: "<table appApplyTheme=\"app-table-view\" class=\"w-full border-collapse text-sm\">\n  <thead>\n    <tr>\n      @for (col of parsedColumns; track col.key) {\n        <th\n          class=\"text-left p-3 bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)] font-semibold border-b border-[color:var(--border-color)]\"\n        >\n          {{ col.name }}\n        </th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row) {\n      <tr class=\"hover:bg-[color:var(--bg-hover)]\">\n        @for (col of parsedColumns; track col.key) {\n          <td\n            class=\"p-3 text-[color:var(--text-primary)] border-b border-[color:var(--border-color)]\"\n          >\n            {{ row[col.key] }}\n          </td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n" }]
+            args: [{ selector: "app-table-view", standalone: true, imports: [], template: "<table class=\"ui-table\">\n  <thead>\n    <tr>\n      @for (col of parsedColumns; track col.key) {\n        <th>{{ col.name }}</th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row) {\n      <tr>\n        @for (col of parsedColumns; track col.key) {\n          <td>{{ row[col.key] }}</td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n" }]
         }], propDecorators: { columns: [{
                 type: Input
             }], data: [{
@@ -8383,11 +8259,11 @@ class DataTableComponent {
         this.rowSelected.emit(index);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DataTableComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: DataTableComponent, isStandalone: true, selector: "app-data-table", inputs: { columns: "columns", data: "data", selectable: "selectable" }, outputs: { rowSelected: "rowSelected" }, ngImport: i0, template: "<table appApplyTheme=\"app-data-table\" class=\"w-full border-collapse text-sm\">\n  <thead>\n    <tr>\n      @if (selectable) {\n        <th class=\"w-8\"></th>\n      }\n      @for (col of parsedColumns; track col.key) {\n        <th\n          class=\"text-left p-3 font-semibold border-b bg-[var(--bg-secondary)] text-[var(--text-primary)] border-[var(--border-color)]\"\n        >\n          {{ col.name }}\n        </th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row; let idx = $index) {\n      <tr\n        class=\"cursor-default\"\n        [class.cursor-pointer]=\"selectable\"\n        [class.bg-[var(--accent)]]=\"selectedIndex === idx\"\n        [class.text-[var(--text-on-accent)]]=\"selectedIndex === idx\"\n        (click)=\"selectRow(idx)\"\n      >\n        @if (selectable) {\n          <td class=\"p-3 border-b border-[var(--border-color)]\">\n            <span\n              class=\"inline-block w-4 h-4 rounded-full border-2\"\n              [class.border-[var(--text-on-accent)]]=\"selectedIndex === idx\"\n              [class.border-[var(--border-color)]]=\"selectedIndex !== idx\"\n              [class.bg-[var(--text-on-accent)]]=\"selectedIndex === idx\"\n              [class.bg-transparent]=\"selectedIndex !== idx\"\n            ></span>\n          </td>\n        }\n        @for (col of parsedColumns; track col.key) {\n          <td\n            class=\"p-3 border-b text-[var(--text-primary)] border-[var(--border-color)]\"\n          >\n            {{ row[col.key] }}\n          </td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: DataTableComponent, isStandalone: true, selector: "app-data-table", inputs: { columns: "columns", data: "data", selectable: "selectable" }, outputs: { rowSelected: "rowSelected" }, ngImport: i0, template: "<table class=\"ui-data-table\">\n  <thead>\n    <tr>\n      @if (selectable) {\n        <th class=\"ui-data-table-checkbox\"></th>\n      }\n      @for (col of parsedColumns; track col.key) {\n        <th>{{ col.name }}</th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row; let idx = $index) {\n      <tr\n        class=\"ui-data-table-row\"\n        [class.ui-data-table-row-selected]=\"selectedIndex === idx\"\n        (click)=\"selectRow(idx)\"\n      >\n        @if (selectable) {\n          <td>\n            <span\n              class=\"ui-data-table-checkbox-dot\"\n              [class.ui-data-table-checkbox-dot-selected]=\"selectedIndex === idx\"\n            ></span>\n          </td>\n        }\n        @for (col of parsedColumns; track col.key) {\n          <td>{{ row[col.key] }}</td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DataTableComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-data-table", standalone: true, imports: [ApplyThemeDirective], template: "<table appApplyTheme=\"app-data-table\" class=\"w-full border-collapse text-sm\">\n  <thead>\n    <tr>\n      @if (selectable) {\n        <th class=\"w-8\"></th>\n      }\n      @for (col of parsedColumns; track col.key) {\n        <th\n          class=\"text-left p-3 font-semibold border-b bg-[var(--bg-secondary)] text-[var(--text-primary)] border-[var(--border-color)]\"\n        >\n          {{ col.name }}\n        </th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row; let idx = $index) {\n      <tr\n        class=\"cursor-default\"\n        [class.cursor-pointer]=\"selectable\"\n        [class.bg-[var(--accent)]]=\"selectedIndex === idx\"\n        [class.text-[var(--text-on-accent)]]=\"selectedIndex === idx\"\n        (click)=\"selectRow(idx)\"\n      >\n        @if (selectable) {\n          <td class=\"p-3 border-b border-[var(--border-color)]\">\n            <span\n              class=\"inline-block w-4 h-4 rounded-full border-2\"\n              [class.border-[var(--text-on-accent)]]=\"selectedIndex === idx\"\n              [class.border-[var(--border-color)]]=\"selectedIndex !== idx\"\n              [class.bg-[var(--text-on-accent)]]=\"selectedIndex === idx\"\n              [class.bg-transparent]=\"selectedIndex !== idx\"\n            ></span>\n          </td>\n        }\n        @for (col of parsedColumns; track col.key) {\n          <td\n            class=\"p-3 border-b text-[var(--text-primary)] border-[var(--border-color)]\"\n          >\n            {{ row[col.key] }}\n          </td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n" }]
+            args: [{ selector: "app-data-table", standalone: true, imports: [], template: "<table class=\"ui-data-table\">\n  <thead>\n    <tr>\n      @if (selectable) {\n        <th class=\"ui-data-table-checkbox\"></th>\n      }\n      @for (col of parsedColumns; track col.key) {\n        <th>{{ col.name }}</th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row; let idx = $index) {\n      <tr\n        class=\"ui-data-table-row\"\n        [class.ui-data-table-row-selected]=\"selectedIndex === idx\"\n        (click)=\"selectRow(idx)\"\n      >\n        @if (selectable) {\n          <td>\n            <span\n              class=\"ui-data-table-checkbox-dot\"\n              [class.ui-data-table-checkbox-dot-selected]=\"selectedIndex === idx\"\n            ></span>\n          </td>\n        }\n        @for (col of parsedColumns; track col.key) {\n          <td>{{ row[col.key] }}</td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n" }]
         }], propDecorators: { columns: [{
                 type: Input
             }], data: [{
@@ -8418,11 +8294,11 @@ class JsonViewComponent {
             .replace(/\bnull\b/g, '<span class="json-null">null</span>');
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: JsonViewComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: JsonViewComponent, isStandalone: true, selector: "app-json-view", inputs: { data: "data" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-json-view\"\n  class=\"text-sm font-mono p-4 rounded border border-[var(--border-color)] bg-[var(--bg-secondary)] overflow-x-auto whitespace-pre-wrap break-words\"\n  [innerHTML]=\"safeHtml\"\n></div>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: JsonViewComponent, isStandalone: true, selector: "app-json-view", inputs: { data: "data" }, ngImport: i0, template: "<div\n  class=\"ui-json-view\"\n  [innerHTML]=\"safeHtml\"\n></div>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: JsonViewComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-json-view", standalone: true, imports: [ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-json-view\"\n  class=\"text-sm font-mono p-4 rounded border border-[var(--border-color)] bg-[var(--bg-secondary)] overflow-x-auto whitespace-pre-wrap break-words\"\n  [innerHTML]=\"safeHtml\"\n></div>\n" }]
+            args: [{ selector: "app-json-view", standalone: true, imports: [], template: "<div\n  class=\"ui-json-view\"\n  [innerHTML]=\"safeHtml\"\n></div>\n" }]
         }], propDecorators: { data: [{
                 type: Input
             }] } });
@@ -8466,11 +8342,11 @@ class ComponentPaletteComponent {
             e.dataTransfer.effectAllowed = "copy";
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ComponentPaletteComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ComponentPaletteComponent, isStandalone: true, selector: "app-component-palette", inputs: { categories: "categories", searchable: "searchable" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-component-palette\"\n  class=\"block h-full overflow-y-auto\"\n  style=\"\n    background-color: var(--bg-elevated);\n    border-right: 1px solid var(--border-color);\n  \"\n>\n  <div class=\"p-4\" style=\"border-bottom: 1px solid var(--border-color)\">\n    <div class=\"text-sm font-semibold mb-3\" style=\"color: var(--text-primary)\">\n      Components\n    </div>\n    @if (searchable) {\n      <input\n        type=\"text\"\n        class=\"w-full px-3 py-2 text-sm border rounded-lg box-border\"\n        style=\"\n          background-color: var(--bg-primary);\n          color: var(--text-primary);\n          border-color: var(--border-color);\n        \"\n        placeholder=\"Search components...\"\n        [value]=\"searchQuery\"\n        (input)=\"onSearch($event)\"\n      />\n    }\n  </div>\n  <div>\n    @for (cat of filteredCategories; track cat.name) {\n      <div style=\"border-bottom: 1px solid var(--border-color)\">\n        <div\n          class=\"flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium\"\n          style=\"color: var(--text-primary)\"\n          (click)=\"toggleCategory(cat.name)\"\n        >\n          <span>{{ cat.name }}</span>\n          <span\n            class=\"text-xs transition-transform duration-200\"\n            [class.rotate-180]=\"!isCollapsed(cat.name)\"\n            style=\"transform: rotate(-90deg)\"\n            >\u25BC</span\n          >\n        </div>\n        @if (!isCollapsed(cat.name)) {\n          <div class=\"px-4 pb-3 flex flex-col gap-1\">\n            @for (comp of cat.components; track comp) {\n              <div\n                class=\"px-3 py-2 rounded text-sm cursor-grab\"\n                style=\"color: var(--text-secondary)\"\n                draggable=\"true\"\n                (dragstart)=\"onDragStart($event, comp)\"\n              >\n                {{ comp }}\n              </div>\n            }\n          </div>\n        }\n      </div>\n    }\n  </div>\n</div>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ComponentPaletteComponent, isStandalone: true, selector: "app-component-palette", inputs: { categories: "categories", searchable: "searchable" }, ngImport: i0, template: "<div class=\"ui-component-palette\">\n  <div class=\"ui-component-palette-header\">\n    <div>Components</div>\n    @if (searchable) {\n      <input\n        type=\"text\"\n        placeholder=\"Search components...\"\n        [value]=\"searchQuery\"\n        (input)=\"onSearch($event)\"\n      />\n    }\n  </div>\n  <div class=\"ui-component-palette-list\">\n    @for (cat of filteredCategories; track cat.name) {\n      <div class=\"ui-component-palette-category\">\n        <div\n          class=\"ui-component-palette-category-header\"\n          (click)=\"toggleCategory(cat.name)\"\n        >\n          <span>{{ cat.name }}</span>\n          <span\n            class=\"ui-component-palette-chevron\"\n            [class.ui-component-palette-chevron-expanded]=\"!isCollapsed(cat.name)\"\n            >\u25BC</span\n          >\n        </div>\n        @if (!isCollapsed(cat.name)) {\n          <div class=\"ui-component-palette-items\">\n            @for (comp of cat.components; track comp) {\n              <div\n                draggable=\"true\"\n                (dragstart)=\"onDragStart($event, comp)\"\n              >\n                {{ comp }}\n              </div>\n            }\n          </div>\n        }\n      </div>\n    }\n  </div>\n</div>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ComponentPaletteComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-component-palette", standalone: true, imports: [ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-component-palette\"\n  class=\"block h-full overflow-y-auto\"\n  style=\"\n    background-color: var(--bg-elevated);\n    border-right: 1px solid var(--border-color);\n  \"\n>\n  <div class=\"p-4\" style=\"border-bottom: 1px solid var(--border-color)\">\n    <div class=\"text-sm font-semibold mb-3\" style=\"color: var(--text-primary)\">\n      Components\n    </div>\n    @if (searchable) {\n      <input\n        type=\"text\"\n        class=\"w-full px-3 py-2 text-sm border rounded-lg box-border\"\n        style=\"\n          background-color: var(--bg-primary);\n          color: var(--text-primary);\n          border-color: var(--border-color);\n        \"\n        placeholder=\"Search components...\"\n        [value]=\"searchQuery\"\n        (input)=\"onSearch($event)\"\n      />\n    }\n  </div>\n  <div>\n    @for (cat of filteredCategories; track cat.name) {\n      <div style=\"border-bottom: 1px solid var(--border-color)\">\n        <div\n          class=\"flex items-center justify-between px-4 py-3 cursor-pointer text-sm font-medium\"\n          style=\"color: var(--text-primary)\"\n          (click)=\"toggleCategory(cat.name)\"\n        >\n          <span>{{ cat.name }}</span>\n          <span\n            class=\"text-xs transition-transform duration-200\"\n            [class.rotate-180]=\"!isCollapsed(cat.name)\"\n            style=\"transform: rotate(-90deg)\"\n            >\u25BC</span\n          >\n        </div>\n        @if (!isCollapsed(cat.name)) {\n          <div class=\"px-4 pb-3 flex flex-col gap-1\">\n            @for (comp of cat.components; track comp) {\n              <div\n                class=\"px-3 py-2 rounded text-sm cursor-grab\"\n                style=\"color: var(--text-secondary)\"\n                draggable=\"true\"\n                (dragstart)=\"onDragStart($event, comp)\"\n              >\n                {{ comp }}\n              </div>\n            }\n          </div>\n        }\n      </div>\n    }\n  </div>\n</div>\n" }]
+            args: [{ selector: "app-component-palette", standalone: true, imports: [], template: "<div class=\"ui-component-palette\">\n  <div class=\"ui-component-palette-header\">\n    <div>Components</div>\n    @if (searchable) {\n      <input\n        type=\"text\"\n        placeholder=\"Search components...\"\n        [value]=\"searchQuery\"\n        (input)=\"onSearch($event)\"\n      />\n    }\n  </div>\n  <div class=\"ui-component-palette-list\">\n    @for (cat of filteredCategories; track cat.name) {\n      <div class=\"ui-component-palette-category\">\n        <div\n          class=\"ui-component-palette-category-header\"\n          (click)=\"toggleCategory(cat.name)\"\n        >\n          <span>{{ cat.name }}</span>\n          <span\n            class=\"ui-component-palette-chevron\"\n            [class.ui-component-palette-chevron-expanded]=\"!isCollapsed(cat.name)\"\n            >\u25BC</span\n          >\n        </div>\n        @if (!isCollapsed(cat.name)) {\n          <div class=\"ui-component-palette-items\">\n            @for (comp of cat.components; track comp) {\n              <div\n                draggable=\"true\"\n                (dragstart)=\"onDragStart($event, comp)\"\n              >\n                {{ comp }}\n              </div>\n            }\n          </div>\n        }\n      </div>\n    }\n  </div>\n</div>\n" }]
         }], propDecorators: { categories: [{
                 type: Input
             }], searchable: [{
@@ -8731,11 +8607,11 @@ class CanvasComponent {
         this.dropIndicator = null;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CanvasComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CanvasComponent, isStandalone: true, selector: "app-canvas", ngImport: i0, template: "<div\n  appApplyTheme=\"app-canvas\"\n  class=\"min-w-full min-h-full relative grid bg-[var(--bg-primary)]\"\n  [style.--grid-cols]=\"designer.gridColumns.toString()\"\n  [style.zoom]=\"designer.zoom() / 100\"\n  (dragover)=\"onDragOver($event)\"\n  (dragleave)=\"onDragLeave()\"\n  (drop)=\"onDrop($event)\"\n>\n  @if (designer.showGrid()) {\n    <div\n      class=\"absolute inset-0 pointer-events-none grid grid-cols-[repeat(var(--grid-cols),1fr)]\"\n    >\n      @for (cell of gridCells; track cell) {\n        <div\n          class=\"border-r border-b min-h-16 border-[var(--border-color)]\"\n        ></div>\n      }\n    </div>\n  }\n  @if (elements.length > 0) {\n    @for (el of elements; track el.id) {\n      <div\n        class=\"border-2 border-dashed rounded-lg p-2 cursor-move flex items-center gap-2 relative z-10 min-h-12 transition-colors duration-150 bg-[var(--bg-elevated)]\"\n        [ngClass]=\"\n          designer.selectedId() === el.id || dropIndicator?.parentId === el.id\n            ? 'border-[var(--accent)]'\n            : 'border-transparent'\n        \"\n        [class.ring-2]=\"designer.selectedId() === el.id\"\n        [class.drop-target]=\"dropIndicator?.parentId === el.id\"\n        [style.box-shadow]=\"\n          designer.selectedId() === el.id\n            ? '0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent))'\n            : dropIndicator?.parentId === el.id\n              ? 'none'\n              : 'none'\n        \"\n        [style.gridColumn]=\"getGridColumn(el)\"\n        [style.gridRow]=\"getGridRow(el)\"\n        (click)=\"designer.selectElement(el.id)\"\n        (dblclick)=\"editElement(el)\"\n        draggable=\"true\"\n        (dragstart)=\"onElementDragStart($event, el)\"\n        (dragover)=\"onElementDragOver($event, el)\"\n        (dragleave)=\"onElementDragLeave(el)\"\n      >\n        <span class=\"text-sm text-[var(--text-secondary)]\">{{\n          getIcon(el)\n        }}</span>\n        <span class=\"text-sm font-medium text-[var(--text-primary)]\">{{\n          el.componentId\n        }}</span>\n        <span class=\"text-xs font-mono ml-auto text-[var(--text-muted)]\">{{\n          el.id\n        }}</span>\n        <button\n          class=\"w-5 h-5 rounded-full border-0 bg-transparent cursor-pointer text-sm leading-none flex items-center justify-center p-0 opacity-0 transition-opacity duration-150 hover:opacity-100 text-[var(--text-muted)] bg-[var(--error)]\"\n          [style.--tw-text-opacity]=\"'1'\"\n          (click)=\"deleteElement($event, el.id)\"\n          title=\"Delete\"\n        >\n          \u00D7\n        </button>\n        @if (el.children?.length) {\n          <div\n            class=\"text-xs px-1.5 py-0.5 rounded text-[var(--accent)] bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]\"\n          >\n            {{ el.children!.length }} children\n          </div>\n        }\n      </div>\n    }\n  } @else {\n    <div\n      class=\"border-2 border-dashed rounded-lg bg-secondary flex items-center justify-center grid-column-1/-1 min-h-[200px] border-[var(--border-color)]\"\n    >\n      <div class=\"text-sm text-[var(--text-muted)]\">Drag components here</div>\n    </div>\n  }\n  @if (dropIndicator && !dropIndicator.parentId) {\n    <div\n      class=\"absolute left-0 right-0 h-0.5 z-20 pointer-events-none bg-[var(--accent)]\"\n      [style.top.px]=\"dropIndicator.y\"\n    ></div>\n  }\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CanvasComponent, isStandalone: true, selector: "app-canvas", ngImport: i0, template: "<div\n  class=\"ui-canvas\"\n  [style.--grid-cols]=\"designer.gridColumns.toString()\"\n  [style.zoom]=\"designer.zoom() / 100\"\n  (dragover)=\"onDragOver($event)\"\n  (dragleave)=\"onDragLeave()\"\n  (drop)=\"onDrop($event)\"\n>\n  @if (designer.showGrid()) {\n    <div class=\"ui-canvas-grid\">\n      @for (cell of gridCells; track cell) {\n        <div></div>\n      }\n    </div>\n  }\n  @if (elements.length > 0) {\n    @for (el of elements; track el.id) {\n      <div\n        class=\"ui-canvas-element\"\n        [class.ui-canvas-element-selected]=\"designer.selectedId() === el.id\"\n        [class.ui-canvas-element-drop-target]=\"dropIndicator?.parentId === el.id\"\n        [style.gridColumn]=\"getGridColumn(el)\"\n        [style.gridRow]=\"getGridRow(el)\"\n        (click)=\"designer.selectElement(el.id)\"\n        (dblclick)=\"editElement(el)\"\n        draggable=\"true\"\n        (dragstart)=\"onElementDragStart($event, el)\"\n        (dragover)=\"onElementDragOver($event, el)\"\n        (dragleave)=\"onElementDragLeave(el)\"\n      >\n        <span>{{ getIcon(el) }}</span>\n        <span>{{ el.componentId }}</span>\n        <span class=\"ui-canvas-element-id\">{{ el.id }}</span>\n        <button\n          class=\"ui-canvas-element-delete\"\n          (click)=\"deleteElement($event, el.id)\"\n          title=\"Delete\"\n        >\n          \u00D7\n        </button>\n        @if (el.children?.length) {\n          <div class=\"ui-canvas-element-children\">\n            {{ el.children!.length }} children\n          </div>\n        }\n      </div>\n    }\n  } @else {\n    <div class=\"ui-canvas-empty\">\n      <div>Drag components here</div>\n    </div>\n  }\n  @if (dropIndicator && !dropIndicator.parentId) {\n    <div\n      class=\"ui-canvas-drop-indicator\"\n      [style.top.px]=\"dropIndicator.y\"\n    ></div>\n  }\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CanvasComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-canvas", standalone: true, imports: [CommonModule, ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-canvas\"\n  class=\"min-w-full min-h-full relative grid bg-[var(--bg-primary)]\"\n  [style.--grid-cols]=\"designer.gridColumns.toString()\"\n  [style.zoom]=\"designer.zoom() / 100\"\n  (dragover)=\"onDragOver($event)\"\n  (dragleave)=\"onDragLeave()\"\n  (drop)=\"onDrop($event)\"\n>\n  @if (designer.showGrid()) {\n    <div\n      class=\"absolute inset-0 pointer-events-none grid grid-cols-[repeat(var(--grid-cols),1fr)]\"\n    >\n      @for (cell of gridCells; track cell) {\n        <div\n          class=\"border-r border-b min-h-16 border-[var(--border-color)]\"\n        ></div>\n      }\n    </div>\n  }\n  @if (elements.length > 0) {\n    @for (el of elements; track el.id) {\n      <div\n        class=\"border-2 border-dashed rounded-lg p-2 cursor-move flex items-center gap-2 relative z-10 min-h-12 transition-colors duration-150 bg-[var(--bg-elevated)]\"\n        [ngClass]=\"\n          designer.selectedId() === el.id || dropIndicator?.parentId === el.id\n            ? 'border-[var(--accent)]'\n            : 'border-transparent'\n        \"\n        [class.ring-2]=\"designer.selectedId() === el.id\"\n        [class.drop-target]=\"dropIndicator?.parentId === el.id\"\n        [style.box-shadow]=\"\n          designer.selectedId() === el.id\n            ? '0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent))'\n            : dropIndicator?.parentId === el.id\n              ? 'none'\n              : 'none'\n        \"\n        [style.gridColumn]=\"getGridColumn(el)\"\n        [style.gridRow]=\"getGridRow(el)\"\n        (click)=\"designer.selectElement(el.id)\"\n        (dblclick)=\"editElement(el)\"\n        draggable=\"true\"\n        (dragstart)=\"onElementDragStart($event, el)\"\n        (dragover)=\"onElementDragOver($event, el)\"\n        (dragleave)=\"onElementDragLeave(el)\"\n      >\n        <span class=\"text-sm text-[var(--text-secondary)]\">{{\n          getIcon(el)\n        }}</span>\n        <span class=\"text-sm font-medium text-[var(--text-primary)]\">{{\n          el.componentId\n        }}</span>\n        <span class=\"text-xs font-mono ml-auto text-[var(--text-muted)]\">{{\n          el.id\n        }}</span>\n        <button\n          class=\"w-5 h-5 rounded-full border-0 bg-transparent cursor-pointer text-sm leading-none flex items-center justify-center p-0 opacity-0 transition-opacity duration-150 hover:opacity-100 text-[var(--text-muted)] bg-[var(--error)]\"\n          [style.--tw-text-opacity]=\"'1'\"\n          (click)=\"deleteElement($event, el.id)\"\n          title=\"Delete\"\n        >\n          \u00D7\n        </button>\n        @if (el.children?.length) {\n          <div\n            class=\"text-xs px-1.5 py-0.5 rounded text-[var(--accent)] bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]\"\n          >\n            {{ el.children!.length }} children\n          </div>\n        }\n      </div>\n    }\n  } @else {\n    <div\n      class=\"border-2 border-dashed rounded-lg bg-secondary flex items-center justify-center grid-column-1/-1 min-h-[200px] border-[var(--border-color)]\"\n    >\n      <div class=\"text-sm text-[var(--text-muted)]\">Drag components here</div>\n    </div>\n  }\n  @if (dropIndicator && !dropIndicator.parentId) {\n    <div\n      class=\"absolute left-0 right-0 h-0.5 z-20 pointer-events-none bg-[var(--accent)]\"\n      [style.top.px]=\"dropIndicator.y\"\n    ></div>\n  }\n</div>\n" }]
+            args: [{ selector: "app-canvas", standalone: true, imports: [CommonModule], template: "<div\n  class=\"ui-canvas\"\n  [style.--grid-cols]=\"designer.gridColumns.toString()\"\n  [style.zoom]=\"designer.zoom() / 100\"\n  (dragover)=\"onDragOver($event)\"\n  (dragleave)=\"onDragLeave()\"\n  (drop)=\"onDrop($event)\"\n>\n  @if (designer.showGrid()) {\n    <div class=\"ui-canvas-grid\">\n      @for (cell of gridCells; track cell) {\n        <div></div>\n      }\n    </div>\n  }\n  @if (elements.length > 0) {\n    @for (el of elements; track el.id) {\n      <div\n        class=\"ui-canvas-element\"\n        [class.ui-canvas-element-selected]=\"designer.selectedId() === el.id\"\n        [class.ui-canvas-element-drop-target]=\"dropIndicator?.parentId === el.id\"\n        [style.gridColumn]=\"getGridColumn(el)\"\n        [style.gridRow]=\"getGridRow(el)\"\n        (click)=\"designer.selectElement(el.id)\"\n        (dblclick)=\"editElement(el)\"\n        draggable=\"true\"\n        (dragstart)=\"onElementDragStart($event, el)\"\n        (dragover)=\"onElementDragOver($event, el)\"\n        (dragleave)=\"onElementDragLeave(el)\"\n      >\n        <span>{{ getIcon(el) }}</span>\n        <span>{{ el.componentId }}</span>\n        <span class=\"ui-canvas-element-id\">{{ el.id }}</span>\n        <button\n          class=\"ui-canvas-element-delete\"\n          (click)=\"deleteElement($event, el.id)\"\n          title=\"Delete\"\n        >\n          \u00D7\n        </button>\n        @if (el.children?.length) {\n          <div class=\"ui-canvas-element-children\">\n            {{ el.children!.length }} children\n          </div>\n        }\n      </div>\n    }\n  } @else {\n    <div class=\"ui-canvas-empty\">\n      <div>Drag components here</div>\n    </div>\n  }\n  @if (dropIndicator && !dropIndicator.parentId) {\n    <div\n      class=\"ui-canvas-drop-indicator\"\n      [style.top.px]=\"dropIndicator.y\"\n    ></div>\n  }\n</div>\n" }]
         }] });
 registerSchemaComponent("app-canvas", CanvasComponent);
 
@@ -9000,11 +8876,11 @@ class PropertiesPanelComponent {
         this.designer.updateElement(id, { bind });
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PropertiesPanelComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PropertiesPanelComponent, isStandalone: true, selector: "app-properties-panel", ngImport: i0, template: "<div\n  appApplyTheme=\"app-properties-panel\"\n  class=\"block h-full overflow-y-auto bg-[var(--bg-elevated)] border-l border-[var(--border-color)] text-[13px]\"\n>\n  <div class=\"p-4 border-b border-[var(--border-color)]\">\n    <div class=\"text-sm font-semibold text-[var(--text-primary)]\">\n      Properties\n    </div>\n    @if (el(); as el) {\n      <div class=\"text-[11px] mt-1 font-mono text-[var(--text-muted)]\">\n        {{ el.id }}\n      </div>\n    }\n  </div>\n\n  <div class=\"flex border-b border-[var(--border-color)]\">\n    @for (tab of tabs; track tab) {\n      <button\n        class=\"flex-1 py-2 px-2 border-none bg-transparent cursor-pointer text-xs font-medium transition-all duration-150\"\n        [class.text-[var(--accent)]]=\"activeTab === tab\"\n        [class.text-[var(--text-secondary)]]=\"activeTab !== tab\"\n        [class.font-semibold]=\"activeTab === tab\"\n        [class.border-b-2]=\"activeTab === tab\"\n        [class.border-b-transparent]=\"activeTab !== tab\"\n        (click)=\"activeTab = tab\"\n      >\n        {{ tabLabels[tab] }}\n      </button>\n    }\n  </div>\n\n  @if (el(); as el) {\n    <div class=\"p-3\">\n      @switch (activeTab) {\n        @case (\"props\") {\n          <div class=\"pb-4 mb-4 border-b border-[var(--border-color)]\">\n            <div\n              class=\"text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]\"\n            >\n              Component\n            </div>\n            <div class=\"flex flex-col gap-1 mb-2\">\n              <label\n                class=\"text-[11px] font-medium text-[var(--text-secondary)]\"\n                >Type</label\n              >\n              <input\n                [value]=\"el.componentId\"\n                readonly\n                class=\"px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]\"\n              />\n            </div>\n            <div class=\"flex flex-col gap-1 mb-2\">\n              <label\n                class=\"text-[11px] font-medium text-[var(--text-secondary)]\"\n                >ID</label\n              >\n              <input\n                [value]=\"el.id\"\n                (input)=\"updateField('id', $any($event.target).value)\"\n                class=\"px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]\"\n              />\n            </div>\n            <div class=\"flex flex-col gap-1 mb-2\">\n              <label\n                class=\"text-[11px] font-medium text-[var(--text-secondary)]\"\n                >Classes</label\n              >\n              <input\n                [value]=\"el.classes || ''\"\n                (input)=\"updateField('classes', $any($event.target).value)\"\n                class=\"px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]\"\n              />\n            </div>\n            @for (prop of propEntries; track prop.key) {\n              <div class=\"flex flex-col gap-1 mb-2\">\n                <label\n                  class=\"text-[11px] font-medium text-[var(--text-secondary)]\"\n                  >{{ prop.key }}</label\n                >\n                <input\n                  [value]=\"'' + (prop.value ?? '')\"\n                  (input)=\"updateProp(prop.key, $any($event.target).value)\"\n                  class=\"px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]\"\n                />\n              </div>\n            }\n          </div>\n        }\n        @case (\"style\") {\n          <div class=\"pb-4 mb-4 border-b border-[var(--border-color)]\">\n            <div\n              class=\"text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]\"\n            >\n              Inline Styles\n            </div>\n            <div class=\"text-[11px] mb-2 text-[var(--text-muted)]\">\n              CSS custom properties and inline styles\n            </div>\n            @for (style of styleEntries; track $index) {\n              <div class=\"flex gap-1.5 mb-1.5 items-center\">\n                <input\n                  class=\"flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]\"\n                  [value]=\"style.key\"\n                  placeholder=\"property\"\n                  (input)=\"updateStyleKey($index, $any($event.target).value)\"\n                />\n                <input\n                  class=\"flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]\"\n                  [value]=\"style.value\"\n                  placeholder=\"value\"\n                  (input)=\"updateStyleVal($index, $any($event.target).value)\"\n                />\n                <button\n                  class=\"w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer\"\n                  (click)=\"removeStyle($index)\"\n                >\n                  \u00D7\n                </button>\n              </div>\n            }\n            <button\n              class=\"py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer\"\n              (click)=\"addStyle()\"\n            >\n              + Add style\n            </button>\n          </div>\n          <div class=\"pb-4 mb-4 border-b border-[var(--border-color)]\">\n            <div\n              class=\"text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]\"\n            >\n              States\n            </div>\n            @for (state of stateKeys; track state) {\n              <div class=\"p-2 rounded-md mb-3 bg-[var(--bg-primary)]\">\n                <label\n                  class=\"text-[11px] font-semibold uppercase mb-1.5 block text-[var(--accent)]\"\n                  >{{ state }}</label\n                >\n                @for (rule of getStateRules(state); track $index) {\n                  <div class=\"flex gap-1.5 mb-1.5 items-center\">\n                    <input\n                      class=\"flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]\"\n                      [value]=\"rule.key\"\n                      placeholder=\"property\"\n                      (input)=\"\n                        updateStateRule(\n                          state,\n                          $index,\n                          'key',\n                          $any($event.target).value\n                        )\n                      \"\n                    />\n                    <input\n                      class=\"flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]\"\n                      [value]=\"rule.value\"\n                      placeholder=\"value\"\n                      (input)=\"\n                        updateStateRule(\n                          state,\n                          $index,\n                          'val',\n                          $any($event.target).value\n                        )\n                      \"\n                    />\n                    <button\n                      class=\"w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer\"\n                      (click)=\"removeStateRule(state, $index)\"\n                    >\n                      \u00D7\n                    </button>\n                  </div>\n                }\n                <button\n                  class=\"py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer\"\n                  (click)=\"addStateRule(state)\"\n                >\n                  + Add rule\n                </button>\n              </div>\n            }\n            <div class=\"flex gap-1.5 flex-wrap\">\n              @for (s of availableStates; track s) {\n                @if (!stateKeys.includes(s)) {\n                  <button\n                    class=\"py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer\"\n                    (click)=\"addState(s)\"\n                  >\n                    + {{ s }}\n                  </button>\n                }\n              }\n            </div>\n          </div>\n        }\n        @case (\"events\") {\n          <div class=\"pb-4 mb-4 border-b border-[var(--border-color)]\">\n            <div\n              class=\"text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]\"\n            >\n              Event Handlers\n            </div>\n            <div class=\"text-[11px] mb-2 text-[var(--text-muted)]\">\n              Map component @Output() events to schema handlers\n            </div>\n            @for (evt of eventEntries; track $index) {\n              <div class=\"flex gap-1.5 mb-1.5 items-center\">\n                <input\n                  class=\"flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]\"\n                  [value]=\"evt.event\"\n                  placeholder=\"event name\"\n                  (input)=\"updateEventName($index, $any($event.target).value)\"\n                />\n                <input\n                  class=\"flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]\"\n                  [value]=\"evt.handler\"\n                  placeholder=\"handler name\"\n                  (input)=\"\n                    updateEventHandler($index, $any($event.target).value)\n                  \"\n                />\n                <button\n                  class=\"w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer\"\n                  (click)=\"removeEvent($index)\"\n                >\n                  \u00D7\n                </button>\n              </div>\n            }\n            <button\n              class=\"py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer\"\n              (click)=\"addEvent()\"\n            >\n              + Add handler\n            </button>\n          </div>\n          <div class=\"pb-4 mb-4 border-b border-[var(--border-color)]\">\n            <div\n              class=\"text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]\"\n            >\n              Data Binding\n            </div>\n            <div class=\"flex flex-col gap-1 mb-2\">\n              <label\n                class=\"text-[11px] font-medium text-[var(--text-secondary)]\"\n                >Store</label\n              >\n              <input\n                [value]=\"el.bind?.store || ''\"\n                (input)=\"updateBind('store', $any($event.target).value)\"\n                class=\"px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]\"\n              />\n            </div>\n            <div class=\"flex flex-col gap-1 mb-2\">\n              <label\n                class=\"text-[11px] font-medium text-[var(--text-secondary)]\"\n                >Field</label\n              >\n              <input\n                [value]=\"el.bind?.field || ''\"\n                (input)=\"updateBind('field', $any($event.target).value)\"\n                class=\"px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]\"\n              />\n            </div>\n          </div>\n        }\n      }\n    </div>\n  } @else {\n    <div class=\"p-8 text-center text-sm text-[var(--text-muted)]\">\n      No element selected\n    </div>\n  }\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PropertiesPanelComponent, isStandalone: true, selector: "app-properties-panel", ngImport: i0, template: "<div class=\"ui-properties-panel\">\n  <div class=\"ui-properties-panel-header\">\n    <div>Properties</div>\n    @if (el(); as el) {\n      <div class=\"ui-properties-panel-id\">{{ el.id }}</div>\n    }\n  </div>\n\n  <div class=\"ui-properties-panel-tabs\">\n    @for (tab of tabs; track tab) {\n      <button\n        class=\"ui-properties-tab\"\n        [class.ui-properties-tab-active]=\"activeTab === tab\"\n        (click)=\"activeTab = tab\"\n      >\n        {{ tabLabels[tab] }}\n      </button>\n    }\n  </div>\n\n  @if (el(); as el) {\n    <div class=\"ui-properties-panel-body\">\n      @switch (activeTab) {\n        @case (\"props\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Component</div>\n            <div class=\"ui-properties-field\">\n              <label>Type</label>\n              <input readonly [value]=\"el.componentId\" />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>ID</label>\n              <input\n                [value]=\"el.id\"\n                (input)=\"updateField('id', $any($event.target).value)\"\n              />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>Classes</label>\n              <input\n                [value]=\"el.classes || ''\"\n                (input)=\"updateField('classes', $any($event.target).value)\"\n              />\n            </div>\n            @for (prop of propEntries; track prop.key) {\n              <div class=\"ui-properties-field\">\n                <label>{{ prop.key }}</label>\n                <input\n                  [value]=\"prop.value ?? ''\"\n                  (input)=\"updateProp(prop.key, $any($event.target).value)\"\n                />\n              </div>\n            }\n          </div>\n        }\n        @case (\"style\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Inline Styles</div>\n            <div>CSS custom properties and inline styles</div>\n            @for (style of styleEntries; track $index) {\n              <div class=\"ui-properties-field-row\">\n                <input\n                  [value]=\"style.key\"\n                  placeholder=\"property\"\n                  (input)=\"updateStyleKey($index, $any($event.target).value)\"\n                />\n                <input\n                  [value]=\"style.value\"\n                  placeholder=\"value\"\n                  (input)=\"updateStyleVal($index, $any($event.target).value)\"\n                />\n                <button (click)=\"removeStyle($index)\">\u00D7</button>\n              </div>\n            }\n            <button class=\"ui-btn ui-btn-ghost\" (click)=\"addStyle()\">+ Add style</button>\n          </div>\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">States</div>\n            @for (state of stateKeys; track state) {\n              <div class=\"ui-properties-state\">\n                <label>{{ state }}</label>\n                @for (rule of getStateRules(state); track $index) {\n                  <div class=\"ui-properties-field-row\">\n                    <input\n                      [value]=\"rule.key\"\n                      placeholder=\"property\"\n                      (input)=\"updateStateRule(state, $index, 'key', $any($event.target).value)\"\n                    />\n                    <input\n                      [value]=\"rule.value\"\n                      placeholder=\"value\"\n                      (input)=\"updateStateRule(state, $index, 'val', $any($event.target).value)\"\n                    />\n                    <button (click)=\"removeStateRule(state, $index)\">\u00D7</button>\n                  </div>\n                }\n                <button class=\"ui-btn ui-btn-ghost\" (click)=\"addStateRule(state)\">+ Add rule</button>\n              </div>\n            }\n            <div>\n              @for (s of availableStates; track s) {\n                @if (!stateKeys.includes(s)) {\n                  <button class=\"ui-btn ui-btn-ghost\" (click)=\"addState(s)\">+ {{ s }}</button>\n                }\n              }\n            </div>\n          </div>\n        }\n        @case (\"events\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Event Handlers</div>\n            <div>Map component @Output() events to schema handlers</div>\n            @for (evt of eventEntries; track $index) {\n              <div class=\"ui-properties-field-row\">\n                <input\n                  [value]=\"evt.event\"\n                  placeholder=\"event name\"\n                  (input)=\"updateEventName($index, $any($event.target).value)\"\n                />\n                <input\n                  [value]=\"evt.handler\"\n                  placeholder=\"handler name\"\n                  (input)=\"updateEventHandler($index, $any($event.target).value)\"\n                />\n                <button (click)=\"removeEvent($index)\">\u00D7</button>\n              </div>\n            }\n            <button class=\"ui-btn ui-btn-ghost\" (click)=\"addEvent()\">+ Add handler</button>\n          </div>\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Data Binding</div>\n            <div class=\"ui-properties-field\">\n              <label>Store</label>\n              <input\n                [value]=\"el.bind?.store || ''\"\n                (input)=\"updateBind('store', $any($event.target).value)\"\n              />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>Field</label>\n              <input\n                [value]=\"el.bind?.field || ''\"\n                (input)=\"updateBind('field', $any($event.target).value)\"\n              />\n            </div>\n          </div>\n        }\n      }\n    </div>\n  } @else {\n    <div class=\"ui-properties-panel-empty\">No element selected</div>\n  }\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PropertiesPanelComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-properties-panel", standalone: true, imports: [CommonModule, ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-properties-panel\"\n  class=\"block h-full overflow-y-auto bg-[var(--bg-elevated)] border-l border-[var(--border-color)] text-[13px]\"\n>\n  <div class=\"p-4 border-b border-[var(--border-color)]\">\n    <div class=\"text-sm font-semibold text-[var(--text-primary)]\">\n      Properties\n    </div>\n    @if (el(); as el) {\n      <div class=\"text-[11px] mt-1 font-mono text-[var(--text-muted)]\">\n        {{ el.id }}\n      </div>\n    }\n  </div>\n\n  <div class=\"flex border-b border-[var(--border-color)]\">\n    @for (tab of tabs; track tab) {\n      <button\n        class=\"flex-1 py-2 px-2 border-none bg-transparent cursor-pointer text-xs font-medium transition-all duration-150\"\n        [class.text-[var(--accent)]]=\"activeTab === tab\"\n        [class.text-[var(--text-secondary)]]=\"activeTab !== tab\"\n        [class.font-semibold]=\"activeTab === tab\"\n        [class.border-b-2]=\"activeTab === tab\"\n        [class.border-b-transparent]=\"activeTab !== tab\"\n        (click)=\"activeTab = tab\"\n      >\n        {{ tabLabels[tab] }}\n      </button>\n    }\n  </div>\n\n  @if (el(); as el) {\n    <div class=\"p-3\">\n      @switch (activeTab) {\n        @case (\"props\") {\n          <div class=\"pb-4 mb-4 border-b border-[var(--border-color)]\">\n            <div\n              class=\"text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]\"\n            >\n              Component\n            </div>\n            <div class=\"flex flex-col gap-1 mb-2\">\n              <label\n                class=\"text-[11px] font-medium text-[var(--text-secondary)]\"\n                >Type</label\n              >\n              <input\n                [value]=\"el.componentId\"\n                readonly\n                class=\"px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]\"\n              />\n            </div>\n            <div class=\"flex flex-col gap-1 mb-2\">\n              <label\n                class=\"text-[11px] font-medium text-[var(--text-secondary)]\"\n                >ID</label\n              >\n              <input\n                [value]=\"el.id\"\n                (input)=\"updateField('id', $any($event.target).value)\"\n                class=\"px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]\"\n              />\n            </div>\n            <div class=\"flex flex-col gap-1 mb-2\">\n              <label\n                class=\"text-[11px] font-medium text-[var(--text-secondary)]\"\n                >Classes</label\n              >\n              <input\n                [value]=\"el.classes || ''\"\n                (input)=\"updateField('classes', $any($event.target).value)\"\n                class=\"px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]\"\n              />\n            </div>\n            @for (prop of propEntries; track prop.key) {\n              <div class=\"flex flex-col gap-1 mb-2\">\n                <label\n                  class=\"text-[11px] font-medium text-[var(--text-secondary)]\"\n                  >{{ prop.key }}</label\n                >\n                <input\n                  [value]=\"'' + (prop.value ?? '')\"\n                  (input)=\"updateProp(prop.key, $any($event.target).value)\"\n                  class=\"px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]\"\n                />\n              </div>\n            }\n          </div>\n        }\n        @case (\"style\") {\n          <div class=\"pb-4 mb-4 border-b border-[var(--border-color)]\">\n            <div\n              class=\"text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]\"\n            >\n              Inline Styles\n            </div>\n            <div class=\"text-[11px] mb-2 text-[var(--text-muted)]\">\n              CSS custom properties and inline styles\n            </div>\n            @for (style of styleEntries; track $index) {\n              <div class=\"flex gap-1.5 mb-1.5 items-center\">\n                <input\n                  class=\"flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]\"\n                  [value]=\"style.key\"\n                  placeholder=\"property\"\n                  (input)=\"updateStyleKey($index, $any($event.target).value)\"\n                />\n                <input\n                  class=\"flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]\"\n                  [value]=\"style.value\"\n                  placeholder=\"value\"\n                  (input)=\"updateStyleVal($index, $any($event.target).value)\"\n                />\n                <button\n                  class=\"w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer\"\n                  (click)=\"removeStyle($index)\"\n                >\n                  \u00D7\n                </button>\n              </div>\n            }\n            <button\n              class=\"py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer\"\n              (click)=\"addStyle()\"\n            >\n              + Add style\n            </button>\n          </div>\n          <div class=\"pb-4 mb-4 border-b border-[var(--border-color)]\">\n            <div\n              class=\"text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]\"\n            >\n              States\n            </div>\n            @for (state of stateKeys; track state) {\n              <div class=\"p-2 rounded-md mb-3 bg-[var(--bg-primary)]\">\n                <label\n                  class=\"text-[11px] font-semibold uppercase mb-1.5 block text-[var(--accent)]\"\n                  >{{ state }}</label\n                >\n                @for (rule of getStateRules(state); track $index) {\n                  <div class=\"flex gap-1.5 mb-1.5 items-center\">\n                    <input\n                      class=\"flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]\"\n                      [value]=\"rule.key\"\n                      placeholder=\"property\"\n                      (input)=\"\n                        updateStateRule(\n                          state,\n                          $index,\n                          'key',\n                          $any($event.target).value\n                        )\n                      \"\n                    />\n                    <input\n                      class=\"flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]\"\n                      [value]=\"rule.value\"\n                      placeholder=\"value\"\n                      (input)=\"\n                        updateStateRule(\n                          state,\n                          $index,\n                          'val',\n                          $any($event.target).value\n                        )\n                      \"\n                    />\n                    <button\n                      class=\"w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer\"\n                      (click)=\"removeStateRule(state, $index)\"\n                    >\n                      \u00D7\n                    </button>\n                  </div>\n                }\n                <button\n                  class=\"py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer\"\n                  (click)=\"addStateRule(state)\"\n                >\n                  + Add rule\n                </button>\n              </div>\n            }\n            <div class=\"flex gap-1.5 flex-wrap\">\n              @for (s of availableStates; track s) {\n                @if (!stateKeys.includes(s)) {\n                  <button\n                    class=\"py-1 px-2 border border-dashed rounded text-xs border-[var(--border-color)] text-[var(--text-secondary)] cursor-pointer\"\n                    (click)=\"addState(s)\"\n                  >\n                    + {{ s }}\n                  </button>\n                }\n              }\n            </div>\n          </div>\n        }\n        @case (\"events\") {\n          <div class=\"pb-4 mb-4 border-b border-[var(--border-color)]\">\n            <div\n              class=\"text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]\"\n            >\n              Event Handlers\n            </div>\n            <div class=\"text-[11px] mb-2 text-[var(--text-muted)]\">\n              Map component @Output() events to schema handlers\n            </div>\n            @for (evt of eventEntries; track $index) {\n              <div class=\"flex gap-1.5 mb-1.5 items-center\">\n                <input\n                  class=\"flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]\"\n                  [value]=\"evt.event\"\n                  placeholder=\"event name\"\n                  (input)=\"updateEventName($index, $any($event.target).value)\"\n                />\n                <input\n                  class=\"flex-1 px-1 py-1 border rounded text-xs bg-transparent min-w-0 border-[var(--border-color)] text-[var(--text-primary)]\"\n                  [value]=\"evt.handler\"\n                  placeholder=\"handler name\"\n                  (input)=\"\n                    updateEventHandler($index, $any($event.target).value)\n                  \"\n                />\n                <button\n                  class=\"w-5 h-5 rounded-full border-none bg-transparent flex items-center justify-center p-0 flex-shrink-0 text-sm text-[var(--text-muted)] cursor-pointer\"\n                  (click)=\"removeEvent($index)\"\n                >\n                  \u00D7\n                </button>\n              </div>\n            }\n            <button\n              class=\"py-1 px-2 border border-dashed rounded w-full text-xs transition-all duration-150 border-[var(--border-color)] text-[var(--accent)] cursor-pointer\"\n              (click)=\"addEvent()\"\n            >\n              + Add handler\n            </button>\n          </div>\n          <div class=\"pb-4 mb-4 border-b border-[var(--border-color)]\">\n            <div\n              class=\"text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-secondary)]\"\n            >\n              Data Binding\n            </div>\n            <div class=\"flex flex-col gap-1 mb-2\">\n              <label\n                class=\"text-[11px] font-medium text-[var(--text-secondary)]\"\n                >Store</label\n              >\n              <input\n                [value]=\"el.bind?.store || ''\"\n                (input)=\"updateBind('store', $any($event.target).value)\"\n                class=\"px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]\"\n              />\n            </div>\n            <div class=\"flex flex-col gap-1 mb-2\">\n              <label\n                class=\"text-[11px] font-medium text-[var(--text-secondary)]\"\n                >Field</label\n              >\n              <input\n                [value]=\"el.bind?.field || ''\"\n                (input)=\"updateBind('field', $any($event.target).value)\"\n                class=\"px-[6px] py-1.5 border rounded-md text-sm bg-transparent border-[var(--border-color)] text-[var(--text-primary)]\"\n              />\n            </div>\n          </div>\n        }\n      }\n    </div>\n  } @else {\n    <div class=\"p-8 text-center text-sm text-[var(--text-muted)]\">\n      No element selected\n    </div>\n  }\n</div>\n" }]
+            args: [{ selector: "app-properties-panel", standalone: true, imports: [CommonModule], template: "<div class=\"ui-properties-panel\">\n  <div class=\"ui-properties-panel-header\">\n    <div>Properties</div>\n    @if (el(); as el) {\n      <div class=\"ui-properties-panel-id\">{{ el.id }}</div>\n    }\n  </div>\n\n  <div class=\"ui-properties-panel-tabs\">\n    @for (tab of tabs; track tab) {\n      <button\n        class=\"ui-properties-tab\"\n        [class.ui-properties-tab-active]=\"activeTab === tab\"\n        (click)=\"activeTab = tab\"\n      >\n        {{ tabLabels[tab] }}\n      </button>\n    }\n  </div>\n\n  @if (el(); as el) {\n    <div class=\"ui-properties-panel-body\">\n      @switch (activeTab) {\n        @case (\"props\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Component</div>\n            <div class=\"ui-properties-field\">\n              <label>Type</label>\n              <input readonly [value]=\"el.componentId\" />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>ID</label>\n              <input\n                [value]=\"el.id\"\n                (input)=\"updateField('id', $any($event.target).value)\"\n              />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>Classes</label>\n              <input\n                [value]=\"el.classes || ''\"\n                (input)=\"updateField('classes', $any($event.target).value)\"\n              />\n            </div>\n            @for (prop of propEntries; track prop.key) {\n              <div class=\"ui-properties-field\">\n                <label>{{ prop.key }}</label>\n                <input\n                  [value]=\"prop.value ?? ''\"\n                  (input)=\"updateProp(prop.key, $any($event.target).value)\"\n                />\n              </div>\n            }\n          </div>\n        }\n        @case (\"style\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Inline Styles</div>\n            <div>CSS custom properties and inline styles</div>\n            @for (style of styleEntries; track $index) {\n              <div class=\"ui-properties-field-row\">\n                <input\n                  [value]=\"style.key\"\n                  placeholder=\"property\"\n                  (input)=\"updateStyleKey($index, $any($event.target).value)\"\n                />\n                <input\n                  [value]=\"style.value\"\n                  placeholder=\"value\"\n                  (input)=\"updateStyleVal($index, $any($event.target).value)\"\n                />\n                <button (click)=\"removeStyle($index)\">\u00D7</button>\n              </div>\n            }\n            <button class=\"ui-btn ui-btn-ghost\" (click)=\"addStyle()\">+ Add style</button>\n          </div>\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">States</div>\n            @for (state of stateKeys; track state) {\n              <div class=\"ui-properties-state\">\n                <label>{{ state }}</label>\n                @for (rule of getStateRules(state); track $index) {\n                  <div class=\"ui-properties-field-row\">\n                    <input\n                      [value]=\"rule.key\"\n                      placeholder=\"property\"\n                      (input)=\"updateStateRule(state, $index, 'key', $any($event.target).value)\"\n                    />\n                    <input\n                      [value]=\"rule.value\"\n                      placeholder=\"value\"\n                      (input)=\"updateStateRule(state, $index, 'val', $any($event.target).value)\"\n                    />\n                    <button (click)=\"removeStateRule(state, $index)\">\u00D7</button>\n                  </div>\n                }\n                <button class=\"ui-btn ui-btn-ghost\" (click)=\"addStateRule(state)\">+ Add rule</button>\n              </div>\n            }\n            <div>\n              @for (s of availableStates; track s) {\n                @if (!stateKeys.includes(s)) {\n                  <button class=\"ui-btn ui-btn-ghost\" (click)=\"addState(s)\">+ {{ s }}</button>\n                }\n              }\n            </div>\n          </div>\n        }\n        @case (\"events\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Event Handlers</div>\n            <div>Map component @Output() events to schema handlers</div>\n            @for (evt of eventEntries; track $index) {\n              <div class=\"ui-properties-field-row\">\n                <input\n                  [value]=\"evt.event\"\n                  placeholder=\"event name\"\n                  (input)=\"updateEventName($index, $any($event.target).value)\"\n                />\n                <input\n                  [value]=\"evt.handler\"\n                  placeholder=\"handler name\"\n                  (input)=\"updateEventHandler($index, $any($event.target).value)\"\n                />\n                <button (click)=\"removeEvent($index)\">\u00D7</button>\n              </div>\n            }\n            <button class=\"ui-btn ui-btn-ghost\" (click)=\"addEvent()\">+ Add handler</button>\n          </div>\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Data Binding</div>\n            <div class=\"ui-properties-field\">\n              <label>Store</label>\n              <input\n                [value]=\"el.bind?.store || ''\"\n                (input)=\"updateBind('store', $any($event.target).value)\"\n              />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>Field</label>\n              <input\n                [value]=\"el.bind?.field || ''\"\n                (input)=\"updateBind('field', $any($event.target).value)\"\n              />\n            </div>\n          </div>\n        }\n      }\n    </div>\n  } @else {\n    <div class=\"ui-properties-panel-empty\">No element selected</div>\n  }\n</div>\n" }]
         }] });
 registerSchemaComponent("app-properties-panel", PropertiesPanelComponent);
 
@@ -9024,11 +8900,11 @@ class BottomPanelComponent {
         this.tabChange.emit(tabId);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BottomPanelComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: BottomPanelComponent, isStandalone: true, selector: "app-bottom-panel", inputs: { tabs: "tabs", activeTab: "activeTab", position: "position", fullWidth: "fullWidth", floating: "floating", borderRadius: "borderRadius" }, outputs: { tabChange: "tabChange" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-bottom-panel\"\n  class=\"flex flex-col h-full border-t bg-[var(--bg-elevated)] border-[var(--border-color)]\"\n>\n  <div class=\"flex gap-0 pb-px border-b border-[var(--border-color)]\">\n    @for (tab of parsedTabs; track tab.id) {\n      <div\n        class=\"px-4 py-3 text-sm font-medium cursor-pointer border-b-2 -mb-px transition-all duration-150\"\n        [class.text-[var(--accent)]]]=\"activeTab === tab.id\"\n        [class.text-[var(--text-secondary)]]]=\"activeTab !== tab.id\"\n        [class.border-b-[var(--accent)]]]=\"activeTab === tab.id\"\n        [class.border-b-transparent]=\"activeTab !== tab.id\"\n        (click)=\"handleTabClick(tab.id)\"\n      >\n        {{ tab.label }}\n      </div>\n    }\n  </div>\n  <div class=\"flex-1 overflow-auto p-4\">\n    <ng-content></ng-content>\n    @if (!parsedTabs.length) {\n      <div class=\"text-center text-sm text-[var(--text-muted)] py-8\">\n        No tabs available\n      </div>\n    }\n  </div>\n</div>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: BottomPanelComponent, isStandalone: true, selector: "app-bottom-panel", inputs: { tabs: "tabs", activeTab: "activeTab", position: "position", fullWidth: "fullWidth", floating: "floating", borderRadius: "borderRadius" }, outputs: { tabChange: "tabChange" }, ngImport: i0, template: "<div class=\"ui-bottom-panel\">\n  <div class=\"ui-bottom-panel-tabs\">\n    @for (tab of parsedTabs; track tab.id) {\n      <div\n        class=\"ui-bottom-panel-tab\"\n        [class.ui-bottom-panel-tab-active]=\"activeTab === tab.id\"\n        (click)=\"handleTabClick(tab.id)\"\n      >\n        {{ tab.label }}\n      </div>\n    }\n  </div>\n  <div class=\"ui-bottom-panel-body\">\n    <ng-content></ng-content>\n    @if (!parsedTabs.length) {\n      <div>No tabs available</div>\n    }\n  </div>\n</div>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BottomPanelComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-bottom-panel", standalone: true, imports: [ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-bottom-panel\"\n  class=\"flex flex-col h-full border-t bg-[var(--bg-elevated)] border-[var(--border-color)]\"\n>\n  <div class=\"flex gap-0 pb-px border-b border-[var(--border-color)]\">\n    @for (tab of parsedTabs; track tab.id) {\n      <div\n        class=\"px-4 py-3 text-sm font-medium cursor-pointer border-b-2 -mb-px transition-all duration-150\"\n        [class.text-[var(--accent)]]]=\"activeTab === tab.id\"\n        [class.text-[var(--text-secondary)]]]=\"activeTab !== tab.id\"\n        [class.border-b-[var(--accent)]]]=\"activeTab === tab.id\"\n        [class.border-b-transparent]=\"activeTab !== tab.id\"\n        (click)=\"handleTabClick(tab.id)\"\n      >\n        {{ tab.label }}\n      </div>\n    }\n  </div>\n  <div class=\"flex-1 overflow-auto p-4\">\n    <ng-content></ng-content>\n    @if (!parsedTabs.length) {\n      <div class=\"text-center text-sm text-[var(--text-muted)] py-8\">\n        No tabs available\n      </div>\n    }\n  </div>\n</div>\n" }]
+            args: [{ selector: "app-bottom-panel", standalone: true, imports: [], template: "<div class=\"ui-bottom-panel\">\n  <div class=\"ui-bottom-panel-tabs\">\n    @for (tab of parsedTabs; track tab.id) {\n      <div\n        class=\"ui-bottom-panel-tab\"\n        [class.ui-bottom-panel-tab-active]=\"activeTab === tab.id\"\n        (click)=\"handleTabClick(tab.id)\"\n      >\n        {{ tab.label }}\n      </div>\n    }\n  </div>\n  <div class=\"ui-bottom-panel-body\">\n    <ng-content></ng-content>\n    @if (!parsedTabs.length) {\n      <div>No tabs available</div>\n    }\n  </div>\n</div>\n" }]
         }], propDecorators: { tabs: [{
                 type: Input
             }], activeTab: [{
@@ -9057,11 +8933,11 @@ class HeaderComponent {
         return parseJsonOrDefault(this.breadcrumbs);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: HeaderComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: HeaderComponent, isStandalone: true, selector: "app-header", inputs: { title: "title", subtitle: "subtitle", icon: "icon", showBack: "showBack", breadcrumbs: "breadcrumbs" }, outputs: { navigateBack: "navigateBack" }, ngImport: i0, template: "<header\n  appApplyTheme=\"app-header\"\n  class=\"flex items-center gap-4 p-4 border-b min-h-[56px] border-[var(--border-color)]\"\n  [style.background]=\"'var(--bg-header, var(--bg-elevated))'\"\n>\n  @if (showBack) {\n    <button\n      class=\"flex items-center justify-center w-9 h-9 rounded-lg border p-0 text-xl transition-all cursor-pointer hover:bg-[var(--bg-hover)] bg-[var(--bg-elevated)] border-[var(--border-color)] text-[var(--text-primary)]\"\n      (click)=\"navigateBack.emit()\"\n      aria-label=\"Back\"\n    >\n      &larr;\n    </button>\n  }\n  <div class=\"flex-1 flex flex-col gap-1\">\n    <h1 class=\"m-0 text-xl font-semibold text-[var(--text-primary)]\">\n      {{ title }}\n    </h1>\n    @if (parsedBreadcrumbs.length) {\n      <div class=\"flex items-center gap-2 text-sm text-[var(--text-secondary)]\">\n        @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {\n          @if (!last && crumb.href) {\n            <a [href]=\"crumb.href\">{{ crumb.label }}</a>\n          } @else {\n            <span>{{ crumb.label }}</span>\n          }\n          @if (!last) {\n            <span class=\"opacity-50\">/</span>\n          }\n        }\n      </div>\n    }\n  </div>\n  <ng-content></ng-content>\n</header>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: HeaderComponent, isStandalone: true, selector: "app-header", inputs: { title: "title", subtitle: "subtitle", icon: "icon", showBack: "showBack", breadcrumbs: "breadcrumbs" }, outputs: { navigateBack: "navigateBack" }, ngImport: i0, template: "<header class=\"ui-header\">\n  @if (showBack) {\n    <button\n      class=\"ui-btn ui-btn-icon\"\n      (click)=\"navigateBack.emit()\"\n      aria-label=\"Back\"\n    >\n      &larr;\n    </button>\n  }\n  <div class=\"ui-header-content\">\n    <h1>{{ title }}</h1>\n    @if (parsedBreadcrumbs.length) {\n      <div class=\"ui-header-breadcrumbs\">\n        @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {\n          @if (!last && crumb.href) {\n            <a [href]=\"crumb.href\">{{ crumb.label }}</a>\n          } @else {\n            <span>{{ crumb.label }}</span>\n          }\n          @if (!last) {\n            <span>/</span>\n          }\n        }\n      </div>\n    }\n  </div>\n  <ng-content></ng-content>\n</header>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: HeaderComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-header", standalone: true, imports: [ApplyThemeDirective], template: "<header\n  appApplyTheme=\"app-header\"\n  class=\"flex items-center gap-4 p-4 border-b min-h-[56px] border-[var(--border-color)]\"\n  [style.background]=\"'var(--bg-header, var(--bg-elevated))'\"\n>\n  @if (showBack) {\n    <button\n      class=\"flex items-center justify-center w-9 h-9 rounded-lg border p-0 text-xl transition-all cursor-pointer hover:bg-[var(--bg-hover)] bg-[var(--bg-elevated)] border-[var(--border-color)] text-[var(--text-primary)]\"\n      (click)=\"navigateBack.emit()\"\n      aria-label=\"Back\"\n    >\n      &larr;\n    </button>\n  }\n  <div class=\"flex-1 flex flex-col gap-1\">\n    <h1 class=\"m-0 text-xl font-semibold text-[var(--text-primary)]\">\n      {{ title }}\n    </h1>\n    @if (parsedBreadcrumbs.length) {\n      <div class=\"flex items-center gap-2 text-sm text-[var(--text-secondary)]\">\n        @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {\n          @if (!last && crumb.href) {\n            <a [href]=\"crumb.href\">{{ crumb.label }}</a>\n          } @else {\n            <span>{{ crumb.label }}</span>\n          }\n          @if (!last) {\n            <span class=\"opacity-50\">/</span>\n          }\n        }\n      </div>\n    }\n  </div>\n  <ng-content></ng-content>\n</header>\n" }]
+            args: [{ selector: "app-header", standalone: true, imports: [], template: "<header class=\"ui-header\">\n  @if (showBack) {\n    <button\n      class=\"ui-btn ui-btn-icon\"\n      (click)=\"navigateBack.emit()\"\n      aria-label=\"Back\"\n    >\n      &larr;\n    </button>\n  }\n  <div class=\"ui-header-content\">\n    <h1>{{ title }}</h1>\n    @if (parsedBreadcrumbs.length) {\n      <div class=\"ui-header-breadcrumbs\">\n        @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {\n          @if (!last && crumb.href) {\n            <a [href]=\"crumb.href\">{{ crumb.label }}</a>\n          } @else {\n            <span>{{ crumb.label }}</span>\n          }\n          @if (!last) {\n            <span>/</span>\n          }\n        }\n      </div>\n    }\n  </div>\n  <ng-content></ng-content>\n</header>\n" }]
         }], propDecorators: { title: [{
                 type: Input
             }], subtitle: [{
@@ -9095,11 +8971,11 @@ class SidebarComponent {
         this.itemClicked.emit(item);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SidebarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SidebarComponent, isStandalone: true, selector: "app-sidebar", inputs: { collapsed: "collapsed", items: "items", width: "width", collapsedWidth: "collapsedWidth" }, outputs: { collapseChanged: "collapseChanged", itemClicked: "itemClicked" }, ngImport: i0, template: "<aside\n  appApplyTheme=\"app-sidebar\"\n  class=\"flex flex-col h-full border-r transition-[width,min-width] duration-200 overflow-hidden bg-[var(--bg-elevated)] border-[var(--border-color)]\"\n  [class.w-16]=\"collapsed\"\n  [class.min-w-16]=\"collapsed\"\n  [style.width.px]=\"width\"\n  [style.min-width.px]=\"width\"\n>\n  <div\n    class=\"flex items-center justify-between px-4 py-3 border-b min-h-14 border-[var(--border-color)]\"\n  >\n    <button\n      class=\"flex items-center justify-center w-8 h-8 border rounded-lg bg-transparent cursor-pointer text-xl transition-all duration-150 p-0 border-[var(--border-color)] text-[var(--text-secondary)]\"\n      (click)=\"toggleCollapse()\"\n      aria-label=\"Toggle sidebar\"\n    >\n      {{ collapsed ? \"\u2192\" : \"\u2190\" }}\n    </button>\n  </div>\n  <nav class=\"flex-1 overflow-y-auto overflow-x-hidden p-2\">\n    <ul class=\"list-none m-0 p-0\">\n      @for (item of parsedItems; track item.label) {\n        <li class=\"m-0\">\n          <div\n            class=\"flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]\"\n            (click)=\"handleItemClick(item)\"\n          >\n            @if (item.icon) {\n              <span\n                class=\"flex items-center justify-center w-5 h-5 text-xl flex-shrink-0\"\n                >{{ item.icon }}</span\n              >\n            }\n            <span class=\"flex-1 overflow-hidden text-ellipsis\">{{\n              item.label\n            }}</span>\n          </div>\n          @if (item.children?.length) {\n            <ul class=\"ml-5 border-l pl-2\">\n              @for (child of item.children; track child.label) {\n                <li>\n                  <div\n                    class=\"flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]\"\n                    (click)=\"handleItemClick(child)\"\n                  >\n                    @if (child.icon) {\n                      <span\n                        class=\"flex items-center justify-center w-5 h-5 text-xl flex-shrink-0\"\n                        >{{ child.icon }}</span\n                      >\n                    }\n                    <span class=\"flex-1 overflow-hidden text-ellipsis\">{{\n                      child.label\n                    }}</span>\n                  </div>\n                </li>\n              }\n            </ul>\n          }\n        </li>\n      }\n    </ul>\n  </nav>\n  <ng-content></ng-content>\n</aside>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SidebarComponent, isStandalone: true, selector: "app-sidebar", inputs: { collapsed: "collapsed", items: "items", width: "width", collapsedWidth: "collapsedWidth" }, outputs: { collapseChanged: "collapseChanged", itemClicked: "itemClicked" }, ngImport: i0, template: "<aside\n  class=\"ui-sidebar\"\n  [class.ui-sidebar-collapsed]=\"collapsed\"\n  [style.width.px]=\"width\"\n  [style.min-width.px]=\"width\"\n>\n  <div class=\"ui-sidebar-header\">\n    <button\n      class=\"ui-sidebar-toggle\"\n      (click)=\"toggleCollapse()\"\n      aria-label=\"Toggle sidebar\"\n    >\n      {{ collapsed ? \"\u2192\" : \"\u2190\" }}\n    </button>\n  </div>\n  <nav class=\"ui-sidebar-nav\">\n    <ul>\n      @for (item of parsedItems; track item.label) {\n        <li>\n          <div\n            class=\"ui-sidebar-item\"\n            (click)=\"handleItemClick(item)\"\n          >\n            @if (item.icon) {\n              <span class=\"ui-sidebar-item-icon\">{{ item.icon }}</span>\n            }\n            <span class=\"ui-sidebar-item-label\">{{ item.label }}</span>\n          </div>\n          @if (item.children?.length) {\n            <ul class=\"ui-sidebar-submenu\">\n              @for (child of item.children; track child.label) {\n                <li>\n                  <div\n                    class=\"ui-sidebar-item\"\n                    (click)=\"handleItemClick(child)\"\n                  >\n                    @if (child.icon) {\n                      <span class=\"ui-sidebar-item-icon\">{{ child.icon }}</span>\n                    }\n                    <span class=\"ui-sidebar-item-label\">{{ child.label }}</span>\n                  </div>\n                </li>\n              }\n            </ul>\n          }\n        </li>\n      }\n    </ul>\n  </nav>\n  <ng-content></ng-content>\n</aside>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SidebarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-sidebar", standalone: true, imports: [ApplyThemeDirective], template: "<aside\n  appApplyTheme=\"app-sidebar\"\n  class=\"flex flex-col h-full border-r transition-[width,min-width] duration-200 overflow-hidden bg-[var(--bg-elevated)] border-[var(--border-color)]\"\n  [class.w-16]=\"collapsed\"\n  [class.min-w-16]=\"collapsed\"\n  [style.width.px]=\"width\"\n  [style.min-width.px]=\"width\"\n>\n  <div\n    class=\"flex items-center justify-between px-4 py-3 border-b min-h-14 border-[var(--border-color)]\"\n  >\n    <button\n      class=\"flex items-center justify-center w-8 h-8 border rounded-lg bg-transparent cursor-pointer text-xl transition-all duration-150 p-0 border-[var(--border-color)] text-[var(--text-secondary)]\"\n      (click)=\"toggleCollapse()\"\n      aria-label=\"Toggle sidebar\"\n    >\n      {{ collapsed ? \"\u2192\" : \"\u2190\" }}\n    </button>\n  </div>\n  <nav class=\"flex-1 overflow-y-auto overflow-x-hidden p-2\">\n    <ul class=\"list-none m-0 p-0\">\n      @for (item of parsedItems; track item.label) {\n        <li class=\"m-0\">\n          <div\n            class=\"flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]\"\n            (click)=\"handleItemClick(item)\"\n          >\n            @if (item.icon) {\n              <span\n                class=\"flex items-center justify-center w-5 h-5 text-xl flex-shrink-0\"\n                >{{ item.icon }}</span\n              >\n            }\n            <span class=\"flex-1 overflow-hidden text-ellipsis\">{{\n              item.label\n            }}</span>\n          </div>\n          @if (item.children?.length) {\n            <ul class=\"ml-5 border-l pl-2\">\n              @for (child of item.children; track child.label) {\n                <li>\n                  <div\n                    class=\"flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-150 whitespace-nowrap overflow-hidden text-[var(--text-secondary)]\"\n                    (click)=\"handleItemClick(child)\"\n                  >\n                    @if (child.icon) {\n                      <span\n                        class=\"flex items-center justify-center w-5 h-5 text-xl flex-shrink-0\"\n                        >{{ child.icon }}</span\n                      >\n                    }\n                    <span class=\"flex-1 overflow-hidden text-ellipsis\">{{\n                      child.label\n                    }}</span>\n                  </div>\n                </li>\n              }\n            </ul>\n          }\n        </li>\n      }\n    </ul>\n  </nav>\n  <ng-content></ng-content>\n</aside>\n" }]
+            args: [{ selector: "app-sidebar", standalone: true, imports: [], template: "<aside\n  class=\"ui-sidebar\"\n  [class.ui-sidebar-collapsed]=\"collapsed\"\n  [style.width.px]=\"width\"\n  [style.min-width.px]=\"width\"\n>\n  <div class=\"ui-sidebar-header\">\n    <button\n      class=\"ui-sidebar-toggle\"\n      (click)=\"toggleCollapse()\"\n      aria-label=\"Toggle sidebar\"\n    >\n      {{ collapsed ? \"\u2192\" : \"\u2190\" }}\n    </button>\n  </div>\n  <nav class=\"ui-sidebar-nav\">\n    <ul>\n      @for (item of parsedItems; track item.label) {\n        <li>\n          <div\n            class=\"ui-sidebar-item\"\n            (click)=\"handleItemClick(item)\"\n          >\n            @if (item.icon) {\n              <span class=\"ui-sidebar-item-icon\">{{ item.icon }}</span>\n            }\n            <span class=\"ui-sidebar-item-label\">{{ item.label }}</span>\n          </div>\n          @if (item.children?.length) {\n            <ul class=\"ui-sidebar-submenu\">\n              @for (child of item.children; track child.label) {\n                <li>\n                  <div\n                    class=\"ui-sidebar-item\"\n                    (click)=\"handleItemClick(child)\"\n                  >\n                    @if (child.icon) {\n                      <span class=\"ui-sidebar-item-icon\">{{ child.icon }}</span>\n                    }\n                    <span class=\"ui-sidebar-item-label\">{{ child.label }}</span>\n                  </div>\n                </li>\n              }\n            </ul>\n          }\n        </li>\n      }\n    </ul>\n  </nav>\n  <ng-content></ng-content>\n</aside>\n" }]
         }], propDecorators: { collapsed: [{
                 type: Input
             }], items: [{
@@ -9118,11 +8994,11 @@ registerSchemaComponent("app-sidebar", SidebarComponent);
 class FooterComponent {
     text = "";
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: FooterComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: FooterComponent, isStandalone: true, selector: "app-footer", inputs: { text: "text" }, ngImport: i0, template: "<footer\n  appApplyTheme=\"app-footer\"\n  class=\"flex items-center justify-center px-4 py-4 min-h-[48px] border-t border-[var(--border-color)] bg-[var(--bg-elevated)]\"\n>\n  @if (text) {\n    <p class=\"text-sm text-center m-0 text-[var(--text-secondary)]\">\n      {{ text }}\n    </p>\n  }\n  <ng-content></ng-content>\n</footer>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: FooterComponent, isStandalone: true, selector: "app-footer", inputs: { text: "text" }, ngImport: i0, template: "<footer class=\"ui-footer\">\n  @if (text) {\n    <p>{{ text }}</p>\n  }\n  <ng-content></ng-content>\n</footer>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: FooterComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-footer", standalone: true, imports: [ApplyThemeDirective], template: "<footer\n  appApplyTheme=\"app-footer\"\n  class=\"flex items-center justify-center px-4 py-4 min-h-[48px] border-t border-[var(--border-color)] bg-[var(--bg-elevated)]\"\n>\n  @if (text) {\n    <p class=\"text-sm text-center m-0 text-[var(--text-secondary)]\">\n      {{ text }}\n    </p>\n  }\n  <ng-content></ng-content>\n</footer>\n" }]
+            args: [{ selector: "app-footer", standalone: true, imports: [], template: "<footer class=\"ui-footer\">\n  @if (text) {\n    <p>{{ text }}</p>\n  }\n  <ng-content></ng-content>\n</footer>\n" }]
         }], propDecorators: { text: [{
                 type: Input
             }] } });
@@ -9134,11 +9010,11 @@ class PageContainerComponent {
     maxWidth = 0;
     width = "";
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PageContainerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PageContainerComponent, isStandalone: true, selector: "app-page-container", inputs: { title: "title", padding: "padding", maxWidth: "maxWidth", width: "width" }, ngImport: i0, template: "@if (title) {\n  <div\n    class=\"flex items-center px-6 py-4 gap-4 border-b border-[var(--border-color)] min-h-[56px] bg-[var(--bg-elevated)]\"\n  >\n    <h1 class=\"text-xl font-semibold m-0 text-[var(--text-primary)]\">\n      {{ title }}\n    </h1>\n    <ng-content select=\"[slot=header-actions]\"></ng-content>\n  </div>\n}\n<div\n  appApplyTheme=\"app-page-container\"\n  class=\"flex-1 overflow-auto\"\n  [style.padding.px]=\"padding\"\n  [style.maxWidth]=\"maxWidth ? maxWidth + 'px' : null\"\n>\n  <ng-content></ng-content>\n</div>\n", styles: [":host{display:flex;flex-direction:column;height:100%}\n"], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PageContainerComponent, isStandalone: true, selector: "app-page-container", inputs: { title: "title", padding: "padding", maxWidth: "maxWidth", width: "width" }, ngImport: i0, template: "@if (title) {\n  <div class=\"ui-page-header\">\n    <h1>{{ title }}</h1>\n    <ng-content select=\"[slot=header-actions]\"></ng-content>\n  </div>\n}\n<div\n  class=\"ui-page-container\"\n  [style.padding.px]=\"padding\"\n  [style.maxWidth]=\"maxWidth ? maxWidth + 'px' : null\"\n>\n  <ng-content></ng-content>\n</div>\n", styles: [":host{display:flex;flex-direction:column;height:100%}\n"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PageContainerComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-page-container", standalone: true, imports: [ApplyThemeDirective], template: "@if (title) {\n  <div\n    class=\"flex items-center px-6 py-4 gap-4 border-b border-[var(--border-color)] min-h-[56px] bg-[var(--bg-elevated)]\"\n  >\n    <h1 class=\"text-xl font-semibold m-0 text-[var(--text-primary)]\">\n      {{ title }}\n    </h1>\n    <ng-content select=\"[slot=header-actions]\"></ng-content>\n  </div>\n}\n<div\n  appApplyTheme=\"app-page-container\"\n  class=\"flex-1 overflow-auto\"\n  [style.padding.px]=\"padding\"\n  [style.maxWidth]=\"maxWidth ? maxWidth + 'px' : null\"\n>\n  <ng-content></ng-content>\n</div>\n", styles: [":host{display:flex;flex-direction:column;height:100%}\n"] }]
+            args: [{ selector: "app-page-container", standalone: true, imports: [], template: "@if (title) {\n  <div class=\"ui-page-header\">\n    <h1>{{ title }}</h1>\n    <ng-content select=\"[slot=header-actions]\"></ng-content>\n  </div>\n}\n<div\n  class=\"ui-page-container\"\n  [style.padding.px]=\"padding\"\n  [style.maxWidth]=\"maxWidth ? maxWidth + 'px' : null\"\n>\n  <ng-content></ng-content>\n</div>\n", styles: [":host{display:flex;flex-direction:column;height:100%}\n"] }]
         }], propDecorators: { title: [{
                 type: Input
             }], padding: [{
@@ -9161,11 +9037,11 @@ class PageToolbarComponent {
         this.actionClicked.emit(action.action || action.label);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PageToolbarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PageToolbarComponent, isStandalone: true, selector: "app-page-toolbar", inputs: { title: "title", actions: "actions" }, outputs: { actionClicked: "actionClicked" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-page-toolbar\"\n  class=\"flex items-center px-6 py-4 gap-4 flex-wrap border-b border-[var(--border-color)] bg-[var(--bg-elevated)]\"\n>\n  <div class=\"flex-1 flex flex-col gap-1 min-w-[200px]\">\n    <h2 class=\"text-lg font-semibold m-0 text-[var(--text-primary)]\">\n      {{ title }}\n    </h2>\n    <ng-content select=\"[slot=subtitle]\"></ng-content>\n  </div>\n  <div class=\"flex items-center gap-2 flex-wrap\">\n    @for (action of parsedActions; track action.label) {\n      <button\n        class=\"inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm cursor-pointer transition-all duration-150\"\n        [style.border-color]=\"\n          action.variant === 'primary'\n            ? 'var(--accent)'\n            : action.variant === 'danger'\n              ? 'var(--error)'\n              : action.variant === 'ghost'\n                ? 'transparent'\n                : 'var(--border-color)'\n        \"\n        [style.background]=\"\n          action.variant === 'primary'\n            ? 'var(--accent)'\n            : action.variant === 'danger'\n              ? 'var(--error)'\n              : action.variant === 'ghost'\n                ? 'transparent'\n                : 'var(--bg-elevated)'\n        \"\n        [style.color]=\"\n          action.variant === 'primary'\n            ? 'var(--text-on-accent)'\n            : action.variant === 'danger'\n              ? 'var(--text-on-error)'\n              : action.variant === 'ghost'\n                ? 'var(--text-secondary)'\n                : 'var(--text-primary)'\n        \"\n        (mouseenter)=\"$any($event.target).style.background = 'var(--bg-hover)'\"\n        (mouseleave)=\"\n          $any($event.target).style.background =\n            action.variant === 'primary'\n              ? 'var(--accent)'\n              : action.variant === 'danger'\n                ? 'var(--error)'\n                : action.variant === 'ghost'\n                  ? 'transparent'\n                  : 'var(--bg-elevated)'\n        \"\n        (click)=\"handleAction(action)\"\n      >\n        @if (action.icon) {\n          <app-icon class=\"text-lg\" [icon]=\"action.icon\" [size]=\"18\" />\n        }\n        {{ action.label }}\n      </button>\n    }\n  </div>\n</div>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size"] }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PageToolbarComponent, isStandalone: true, selector: "app-page-toolbar", inputs: { title: "title", actions: "actions" }, outputs: { actionClicked: "actionClicked" }, ngImport: i0, template: "<div class=\"ui-page-toolbar\">\n  <div class=\"ui-page-toolbar-title\">\n    <h2>{{ title }}</h2>\n    <ng-content select=\"[slot=subtitle]\"></ng-content>\n  </div>\n  <div class=\"ui-page-toolbar-actions\">\n    @for (action of parsedActions; track action.label) {\n      <button\n        class=\"ui-btn\"\n        [class.ui-btn-primary]=\"action.variant === 'primary'\"\n        [class.ui-btn-danger]=\"action.variant === 'danger'\"\n        [class.ui-btn-ghost]=\"action.variant === 'ghost'\"\n        (click)=\"handleAction(action)\"\n      >\n        @if (action.icon) {\n          <app-icon [icon]=\"action.icon\" [size]=\"18\" />\n        }\n        {{ action.label }}\n      </button>\n    }\n  </div>\n</div>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PageToolbarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-page-toolbar", standalone: true, imports: [IconComponent, ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-page-toolbar\"\n  class=\"flex items-center px-6 py-4 gap-4 flex-wrap border-b border-[var(--border-color)] bg-[var(--bg-elevated)]\"\n>\n  <div class=\"flex-1 flex flex-col gap-1 min-w-[200px]\">\n    <h2 class=\"text-lg font-semibold m-0 text-[var(--text-primary)]\">\n      {{ title }}\n    </h2>\n    <ng-content select=\"[slot=subtitle]\"></ng-content>\n  </div>\n  <div class=\"flex items-center gap-2 flex-wrap\">\n    @for (action of parsedActions; track action.label) {\n      <button\n        class=\"inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm cursor-pointer transition-all duration-150\"\n        [style.border-color]=\"\n          action.variant === 'primary'\n            ? 'var(--accent)'\n            : action.variant === 'danger'\n              ? 'var(--error)'\n              : action.variant === 'ghost'\n                ? 'transparent'\n                : 'var(--border-color)'\n        \"\n        [style.background]=\"\n          action.variant === 'primary'\n            ? 'var(--accent)'\n            : action.variant === 'danger'\n              ? 'var(--error)'\n              : action.variant === 'ghost'\n                ? 'transparent'\n                : 'var(--bg-elevated)'\n        \"\n        [style.color]=\"\n          action.variant === 'primary'\n            ? 'var(--text-on-accent)'\n            : action.variant === 'danger'\n              ? 'var(--text-on-error)'\n              : action.variant === 'ghost'\n                ? 'var(--text-secondary)'\n                : 'var(--text-primary)'\n        \"\n        (mouseenter)=\"$any($event.target).style.background = 'var(--bg-hover)'\"\n        (mouseleave)=\"\n          $any($event.target).style.background =\n            action.variant === 'primary'\n              ? 'var(--accent)'\n              : action.variant === 'danger'\n                ? 'var(--error)'\n                : action.variant === 'ghost'\n                  ? 'transparent'\n                  : 'var(--bg-elevated)'\n        \"\n        (click)=\"handleAction(action)\"\n      >\n        @if (action.icon) {\n          <app-icon class=\"text-lg\" [icon]=\"action.icon\" [size]=\"18\" />\n        }\n        {{ action.label }}\n      </button>\n    }\n  </div>\n</div>\n" }]
+            args: [{ selector: "app-page-toolbar", standalone: true, imports: [IconComponent], template: "<div class=\"ui-page-toolbar\">\n  <div class=\"ui-page-toolbar-title\">\n    <h2>{{ title }}</h2>\n    <ng-content select=\"[slot=subtitle]\"></ng-content>\n  </div>\n  <div class=\"ui-page-toolbar-actions\">\n    @for (action of parsedActions; track action.label) {\n      <button\n        class=\"ui-btn\"\n        [class.ui-btn-primary]=\"action.variant === 'primary'\"\n        [class.ui-btn-danger]=\"action.variant === 'danger'\"\n        [class.ui-btn-ghost]=\"action.variant === 'ghost'\"\n        (click)=\"handleAction(action)\"\n      >\n        @if (action.icon) {\n          <app-icon [icon]=\"action.icon\" [size]=\"18\" />\n        }\n        {{ action.label }}\n      </button>\n    }\n  </div>\n</div>\n" }]
         }], propDecorators: { title: [{
                 type: Input
             }], actions: [{
@@ -9222,11 +9098,11 @@ class SplitViewComponent {
             document.removeEventListener("mouseup", this.onMouseUp);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SplitViewComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SplitViewComponent, isStandalone: true, selector: "app-split-view", inputs: { direction: "direction", split: "split", minFirst: "minFirst", minSecond: "minSecond" }, outputs: { splitChanged: "splitChanged" }, viewQueries: [{ propertyName: "containerEl", first: true, predicate: ["container"], descendants: true }], ngImport: i0, template: "<div\n  appApplyTheme=\"app-split-view\"\n  #container\n  [class]=\"\n    'flex h-full w-full overflow-hidden ' +\n    (direction === 'vertical' ? 'flex-col' : '')\n  \"\n>\n  <div\n    class=\"split-pane first overflow-auto shrink-0\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'height: 100%; width: ' + split + '%; flex-grow: 0'\n        : 'width: 100%; height: ' + split + '%; flex-grow: 0'\n    \"\n  >\n    <ng-content select=\"[slot=first]\"></ng-content>\n  </div>\n  <div\n    class=\"split-divider shrink-0 relative z-10 transition-colors duration-150 bg-[color:var(--border-color)]\"\n    [class.dragging]=\"isDragging\"\n    [class.cursor-col-resize]=\"direction === 'horizontal'\"\n    [class.cursor-row-resize]=\"direction === 'vertical'\"\n    [class.w-1.5]=\"direction === 'horizontal'\"\n    [class.h-full]=\"direction === 'horizontal'\"\n    [class.w-full]=\"direction === 'vertical'\"\n    [class.h-1.5]=\"direction === 'vertical'\"\n    (mousedown)=\"onDividerMouseDown($event)\"\n  ></div>\n  <div\n    class=\"split-pane second overflow-auto\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'flex: 1; height: 100%'\n        : 'flex: 1; width: 100%'\n    \"\n  >\n    <ng-content select=\"[slot=second]\"></ng-content>\n  </div>\n</div>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SplitViewComponent, isStandalone: true, selector: "app-split-view", inputs: { direction: "direction", split: "split", minFirst: "minFirst", minSecond: "minSecond" }, outputs: { splitChanged: "splitChanged" }, viewQueries: [{ propertyName: "containerEl", first: true, predicate: ["container"], descendants: true }], ngImport: i0, template: "<div\n  class=\"ui-split-view\"\n  #container\n  [class.ui-split-view-vertical]=\"direction === 'vertical'\"\n>\n  <div\n    class=\"ui-split-pane-first\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'height: 100%; width: ' + split + '%; flex-grow: 0'\n        : 'width: 100%; height: ' + split + '%; flex-grow: 0'\n    \"\n  >\n    <ng-content select=\"[slot=first]\"></ng-content>\n  </div>\n  <div\n    class=\"ui-split-divider\"\n    [class.ui-split-divider-dragging]=\"isDragging\"\n    [class.ui-split-divider-horizontal]=\"direction === 'horizontal'\"\n    [class.ui-split-divider-vertical]=\"direction === 'vertical'\"\n    (mousedown)=\"onDividerMouseDown($event)\"\n  ></div>\n  <div\n    class=\"ui-split-pane-second\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'flex: 1; height: 100%'\n        : 'flex: 1; width: 100%'\n    \"\n  >\n    <ng-content select=\"[slot=second]\"></ng-content>\n  </div>\n</div>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SplitViewComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-split-view", standalone: true, imports: [ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-split-view\"\n  #container\n  [class]=\"\n    'flex h-full w-full overflow-hidden ' +\n    (direction === 'vertical' ? 'flex-col' : '')\n  \"\n>\n  <div\n    class=\"split-pane first overflow-auto shrink-0\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'height: 100%; width: ' + split + '%; flex-grow: 0'\n        : 'width: 100%; height: ' + split + '%; flex-grow: 0'\n    \"\n  >\n    <ng-content select=\"[slot=first]\"></ng-content>\n  </div>\n  <div\n    class=\"split-divider shrink-0 relative z-10 transition-colors duration-150 bg-[color:var(--border-color)]\"\n    [class.dragging]=\"isDragging\"\n    [class.cursor-col-resize]=\"direction === 'horizontal'\"\n    [class.cursor-row-resize]=\"direction === 'vertical'\"\n    [class.w-1.5]=\"direction === 'horizontal'\"\n    [class.h-full]=\"direction === 'horizontal'\"\n    [class.w-full]=\"direction === 'vertical'\"\n    [class.h-1.5]=\"direction === 'vertical'\"\n    (mousedown)=\"onDividerMouseDown($event)\"\n  ></div>\n  <div\n    class=\"split-pane second overflow-auto\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'flex: 1; height: 100%'\n        : 'flex: 1; width: 100%'\n    \"\n  >\n    <ng-content select=\"[slot=second]\"></ng-content>\n  </div>\n</div>\n" }]
+            args: [{ selector: "app-split-view", standalone: true, imports: [], template: "<div\n  class=\"ui-split-view\"\n  #container\n  [class.ui-split-view-vertical]=\"direction === 'vertical'\"\n>\n  <div\n    class=\"ui-split-pane-first\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'height: 100%; width: ' + split + '%; flex-grow: 0'\n        : 'width: 100%; height: ' + split + '%; flex-grow: 0'\n    \"\n  >\n    <ng-content select=\"[slot=first]\"></ng-content>\n  </div>\n  <div\n    class=\"ui-split-divider\"\n    [class.ui-split-divider-dragging]=\"isDragging\"\n    [class.ui-split-divider-horizontal]=\"direction === 'horizontal'\"\n    [class.ui-split-divider-vertical]=\"direction === 'vertical'\"\n    (mousedown)=\"onDividerMouseDown($event)\"\n  ></div>\n  <div\n    class=\"ui-split-pane-second\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'flex: 1; height: 100%'\n        : 'flex: 1; width: 100%'\n    \"\n  >\n    <ng-content select=\"[slot=second]\"></ng-content>\n  </div>\n</div>\n" }]
         }], propDecorators: { containerEl: [{
                 type: ViewChild,
                 args: ["container"]
@@ -9254,11 +9130,11 @@ class AvatarComponent {
         return (this.alt || this.name || "").substring(0, 2).toUpperCase();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: AvatarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: AvatarComponent, isStandalone: true, selector: "app-avatar", inputs: { src: "src", alt: "alt", name: "name", size: "size" }, ngImport: i0, template: "<div appApplyTheme=\"app-avatar\">\n  @if (src && !imgError) {\n    <img\n      class=\"w-full h-full object-cover\"\n      [src]=\"src\"\n      [alt]=\"alt\"\n      (error)=\"imgError = true\"\n    />\n  } @else {\n    <span class=\"font-semibold text-[var(--text-secondary)] uppercase\">{{\n      initials\n    }}</span>\n  }\n</div>\n", styles: [":host([size=\"sm\"]){width:2rem;height:2rem;font-size:.75rem}:host([size=\"md\"]){width:2.5rem;height:2.5rem;font-size:.875rem}:host([size=\"lg\"]){width:3.5rem;height:3.5rem;font-size:1.25rem}\n"], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: AvatarComponent, isStandalone: true, selector: "app-avatar", inputs: { src: "src", alt: "alt", name: "name", size: "size" }, ngImport: i0, template: "<div class=\"ui-avatar\">\n  @if (src && !imgError) {\n    <img\n      [src]=\"src\"\n      [alt]=\"alt\"\n      (error)=\"imgError = true\"\n    />\n  } @else {\n    <span class=\"ui-avatar-initials\">{{ initials }}</span>\n  }\n</div>\n", styles: [":host([size=\"sm\"]){width:2rem;height:2rem;font-size:.75rem}:host([size=\"md\"]){width:2.5rem;height:2.5rem;font-size:.875rem}:host([size=\"lg\"]){width:3.5rem;height:3.5rem;font-size:1.25rem}\n"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: AvatarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-avatar", standalone: true, imports: [ApplyThemeDirective], template: "<div appApplyTheme=\"app-avatar\">\n  @if (src && !imgError) {\n    <img\n      class=\"w-full h-full object-cover\"\n      [src]=\"src\"\n      [alt]=\"alt\"\n      (error)=\"imgError = true\"\n    />\n  } @else {\n    <span class=\"font-semibold text-[var(--text-secondary)] uppercase\">{{\n      initials\n    }}</span>\n  }\n</div>\n", styles: [":host([size=\"sm\"]){width:2rem;height:2rem;font-size:.75rem}:host([size=\"md\"]){width:2.5rem;height:2.5rem;font-size:.875rem}:host([size=\"lg\"]){width:3.5rem;height:3.5rem;font-size:1.25rem}\n"] }]
+            args: [{ selector: "app-avatar", standalone: true, imports: [], template: "<div class=\"ui-avatar\">\n  @if (src && !imgError) {\n    <img\n      [src]=\"src\"\n      [alt]=\"alt\"\n      (error)=\"imgError = true\"\n    />\n  } @else {\n    <span class=\"ui-avatar-initials\">{{ initials }}</span>\n  }\n</div>\n", styles: [":host([size=\"sm\"]){width:2rem;height:2rem;font-size:.75rem}:host([size=\"md\"]){width:2.5rem;height:2.5rem;font-size:.875rem}:host([size=\"lg\"]){width:3.5rem;height:3.5rem;font-size:1.25rem}\n"] }]
         }], propDecorators: { src: [{
                 type: Input
             }], alt: [{
@@ -9282,11 +9158,11 @@ class ChipComponent {
         this.removed.emit();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ChipComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ChipComponent, isStandalone: true, selector: "app-chip", inputs: { label: "label", icon: "icon", removable: "removable", closeable: "closeable" }, outputs: { removed: "removed" }, ngImport: i0, template: "<span\n  appApplyTheme=\"app-chip\"\n  class=\"inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-sm font-medium transition-colors hover:bg-[var(--bg-hover)] bg-[var(--bg-elevated)] border-[var(--border-color)] text-[var(--text-primary)]\"\n>\n  @if (icon) {\n    <app-icon class=\"text-base\" [icon]=\"icon\" [size]=\"16\" />\n  }\n  <span>{{ label }}</span>\n  @if (removable || closeable) {\n    <button\n      class=\"inline-flex items-center justify-center w-4 h-4 p-0 border-0 bg-transparent rounded-full transition-colors ms-0.5 hover:bg-[var(--border-color)] hover:text-[var(--text-primary)] text-[var(--text-secondary)]\"\n      (click)=\"handleRemove($event)\"\n      aria-label=\"Remove\"\n    >\n      &times;\n    </button>\n  }\n</span>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size"] }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ChipComponent, isStandalone: true, selector: "app-chip", inputs: { label: "label", icon: "icon", removable: "removable", closeable: "closeable" }, outputs: { removed: "removed" }, ngImport: i0, template: "<span class=\"ui-badge\">\n  @if (icon) {\n    <app-icon [icon]=\"icon\" [size]=\"16\" />\n  }\n  <span>{{ label }}</span>\n  @if (removable || closeable) {\n    <button\n      class=\"ui-chip-remove\"\n      (click)=\"handleRemove($event)\"\n      aria-label=\"Remove\"\n    >\n      &times;\n    </button>\n  }\n</span>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ChipComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-chip", standalone: true, imports: [IconComponent, ApplyThemeDirective], template: "<span\n  appApplyTheme=\"app-chip\"\n  class=\"inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-sm font-medium transition-colors hover:bg-[var(--bg-hover)] bg-[var(--bg-elevated)] border-[var(--border-color)] text-[var(--text-primary)]\"\n>\n  @if (icon) {\n    <app-icon class=\"text-base\" [icon]=\"icon\" [size]=\"16\" />\n  }\n  <span>{{ label }}</span>\n  @if (removable || closeable) {\n    <button\n      class=\"inline-flex items-center justify-center w-4 h-4 p-0 border-0 bg-transparent rounded-full transition-colors ms-0.5 hover:bg-[var(--border-color)] hover:text-[var(--text-primary)] text-[var(--text-secondary)]\"\n      (click)=\"handleRemove($event)\"\n      aria-label=\"Remove\"\n    >\n      &times;\n    </button>\n  }\n</span>\n" }]
+            args: [{ selector: "app-chip", standalone: true, imports: [IconComponent], template: "<span class=\"ui-badge\">\n  @if (icon) {\n    <app-icon [icon]=\"icon\" [size]=\"16\" />\n  }\n  <span>{{ label }}</span>\n  @if (removable || closeable) {\n    <button\n      class=\"ui-chip-remove\"\n      (click)=\"handleRemove($event)\"\n      aria-label=\"Remove\"\n    >\n      &times;\n    </button>\n  }\n</span>\n" }]
         }], propDecorators: { label: [{
                 type: Input
             }], icon: [{
@@ -9300,7 +9176,213 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             }] } });
 registerSchemaComponent("app-chip", ChipComponent);
 
+class ModalComponent {
+    elementRef;
+    cdr;
+    open = input(false, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "open" }] : /* istanbul ignore next */ []));
+    title = input("", /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "title" }] : /* istanbul ignore next */ []));
+    size = input("md", /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "size" }] : /* istanbul ignore next */ []));
+    closeOnBackdrop = input(true, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "closeOnBackdrop" }] : /* istanbul ignore next */ []));
+    closeOnEscape = input(true, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "closeOnEscape" }] : /* istanbul ignore next */ []));
+    showCloseButton = input(true, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "showCloseButton" }] : /* istanbul ignore next */ []));
+    showHeader = input(true, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "showHeader" }] : /* istanbul ignore next */ []));
+    showFooter = input(true, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "showFooter" }] : /* istanbul ignore next */ []));
+    contentPosition = input("center", /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "contentPosition" }] : /* istanbul ignore next */ []));
+    closed = output();
+    opened = output();
+    isVisible = signal(false, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "isVisible" }] : /* istanbul ignore next */ []));
+    isAnimating = signal(false, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "isAnimating" }] : /* istanbul ignore next */ []));
+    previousActiveElement = null;
+    openedTimeoutId = null;
+    closedTimeoutId = null;
+    escapeKeyHandler = (event) => {
+        if (event.key === "Escape" && this.closeOnEscape() && this.open()) {
+            this.onClose();
+        }
+    };
+    ngOnInit() {
+        if (this.open()) {
+            this.openModal();
+        }
+    }
+    ngOnDestroy() {
+        if (this.openedTimeoutId)
+            clearTimeout(this.openedTimeoutId);
+        if (this.closedTimeoutId)
+            clearTimeout(this.closedTimeoutId);
+        this.cleanup();
+    }
+    ngOnChanges() {
+        if (this.open()) {
+            this.openModal();
+        }
+        else {
+            this.closeModal();
+        }
+    }
+    openModal() {
+        if (this.openedTimeoutId) {
+            clearTimeout(this.openedTimeoutId);
+            this.openedTimeoutId = null;
+        }
+        this.previousActiveElement = document.activeElement;
+        this.isVisible.set(true);
+        this.isAnimating.set(true);
+        document.body.style.overflow = "hidden";
+        document.addEventListener("keydown", this.escapeKeyHandler);
+        this.openedTimeoutId = setTimeout(() => {
+            this.openedTimeoutId = null;
+            this.isAnimating.set(false);
+            this.cdr.markForCheck();
+            this.opened.emit();
+            this.trapFocus();
+        }, 50);
+    }
+    closeModal() {
+        if (this.openedTimeoutId) {
+            clearTimeout(this.openedTimeoutId);
+            this.openedTimeoutId = null;
+        }
+        this.isAnimating.set(true);
+        document.body.style.overflow = "";
+        document.removeEventListener("keydown", this.escapeKeyHandler);
+        this.closedTimeoutId = setTimeout(() => {
+            this.closedTimeoutId = null;
+            this.isVisible.set(false);
+            this.isAnimating.set(false);
+            this.cdr.markForCheck();
+            this.closed.emit();
+            this.restoreFocus();
+        }, 200);
+    }
+    onBackdropClick(event) {
+        if (this.closeOnBackdrop() &&
+            event.target.classList.contains("modal-backdrop")) {
+            this.onClose();
+        }
+    }
+    onClose() {
+        this.closeModal();
+    }
+    get sizeClasses() {
+        const sizes = {
+            sm: "max-w-[400px]",
+            md: "max-w-[600px]",
+            lg: "max-w-[800px]",
+            xl: "max-w-[1000px]",
+            full: "max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)]",
+        };
+        return sizes[this.size()];
+    }
+    get contentPositionClasses() {
+        return this.contentPosition() === "top"
+            ? "items-start pt-[10vh]"
+            : "items-center";
+    }
+    trapFocus() {
+        const focusableElements = this.elementRef.nativeElement.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (focusableElements.length > 0) {
+            focusableElements[0].focus();
+        }
+    }
+    restoreFocus() {
+        if (this.previousActiveElement) {
+            this.previousActiveElement.focus();
+            this.previousActiveElement = null;
+        }
+    }
+    cleanup() {
+        document.body.style.overflow = "";
+        document.removeEventListener("keydown", this.escapeKeyHandler);
+    }
+    constructor(elementRef, cdr) {
+        this.elementRef = elementRef;
+        this.cdr = cdr;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ModalComponent, deps: [{ token: i0.ElementRef }, { token: i0.ChangeDetectorRef }], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ModalComponent, isStandalone: true, selector: "app-modal", inputs: { open: { classPropertyName: "open", publicName: "open", isSignal: true, isRequired: false, transformFunction: null }, title: { classPropertyName: "title", publicName: "title", isSignal: true, isRequired: false, transformFunction: null }, size: { classPropertyName: "size", publicName: "size", isSignal: true, isRequired: false, transformFunction: null }, closeOnBackdrop: { classPropertyName: "closeOnBackdrop", publicName: "closeOnBackdrop", isSignal: true, isRequired: false, transformFunction: null }, closeOnEscape: { classPropertyName: "closeOnEscape", publicName: "closeOnEscape", isSignal: true, isRequired: false, transformFunction: null }, showCloseButton: { classPropertyName: "showCloseButton", publicName: "showCloseButton", isSignal: true, isRequired: false, transformFunction: null }, showHeader: { classPropertyName: "showHeader", publicName: "showHeader", isSignal: true, isRequired: false, transformFunction: null }, showFooter: { classPropertyName: "showFooter", publicName: "showFooter", isSignal: true, isRequired: false, transformFunction: null }, contentPosition: { classPropertyName: "contentPosition", publicName: "contentPosition", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { closed: "closed", opened: "opened" }, usesOnChanges: true, ngImport: i0, template: "@if (isVisible()) {\n  <div\n    class=\"modal-backdrop sf-fixed sf-inset-0 sf-z-50 sf-flex sf-justify-center sf-backdrop-blur-sm sf-transition-opacity sf-duration-200\"\n    style=\"background: var(--bg-backdrop)\"\n    [class.sf-opacity-0]=\"isAnimating()\"\n    [class.sf-opacity-100]=\"!isAnimating()\"\n    [class]=\"contentPositionClasses\"\n    (click)=\"onBackdropClick($event)\"\n  >\n    <div\n      role=\"dialog\"\n      aria-modal=\"true\"\n      [attr.aria-labelledby]=\"'modal-title-' + title()\"\n      class=\"sf-relative sf-w-full sf-rounded-2xl sf-border sf-shadow-2xl sf-backdrop-blur-md sf-transition-all sf-duration-200\"\n      style=\"border-color: var(--border-visible); background: var(--bg-modal)\"\n      [class.sf-scale-95]=\"isAnimating()\"\n      [class.sf-scale-100]=\"!isAnimating()\"\n      [class]=\"sizeClasses\"\n    >\n      @if (showHeader()) {\n        <div\n          class=\"sf-flex sf-items-center sf-justify-between sf-border-b\"\n          style=\"border-color: var(--border-subtle)\"\n        >\n          <h2\n            [id]=\"'modal-title-' + title()\"\n            style=\"color: var(--text-main)\"\n          >\n            {{ title() }}\n          </h2>\n          @if (showCloseButton()) {\n            <button\n              type=\"button\"\n              (click)=\"onClose()\"\n              class=\"sf-text-[var(--text-dim)] sf-transition-colors sf-hover-bg-accent-10 sf-hover-text-main\"\n              aria-label=\"Close modal\"\n            >\n              <svg class=\"sf-h-5 sf-w-5\" viewBox=\"0 0 20 20\" fill=\"currentColor\">\n                <path\n                  fill-rule=\"evenodd\"\n                  d=\"M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z\"\n                  clip-rule=\"evenodd\"\n                />\n              </svg>\n            </button>\n          }\n        </div>\n      }\n\n      <div style=\"max-height: calc(100vh - 12rem)\" class=\"sf-overflow-y-auto\">\n        <ng-content></ng-content>\n      </div>\n\n      @if (showFooter()) {\n        <div\n          class=\"sf-flex sf-items-center sf-justify-end sf-gap-3 sf-border-t\"\n          style=\"border-color: var(--border-subtle)\"\n        >\n          <ng-content select=\"[modal-footer]\"></ng-content>\n        </div>\n      }\n    </div>\n  </div>\n}\n", dependencies: [{ kind: "ngmodule", type: CommonModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ModalComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-modal", standalone: true, changeDetection: ChangeDetectionStrategy.OnPush, imports: [CommonModule], template: "@if (isVisible()) {\n  <div\n    class=\"modal-backdrop sf-fixed sf-inset-0 sf-z-50 sf-flex sf-justify-center sf-backdrop-blur-sm sf-transition-opacity sf-duration-200\"\n    style=\"background: var(--bg-backdrop)\"\n    [class.sf-opacity-0]=\"isAnimating()\"\n    [class.sf-opacity-100]=\"!isAnimating()\"\n    [class]=\"contentPositionClasses\"\n    (click)=\"onBackdropClick($event)\"\n  >\n    <div\n      role=\"dialog\"\n      aria-modal=\"true\"\n      [attr.aria-labelledby]=\"'modal-title-' + title()\"\n      class=\"sf-relative sf-w-full sf-rounded-2xl sf-border sf-shadow-2xl sf-backdrop-blur-md sf-transition-all sf-duration-200\"\n      style=\"border-color: var(--border-visible); background: var(--bg-modal)\"\n      [class.sf-scale-95]=\"isAnimating()\"\n      [class.sf-scale-100]=\"!isAnimating()\"\n      [class]=\"sizeClasses\"\n    >\n      @if (showHeader()) {\n        <div\n          class=\"sf-flex sf-items-center sf-justify-between sf-border-b\"\n          style=\"border-color: var(--border-subtle)\"\n        >\n          <h2\n            [id]=\"'modal-title-' + title()\"\n            style=\"color: var(--text-main)\"\n          >\n            {{ title() }}\n          </h2>\n          @if (showCloseButton()) {\n            <button\n              type=\"button\"\n              (click)=\"onClose()\"\n              class=\"sf-text-[var(--text-dim)] sf-transition-colors sf-hover-bg-accent-10 sf-hover-text-main\"\n              aria-label=\"Close modal\"\n            >\n              <svg class=\"sf-h-5 sf-w-5\" viewBox=\"0 0 20 20\" fill=\"currentColor\">\n                <path\n                  fill-rule=\"evenodd\"\n                  d=\"M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z\"\n                  clip-rule=\"evenodd\"\n                />\n              </svg>\n            </button>\n          }\n        </div>\n      }\n\n      <div style=\"max-height: calc(100vh - 12rem)\" class=\"sf-overflow-y-auto\">\n        <ng-content></ng-content>\n      </div>\n\n      @if (showFooter()) {\n        <div\n          class=\"sf-flex sf-items-center sf-justify-end sf-gap-3 sf-border-t\"\n          style=\"border-color: var(--border-subtle)\"\n        >\n          <ng-content select=\"[modal-footer]\"></ng-content>\n        </div>\n      }\n    </div>\n  </div>\n}\n" }]
+        }], ctorParameters: () => [{ type: i0.ElementRef }, { type: i0.ChangeDetectorRef }], propDecorators: { open: [{ type: i0.Input, args: [{ isSignal: true, alias: "open", required: false }] }], title: [{ type: i0.Input, args: [{ isSignal: true, alias: "title", required: false }] }], size: [{ type: i0.Input, args: [{ isSignal: true, alias: "size", required: false }] }], closeOnBackdrop: [{ type: i0.Input, args: [{ isSignal: true, alias: "closeOnBackdrop", required: false }] }], closeOnEscape: [{ type: i0.Input, args: [{ isSignal: true, alias: "closeOnEscape", required: false }] }], showCloseButton: [{ type: i0.Input, args: [{ isSignal: true, alias: "showCloseButton", required: false }] }], showHeader: [{ type: i0.Input, args: [{ isSignal: true, alias: "showHeader", required: false }] }], showFooter: [{ type: i0.Input, args: [{ isSignal: true, alias: "showFooter", required: false }] }], contentPosition: [{ type: i0.Input, args: [{ isSignal: true, alias: "contentPosition", required: false }] }], closed: [{ type: i0.Output, args: ["closed"] }], opened: [{ type: i0.Output, args: ["opened"] }] } });
+
+class ConfirmService {
+    resolvePromise = null;
+    isOpen = signal(false, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "isOpen" }] : /* istanbul ignore next */ []));
+    options = signal({ message: "" }, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "options" }] : /* istanbul ignore next */ []));
+    async confirmDelete(itemName) {
+        return this.confirm({
+            title: "Delete",
+            message: `Are you sure you want to delete this? This action cannot be undone.`,
+            itemName,
+            confirmText: "Delete",
+            confirmClass: "rounded-xl border border-[var(--accent)]/50 bg-transparent px-4 py-3 text-sm font-medium text-[var(--accent)] transition-colors hover:border-[var(--accent)]",
+        });
+    }
+    async confirm(options) {
+        this.options.set(options);
+        this.isOpen.set(true);
+        return new Promise((resolve) => {
+            this.resolvePromise = resolve;
+        });
+    }
+    confirmResult(result) {
+        this.isOpen.set(false);
+        this.resolvePromise?.(result);
+        this.resolvePromise = null;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ConfirmService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ConfirmService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ConfirmService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }] });
+
+class ConfirmDialogComponent {
+    confirmService;
+    constructor(confirmService) {
+        this.confirmService = confirmService;
+    }
+    get options() {
+        return this.confirmService.options();
+    }
+    get isOpen() {
+        return this.confirmService.isOpen();
+    }
+    onConfirm() {
+        this.confirmService.confirmResult(true);
+    }
+    onCancel() {
+        this.confirmService.confirmResult(false);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ConfirmDialogComponent, deps: [{ token: ConfirmService }], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ConfirmDialogComponent, isStandalone: true, selector: "app-confirm-dialog", ngImport: i0, template: "<app-modal\n  [open]=\"isOpen\"\n  [title]=\"options.title || 'Confirm'\"\n  size=\"sm\"\n  [showFooter]=\"true\"\n  [showHeader]=\"true\"\n  [showCloseButton]=\"false\"\n  (closed)=\"onCancel()\"\n>\n  <div style=\"color: var(--text-main)\">\n    <p>{{ options.message }}</p>\n    @if (options.itemName) {\n      <p\n        class=\"sf-font-mono\"\n        style=\"background: var(--bg-elevated); color: var(--accent)\"\n      >\n        {{ options.itemName }}\n      </p>\n    }\n  </div>\n\n  <div modal-footer class=\"sf-flex sf-justify-end sf-gap-3\">\n    <button\n      type=\"button\"\n      (click)=\"onCancel()\"\n      class=\"ui-btn ui-btn-outline\"\n    >\n      {{ options.cancelText || \"Cancel\" }}\n    </button>\n    <button\n      type=\"button\"\n      (click)=\"onConfirm()\"\n      [class]=\"options.confirmClass || 'ui-btn ui-btn-primary'\"\n    >\n      {{ options.confirmText || \"Confirm\" }}\n    </button>\n  </div>\n</app-modal>\n", dependencies: [{ kind: "component", type: ModalComponent, selector: "app-modal", inputs: ["open", "title", "size", "closeOnBackdrop", "closeOnEscape", "showCloseButton", "showHeader", "showFooter", "contentPosition"], outputs: ["closed", "opened"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ConfirmDialogComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-confirm-dialog", standalone: true, imports: [ModalComponent], template: "<app-modal\n  [open]=\"isOpen\"\n  [title]=\"options.title || 'Confirm'\"\n  size=\"sm\"\n  [showFooter]=\"true\"\n  [showHeader]=\"true\"\n  [showCloseButton]=\"false\"\n  (closed)=\"onCancel()\"\n>\n  <div style=\"color: var(--text-main)\">\n    <p>{{ options.message }}</p>\n    @if (options.itemName) {\n      <p\n        class=\"sf-font-mono\"\n        style=\"background: var(--bg-elevated); color: var(--accent)\"\n      >\n        {{ options.itemName }}\n      </p>\n    }\n  </div>\n\n  <div modal-footer class=\"sf-flex sf-justify-end sf-gap-3\">\n    <button\n      type=\"button\"\n      (click)=\"onCancel()\"\n      class=\"ui-btn ui-btn-outline\"\n    >\n      {{ options.cancelText || \"Cancel\" }}\n    </button>\n    <button\n      type=\"button\"\n      (click)=\"onConfirm()\"\n      [class]=\"options.confirmClass || 'ui-btn ui-btn-primary'\"\n    >\n      {{ options.confirmText || \"Confirm\" }}\n    </button>\n  </div>\n</app-modal>\n" }]
+        }], ctorParameters: () => [{ type: ConfirmService }] });
+
 class PaginationComponent {
+    cdr;
+    constructor(cdr) {
+        this.cdr = cdr;
+    }
     totalItems = 0;
     currentPage = 0;
     pageSize = 50;
@@ -9341,13 +9423,13 @@ class PaginationComponent {
         this.pageSizeChange.emit(size);
         this.pageChange.emit(0);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PaginationComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: PaginationComponent, isStandalone: true, selector: "app-pagination", inputs: { totalItems: "totalItems", currentPage: "currentPage", pageSize: "pageSize" }, outputs: { pageChange: "pageChange", pageSizeChange: "pageSizeChange" }, ngImport: i0, template: "<div\n  class=\"flex w-full items-center justify-between border-t border-[var(--border-subtle)] bg-transparent px-6 py-3\"\n>\n  <div class=\"flex items-center gap-6\">\n    <span class=\"text-sm text-[var(--text-dim)]\">\n      Showing\n      <span class=\"font-bold text-[var(--text-main)]\">{{ startIndex }}</span\n      >-<span class=\"font-bold text-[var(--text-main)]\">{{ endIndex }}</span> of\n      <span class=\"font-bold text-[var(--text-main)]\">{{ totalItems }}</span>\n    </span>\n    <div class=\"flex items-center gap-3\">\n      <span class=\"text-xs text-[var(--text-muted)]\">Rows per page:</span>\n      <select\n        class=\"cursor-pointer rounded-lg border border-[var(--border-visible)] bg-[var(--bg-card)] px-3 py-1.5 text-sm text-[var(--text-main)] focus:border-[var(--accent)] focus:outline-none\"\n        [value]=\"pageSize\"\n        (change)=\"onPageSizeChange(+$any($event.target).value)\"\n      >\n        <option value=\"10\">10</option>\n        <option value=\"25\">25</option>\n        <option value=\"50\">50</option>\n        <option value=\"100\">100</option>\n      </select>\n    </div>\n  </div>\n\n  <div class=\"flex items-center gap-2\">\n    <button\n      class=\"rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30\"\n      [disabled]=\"!hasPrevPage\"\n      (click)=\"firstPage()\"\n      title=\"First page\"\n    >\n      <app-icon icon=\"first_page\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30\"\n      [disabled]=\"!hasPrevPage\"\n      (click)=\"prevPage()\"\n      title=\"Previous page\"\n    >\n      <app-icon icon=\"chevron_left\" [size]=\"18\" />\n    </button>\n    <span class=\"px-3 text-sm text-[var(--text-dim)]\"\n      >Page {{ currentPage + 1 }} of {{ totalPages || 1 }}</span\n    >\n    <button\n      class=\"rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30\"\n      [disabled]=\"!hasNextPage\"\n      (click)=\"nextPage()\"\n      title=\"Next page\"\n    >\n      <app-icon icon=\"chevron_right\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30\"\n      [disabled]=\"!hasNextPage\"\n      (click)=\"lastPage()\"\n      title=\"Last page\"\n    >\n      <app-icon icon=\"last_page\" [size]=\"18\" />\n    </button>\n  </div>\n</div>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PaginationComponent, deps: [{ token: i0.ChangeDetectorRef }], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: PaginationComponent, isStandalone: true, selector: "app-pagination", inputs: { totalItems: "totalItems", currentPage: "currentPage", pageSize: "pageSize" }, outputs: { pageChange: "pageChange", pageSizeChange: "pageSizeChange" }, ngImport: i0, template: "<div\n  class=\"sf-flex sf-w-full sf-items-center sf-justify-between sf-border-t sf-bg-transparent\"\n  style=\"border-color: var(--border-subtle)\"\n>\n  <div class=\"sf-flex sf-items-center sf-gap-6\">\n    <span style=\"color: var(--text-dim)\">\n      Showing\n      <span style=\"color: var(--text-main)\">{{ startIndex }}</span\n      >-<span style=\"color: var(--text-main)\">{{ endIndex }}</span> of\n      <span style=\"color: var(--text-main)\">{{ totalItems }}</span>\n    </span>\n    <div class=\"sf-flex sf-items-center sf-gap-3\">\n      <span style=\"color: var(--text-muted)\">Rows per page:</span>\n      <select\n        class=\"sf-cursor-pointer sf-border sf-bg-transparent sf-text-sm sf-focus-outline-none\"\n        style=\"border-color: var(--border-visible); color: var(--text-main); background: var(--bg-card)\"\n        [value]=\"pageSize\"\n        (change)=\"onPageSizeChange(+$any($event.target).value)\"\n      >\n        <option value=\"10\">10</option>\n        <option value=\"25\">25</option>\n        <option value=\"50\">50</option>\n        <option value=\"100\">100</option>\n      </select>\n    </div>\n  </div>\n\n  <div class=\"sf-flex sf-items-center sf-gap-2\">\n    <button\n      class=\"sf-transition-all sf-disabled-cursor-not-allowed sf-disabled-opacity-30 sf-hover-bg-card sf-hover-text-main\"\n      style=\"color: var(--text-dim)\"\n      [disabled]=\"!hasPrevPage\"\n      (click)=\"firstPage()\"\n      title=\"First page\"\n    >\n      <i class=\"fa fa-angles-left\" style=\"font-size: 14px\"></i>\n    </button>\n    <button\n      class=\"sf-transition-all sf-disabled-cursor-not-allowed sf-disabled-opacity-30 sf-hover-bg-card sf-hover-text-main\"\n      style=\"color: var(--text-dim)\"\n      [disabled]=\"!hasPrevPage\"\n      (click)=\"prevPage()\"\n      title=\"Previous page\"\n    >\n      <i class=\"fa fa-chevron-left\" style=\"font-size: 14px\"></i>\n    </button>\n    <span class=\"sf-text-sm\" style=\"color: var(--text-dim)\"\n      >Page {{ currentPage + 1 }} of {{ totalPages || 1 }}</span\n    >\n    <button\n      class=\"sf-transition-all sf-disabled-cursor-not-allowed sf-disabled-opacity-30 sf-hover-bg-card sf-hover-text-main\"\n      style=\"color: var(--text-dim)\"\n      [disabled]=\"!hasNextPage\"\n      (click)=\"nextPage()\"\n      title=\"Next page\"\n    >\n      <i class=\"fa fa-chevron-right\" style=\"font-size: 14px\"></i>\n    </button>\n    <button\n      class=\"sf-transition-all sf-disabled-cursor-not-allowed sf-disabled-opacity-30 sf-hover-bg-card sf-hover-text-main\"\n      style=\"color: var(--text-dim)\"\n      [disabled]=\"!hasNextPage\"\n      (click)=\"lastPage()\"\n      title=\"Last page\"\n    >\n      <i class=\"fa fa-angles-right\" style=\"font-size: 14px\"></i>\n    </button>\n  </div>\n</div>\n", changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PaginationComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-pagination", standalone: true, changeDetection: ChangeDetectionStrategy.OnPush, imports: [IconComponent, ApplyThemeDirective], template: "<div\n  class=\"flex w-full items-center justify-between border-t border-[var(--border-subtle)] bg-transparent px-6 py-3\"\n>\n  <div class=\"flex items-center gap-6\">\n    <span class=\"text-sm text-[var(--text-dim)]\">\n      Showing\n      <span class=\"font-bold text-[var(--text-main)]\">{{ startIndex }}</span\n      >-<span class=\"font-bold text-[var(--text-main)]\">{{ endIndex }}</span> of\n      <span class=\"font-bold text-[var(--text-main)]\">{{ totalItems }}</span>\n    </span>\n    <div class=\"flex items-center gap-3\">\n      <span class=\"text-xs text-[var(--text-muted)]\">Rows per page:</span>\n      <select\n        class=\"cursor-pointer rounded-lg border border-[var(--border-visible)] bg-[var(--bg-card)] px-3 py-1.5 text-sm text-[var(--text-main)] focus:border-[var(--accent)] focus:outline-none\"\n        [value]=\"pageSize\"\n        (change)=\"onPageSizeChange(+$any($event.target).value)\"\n      >\n        <option value=\"10\">10</option>\n        <option value=\"25\">25</option>\n        <option value=\"50\">50</option>\n        <option value=\"100\">100</option>\n      </select>\n    </div>\n  </div>\n\n  <div class=\"flex items-center gap-2\">\n    <button\n      class=\"rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30\"\n      [disabled]=\"!hasPrevPage\"\n      (click)=\"firstPage()\"\n      title=\"First page\"\n    >\n      <app-icon icon=\"first_page\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30\"\n      [disabled]=\"!hasPrevPage\"\n      (click)=\"prevPage()\"\n      title=\"Previous page\"\n    >\n      <app-icon icon=\"chevron_left\" [size]=\"18\" />\n    </button>\n    <span class=\"px-3 text-sm text-[var(--text-dim)]\"\n      >Page {{ currentPage + 1 }} of {{ totalPages || 1 }}</span\n    >\n    <button\n      class=\"rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30\"\n      [disabled]=\"!hasNextPage\"\n      (click)=\"nextPage()\"\n      title=\"Next page\"\n    >\n      <app-icon icon=\"chevron_right\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30\"\n      [disabled]=\"!hasNextPage\"\n      (click)=\"lastPage()\"\n      title=\"Last page\"\n    >\n      <app-icon icon=\"last_page\" [size]=\"18\" />\n    </button>\n  </div>\n</div>\n" }]
-        }], propDecorators: { totalItems: [{
+            args: [{ selector: "app-pagination", standalone: true, changeDetection: ChangeDetectionStrategy.OnPush, imports: [], template: "<div\n  class=\"sf-flex sf-w-full sf-items-center sf-justify-between sf-border-t sf-bg-transparent\"\n  style=\"border-color: var(--border-subtle)\"\n>\n  <div class=\"sf-flex sf-items-center sf-gap-6\">\n    <span style=\"color: var(--text-dim)\">\n      Showing\n      <span style=\"color: var(--text-main)\">{{ startIndex }}</span\n      >-<span style=\"color: var(--text-main)\">{{ endIndex }}</span> of\n      <span style=\"color: var(--text-main)\">{{ totalItems }}</span>\n    </span>\n    <div class=\"sf-flex sf-items-center sf-gap-3\">\n      <span style=\"color: var(--text-muted)\">Rows per page:</span>\n      <select\n        class=\"sf-cursor-pointer sf-border sf-bg-transparent sf-text-sm sf-focus-outline-none\"\n        style=\"border-color: var(--border-visible); color: var(--text-main); background: var(--bg-card)\"\n        [value]=\"pageSize\"\n        (change)=\"onPageSizeChange(+$any($event.target).value)\"\n      >\n        <option value=\"10\">10</option>\n        <option value=\"25\">25</option>\n        <option value=\"50\">50</option>\n        <option value=\"100\">100</option>\n      </select>\n    </div>\n  </div>\n\n  <div class=\"sf-flex sf-items-center sf-gap-2\">\n    <button\n      class=\"sf-transition-all sf-disabled-cursor-not-allowed sf-disabled-opacity-30 sf-hover-bg-card sf-hover-text-main\"\n      style=\"color: var(--text-dim)\"\n      [disabled]=\"!hasPrevPage\"\n      (click)=\"firstPage()\"\n      title=\"First page\"\n    >\n      <i class=\"fa fa-angles-left\" style=\"font-size: 14px\"></i>\n    </button>\n    <button\n      class=\"sf-transition-all sf-disabled-cursor-not-allowed sf-disabled-opacity-30 sf-hover-bg-card sf-hover-text-main\"\n      style=\"color: var(--text-dim)\"\n      [disabled]=\"!hasPrevPage\"\n      (click)=\"prevPage()\"\n      title=\"Previous page\"\n    >\n      <i class=\"fa fa-chevron-left\" style=\"font-size: 14px\"></i>\n    </button>\n    <span class=\"sf-text-sm\" style=\"color: var(--text-dim)\"\n      >Page {{ currentPage + 1 }} of {{ totalPages || 1 }}</span\n    >\n    <button\n      class=\"sf-transition-all sf-disabled-cursor-not-allowed sf-disabled-opacity-30 sf-hover-bg-card sf-hover-text-main\"\n      style=\"color: var(--text-dim)\"\n      [disabled]=\"!hasNextPage\"\n      (click)=\"nextPage()\"\n      title=\"Next page\"\n    >\n      <i class=\"fa fa-chevron-right\" style=\"font-size: 14px\"></i>\n    </button>\n    <button\n      class=\"sf-transition-all sf-disabled-cursor-not-allowed sf-disabled-opacity-30 sf-hover-bg-card sf-hover-text-main\"\n      style=\"color: var(--text-dim)\"\n      [disabled]=\"!hasNextPage\"\n      (click)=\"lastPage()\"\n      title=\"Last page\"\n    >\n      <i class=\"fa fa-angles-right\" style=\"font-size: 14px\"></i>\n    </button>\n  </div>\n</div>\n" }]
+        }], ctorParameters: () => [{ type: i0.ChangeDetectorRef }], propDecorators: { totalItems: [{
                 type: Input
             }], currentPage: [{
                 type: Input
@@ -9358,7 +9440,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             }], pageSizeChange: [{
                 type: Output
             }] } });
-registerSchemaComponent("app-pagination", PaginationComponent);
 
 class TabsComponent {
     tabs = "[]";
@@ -9372,11 +9453,11 @@ class TabsComponent {
         this.tabChanged.emit(tab);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TabsComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TabsComponent, isStandalone: true, selector: "app-tabs", inputs: { tabs: "tabs", activeTab: "activeTab" }, outputs: { tabChanged: "tabChanged" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-tabs\"\n  class=\"flex gap-0 border-b border-[var(--border-color)]\"\n>\n  @for (tab of parsedTabs; track tab) {\n    <div\n      class=\"tab px-5 py-3 text-sm font-medium cursor-pointer -mb-px transition-all duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]\"\n      [class.active]=\"tab === activeTab\"\n      [class.text-[var(--accent)]]=\"tab === activeTab\"\n      [class.border-b-2]=\"tab === activeTab\"\n      [class.border-b-transparent]=\"tab !== activeTab\"\n      [style.--tw-border-color]=\"\n        tab === activeTab ? 'var(--accent)' : 'transparent'\n      \"\n      (click)=\"selectTab(tab)\"\n    >\n      {{ tab }}\n    </div>\n  }\n</div>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TabsComponent, isStandalone: true, selector: "app-tabs", inputs: { tabs: "tabs", activeTab: "activeTab" }, outputs: { tabChanged: "tabChanged" }, ngImport: i0, template: "<div class=\"ui-tabs\">\n  @for (tab of parsedTabs; track tab) {\n    <div\n      class=\"ui-tab\"\n      [class.ui-tab-active]=\"tab === activeTab\"\n      (click)=\"selectTab(tab)\"\n    >\n      {{ tab }}\n    </div>\n  }\n</div>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TabsComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-tabs", standalone: true, imports: [ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-tabs\"\n  class=\"flex gap-0 border-b border-[var(--border-color)]\"\n>\n  @for (tab of parsedTabs; track tab) {\n    <div\n      class=\"tab px-5 py-3 text-sm font-medium cursor-pointer -mb-px transition-all duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]\"\n      [class.active]=\"tab === activeTab\"\n      [class.text-[var(--accent)]]=\"tab === activeTab\"\n      [class.border-b-2]=\"tab === activeTab\"\n      [class.border-b-transparent]=\"tab !== activeTab\"\n      [style.--tw-border-color]=\"\n        tab === activeTab ? 'var(--accent)' : 'transparent'\n      \"\n      (click)=\"selectTab(tab)\"\n    >\n      {{ tab }}\n    </div>\n  }\n</div>\n" }]
+            args: [{ selector: "app-tabs", standalone: true, imports: [], template: "<div class=\"ui-tabs\">\n  @for (tab of parsedTabs; track tab) {\n    <div\n      class=\"ui-tab\"\n      [class.ui-tab-active]=\"tab === activeTab\"\n      (click)=\"selectTab(tab)\"\n    >\n      {{ tab }}\n    </div>\n  }\n</div>\n" }]
         }], propDecorators: { tabs: [{
                 type: Input
             }], activeTab: [{
@@ -9401,11 +9482,11 @@ class ProgressBarComponent {
         return "high";
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ProgressBarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: ProgressBarComponent, isStandalone: true, selector: "app-progress-bar", inputs: { value: "value", max: "max" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-progress-bar\"\n  class=\"w-full h-2 bg-[var(--bg-elevated)] rounded border border-[var(--border-color)] overflow-hidden\"\n>\n  <div\n    class=\"h-full rounded transition-all duration-300\"\n    [class.bg-[var(--warning)]]=\"fillClass === 'low'\"\n    [class.bg-[var(--accent)]]=\"fillClass === 'medium'\"\n    [class.bg-[var(--success)]]=\"fillClass === 'high'\"\n    [style.width.%]=\"percentage\"\n  ></div>\n</div>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: ProgressBarComponent, isStandalone: true, selector: "app-progress-bar", inputs: { value: "value", max: "max" }, ngImport: i0, template: "<div class=\"ui-progress\">\n  <div\n    class=\"ui-progress-fill\"\n    [class.ui-progress-low]=\"fillClass === 'low'\"\n    [class.ui-progress-medium]=\"fillClass === 'medium'\"\n    [class.ui-progress-high]=\"fillClass === 'high'\"\n    [style.width.%]=\"percentage\"\n  ></div>\n</div>\n", styles: [":host{display:block}\n"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ProgressBarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-progress-bar", standalone: true, imports: [ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-progress-bar\"\n  class=\"w-full h-2 bg-[var(--bg-elevated)] rounded border border-[var(--border-color)] overflow-hidden\"\n>\n  <div\n    class=\"h-full rounded transition-all duration-300\"\n    [class.bg-[var(--warning)]]=\"fillClass === 'low'\"\n    [class.bg-[var(--accent)]]=\"fillClass === 'medium'\"\n    [class.bg-[var(--success)]]=\"fillClass === 'high'\"\n    [style.width.%]=\"percentage\"\n  ></div>\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-progress-bar", standalone: true, imports: [], template: "<div class=\"ui-progress\">\n  <div\n    class=\"ui-progress-fill\"\n    [class.ui-progress-low]=\"fillClass === 'low'\"\n    [class.ui-progress-medium]=\"fillClass === 'medium'\"\n    [class.ui-progress-high]=\"fillClass === 'high'\"\n    [style.width.%]=\"percentage\"\n  ></div>\n</div>\n", styles: [":host{display:block}\n"] }]
         }], propDecorators: { value: [{
                 type: Input
             }], max: [{
@@ -9425,11 +9506,11 @@ class SegmentSelectorComponent {
         this.changed.emit(opt);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SegmentSelectorComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SegmentSelectorComponent, isStandalone: true, selector: "app-segment-selector", inputs: { options: "options", selected: "selected" }, outputs: { changed: "changed" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-segment-selector\"\n  class=\"inline-flex border border-[var(--border-color)] rounded-lg overflow-hidden bg-[var(--bg-elevated)]\"\n>\n  @for (opt of parsedOptions; track opt) {\n    <div\n      class=\"px-4 py-2 text-sm font-medium text-[var(--text-secondary)] cursor-pointer transition-colors duration-150 border-r border-[var(--border-color)] last:border-r-0 hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]\"\n      [class.bg-[var(--accent)]]=\"opt === selected\"\n      [class.text-[var(--text-on-accent)]]=\"opt === selected\"\n      (click)=\"selectOption(opt)\"\n    >\n      {{ opt }}\n    </div>\n  }\n</div>\n", styles: [":host{display:inline-flex}\n"], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SegmentSelectorComponent, isStandalone: true, selector: "app-segment-selector", inputs: { options: "options", selected: "selected" }, outputs: { changed: "changed" }, ngImport: i0, template: "<div class=\"ui-segment-selector\">\n  @for (opt of parsedOptions; track opt) {\n    <div\n      class=\"ui-segment-option\"\n      [class.ui-segment-option-active]=\"opt === selected\"\n      (click)=\"selectOption(opt)\"\n    >\n      {{ opt }}\n    </div>\n  }\n</div>\n", styles: [":host{display:inline-flex}\n"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SegmentSelectorComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-segment-selector", standalone: true, imports: [ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-segment-selector\"\n  class=\"inline-flex border border-[var(--border-color)] rounded-lg overflow-hidden bg-[var(--bg-elevated)]\"\n>\n  @for (opt of parsedOptions; track opt) {\n    <div\n      class=\"px-4 py-2 text-sm font-medium text-[var(--text-secondary)] cursor-pointer transition-colors duration-150 border-r border-[var(--border-color)] last:border-r-0 hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]\"\n      [class.bg-[var(--accent)]]=\"opt === selected\"\n      [class.text-[var(--text-on-accent)]]=\"opt === selected\"\n      (click)=\"selectOption(opt)\"\n    >\n      {{ opt }}\n    </div>\n  }\n</div>\n", styles: [":host{display:inline-flex}\n"] }]
+            args: [{ selector: "app-segment-selector", standalone: true, imports: [], template: "<div class=\"ui-segment-selector\">\n  @for (opt of parsedOptions; track opt) {\n    <div\n      class=\"ui-segment-option\"\n      [class.ui-segment-option-active]=\"opt === selected\"\n      (click)=\"selectOption(opt)\"\n    >\n      {{ opt }}\n    </div>\n  }\n</div>\n", styles: [":host{display:inline-flex}\n"] }]
         }], propDecorators: { options: [{
                 type: Input
             }], selected: [{
@@ -9447,11 +9528,11 @@ class TooltipComponent {
     delay = 200;
     show = false;
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TooltipComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TooltipComponent, isStandalone: true, selector: "app-tooltip", inputs: { text: "text", content: "content", position: "position", delay: "delay" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-tooltip\"\n  class=\"inline-flex relative cursor-pointer\"\n  (mouseenter)=\"show = true\"\n  (mouseleave)=\"show = false\"\n  (focus)=\"show = true\"\n  (blur)=\"show = false\"\n  tabindex=\"0\"\n>\n  <ng-content></ng-content>\n  @if (show) {\n    <div\n      class=\"absolute z-50 px-3 py-1.5 rounded-md text-xs whitespace-nowrap shadow-md pointer-events-none tooltip-bubble bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--border-color)]\"\n      [class.top]=\"!position || position === 'top'\"\n      [class.bottom]=\"position === 'bottom'\"\n      [class.left]=\"position === 'left'\"\n      [class.right]=\"position === 'right'\"\n    >\n      {{ text || content }}\n    </div>\n  }\n</div>\n", styles: [":host{display:inline-flex;position:relative}.tooltip-bubble{position:absolute;z-index:50}.tooltip-bubble.top{bottom:100%;left:50%;transform:translate(-50%);margin-bottom:.5rem}.tooltip-bubble.bottom{top:100%;left:50%;transform:translate(-50%);margin-top:.5rem}.tooltip-bubble.left{right:100%;top:50%;transform:translateY(-50%);margin-right:.5rem}.tooltip-bubble.right{left:100%;top:50%;transform:translateY(-50%);margin-left:.5rem}\n"], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TooltipComponent, isStandalone: true, selector: "app-tooltip", inputs: { text: "text", content: "content", position: "position", delay: "delay" }, ngImport: i0, template: "<div\n  class=\"ui-tooltip\"\n  (mouseenter)=\"show = true\"\n  (mouseleave)=\"show = false\"\n  (focus)=\"show = true\"\n  (blur)=\"show = false\"\n  tabindex=\"0\"\n>\n  <ng-content></ng-content>\n  @if (show) {\n    <div\n      class=\"ui-tooltip-bubble\"\n      [class.ui-tooltip-top]=\"!position || position === 'top'\"\n      [class.ui-tooltip-bottom]=\"position === 'bottom'\"\n      [class.ui-tooltip-left]=\"position === 'left'\"\n      [class.ui-tooltip-right]=\"position === 'right'\"\n    >\n      {{ text || content }}\n    </div>\n  }\n</div>\n", styles: [":host{display:inline-flex;position:relative}.tooltip-bubble{position:absolute;z-index:50}.tooltip-bubble.top{bottom:100%;left:50%;transform:translate(-50%);margin-bottom:.5rem}.tooltip-bubble.bottom{top:100%;left:50%;transform:translate(-50%);margin-top:.5rem}.tooltip-bubble.left{right:100%;top:50%;transform:translateY(-50%);margin-right:.5rem}.tooltip-bubble.right{left:100%;top:50%;transform:translateY(-50%);margin-left:.5rem}\n"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TooltipComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-tooltip", standalone: true, imports: [ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-tooltip\"\n  class=\"inline-flex relative cursor-pointer\"\n  (mouseenter)=\"show = true\"\n  (mouseleave)=\"show = false\"\n  (focus)=\"show = true\"\n  (blur)=\"show = false\"\n  tabindex=\"0\"\n>\n  <ng-content></ng-content>\n  @if (show) {\n    <div\n      class=\"absolute z-50 px-3 py-1.5 rounded-md text-xs whitespace-nowrap shadow-md pointer-events-none tooltip-bubble bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--border-color)]\"\n      [class.top]=\"!position || position === 'top'\"\n      [class.bottom]=\"position === 'bottom'\"\n      [class.left]=\"position === 'left'\"\n      [class.right]=\"position === 'right'\"\n    >\n      {{ text || content }}\n    </div>\n  }\n</div>\n", styles: [":host{display:inline-flex;position:relative}.tooltip-bubble{position:absolute;z-index:50}.tooltip-bubble.top{bottom:100%;left:50%;transform:translate(-50%);margin-bottom:.5rem}.tooltip-bubble.bottom{top:100%;left:50%;transform:translate(-50%);margin-top:.5rem}.tooltip-bubble.left{right:100%;top:50%;transform:translateY(-50%);margin-right:.5rem}.tooltip-bubble.right{left:100%;top:50%;transform:translateY(-50%);margin-left:.5rem}\n"] }]
+            args: [{ selector: "app-tooltip", standalone: true, imports: [], template: "<div\n  class=\"ui-tooltip\"\n  (mouseenter)=\"show = true\"\n  (mouseleave)=\"show = false\"\n  (focus)=\"show = true\"\n  (blur)=\"show = false\"\n  tabindex=\"0\"\n>\n  <ng-content></ng-content>\n  @if (show) {\n    <div\n      class=\"ui-tooltip-bubble\"\n      [class.ui-tooltip-top]=\"!position || position === 'top'\"\n      [class.ui-tooltip-bottom]=\"position === 'bottom'\"\n      [class.ui-tooltip-left]=\"position === 'left'\"\n      [class.ui-tooltip-right]=\"position === 'right'\"\n    >\n      {{ text || content }}\n    </div>\n  }\n</div>\n", styles: [":host{display:inline-flex;position:relative}.tooltip-bubble{position:absolute;z-index:50}.tooltip-bubble.top{bottom:100%;left:50%;transform:translate(-50%);margin-bottom:.5rem}.tooltip-bubble.bottom{top:100%;left:50%;transform:translate(-50%);margin-top:.5rem}.tooltip-bubble.left{right:100%;top:50%;transform:translateY(-50%);margin-right:.5rem}.tooltip-bubble.right{left:100%;top:50%;transform:translateY(-50%);margin-left:.5rem}\n"] }]
         }], propDecorators: { text: [{
                 type: Input
             }], content: [{
@@ -9500,11 +9581,11 @@ class SnackbarComponent {
         this.dismiss();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SnackbarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SnackbarComponent, isStandalone: true, selector: "app-snackbar", inputs: { message: "message", action: "action", duration: "duration", type: "type", open: "open" }, outputs: { dismissed: "dismissed", actioned: "actioned" }, usesOnChanges: true, ngImport: i0, template: "@if (open) {\n  <div\n    appApplyTheme=\"app-snackbar\"\n    [class]=\"'bar ' + type\"\n    class=\"fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] block inline-flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-elevated)] text-[var(--text-on-accent)] text-sm shadow-xl min-w-[280px] max-w-[560px] border-l-4\"\n    [style.border-left-color]=\"'var(--' + type + '-color, var(--accent))'\"\n    role=\"status\"\n  >\n    <span class=\"message flex-1\">{{ message }}</span>\n    @if (action) {\n      <button\n        class=\"action-btn bg-transparent border-none text-[var(--accent)] font-semibold cursor-pointer px-2 py-1 rounded text-xs uppercase hover:bg-white/10\"\n        (click)=\"handleAction()\"\n      >\n        {{ action }}\n      </button>\n    }\n    <button\n      class=\"close-btn bg-transparent border-none cursor-pointer p-0.5 opacity-70 text-lg leading-none hover:opacity-100\"\n      (click)=\"dismiss()\"\n      aria-label=\"Dismiss\"\n    >\n      &times;\n    </button>\n  </div>\n}\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SnackbarComponent, isStandalone: true, selector: "app-snackbar", inputs: { message: "message", action: "action", duration: "duration", type: "type", open: "open" }, outputs: { dismissed: "dismissed", actioned: "actioned" }, usesOnChanges: true, ngImport: i0, template: "@if (open) {\n  <div\n    class=\"ui-snackbar ui-snackbar-{{ type }}\"\n    [style.border-left-color]=\"'var(--' + type + '-color, var(--accent))'\"\n    role=\"status\"\n  >\n    <span class=\"ui-snackbar-message\">{{ message }}</span>\n    @if (action) {\n      <button\n        class=\"ui-snackbar-action\"\n        (click)=\"handleAction()\"\n      >\n        {{ action }}\n      </button>\n    }\n    <button\n      class=\"ui-snackbar-close\"\n      (click)=\"dismiss()\"\n      aria-label=\"Dismiss\"\n    >\n      &times;\n    </button>\n  </div>\n}\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SnackbarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-snackbar", standalone: true, imports: [ApplyThemeDirective], template: "@if (open) {\n  <div\n    appApplyTheme=\"app-snackbar\"\n    [class]=\"'bar ' + type\"\n    class=\"fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] block inline-flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-elevated)] text-[var(--text-on-accent)] text-sm shadow-xl min-w-[280px] max-w-[560px] border-l-4\"\n    [style.border-left-color]=\"'var(--' + type + '-color, var(--accent))'\"\n    role=\"status\"\n  >\n    <span class=\"message flex-1\">{{ message }}</span>\n    @if (action) {\n      <button\n        class=\"action-btn bg-transparent border-none text-[var(--accent)] font-semibold cursor-pointer px-2 py-1 rounded text-xs uppercase hover:bg-white/10\"\n        (click)=\"handleAction()\"\n      >\n        {{ action }}\n      </button>\n    }\n    <button\n      class=\"close-btn bg-transparent border-none cursor-pointer p-0.5 opacity-70 text-lg leading-none hover:opacity-100\"\n      (click)=\"dismiss()\"\n      aria-label=\"Dismiss\"\n    >\n      &times;\n    </button>\n  </div>\n}\n" }]
+            args: [{ selector: "app-snackbar", standalone: true, imports: [], template: "@if (open) {\n  <div\n    class=\"ui-snackbar ui-snackbar-{{ type }}\"\n    [style.border-left-color]=\"'var(--' + type + '-color, var(--accent))'\"\n    role=\"status\"\n  >\n    <span class=\"ui-snackbar-message\">{{ message }}</span>\n    @if (action) {\n      <button\n        class=\"ui-snackbar-action\"\n        (click)=\"handleAction()\"\n      >\n        {{ action }}\n      </button>\n    }\n    <button\n      class=\"ui-snackbar-close\"\n      (click)=\"dismiss()\"\n      aria-label=\"Dismiss\"\n    >\n      &times;\n    </button>\n  </div>\n}\n" }]
         }], propDecorators: { message: [{
                 type: Input
             }], action: [{
@@ -9527,11 +9608,11 @@ class SpinnerComponent {
     color = "";
     label = "";
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SpinnerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SpinnerComponent, isStandalone: true, selector: "app-spinner", inputs: { size: "size", color: "color", label: "label" }, ngImport: i0, template: "<div appApplyTheme=\"app-spinner\" class=\"inline-flex items-center gap-2\">\n  <div\n    class=\"border-2 rounded-full animate-spin border-[var(--border-color)]\"\n    [class]=\"'spinner-' + size\"\n    [style.borderTopColor]=\"color || 'var(--accent)'\"\n  ></div>\n  @if (label) {\n    <span class=\"text-sm text-[var(--text-secondary)]\">{{ label }}</span>\n  }\n</div>\n", styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SpinnerComponent, isStandalone: true, selector: "app-spinner", inputs: { size: "size", color: "color", label: "label" }, ngImport: i0, template: "<div class=\"ui-spinner\">\n  <div\n    class=\"ui-spinner-icon\"\n    [class.ui-spinner-sm]=\"size === 'sm'\"\n    [class.ui-spinner-md]=\"size === 'md'\"\n    [class.ui-spinner-lg]=\"size === 'lg'\"\n    [style.borderTopColor]=\"color || 'var(--accent)'\"\n  ></div>\n  @if (label) {\n    <span>{{ label }}</span>\n  }\n</div>\n", styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SpinnerComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-spinner", standalone: true, imports: [ApplyThemeDirective], template: "<div appApplyTheme=\"app-spinner\" class=\"inline-flex items-center gap-2\">\n  <div\n    class=\"border-2 rounded-full animate-spin border-[var(--border-color)]\"\n    [class]=\"'spinner-' + size\"\n    [style.borderTopColor]=\"color || 'var(--accent)'\"\n  ></div>\n  @if (label) {\n    <span class=\"text-sm text-[var(--text-secondary)]\">{{ label }}</span>\n  }\n</div>\n", styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"] }]
+            args: [{ selector: "app-spinner", standalone: true, imports: [], template: "<div class=\"ui-spinner\">\n  <div\n    class=\"ui-spinner-icon\"\n    [class.ui-spinner-sm]=\"size === 'sm'\"\n    [class.ui-spinner-md]=\"size === 'md'\"\n    [class.ui-spinner-lg]=\"size === 'lg'\"\n    [style.borderTopColor]=\"color || 'var(--accent)'\"\n  ></div>\n  @if (label) {\n    <span>{{ label }}</span>\n  }\n</div>\n", styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"] }]
         }], propDecorators: { size: [{
                 type: Input
             }], color: [{
@@ -9546,11 +9627,11 @@ class DividerComponent {
     spacing = "md";
     color = "";
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DividerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: DividerComponent, isStandalone: true, selector: "app-divider", inputs: { orientation: "orientation", spacing: "spacing", color: "color" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-divider\"\n  class=\"flex items-center justify-center\"\n  [class.inline-flex]=\"orientation === 'vertical'\"\n  [class.h-full]=\"orientation === 'vertical'\"\n  role=\"separator\"\n>\n  <div\n    class=\"w-full h-px\"\n    [class.w-px]=\"orientation === 'vertical'\"\n    [class.h-full]=\"orientation === 'vertical'\"\n    [style.background]=\"color || 'var(--divider-color, var(--border-color))'\"\n  ></div>\n</div>\n", styles: [":host{display:block}:host([orientation=\"vertical\"]){display:inline-flex;height:100%}:host([spacing=\"none\"]){margin:0}:host([spacing=\"sm\"]){margin:.5rem 0}:host([spacing=\"md\"]){margin:1rem 0}:host([spacing=\"lg\"]){margin:1.5rem 0}:host([spacing=\"xl\"]){margin:2.5rem 0}:host([orientation=\"vertical\"][spacing=\"none\"]){margin:0}:host([orientation=\"vertical\"][spacing=\"sm\"]){margin:0 .5rem}:host([orientation=\"vertical\"][spacing=\"md\"]){margin:0 1rem}:host([orientation=\"vertical\"][spacing=\"lg\"]){margin:0 1.5rem}:host([orientation=\"vertical\"][spacing=\"xl\"]){margin:0 2.5rem}\n"], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: DividerComponent, isStandalone: true, selector: "app-divider", inputs: { orientation: "orientation", spacing: "spacing", color: "color" }, ngImport: i0, template: "<div\n  class=\"ui-divider\"\n  [class.ui-divider-vertical]=\"orientation === 'vertical'\"\n  role=\"separator\"\n>\n  <div\n    class=\"ui-divider-line\"\n    [class.ui-divider-line-vertical]=\"orientation === 'vertical'\"\n    [style.background]=\"color || 'var(--divider-color, var(--border-color))'\"\n  ></div>\n</div>\n", styles: [":host{display:block}:host([orientation=\"vertical\"]){display:inline-flex;height:100%}:host([spacing=\"none\"]){margin:0}:host([spacing=\"sm\"]){margin:.5rem 0}:host([spacing=\"md\"]){margin:1rem 0}:host([spacing=\"lg\"]){margin:1.5rem 0}:host([spacing=\"xl\"]){margin:2.5rem 0}:host([orientation=\"vertical\"][spacing=\"none\"]){margin:0}:host([orientation=\"vertical\"][spacing=\"sm\"]){margin:0 .5rem}:host([orientation=\"vertical\"][spacing=\"md\"]){margin:0 1rem}:host([orientation=\"vertical\"][spacing=\"lg\"]){margin:0 1.5rem}:host([orientation=\"vertical\"][spacing=\"xl\"]){margin:0 2.5rem}\n"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DividerComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-divider", standalone: true, imports: [ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-divider\"\n  class=\"flex items-center justify-center\"\n  [class.inline-flex]=\"orientation === 'vertical'\"\n  [class.h-full]=\"orientation === 'vertical'\"\n  role=\"separator\"\n>\n  <div\n    class=\"w-full h-px\"\n    [class.w-px]=\"orientation === 'vertical'\"\n    [class.h-full]=\"orientation === 'vertical'\"\n    [style.background]=\"color || 'var(--divider-color, var(--border-color))'\"\n  ></div>\n</div>\n", styles: [":host{display:block}:host([orientation=\"vertical\"]){display:inline-flex;height:100%}:host([spacing=\"none\"]){margin:0}:host([spacing=\"sm\"]){margin:.5rem 0}:host([spacing=\"md\"]){margin:1rem 0}:host([spacing=\"lg\"]){margin:1.5rem 0}:host([spacing=\"xl\"]){margin:2.5rem 0}:host([orientation=\"vertical\"][spacing=\"none\"]){margin:0}:host([orientation=\"vertical\"][spacing=\"sm\"]){margin:0 .5rem}:host([orientation=\"vertical\"][spacing=\"md\"]){margin:0 1rem}:host([orientation=\"vertical\"][spacing=\"lg\"]){margin:0 1.5rem}:host([orientation=\"vertical\"][spacing=\"xl\"]){margin:0 2.5rem}\n"] }]
+            args: [{ selector: "app-divider", standalone: true, imports: [], template: "<div\n  class=\"ui-divider\"\n  [class.ui-divider-vertical]=\"orientation === 'vertical'\"\n  role=\"separator\"\n>\n  <div\n    class=\"ui-divider-line\"\n    [class.ui-divider-line-vertical]=\"orientation === 'vertical'\"\n    [style.background]=\"color || 'var(--divider-color, var(--border-color))'\"\n  ></div>\n</div>\n", styles: [":host{display:block}:host([orientation=\"vertical\"]){display:inline-flex;height:100%}:host([spacing=\"none\"]){margin:0}:host([spacing=\"sm\"]){margin:.5rem 0}:host([spacing=\"md\"]){margin:1rem 0}:host([spacing=\"lg\"]){margin:1.5rem 0}:host([spacing=\"xl\"]){margin:2.5rem 0}:host([orientation=\"vertical\"][spacing=\"none\"]){margin:0}:host([orientation=\"vertical\"][spacing=\"sm\"]){margin:0 .5rem}:host([orientation=\"vertical\"][spacing=\"md\"]){margin:0 1rem}:host([orientation=\"vertical\"][spacing=\"lg\"]){margin:0 1.5rem}:host([orientation=\"vertical\"][spacing=\"xl\"]){margin:0 2.5rem}\n"] }]
         }], propDecorators: { orientation: [{
                 type: Input
             }], spacing: [{
@@ -9578,11 +9659,11 @@ class TreeNodeComponent {
         this.selected.emit(node);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TreeNodeComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TreeNodeComponent, isStandalone: true, selector: "app-tree-node", inputs: { node: "node", depth: "depth" }, outputs: { selected: "selected" }, ngImport: i0, template: "<div\n  class=\"flex items-center gap-[0.375rem] px-2 py-1 cursor-pointer rounded transition-colors duration-150 tree-node\"\n  [style.paddingLeft.px]=\"depth * 20\"\n  [class.selected]=\"node.selected\"\n  [class]=\"\n    node.selected\n      ? 'bg-[var(--accent)] text-[var(--text-on-accent)]'\n      : 'bg-[var(--bg-hover)]'\n  \"\n  (click)=\"handleClick()\"\n>\n  @if (node.children?.length) {\n    <span\n      class=\"toggle text-[0.625rem] w-4 text-center shrink-0 cursor-pointer text-[var(--text-secondary)]\"\n      (click)=\"toggleExpand($event)\"\n      >{{ node.expanded ? \"\u25BC\" : \"\u25B6\" }}</span\n    >\n  } @else {\n    <span class=\"toggle-placeholder w-4 shrink-0\"></span>\n  }\n  @if (node.icon) {\n    <span class=\"node-icon text-base shrink-0 text-[var(--text-secondary)]\">{{\n      node.icon\n    }}</span>\n  }\n  <span\n    class=\"node-label flex-1 overflow-hidden text-ellipsis whitespace-nowrap\"\n    >{{ node.label }}</span\n  >\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-tree-node\n      [node]=\"child\"\n      [depth]=\"depth + 1\"\n      (selected)=\"onChildSelected($event)\"\n    ></app-tree-node>\n  }\n}\n", styles: [""], dependencies: [{ kind: "component", type: TreeNodeComponent, selector: "app-tree-node", inputs: ["node", "depth"], outputs: ["selected"] }, { kind: "ngmodule", type: CommonModule }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TreeNodeComponent, isStandalone: true, selector: "app-tree-node", inputs: { node: "node", depth: "depth" }, outputs: { selected: "selected" }, ngImport: i0, template: "<div\n  class=\"ui-tree-node\"\n  [style.paddingLeft.px]=\"depth * 20\"\n  [class.ui-tree-node-selected]=\"node.selected\"\n  (click)=\"handleClick()\"\n>\n  @if (node.children?.length) {\n    <span\n      class=\"ui-tree-node-toggle\"\n      (click)=\"toggleExpand($event)\"\n      >{{ node.expanded ? \"\u25BC\" : \"\u25B6\" }}</span\n    >\n  } @else {\n    <span class=\"ui-tree-node-toggle-placeholder\"></span>\n  }\n  @if (node.icon) {\n    <span class=\"ui-tree-node-icon\">{{ node.icon }}</span>\n  }\n  <span class=\"ui-tree-node-label\">{{ node.label }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-tree-node\n      [node]=\"child\"\n      [depth]=\"depth + 1\"\n      (selected)=\"onChildSelected($event)\"\n    ></app-tree-node>\n  }\n}\n", styles: [""], dependencies: [{ kind: "component", type: TreeNodeComponent, selector: "app-tree-node", inputs: ["node", "depth"], outputs: ["selected"] }, { kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TreeNodeComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-tree-node", standalone: true, imports: [CommonModule, ApplyThemeDirective], template: "<div\n  class=\"flex items-center gap-[0.375rem] px-2 py-1 cursor-pointer rounded transition-colors duration-150 tree-node\"\n  [style.paddingLeft.px]=\"depth * 20\"\n  [class.selected]=\"node.selected\"\n  [class]=\"\n    node.selected\n      ? 'bg-[var(--accent)] text-[var(--text-on-accent)]'\n      : 'bg-[var(--bg-hover)]'\n  \"\n  (click)=\"handleClick()\"\n>\n  @if (node.children?.length) {\n    <span\n      class=\"toggle text-[0.625rem] w-4 text-center shrink-0 cursor-pointer text-[var(--text-secondary)]\"\n      (click)=\"toggleExpand($event)\"\n      >{{ node.expanded ? \"\u25BC\" : \"\u25B6\" }}</span\n    >\n  } @else {\n    <span class=\"toggle-placeholder w-4 shrink-0\"></span>\n  }\n  @if (node.icon) {\n    <span class=\"node-icon text-base shrink-0 text-[var(--text-secondary)]\">{{\n      node.icon\n    }}</span>\n  }\n  <span\n    class=\"node-label flex-1 overflow-hidden text-ellipsis whitespace-nowrap\"\n    >{{ node.label }}</span\n  >\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-tree-node\n      [node]=\"child\"\n      [depth]=\"depth + 1\"\n      (selected)=\"onChildSelected($event)\"\n    ></app-tree-node>\n  }\n}\n" }]
+            args: [{ selector: "app-tree-node", standalone: true, imports: [CommonModule], template: "<div\n  class=\"ui-tree-node\"\n  [style.paddingLeft.px]=\"depth * 20\"\n  [class.ui-tree-node-selected]=\"node.selected\"\n  (click)=\"handleClick()\"\n>\n  @if (node.children?.length) {\n    <span\n      class=\"ui-tree-node-toggle\"\n      (click)=\"toggleExpand($event)\"\n      >{{ node.expanded ? \"\u25BC\" : \"\u25B6\" }}</span\n    >\n  } @else {\n    <span class=\"ui-tree-node-toggle-placeholder\"></span>\n  }\n  @if (node.icon) {\n    <span class=\"ui-tree-node-icon\">{{ node.icon }}</span>\n  }\n  <span class=\"ui-tree-node-label\">{{ node.label }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-tree-node\n      [node]=\"child\"\n      [depth]=\"depth + 1\"\n      (selected)=\"onChildSelected($event)\"\n    ></app-tree-node>\n  }\n}\n" }]
         }], propDecorators: { node: [{
                 type: Input
             }], depth: [{
@@ -9601,11 +9682,11 @@ class TreeComponent {
         this.selected.emit(node);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TreeComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TreeComponent, isStandalone: true, selector: "app-tree", inputs: { nodes: "nodes", selectable: "selectable" }, outputs: { selected: "selected" }, ngImport: i0, template: "<div appApplyTheme=\"app-tree\">\n  @for (node of parsedNodes; track node.id) {\n    <app-tree-node\n      [node]=\"node\"\n      [depth]=\"0\"\n      (selected)=\"onNodeSelected($event)\"\n      class=\"block text-sm\"\n    ></app-tree-node>\n  }\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: TreeNodeComponent, selector: "app-tree-node", inputs: ["node", "depth"], outputs: ["selected"] }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TreeComponent, isStandalone: true, selector: "app-tree", inputs: { nodes: "nodes", selectable: "selectable" }, outputs: { selected: "selected" }, ngImport: i0, template: "<div class=\"ui-tree\">\n  @for (node of parsedNodes; track node.id) {\n    <app-tree-node\n      [node]=\"node\"\n      [depth]=\"0\"\n      (selected)=\"onNodeSelected($event)\"\n    ></app-tree-node>\n  }\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: TreeNodeComponent, selector: "app-tree-node", inputs: ["node", "depth"], outputs: ["selected"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TreeComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-tree", standalone: true, imports: [CommonModule, TreeNodeComponent, ApplyThemeDirective], template: "<div appApplyTheme=\"app-tree\">\n  @for (node of parsedNodes; track node.id) {\n    <app-tree-node\n      [node]=\"node\"\n      [depth]=\"0\"\n      (selected)=\"onNodeSelected($event)\"\n      class=\"block text-sm\"\n    ></app-tree-node>\n  }\n</div>\n" }]
+            args: [{ selector: "app-tree", standalone: true, imports: [CommonModule, TreeNodeComponent], template: "<div class=\"ui-tree\">\n  @for (node of parsedNodes; track node.id) {\n    <app-tree-node\n      [node]=\"node\"\n      [depth]=\"0\"\n      (selected)=\"onNodeSelected($event)\"\n    ></app-tree-node>\n  }\n</div>\n" }]
         }], propDecorators: { nodes: [{
                 type: Input
             }], selectable: [{
@@ -9630,11 +9711,11 @@ class FormComponent {
         this.cancelled.emit();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: FormComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: FormComponent, isStandalone: true, selector: "app-form", inputs: { heading: "heading", showActions: "showActions", submitText: "submitText", cancelText: "cancelText" }, outputs: { submitted: "submitted", cancelled: "cancelled" }, ngImport: i0, template: "<form appApplyTheme=\"app-form\" (submit)=\"handleSubmit($event)\">\n  @if (heading) {\n    <h3 class=\"text-lg font-semibold text-[var(--text-primary)] m-0 mb-4\">\n      {{ heading }}\n    </h3>\n  }\n  <ng-content></ng-content>\n  @if (showActions) {\n    <div class=\"flex gap-3 justify-end mt-6\">\n      <button\n        type=\"submit\"\n        class=\"px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]\"\n      >\n        {{ submitText }}\n      </button>\n      <button\n        type=\"button\"\n        class=\"px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]\"\n        (click)=\"handleCancel()\"\n      >\n        {{ cancelText }}\n      </button>\n    </div>\n  }\n</form>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: FormComponent, isStandalone: true, selector: "app-form", inputs: { heading: "heading", showActions: "showActions", submitText: "submitText", cancelText: "cancelText" }, outputs: { submitted: "submitted", cancelled: "cancelled" }, ngImport: i0, template: "<form (submit)=\"handleSubmit($event)\">\n  @if (heading) {\n    <h3>{{ heading }}</h3>\n  }\n  <ng-content></ng-content>\n  @if (showActions) {\n    <div class=\"ui-form-actions\">\n      <button\n        type=\"submit\"\n        class=\"ui-btn ui-btn-primary\"\n      >\n        {{ submitText }}\n      </button>\n      <button\n        type=\"button\"\n        class=\"ui-btn ui-btn-secondary\"\n        (click)=\"handleCancel()\"\n      >\n        {{ cancelText }}\n      </button>\n    </div>\n  }\n</form>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: FormComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-form", standalone: true, imports: [ApplyThemeDirective], template: "<form appApplyTheme=\"app-form\" (submit)=\"handleSubmit($event)\">\n  @if (heading) {\n    <h3 class=\"text-lg font-semibold text-[var(--text-primary)] m-0 mb-4\">\n      {{ heading }}\n    </h3>\n  }\n  <ng-content></ng-content>\n  @if (showActions) {\n    <div class=\"flex gap-3 justify-end mt-6\">\n      <button\n        type=\"submit\"\n        class=\"px-4 py-2 rounded-lg border border-[var(--accent)] bg-[var(--accent)] text-[var(--text-on-accent)] font-medium cursor-pointer hover:bg-[var(--accent-hover)]\"\n      >\n        {{ submitText }}\n      </button>\n      <button\n        type=\"button\"\n        class=\"px-4 py-2 rounded-lg border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] cursor-pointer hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]\"\n        (click)=\"handleCancel()\"\n      >\n        {{ cancelText }}\n      </button>\n    </div>\n  }\n</form>\n" }]
+            args: [{ selector: "app-form", standalone: true, imports: [], template: "<form (submit)=\"handleSubmit($event)\">\n  @if (heading) {\n    <h3>{{ heading }}</h3>\n  }\n  <ng-content></ng-content>\n  @if (showActions) {\n    <div class=\"ui-form-actions\">\n      <button\n        type=\"submit\"\n        class=\"ui-btn ui-btn-primary\"\n      >\n        {{ submitText }}\n      </button>\n      <button\n        type=\"button\"\n        class=\"ui-btn ui-btn-secondary\"\n        (click)=\"handleCancel()\"\n      >\n        {{ cancelText }}\n      </button>\n    </div>\n  }\n</form>\n" }]
         }], propDecorators: { heading: [{
                 type: Input
             }], showActions: [{
@@ -9659,11 +9740,11 @@ class CheckboxComponent {
         this.changed.emit(e.target.checked);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CheckboxComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CheckboxComponent, isStandalone: true, selector: "app-checkbox", inputs: { checked: "checked", label: "label", disabled: "disabled" }, outputs: { changed: "changed" }, ngImport: i0, template: "<label\n  appApplyTheme=\"app-checkbox\"\n  class=\"flex items-center gap-2 cursor-pointer\"\n>\n  <input\n    type=\"checkbox\"\n    class=\"w-4 h-4\"\n    [style.accent-color]=\"'var(--accent)'\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n  />\n  @if (label) {\n    <span class=\"text-sm select-none text-[var(--text-primary)]\">{{\n      label\n    }}</span>\n  }\n</label>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CheckboxComponent, isStandalone: true, selector: "app-checkbox", inputs: { checked: "checked", label: "label", disabled: "disabled" }, outputs: { changed: "changed" }, ngImport: i0, template: "<label class=\"ui-control-wrap\">\n  <input\n    type=\"checkbox\"\n    [style.accent-color]=\"'var(--accent)'\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n  />\n  @if (label) {\n    <span>{{ label }}</span>\n  }\n</label>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CheckboxComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-checkbox", standalone: true, imports: [ApplyThemeDirective], template: "<label\n  appApplyTheme=\"app-checkbox\"\n  class=\"flex items-center gap-2 cursor-pointer\"\n>\n  <input\n    type=\"checkbox\"\n    class=\"w-4 h-4\"\n    [style.accent-color]=\"'var(--accent)'\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n  />\n  @if (label) {\n    <span class=\"text-sm select-none text-[var(--text-primary)]\">{{\n      label\n    }}</span>\n  }\n</label>\n" }]
+            args: [{ selector: "app-checkbox", standalone: true, imports: [], template: "<label class=\"ui-control-wrap\">\n  <input\n    type=\"checkbox\"\n    [style.accent-color]=\"'var(--accent)'\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n  />\n  @if (label) {\n    <span>{{ label }}</span>\n  }\n</label>\n" }]
         }], propDecorators: { checked: [{
                 type: Input
             }], label: [{
@@ -9675,94 +9756,27 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             }] } });
 registerSchemaComponent("app-checkbox", CheckboxComponent);
 
-let ToastComponent$1 = class ToastComponent {
-    message = "";
-    visible = false;
-    type = "info";
-    dismissed = new EventEmitter();
-    timeout = null;
-    get toastClasses() {
-        const classes = [
-            "toast",
-            `toast-${this.type || "info"}`,
-            "fixed",
-            "bottom-6",
-            "right-6",
-            "z-[9999]",
-            "flex",
-            "items-center",
-            "gap-2",
-            "p-3",
-            "rounded-lg",
-            "bg-[color:var(--bg-elevated)]",
-            "text-[color:var(--text-primary)]",
-            "border",
-            "border-[color:var(--border-color)]",
-            "border-l-[3px]",
-            "shadow-lg",
-            "text-sm",
-            "max-w-96",
-            "translate-y-0",
-            "opacity-100",
-            "transition-all",
-            "duration-300",
-            this.borderColorClass,
-        ];
-        if (!this.visible) {
-            classes.push("hidden");
+class ToastComponent {
+    toast = input.required(/* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "toast" }] : /* istanbul ignore next */ []));
+    dismiss = output();
+    onDismiss() {
+        this.dismiss.emit(this.toast().id);
+    }
+    onAction() {
+        const action = this.toast().action;
+        if (action) {
+            action.callback();
         }
-        return classes;
-    }
-    get borderColorClass() {
-        switch (this.type) {
-            case "success":
-                return "border-l-[color:var(--success)]";
-            case "error":
-                return "border-l-[color:var(--error)]";
-            case "warning":
-                return "border-l-[color:var(--warning)]";
-            case "info":
-                return "border-l-[color:var(--info)]";
-            default:
-                return "border-l-[color:var(--border-color)]";
-        }
-    }
-    ngOnChanges(changes) {
-        if (changes["visible"] && this.visible) {
-            this.clearTimeout();
-            this.timeout = setTimeout(() => this.handleClose(), 4000);
-        }
-    }
-    ngOnDestroy() {
-        this.clearTimeout();
-    }
-    clearTimeout() {
-        if (this.timeout !== null) {
-            clearTimeout(this.timeout);
-            this.timeout = null;
-        }
-    }
-    handleClose() {
-        this.visible = false;
-        this.clearTimeout();
-        this.dismissed.emit();
+        this.dismiss.emit(this.toast().id);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ToastComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ToastComponent, isStandalone: true, selector: "app-toast", inputs: { message: "message", visible: "visible", type: "type" }, outputs: { dismissed: "dismissed" }, usesOnChanges: true, ngImport: i0, template: "<div [class]=\"toastClasses\">\n  @if (type === \"success\") {\n  <i\n    class=\"fa fa-circle-check toast-icon flex-shrink-0\"\n    style=\"font-size: 20px\"\n  ></i>\n  } @else if (type === \"error\") {\n  <i\n    class=\"fa fa-circle-xmark toast-icon flex-shrink-0\"\n    style=\"font-size: 20px\"\n  ></i>\n  } @else if (type === \"warning\") {\n  <i\n    class=\"fa fa-triangle-exclamation toast-icon flex-shrink-0\"\n    style=\"font-size: 20px\"\n  ></i>\n  } @else {\n  <i\n    class=\"fa fa-circle-info toast-icon flex-shrink-0\"\n    style=\"font-size: 20px\"\n  ></i>\n  }\n  <span class=\"toast-message flex-1\">{{ message }}</span>\n  <button\n    class=\"close-btn inline-flex items-center justify-center w-5 h-5 bg-transparent border-none cursor-pointer p-0 flex-shrink-0 text-[color:var(--text-muted)] hover:text-[color:var(--text-primary)]\"\n    type=\"button\"\n    (click)=\"handleClose()\"\n  >\n    <i class=\"fa fa-xmark\" style=\"font-size: 12px\"></i>\n  </button>\n</div>\n", styles: [""] });
-};
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ToastComponent$1, decorators: [{
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ToastComponent, isStandalone: true, selector: "app-toast", inputs: { toast: { classPropertyName: "toast", publicName: "toast", isSignal: true, isRequired: true, transformFunction: null } }, outputs: { dismiss: "dismiss" }, ngImport: i0, template: "<div\n  class=\"sf-relative sf-flex sf-items-start sf-gap-3 sf-border-l-4 sf-shadow-lg\"\n  style=\"background: var(--bg-toast); color: var(--text-main)\"\n  [style.border-left-color]=\"toast().type === 'success' ? 'var(--success)' : toast().type === 'error' ? 'var(--error)' : toast().type === 'warning' ? 'var(--warning)' : toast().type === 'info' ? 'var(--info)' : 'var(--border)'\"\n  role=\"alert\"\n>\n  <div class=\"sf-mt-0.5 sf-flex-shrink-0\">\n    @switch (toast().type) {\n      @case (\"success\") {\n        <svg\n          class=\"sf-h-5 sf-w-5\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n          style=\"color: var(--success)\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M5 13l4 4L19 7\"\n          />\n        </svg>\n      }\n      @case (\"error\") {\n        <svg\n          class=\"sf-h-5 sf-w-5\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n          style=\"color: var(--error)\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M6 18L18 6M6 6l12 12\"\n          />\n        </svg>\n      }\n      @case (\"warning\") {\n        <svg\n          class=\"sf-h-5 sf-w-5\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n          style=\"color: var(--warning)\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z\"\n          />\n        </svg>\n      }\n      @case (\"info\") {\n        <svg\n          class=\"sf-h-5 sf-w-5\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n          style=\"color: var(--info)\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\"\n          />\n        </svg>\n      }\n    }\n  </div>\n\n  <div class=\"sf-min-w-0 sf-flex-1\">\n    @if (toast().title) {\n      <p class=\"sf-font-semibold\">{{ toast().title }}</p>\n    }\n    <p [class.sf-font-medium]=\"!toast().title\">\n      {{ toast().message }}\n    </p>\n    @if (toast().action) {\n      <button\n        class=\"sf-mt-2 sf-transition-colors\"\n        style=\"color: var(--success)\"\n      >\n        {{ toast().action!.label }}\n      </button>\n    }\n  </div>\n\n  <button\n    class=\"sf-flex-shrink-0 sf-transition-colors sf-hover-text-main\"\n    style=\"color: var(--text-dim)\"\n    (click)=\"onDismiss()\"\n    aria-label=\"Dismiss\"\n  >\n    <svg class=\"sf-h-4 sf-w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n      <path\n        stroke-linecap=\"round\"\n        stroke-linejoin=\"round\"\n        stroke-width=\"2\"\n        d=\"M6 18L18 6M6 6l12 12\"\n      />\n    </svg>\n  </button>\n\n  @if (!toast().persistent && (toast().duration ?? 0) > 0) {\n    <div\n      class=\"sf-absolute sf-right-0 sf-bottom-0 sf-left-0 sf-h-1 sf-overflow-hidden\"\n      style=\"background: var(--bg-elevated)\"\n    >\n      <div\n        class=\"sf-h-full sf-w-full\"\n        [style.background]=\"toast().type === 'success' ? 'var(--success)' : toast().type === 'error' ? 'var(--error)' : toast().type === 'warning' ? 'var(--warning)' : toast().type === 'info' ? 'var(--info)' : 'var(--primary)'\"\n      ></div>\n    </div>\n  }\n</div>\n" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ToastComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-toast", standalone: true, imports: [], template: "<div [class]=\"toastClasses\">\n  @if (type === \"success\") {\n  <i\n    class=\"fa fa-circle-check toast-icon flex-shrink-0\"\n    style=\"font-size: 20px\"\n  ></i>\n  } @else if (type === \"error\") {\n  <i\n    class=\"fa fa-circle-xmark toast-icon flex-shrink-0\"\n    style=\"font-size: 20px\"\n  ></i>\n  } @else if (type === \"warning\") {\n  <i\n    class=\"fa fa-triangle-exclamation toast-icon flex-shrink-0\"\n    style=\"font-size: 20px\"\n  ></i>\n  } @else {\n  <i\n    class=\"fa fa-circle-info toast-icon flex-shrink-0\"\n    style=\"font-size: 20px\"\n  ></i>\n  }\n  <span class=\"toast-message flex-1\">{{ message }}</span>\n  <button\n    class=\"close-btn inline-flex items-center justify-center w-5 h-5 bg-transparent border-none cursor-pointer p-0 flex-shrink-0 text-[color:var(--text-muted)] hover:text-[color:var(--text-primary)]\"\n    type=\"button\"\n    (click)=\"handleClose()\"\n  >\n    <i class=\"fa fa-xmark\" style=\"font-size: 12px\"></i>\n  </button>\n</div>\n" }]
-        }], propDecorators: { message: [{
-                type: Input
-            }], visible: [{
-                type: Input
-            }], type: [{
-                type: Input
-            }], dismissed: [{
-                type: Output
-            }] } });
-registerSchemaComponent("app-toast", ToastComponent$1);
+            args: [{ selector: "app-toast", standalone: true, template: "<div\n  class=\"sf-relative sf-flex sf-items-start sf-gap-3 sf-border-l-4 sf-shadow-lg\"\n  style=\"background: var(--bg-toast); color: var(--text-main)\"\n  [style.border-left-color]=\"toast().type === 'success' ? 'var(--success)' : toast().type === 'error' ? 'var(--error)' : toast().type === 'warning' ? 'var(--warning)' : toast().type === 'info' ? 'var(--info)' : 'var(--border)'\"\n  role=\"alert\"\n>\n  <div class=\"sf-mt-0.5 sf-flex-shrink-0\">\n    @switch (toast().type) {\n      @case (\"success\") {\n        <svg\n          class=\"sf-h-5 sf-w-5\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n          style=\"color: var(--success)\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M5 13l4 4L19 7\"\n          />\n        </svg>\n      }\n      @case (\"error\") {\n        <svg\n          class=\"sf-h-5 sf-w-5\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n          style=\"color: var(--error)\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M6 18L18 6M6 6l12 12\"\n          />\n        </svg>\n      }\n      @case (\"warning\") {\n        <svg\n          class=\"sf-h-5 sf-w-5\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n          style=\"color: var(--warning)\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z\"\n          />\n        </svg>\n      }\n      @case (\"info\") {\n        <svg\n          class=\"sf-h-5 sf-w-5\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n          style=\"color: var(--info)\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\"\n          />\n        </svg>\n      }\n    }\n  </div>\n\n  <div class=\"sf-min-w-0 sf-flex-1\">\n    @if (toast().title) {\n      <p class=\"sf-font-semibold\">{{ toast().title }}</p>\n    }\n    <p [class.sf-font-medium]=\"!toast().title\">\n      {{ toast().message }}\n    </p>\n    @if (toast().action) {\n      <button\n        class=\"sf-mt-2 sf-transition-colors\"\n        style=\"color: var(--success)\"\n      >\n        {{ toast().action!.label }}\n      </button>\n    }\n  </div>\n\n  <button\n    class=\"sf-flex-shrink-0 sf-transition-colors sf-hover-text-main\"\n    style=\"color: var(--text-dim)\"\n    (click)=\"onDismiss()\"\n    aria-label=\"Dismiss\"\n  >\n    <svg class=\"sf-h-4 sf-w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n      <path\n        stroke-linecap=\"round\"\n        stroke-linejoin=\"round\"\n        stroke-width=\"2\"\n        d=\"M6 18L18 6M6 6l12 12\"\n      />\n    </svg>\n  </button>\n\n  @if (!toast().persistent && (toast().duration ?? 0) > 0) {\n    <div\n      class=\"sf-absolute sf-right-0 sf-bottom-0 sf-left-0 sf-h-1 sf-overflow-hidden\"\n      style=\"background: var(--bg-elevated)\"\n    >\n      <div\n        class=\"sf-h-full sf-w-full\"\n        [style.background]=\"toast().type === 'success' ? 'var(--success)' : toast().type === 'error' ? 'var(--error)' : toast().type === 'warning' ? 'var(--warning)' : toast().type === 'info' ? 'var(--info)' : 'var(--primary)'\"\n      ></div>\n    </div>\n  }\n</div>\n" }]
+        }], propDecorators: { toast: [{ type: i0.Input, args: [{ isSignal: true, alias: "toast", required: true }] }], dismiss: [{ type: i0.Output, args: ["dismiss"] }] } });
 
 // Use internal registry to avoid circular dependency with schema-component.registry
 class NavItemComponent {
@@ -9818,11 +9832,11 @@ class CanvasToolbarComponent {
         this.action.emit(name);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CanvasToolbarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: CanvasToolbarComponent, isStandalone: true, selector: "app-canvas-toolbar", inputs: { zoomLevel: "zoomLevel", showGrid: "showGrid", canUndo: "canUndo", canRedo: "canRedo" }, outputs: { action: "action" }, ngImport: i0, template: "<div appApplyTheme=\"app-canvas-toolbar\" class=\"inline-flex items-center gap-1\">\n  <div class=\"flex items-center gap-0.5 px-1 toolbar-group\">\n    <button\n      class=\"inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]\"\n      [disabled]=\"!canUndo\"\n      (click)=\"emit('undo')\"\n      title=\"Undo\"\n    >\n      <span class=\"text-lg leading-none\">\u21A9</span>\n    </button>\n    <button\n      class=\"inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]\"\n      [disabled]=\"!canRedo\"\n      (click)=\"emit('redo')\"\n      title=\"Redo\"\n    >\n      <span class=\"text-lg leading-none\">\u21AA</span>\n    </button>\n  </div>\n  <div class=\"flex items-center gap-0.5 px-1 toolbar-group\">\n    <button\n      class=\"inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]\"\n      (click)=\"emit('zoom-out')\"\n      title=\"Zoom Out\"\n    >\n      <span class=\"text-lg leading-none\">\u2212</span>\n    </button>\n    <span class=\"text-xs min-w-12 text-center text-[var(--text-secondary)]\"\n      >{{ zoomLevel }}%</span\n    >\n    <button\n      class=\"inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]\"\n      (click)=\"emit('zoom-in')\"\n      title=\"Zoom In\"\n    >\n      <span class=\"text-lg leading-none\">+</span>\n    </button>\n    <button\n      class=\"inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]\"\n      (click)=\"emit('zoom-reset')\"\n      title=\"Reset Zoom\"\n    >\n      <span class=\"text-lg leading-none\">\u22A1</span>\n    </button>\n  </div>\n  <div class=\"flex items-center gap-0.5 px-1 toolbar-group\">\n    <button\n      class=\"inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150\"\n      [class.bg-[var(--accent)]]=\"showGrid\"\n      [class.text-white]=\"showGrid\"\n      [class.text-[var(--text-secondary)]]=\"!showGrid\"\n      (click)=\"emit('toggle-grid')\"\n      title=\"Toggle Grid\"\n    >\n      <span class=\"text-lg leading-none\">\u25A6</span>\n    </button>\n  </div>\n</div>\n", styles: [":host{display:inline-flex;align-items:center;gap:4px}.toolbar-group:not(:last-child){border-right:1px solid var(--border-color)}.toolbar-btn[disabled]{opacity:.4;cursor:not-allowed}\n"], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: CanvasToolbarComponent, isStandalone: true, selector: "app-canvas-toolbar", inputs: { zoomLevel: "zoomLevel", showGrid: "showGrid", canUndo: "canUndo", canRedo: "canRedo" }, outputs: { action: "action" }, ngImport: i0, template: "<div class=\"ui-canvas-toolbar\">\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!canUndo\"\n      (click)=\"emit('undo')\"\n      title=\"Undo\"\n    >\n      <span>\u21A9</span>\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!canRedo\"\n      (click)=\"emit('redo')\"\n      title=\"Redo\"\n    >\n      <span>\u21AA</span>\n    </button>\n  </div>\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"emit('zoom-out')\"\n      title=\"Zoom Out\"\n    >\n      <span>\u2212</span>\n    </button>\n    <span class=\"ui-zoom-label\">{{ zoomLevel }}%</span>\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"emit('zoom-in')\"\n      title=\"Zoom In\"\n    >\n      <span>+</span>\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"emit('zoom-reset')\"\n      title=\"Reset Zoom\"\n    >\n      <span>\u22A1</span>\n    </button>\n  </div>\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      [class.ui-icon-btn-active]=\"showGrid\"\n      (click)=\"emit('toggle-grid')\"\n      title=\"Toggle Grid\"\n    >\n      <span>\u25A6</span>\n    </button>\n  </div>\n</div>\n", styles: [":host{display:inline-flex;align-items:center;gap:4px}.toolbar-group:not(:last-child){border-right:1px solid var(--border-color)}.toolbar-btn[disabled]{opacity:.4;cursor:not-allowed}\n"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CanvasToolbarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-canvas-toolbar", standalone: true, imports: [ApplyThemeDirective], template: "<div appApplyTheme=\"app-canvas-toolbar\" class=\"inline-flex items-center gap-1\">\n  <div class=\"flex items-center gap-0.5 px-1 toolbar-group\">\n    <button\n      class=\"inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]\"\n      [disabled]=\"!canUndo\"\n      (click)=\"emit('undo')\"\n      title=\"Undo\"\n    >\n      <span class=\"text-lg leading-none\">\u21A9</span>\n    </button>\n    <button\n      class=\"inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 text-[var(--text-secondary)]\"\n      [disabled]=\"!canRedo\"\n      (click)=\"emit('redo')\"\n      title=\"Redo\"\n    >\n      <span class=\"text-lg leading-none\">\u21AA</span>\n    </button>\n  </div>\n  <div class=\"flex items-center gap-0.5 px-1 toolbar-group\">\n    <button\n      class=\"inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]\"\n      (click)=\"emit('zoom-out')\"\n      title=\"Zoom Out\"\n    >\n      <span class=\"text-lg leading-none\">\u2212</span>\n    </button>\n    <span class=\"text-xs min-w-12 text-center text-[var(--text-secondary)]\"\n      >{{ zoomLevel }}%</span\n    >\n    <button\n      class=\"inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]\"\n      (click)=\"emit('zoom-in')\"\n      title=\"Zoom In\"\n    >\n      <span class=\"text-lg leading-none\">+</span>\n    </button>\n    <button\n      class=\"inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150 hover:bg-gray-100 text-[var(--text-secondary)]\"\n      (click)=\"emit('zoom-reset')\"\n      title=\"Reset Zoom\"\n    >\n      <span class=\"text-lg leading-none\">\u22A1</span>\n    </button>\n  </div>\n  <div class=\"flex items-center gap-0.5 px-1 toolbar-group\">\n    <button\n      class=\"inline-flex items-center justify-center w-8 h-8 border-none bg-transparent rounded-md cursor-pointer transition-colors duration-150\"\n      [class.bg-[var(--accent)]]=\"showGrid\"\n      [class.text-white]=\"showGrid\"\n      [class.text-[var(--text-secondary)]]=\"!showGrid\"\n      (click)=\"emit('toggle-grid')\"\n      title=\"Toggle Grid\"\n    >\n      <span class=\"text-lg leading-none\">\u25A6</span>\n    </button>\n  </div>\n</div>\n", styles: [":host{display:inline-flex;align-items:center;gap:4px}.toolbar-group:not(:last-child){border-right:1px solid var(--border-color)}.toolbar-btn[disabled]{opacity:.4;cursor:not-allowed}\n"] }]
+            args: [{ selector: "app-canvas-toolbar", standalone: true, imports: [], template: "<div class=\"ui-canvas-toolbar\">\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!canUndo\"\n      (click)=\"emit('undo')\"\n      title=\"Undo\"\n    >\n      <span>\u21A9</span>\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!canRedo\"\n      (click)=\"emit('redo')\"\n      title=\"Redo\"\n    >\n      <span>\u21AA</span>\n    </button>\n  </div>\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"emit('zoom-out')\"\n      title=\"Zoom Out\"\n    >\n      <span>\u2212</span>\n    </button>\n    <span class=\"ui-zoom-label\">{{ zoomLevel }}%</span>\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"emit('zoom-in')\"\n      title=\"Zoom In\"\n    >\n      <span>+</span>\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"emit('zoom-reset')\"\n      title=\"Reset Zoom\"\n    >\n      <span>\u22A1</span>\n    </button>\n  </div>\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      [class.ui-icon-btn-active]=\"showGrid\"\n      (click)=\"emit('toggle-grid')\"\n      title=\"Toggle Grid\"\n    >\n      <span>\u25A6</span>\n    </button>\n  </div>\n</div>\n", styles: [":host{display:inline-flex;align-items:center;gap:4px}.toolbar-group:not(:last-child){border-right:1px solid var(--border-color)}.toolbar-btn[disabled]{opacity:.4;cursor:not-allowed}\n"] }]
         }], propDecorators: { zoomLevel: [{
                 type: Input
             }], showGrid: [{
@@ -9846,11 +9860,11 @@ class DesignerSidebarComponent {
         this.collapsedChange.emit(this.collapsed);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DesignerSidebarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: DesignerSidebarComponent, isStandalone: true, selector: "app-designer-sidebar", inputs: { position: "position", collapsed: "collapsed", header: "header" }, outputs: { collapsedChange: "collapsedChange" }, ngImport: i0, template: "<div appApplyTheme=\"app-designer-sidebar\" class=\"relative h-full flex\">\n  <aside\n    class=\"flex flex-col h-full flex-shrink-0 transition-all duration-200 bg-[var(--bg-secondary)]\"\n    [class.w-0]=\"collapsed\"\n    [class.w-64]=\"!collapsed\"\n    [class.invisible]=\"collapsed\"\n    [class.overflow-hidden]=\"collapsed\"\n    [style.border-right]=\"\n      position === 'left' ? '1px solid var(--border-color)' : 'none'\n    \"\n    [style.border-left]=\"\n      position === 'right' ? '1px solid var(--border-color)' : 'none'\n    \"\n  >\n    <div\n      class=\"flex items-center justify-between px-4 py-3 flex-shrink-0 min-h-12 border-b border-[var(--border-color)] bg-[var(--bg-secondary)]\"\n      [style.flex-direction]=\"position === 'right' ? 'row-reverse' : 'row'\"\n    >\n      <span class=\"text-sm font-semibold truncate text-[var(--text-primary)]\">{{\n        header\n      }}</span>\n    </div>\n    <div class=\"flex-1 overflow-auto min-h-0\">\n      <ng-content select=\"[slot=content]\"></ng-content>\n    </div>\n    <div class=\"px-4 py-3 flex-shrink-0 border-t border-[var(--border-color)]\">\n      <ng-content select=\"[slot=footer]\"></ng-content>\n    </div>\n  </aside>\n  <div\n    class=\"absolute top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-6 h-12 rounded cursor-pointer transition-all duration-150 bg-[var(--bg-secondary)] border border-[var(--border-color)]\"\n    [style.right]=\"position === 'left' ? '-12px' : 'auto'\"\n    [style.left]=\"position === 'right' ? '-12px' : 'auto'\"\n  >\n    <button\n      class=\"flex items-center justify-center w-6 h-7 p-0 bg-transparent border-none rounded cursor-pointer transition-all duration-150 text-[var(--text-secondary)]\"\n      (click)=\"toggleCollapse()\"\n    >\n      {{\n        collapsed\n          ? position === \"left\"\n            ? \"\u25B6\"\n            : \"\u25C0\"\n          : position === \"left\"\n            ? \"\u25C0\"\n            : \"\u25B6\"\n      }}\n    </button>\n  </div>\n</div>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: DesignerSidebarComponent, isStandalone: true, selector: "app-designer-sidebar", inputs: { position: "position", collapsed: "collapsed", header: "header" }, outputs: { collapsedChange: "collapsedChange" }, ngImport: i0, template: "<div class=\"ui-designer-sidebar\">\n  <aside\n    class=\"ui-designer-sidebar-panel\"\n    [class.ui-designer-sidebar-collapsed]=\"collapsed\"\n    [style.border-right]=\"position === 'left' ? '1px solid var(--border-color)' : 'none'\"\n    [style.border-left]=\"position === 'right' ? '1px solid var(--border-color)' : 'none'\"\n  >\n    <div\n      class=\"ui-designer-sidebar-header\"\n      [style.flex-direction]=\"position === 'right' ? 'row-reverse' : 'row'\"\n    >\n      <span>{{ header }}</span>\n    </div>\n    <div class=\"ui-designer-sidebar-content\">\n      <ng-content select=\"[slot=content]\"></ng-content>\n    </div>\n    <div class=\"ui-designer-sidebar-footer\">\n      <ng-content select=\"[slot=footer]\"></ng-content>\n    </div>\n  </aside>\n  <div\n    class=\"ui-designer-sidebar-toggle\"\n    [style.right]=\"position === 'left' ? '-12px' : 'auto'\"\n    [style.left]=\"position === 'right' ? '-12px' : 'auto'\"\n  >\n    <button\n      (click)=\"toggleCollapse()\"\n    >\n      {{\n        collapsed\n          ? position === \"left\"\n            ? \"\u25B6\"\n            : \"\u25C0\"\n          : position === \"left\"\n            ? \"\u25C0\"\n            : \"\u25B6\"\n      }}\n    </button>\n  </div>\n</div>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DesignerSidebarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-designer-sidebar", standalone: true, imports: [ApplyThemeDirective], template: "<div appApplyTheme=\"app-designer-sidebar\" class=\"relative h-full flex\">\n  <aside\n    class=\"flex flex-col h-full flex-shrink-0 transition-all duration-200 bg-[var(--bg-secondary)]\"\n    [class.w-0]=\"collapsed\"\n    [class.w-64]=\"!collapsed\"\n    [class.invisible]=\"collapsed\"\n    [class.overflow-hidden]=\"collapsed\"\n    [style.border-right]=\"\n      position === 'left' ? '1px solid var(--border-color)' : 'none'\n    \"\n    [style.border-left]=\"\n      position === 'right' ? '1px solid var(--border-color)' : 'none'\n    \"\n  >\n    <div\n      class=\"flex items-center justify-between px-4 py-3 flex-shrink-0 min-h-12 border-b border-[var(--border-color)] bg-[var(--bg-secondary)]\"\n      [style.flex-direction]=\"position === 'right' ? 'row-reverse' : 'row'\"\n    >\n      <span class=\"text-sm font-semibold truncate text-[var(--text-primary)]\">{{\n        header\n      }}</span>\n    </div>\n    <div class=\"flex-1 overflow-auto min-h-0\">\n      <ng-content select=\"[slot=content]\"></ng-content>\n    </div>\n    <div class=\"px-4 py-3 flex-shrink-0 border-t border-[var(--border-color)]\">\n      <ng-content select=\"[slot=footer]\"></ng-content>\n    </div>\n  </aside>\n  <div\n    class=\"absolute top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-6 h-12 rounded cursor-pointer transition-all duration-150 bg-[var(--bg-secondary)] border border-[var(--border-color)]\"\n    [style.right]=\"position === 'left' ? '-12px' : 'auto'\"\n    [style.left]=\"position === 'right' ? '-12px' : 'auto'\"\n  >\n    <button\n      class=\"flex items-center justify-center w-6 h-7 p-0 bg-transparent border-none rounded cursor-pointer transition-all duration-150 text-[var(--text-secondary)]\"\n      (click)=\"toggleCollapse()\"\n    >\n      {{\n        collapsed\n          ? position === \"left\"\n            ? \"\u25B6\"\n            : \"\u25C0\"\n          : position === \"left\"\n            ? \"\u25C0\"\n            : \"\u25B6\"\n      }}\n    </button>\n  </div>\n</div>\n" }]
+            args: [{ selector: "app-designer-sidebar", standalone: true, imports: [], template: "<div class=\"ui-designer-sidebar\">\n  <aside\n    class=\"ui-designer-sidebar-panel\"\n    [class.ui-designer-sidebar-collapsed]=\"collapsed\"\n    [style.border-right]=\"position === 'left' ? '1px solid var(--border-color)' : 'none'\"\n    [style.border-left]=\"position === 'right' ? '1px solid var(--border-color)' : 'none'\"\n  >\n    <div\n      class=\"ui-designer-sidebar-header\"\n      [style.flex-direction]=\"position === 'right' ? 'row-reverse' : 'row'\"\n    >\n      <span>{{ header }}</span>\n    </div>\n    <div class=\"ui-designer-sidebar-content\">\n      <ng-content select=\"[slot=content]\"></ng-content>\n    </div>\n    <div class=\"ui-designer-sidebar-footer\">\n      <ng-content select=\"[slot=footer]\"></ng-content>\n    </div>\n  </aside>\n  <div\n    class=\"ui-designer-sidebar-toggle\"\n    [style.right]=\"position === 'left' ? '-12px' : 'auto'\"\n    [style.left]=\"position === 'right' ? '-12px' : 'auto'\"\n  >\n    <button\n      (click)=\"toggleCollapse()\"\n    >\n      {{\n        collapsed\n          ? position === \"left\"\n            ? \"\u25B6\"\n            : \"\u25C0\"\n          : position === \"left\"\n            ? \"\u25C0\"\n            : \"\u25B6\"\n      }}\n    </button>\n  </div>\n</div>\n" }]
         }], propDecorators: { position: [{
                 type: Input
             }], collapsed: [{
@@ -9882,11 +9896,11 @@ class MainEditorComponent {
         this.designer.selectElement(null);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: MainEditorComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: MainEditorComponent, isStandalone: true, selector: "app-main-editor", ngImport: i0, template: "<div\n  appApplyTheme=\"app-main-editor\"\n  class=\"flex flex-col h-full bg-[var(--bg-primary)]\"\n>\n  <div\n    class=\"flex items-center gap-1 py-[6px] px-3 bg-[var(--bg-elevated)] border-b border-[var(--border-color)] min-h-[2.5rem]\"\n  >\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer\"\n      [disabled]=\"!designer.canUndo()\"\n      (click)=\"designer.undo()\"\n      title=\"Undo\"\n    >\n      <app-icon icon=\"undo\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer\"\n      [disabled]=\"!designer.canRedo()\"\n      (click)=\"designer.redo()\"\n      title=\"Redo\"\n    >\n      <app-icon icon=\"redo\" [size]=\"18\" />\n    </button>\n    <div class=\"w-px h-5 mx-1 bg-[var(--border-color)]\"></div>\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]\"\n      [class.text-[var(--accent)]]]=\"designer.showGrid()\"\n      [class.text-[var(--text-secondary)]]]=\"!designer.showGrid()\"\n      [class.bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]]]=\"\n        designer.showGrid()\n      \"\n      [class.bg-transparent]=\"!designer.showGrid()\"\n      (click)=\"designer.toggleGrid()\"\n      title=\"Toggle grid\"\n    >\n      <app-icon icon=\"grid\" [size]=\"18\" />\n    </button>\n    <div class=\"w-px h-5 mx-1 bg-[var(--border-color)]\"></div>\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]\"\n      (click)=\"zoomOut()\"\n      title=\"Zoom out\"\n    >\n      <app-icon icon=\"zoom_out\" [size]=\"18\" />\n    </button>\n    <span class=\"text-xs min-w-10 text-center text-[var(--text-secondary)]\"\n      >{{ designer.zoom() }}%</span\n    >\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]\"\n      (click)=\"zoomIn()\"\n      title=\"Zoom in\"\n    >\n      <app-icon icon=\"zoom_in\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]\"\n      (click)=\"designer.setZoom(100)\"\n      title=\"Reset zoom\"\n    >\n      <app-icon icon=\"fit_screen\" [size]=\"18\" />\n    </button>\n    <div class=\"flex-1\"></div>\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer\"\n      [disabled]=\"!designer.selectedId()\"\n      (click)=\"deleteSelected()\"\n      title=\"Delete selected\"\n    >\n      <app-icon icon=\"delete\" [size]=\"18\" />\n    </button>\n  </div>\n  <div class=\"flex-1 overflow-auto relative\" (click)=\"onCanvasClick($event)\">\n    <app-canvas></app-canvas>\n  </div>\n</div>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: CanvasComponent, selector: "app-canvas" }, { kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size"] }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: MainEditorComponent, isStandalone: true, selector: "app-main-editor", ngImport: i0, template: "<div class=\"ui-main-editor\">\n  <div class=\"ui-main-editor-toolbar\">\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!designer.canUndo()\"\n      (click)=\"designer.undo()\"\n      title=\"Undo\"\n    >\n      <app-icon icon=\"undo\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!designer.canRedo()\"\n      (click)=\"designer.redo()\"\n      title=\"Redo\"\n    >\n      <app-icon icon=\"redo\" [size]=\"18\" />\n    </button>\n    <div class=\"ui-toolbar-divider\"></div>\n    <button\n      class=\"ui-icon-btn\"\n      [class.ui-icon-btn-active]=\"designer.showGrid()\"\n      (click)=\"designer.toggleGrid()\"\n      title=\"Toggle grid\"\n    >\n      <app-icon icon=\"grid\" [size]=\"18\" />\n    </button>\n    <div class=\"ui-toolbar-divider\"></div>\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"zoomOut()\"\n      title=\"Zoom out\"\n    >\n      <app-icon icon=\"zoom_out\" [size]=\"18\" />\n    </button>\n    <span class=\"ui-zoom-label\">{{ designer.zoom() }}%</span>\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"zoomIn()\"\n      title=\"Zoom in\"\n    >\n      <app-icon icon=\"zoom_in\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"designer.setZoom(100)\"\n      title=\"Reset zoom\"\n    >\n      <app-icon icon=\"fit_screen\" [size]=\"18\" />\n    </button>\n    <div class=\"ui-toolbar-spacer\"></div>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!designer.selectedId()\"\n      (click)=\"deleteSelected()\"\n      title=\"Delete selected\"\n    >\n      <app-icon icon=\"delete\" [size]=\"18\" />\n    </button>\n  </div>\n  <div class=\"ui-main-editor-canvas\" (click)=\"onCanvasClick($event)\">\n    <app-canvas></app-canvas>\n  </div>\n</div>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: CanvasComponent, selector: "app-canvas" }, { kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: MainEditorComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-main-editor", standalone: true, schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [CommonModule, CanvasComponent, IconComponent, ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-main-editor\"\n  class=\"flex flex-col h-full bg-[var(--bg-primary)]\"\n>\n  <div\n    class=\"flex items-center gap-1 py-[6px] px-3 bg-[var(--bg-elevated)] border-b border-[var(--border-color)] min-h-[2.5rem]\"\n  >\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer\"\n      [disabled]=\"!designer.canUndo()\"\n      (click)=\"designer.undo()\"\n      title=\"Undo\"\n    >\n      <app-icon icon=\"undo\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer\"\n      [disabled]=\"!designer.canRedo()\"\n      (click)=\"designer.redo()\"\n      title=\"Redo\"\n    >\n      <app-icon icon=\"redo\" [size]=\"18\" />\n    </button>\n    <div class=\"w-px h-5 mx-1 bg-[var(--border-color)]\"></div>\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]\"\n      [class.text-[var(--accent)]]]=\"designer.showGrid()\"\n      [class.text-[var(--text-secondary)]]]=\"!designer.showGrid()\"\n      [class.bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]]]=\"\n        designer.showGrid()\n      \"\n      [class.bg-transparent]=\"!designer.showGrid()\"\n      (click)=\"designer.toggleGrid()\"\n      title=\"Toggle grid\"\n    >\n      <app-icon icon=\"grid\" [size]=\"18\" />\n    </button>\n    <div class=\"w-px h-5 mx-1 bg-[var(--border-color)]\"></div>\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]\"\n      (click)=\"zoomOut()\"\n      title=\"Zoom out\"\n    >\n      <app-icon icon=\"zoom_out\" [size]=\"18\" />\n    </button>\n    <span class=\"text-xs min-w-10 text-center text-[var(--text-secondary)]\"\n      >{{ designer.zoom() }}%</span\n    >\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]\"\n      (click)=\"zoomIn()\"\n      title=\"Zoom in\"\n    >\n      <app-icon icon=\"zoom_in\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]\"\n      (click)=\"designer.setZoom(100)\"\n      title=\"Reset zoom\"\n    >\n      <app-icon icon=\"fit_screen\" [size]=\"18\" />\n    </button>\n    <div class=\"flex-1\"></div>\n    <button\n      class=\"flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer\"\n      [disabled]=\"!designer.selectedId()\"\n      (click)=\"deleteSelected()\"\n      title=\"Delete selected\"\n    >\n      <app-icon icon=\"delete\" [size]=\"18\" />\n    </button>\n  </div>\n  <div class=\"flex-1 overflow-auto relative\" (click)=\"onCanvasClick($event)\">\n    <app-canvas></app-canvas>\n  </div>\n</div>\n" }]
+            args: [{ selector: "app-main-editor", standalone: true, schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [CommonModule, CanvasComponent, IconComponent], template: "<div class=\"ui-main-editor\">\n  <div class=\"ui-main-editor-toolbar\">\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!designer.canUndo()\"\n      (click)=\"designer.undo()\"\n      title=\"Undo\"\n    >\n      <app-icon icon=\"undo\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!designer.canRedo()\"\n      (click)=\"designer.redo()\"\n      title=\"Redo\"\n    >\n      <app-icon icon=\"redo\" [size]=\"18\" />\n    </button>\n    <div class=\"ui-toolbar-divider\"></div>\n    <button\n      class=\"ui-icon-btn\"\n      [class.ui-icon-btn-active]=\"designer.showGrid()\"\n      (click)=\"designer.toggleGrid()\"\n      title=\"Toggle grid\"\n    >\n      <app-icon icon=\"grid\" [size]=\"18\" />\n    </button>\n    <div class=\"ui-toolbar-divider\"></div>\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"zoomOut()\"\n      title=\"Zoom out\"\n    >\n      <app-icon icon=\"zoom_out\" [size]=\"18\" />\n    </button>\n    <span class=\"ui-zoom-label\">{{ designer.zoom() }}%</span>\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"zoomIn()\"\n      title=\"Zoom in\"\n    >\n      <app-icon icon=\"zoom_in\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"designer.setZoom(100)\"\n      title=\"Reset zoom\"\n    >\n      <app-icon icon=\"fit_screen\" [size]=\"18\" />\n    </button>\n    <div class=\"ui-toolbar-spacer\"></div>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!designer.selectedId()\"\n      (click)=\"deleteSelected()\"\n      title=\"Delete selected\"\n    >\n      <app-icon icon=\"delete\" [size]=\"18\" />\n    </button>\n  </div>\n  <div class=\"ui-main-editor-canvas\" (click)=\"onCanvasClick($event)\">\n    <app-canvas></app-canvas>\n  </div>\n</div>\n" }]
         }] });
 registerSchemaComponent("app-main-editor", MainEditorComponent);
 
@@ -10000,11 +10014,11 @@ class CommandPaletteComponent {
         return [...map.entries()].map(([key, value]) => ({ key, value }));
     };
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CommandPaletteComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CommandPaletteComponent, isStandalone: true, selector: "app-command-palette", inputs: { commands: "commands", placeholder: "placeholder", triggerShortcut: "triggerShortcut" }, outputs: { commandSelected: "commandSelected", closed: "closed" }, host: { listeners: { "document:keydown": "onKeyDown($event)" } }, ngImport: i0, template: "@if (isOpen()) {\n  <div\n    appApplyTheme=\"app-command-palette\"\n    class=\"fixed inset-0 flex items-start justify-center pt-[15vh] z-[9999] animate-fade-in bg-[var(--bg-overlay,rgba(0,0,0,0.5))] backdrop-blur-[4px]\"\n    (click)=\"close()\"\n  >\n    <div\n      class=\"w-full max-w-[560px] rounded-xl overflow-hidden animate-slide-down bg-[var(--bg-elevated)] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-[var(--border-subtle)]\"\n      (click)=\"$event.stopPropagation()\"\n    >\n      <div\n        class=\"flex items-center gap-3 px-4 py-3 border-b border-[var(--border-subtle)]\"\n      >\n        <app-icon\n          class=\"text-xl text-gray-500 flex-shrink-0\"\n          icon=\"search\"\n          [size]=\"20\"\n        />\n        <input\n          type=\"text\"\n          class=\"flex-1 bg-transparent border-none outline-none text-base text-[var(--text-primary)]\"\n          [placeholder]=\"placeholder\"\n          [value]=\"searchQuery()\"\n          (input)=\"onSearchChange($any($event.target).value)\"\n          autofocus\n        />\n        <kbd\n          class=\"px-2 py-1 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]\"\n          >Esc</kbd\n        >\n      </div>\n      <div class=\"max-h-[320px] overflow-y-auto\">\n        @if (filteredCommands().length === 0) {\n          <div\n            class=\"flex flex-col items-center justify-center gap-2 py-12 text-[var(--text-muted)]\"\n          >\n            <app-icon class=\"text-4xl\" icon=\"search\" [size]=\"40\" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class=\"py-2\">\n              <div\n                class=\"px-4 py-1 text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]\"\n              >\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type=\"button\"\n                  class=\"w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm border-none cursor-pointer transition-colors duration-100\"\n                  [class]=\"\n                    isSelected(command)\n                      ? 'bg-blue-50 hover:bg-blue-100'\n                      : 'hover:bg-gray-100'\n                  \"\n                  [class.opacity-50]=\"command.disabled\"\n                  [class.cursor-not-allowed]=\"command.disabled\"\n                  [class.text-[var(--text-primary)]]=\"!command.disabled\"\n                  [disabled]=\"command.disabled\"\n                  (click)=\"selectCommand(command)\"\n                >\n                  @if (command.icon) {\n                    <app-icon\n                      class=\"text-xl text-gray-500 flex-shrink-0\"\n                      [icon]=\"command.icon\"\n                      [size]=\"20\"\n                    />\n                  }\n                  <span class=\"flex-1\">{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd\n                      class=\"px-1.5 py-0.5 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]\"\n                      >{{ command.shortcut }}</kbd\n                    >\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div\n        class=\"flex items-center gap-4 px-4 py-2 border-t border-[var(--border-subtle)] bg-[var(--bg-secondary)]\"\n      >\n        <span class=\"flex items-center gap-1 text-xs text-[var(--text-muted)]\"\n          ><kbd\n            class=\"px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]\"\n            >\u2191\u2193</kbd\n          >\n          Navigate</span\n        >\n        <span class=\"flex items-center gap-1 text-xs text-[var(--text-muted)]\"\n          ><kbd\n            class=\"px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]\"\n            >\u21B5</kbd\n          >\n          Select</span\n        >\n        <span class=\"flex items-center gap-1 text-xs text-[var(--text-muted)]\"\n          ><kbd\n            class=\"px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]\"\n            >Esc</kbd\n          >\n          Close</span\n        >\n      </div>\n    </div>\n  </div>\n}\n", styles: ["@keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes slideDown{0%{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}.animate-fade-in{animation:fadeIn .15s ease-out}.animate-slide-down{animation:slideDown .15s ease-out}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size"] }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CommandPaletteComponent, isStandalone: true, selector: "app-command-palette", inputs: { commands: "commands", placeholder: "placeholder", triggerShortcut: "triggerShortcut" }, outputs: { commandSelected: "commandSelected", closed: "closed" }, host: { listeners: { "document:keydown": "onKeyDown($event)" } }, ngImport: i0, template: "@if (isOpen()) {\n  <div\n    class=\"ui-command-palette-overlay\"\n    (click)=\"close()\"\n  >\n    <div\n      class=\"ui-command-palette\"\n      (click)=\"$event.stopPropagation()\"\n    >\n      <div class=\"ui-command-palette-search\">\n        <app-icon icon=\"search\" [size]=\"20\" />\n        <input\n          type=\"text\"\n          [placeholder]=\"placeholder\"\n          [value]=\"searchQuery()\"\n          (input)=\"onSearchChange($any($event.target).value)\"\n          autofocus\n        />\n        <kbd>Esc</kbd>\n      </div>\n      <div class=\"ui-command-palette-results\">\n        @if (filteredCommands().length === 0) {\n          <div class=\"ui-command-palette-empty\">\n            <app-icon icon=\"search\" [size]=\"40\" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class=\"ui-command-palette-group\">\n              <div class=\"ui-command-palette-group-label\">\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type=\"button\"\n                  class=\"ui-command-palette-item\"\n                  [class.ui-command-palette-item-selected]=\"isSelected(command)\"\n                  [class.ui-command-palette-item-disabled]=\"command.disabled\"\n                  [disabled]=\"command.disabled\"\n                  (click)=\"selectCommand(command)\"\n                >\n                  @if (command.icon) {\n                    <app-icon [icon]=\"command.icon\" [size]=\"20\" />\n                  }\n                  <span>{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd>{{ command.shortcut }}</kbd>\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div class=\"ui-command-palette-footer\">\n        <span><kbd>\u2191\u2193</kbd> Navigate</span>\n        <span><kbd>\u21B5</kbd> Select</span>\n        <span><kbd>Esc</kbd> Close</span>\n      </div>\n    </div>\n  </div>\n}\n", styles: ["@keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes slideDown{0%{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}.animate-fade-in{animation:fadeIn .15s ease-out}.animate-slide-down{animation:slideDown .15s ease-out}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CommandPaletteComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-command-palette", standalone: true, imports: [IconComponent, ApplyThemeDirective], template: "@if (isOpen()) {\n  <div\n    appApplyTheme=\"app-command-palette\"\n    class=\"fixed inset-0 flex items-start justify-center pt-[15vh] z-[9999] animate-fade-in bg-[var(--bg-overlay,rgba(0,0,0,0.5))] backdrop-blur-[4px]\"\n    (click)=\"close()\"\n  >\n    <div\n      class=\"w-full max-w-[560px] rounded-xl overflow-hidden animate-slide-down bg-[var(--bg-elevated)] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-[var(--border-subtle)]\"\n      (click)=\"$event.stopPropagation()\"\n    >\n      <div\n        class=\"flex items-center gap-3 px-4 py-3 border-b border-[var(--border-subtle)]\"\n      >\n        <app-icon\n          class=\"text-xl text-gray-500 flex-shrink-0\"\n          icon=\"search\"\n          [size]=\"20\"\n        />\n        <input\n          type=\"text\"\n          class=\"flex-1 bg-transparent border-none outline-none text-base text-[var(--text-primary)]\"\n          [placeholder]=\"placeholder\"\n          [value]=\"searchQuery()\"\n          (input)=\"onSearchChange($any($event.target).value)\"\n          autofocus\n        />\n        <kbd\n          class=\"px-2 py-1 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]\"\n          >Esc</kbd\n        >\n      </div>\n      <div class=\"max-h-[320px] overflow-y-auto\">\n        @if (filteredCommands().length === 0) {\n          <div\n            class=\"flex flex-col items-center justify-center gap-2 py-12 text-[var(--text-muted)]\"\n          >\n            <app-icon class=\"text-4xl\" icon=\"search\" [size]=\"40\" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class=\"py-2\">\n              <div\n                class=\"px-4 py-1 text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]\"\n              >\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type=\"button\"\n                  class=\"w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm border-none cursor-pointer transition-colors duration-100\"\n                  [class]=\"\n                    isSelected(command)\n                      ? 'bg-blue-50 hover:bg-blue-100'\n                      : 'hover:bg-gray-100'\n                  \"\n                  [class.opacity-50]=\"command.disabled\"\n                  [class.cursor-not-allowed]=\"command.disabled\"\n                  [class.text-[var(--text-primary)]]=\"!command.disabled\"\n                  [disabled]=\"command.disabled\"\n                  (click)=\"selectCommand(command)\"\n                >\n                  @if (command.icon) {\n                    <app-icon\n                      class=\"text-xl text-gray-500 flex-shrink-0\"\n                      [icon]=\"command.icon\"\n                      [size]=\"20\"\n                    />\n                  }\n                  <span class=\"flex-1\">{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd\n                      class=\"px-1.5 py-0.5 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]\"\n                      >{{ command.shortcut }}</kbd\n                    >\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div\n        class=\"flex items-center gap-4 px-4 py-2 border-t border-[var(--border-subtle)] bg-[var(--bg-secondary)]\"\n      >\n        <span class=\"flex items-center gap-1 text-xs text-[var(--text-muted)]\"\n          ><kbd\n            class=\"px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]\"\n            >\u2191\u2193</kbd\n          >\n          Navigate</span\n        >\n        <span class=\"flex items-center gap-1 text-xs text-[var(--text-muted)]\"\n          ><kbd\n            class=\"px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]\"\n            >\u21B5</kbd\n          >\n          Select</span\n        >\n        <span class=\"flex items-center gap-1 text-xs text-[var(--text-muted)]\"\n          ><kbd\n            class=\"px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]\"\n            >Esc</kbd\n          >\n          Close</span\n        >\n      </div>\n    </div>\n  </div>\n}\n", styles: ["@keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes slideDown{0%{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}.animate-fade-in{animation:fadeIn .15s ease-out}.animate-slide-down{animation:slideDown .15s ease-out}\n"] }]
+            args: [{ selector: "app-command-palette", standalone: true, imports: [IconComponent], template: "@if (isOpen()) {\n  <div\n    class=\"ui-command-palette-overlay\"\n    (click)=\"close()\"\n  >\n    <div\n      class=\"ui-command-palette\"\n      (click)=\"$event.stopPropagation()\"\n    >\n      <div class=\"ui-command-palette-search\">\n        <app-icon icon=\"search\" [size]=\"20\" />\n        <input\n          type=\"text\"\n          [placeholder]=\"placeholder\"\n          [value]=\"searchQuery()\"\n          (input)=\"onSearchChange($any($event.target).value)\"\n          autofocus\n        />\n        <kbd>Esc</kbd>\n      </div>\n      <div class=\"ui-command-palette-results\">\n        @if (filteredCommands().length === 0) {\n          <div class=\"ui-command-palette-empty\">\n            <app-icon icon=\"search\" [size]=\"40\" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class=\"ui-command-palette-group\">\n              <div class=\"ui-command-palette-group-label\">\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type=\"button\"\n                  class=\"ui-command-palette-item\"\n                  [class.ui-command-palette-item-selected]=\"isSelected(command)\"\n                  [class.ui-command-palette-item-disabled]=\"command.disabled\"\n                  [disabled]=\"command.disabled\"\n                  (click)=\"selectCommand(command)\"\n                >\n                  @if (command.icon) {\n                    <app-icon [icon]=\"command.icon\" [size]=\"20\" />\n                  }\n                  <span>{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd>{{ command.shortcut }}</kbd>\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div class=\"ui-command-palette-footer\">\n        <span><kbd>\u2191\u2193</kbd> Navigate</span>\n        <span><kbd>\u21B5</kbd> Select</span>\n        <span><kbd>Esc</kbd> Close</span>\n      </div>\n    </div>\n  </div>\n}\n", styles: ["@keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes slideDown{0%{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}.animate-fade-in{animation:fadeIn .15s ease-out}.animate-slide-down{animation:slideDown .15s ease-out}\n"] }]
         }], propDecorators: { commands: [{
                 type: Input
             }], placeholder: [{
@@ -10030,11 +10044,11 @@ class DesignerTreeNodeComponent {
         this.node.expanded = !this.node.expanded;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DesignerTreeNodeComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: DesignerTreeNodeComponent, isStandalone: true, selector: "app-designer-tree-node", inputs: { node: "node", depth: "depth" }, outputs: { select: "select" }, ngImport: i0, template: "<div\n  class=\"flex items-center gap-2 px-2 py-1 cursor-pointer rounded transition-colors duration-100\"\n  [style.paddingLeft.px]=\"depth * 16 + 8\"\n  [class.bg-[color-mix(in_srgb,_var(--accent)_20%,_transparent)]]]=\"\n    node.selected\n  \"\n  [class.bg-transparent]=\"!node.selected\"\n  [class.text-[var(--accent)]]=\"node.selected\"\n  [style.color]=\"node.selected ? 'var(--accent)' : 'inherit'\"\n  (click)=\"select.emit(node)\"\n>\n  <span\n    class=\"w-3 text-center flex-shrink-0 cursor-pointer text-xs text-[var(--text-muted)]\"\n    (click)=\"toggle($event)\"\n  >\n    @if (node.children?.length) {\n      {{ node.expanded ? \"\u25BC\" : \"\u25B6\" }}\n    }\n  </span>\n  <span class=\"text-sm flex-shrink-0 text-[var(--text-secondary)]\">{{\n    node.icon\n  }}</span>\n  <span\n    class=\"text-sm flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[var(--text-primary)]\"\n    >{{ node.label }}</span\n  >\n  <span class=\"text-xs font-mono text-[var(--text-muted)]\">{{ node.id }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-designer-tree-node\n      [node]=\"child\"\n      [depth]=\"depth + 1\"\n      (select)=\"select.emit($event)\"\n    ></app-designer-tree-node>\n  }\n}\n", dependencies: [{ kind: "component", type: DesignerTreeNodeComponent, selector: "app-designer-tree-node", inputs: ["node", "depth"], outputs: ["select"] }, { kind: "ngmodule", type: CommonModule }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: DesignerTreeNodeComponent, isStandalone: true, selector: "app-designer-tree-node", inputs: { node: "node", depth: "depth" }, outputs: { select: "select" }, ngImport: i0, template: "<div\n  class=\"ui-designer-tree-node\"\n  [style.paddingLeft.px]=\"depth * 16 + 8\"\n  [class.ui-designer-tree-node-selected]=\"node.selected\"\n  (click)=\"select.emit(node)\"\n>\n  <span\n    class=\"ui-designer-tree-node-toggle\"\n    (click)=\"toggle($event)\"\n  >\n    @if (node.children?.length) {\n      {{ node.expanded ? \"\u25BC\" : \"\u25B6\" }}\n    }\n  </span>\n  <span class=\"ui-designer-tree-node-icon\">{{ node.icon }}</span>\n  <span class=\"ui-designer-tree-node-label\">{{ node.label }}</span>\n  <span class=\"ui-designer-tree-node-id\">{{ node.id }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-designer-tree-node\n      [node]=\"child\"\n      [depth]=\"depth + 1\"\n      (select)=\"select.emit($event)\"\n    ></app-designer-tree-node>\n  }\n}\n", dependencies: [{ kind: "component", type: DesignerTreeNodeComponent, selector: "app-designer-tree-node", inputs: ["node", "depth"], outputs: ["select"] }, { kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DesignerTreeNodeComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-designer-tree-node", standalone: true, imports: [CommonModule], template: "<div\n  class=\"flex items-center gap-2 px-2 py-1 cursor-pointer rounded transition-colors duration-100\"\n  [style.paddingLeft.px]=\"depth * 16 + 8\"\n  [class.bg-[color-mix(in_srgb,_var(--accent)_20%,_transparent)]]]=\"\n    node.selected\n  \"\n  [class.bg-transparent]=\"!node.selected\"\n  [class.text-[var(--accent)]]=\"node.selected\"\n  [style.color]=\"node.selected ? 'var(--accent)' : 'inherit'\"\n  (click)=\"select.emit(node)\"\n>\n  <span\n    class=\"w-3 text-center flex-shrink-0 cursor-pointer text-xs text-[var(--text-muted)]\"\n    (click)=\"toggle($event)\"\n  >\n    @if (node.children?.length) {\n      {{ node.expanded ? \"\u25BC\" : \"\u25B6\" }}\n    }\n  </span>\n  <span class=\"text-sm flex-shrink-0 text-[var(--text-secondary)]\">{{\n    node.icon\n  }}</span>\n  <span\n    class=\"text-sm flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[var(--text-primary)]\"\n    >{{ node.label }}</span\n  >\n  <span class=\"text-xs font-mono text-[var(--text-muted)]\">{{ node.id }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-designer-tree-node\n      [node]=\"child\"\n      [depth]=\"depth + 1\"\n      (select)=\"select.emit($event)\"\n    ></app-designer-tree-node>\n  }\n}\n" }]
+            args: [{ selector: "app-designer-tree-node", standalone: true, imports: [CommonModule], template: "<div\n  class=\"ui-designer-tree-node\"\n  [style.paddingLeft.px]=\"depth * 16 + 8\"\n  [class.ui-designer-tree-node-selected]=\"node.selected\"\n  (click)=\"select.emit(node)\"\n>\n  <span\n    class=\"ui-designer-tree-node-toggle\"\n    (click)=\"toggle($event)\"\n  >\n    @if (node.children?.length) {\n      {{ node.expanded ? \"\u25BC\" : \"\u25B6\" }}\n    }\n  </span>\n  <span class=\"ui-designer-tree-node-icon\">{{ node.icon }}</span>\n  <span class=\"ui-designer-tree-node-label\">{{ node.label }}</span>\n  <span class=\"ui-designer-tree-node-id\">{{ node.id }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-designer-tree-node\n      [node]=\"child\"\n      [depth]=\"depth + 1\"\n      (select)=\"select.emit($event)\"\n    ></app-designer-tree-node>\n  }\n}\n" }]
         }], propDecorators: { node: [{
                 type: Input,
                 args: [{ required: true }]
@@ -10076,11 +10090,11 @@ class DesignerTreeComponent {
         return icons[componentId] || "⊡";
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DesignerTreeComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: DesignerTreeComponent, isStandalone: true, selector: "app-designer-tree", ngImport: i0, template: "<div\n  appApplyTheme=\"app-designer-tree\"\n  class=\"flex flex-col h-full bg-[var(--bg-elevated)]\"\n>\n  <div\n    class=\"px-4 py-3 text-xs font-semibold uppercase tracking-wide border-b text-[var(--text-secondary)] border-[var(--border-color)]\"\n  >\n    Layers\n  </div>\n  <div class=\"flex-1 overflow-y-auto py-1 text-sm\">\n    @for (node of treeNodes(); track node.id) {\n      <app-designer-tree-node\n        [node]=\"node\"\n        [depth]=\"0\"\n        (select)=\"selectNode($event)\"\n      ></app-designer-tree-node>\n    }\n    @if (treeNodes().length === 0) {\n      <div class=\"px-4 py-3 text-center text-[var(--text-muted)]\">\n        No elements\n      </div>\n    }\n  </div>\n</div>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: DesignerTreeNodeComponent, selector: "app-designer-tree-node", inputs: ["node", "depth"], outputs: ["select"] }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: DesignerTreeComponent, isStandalone: true, selector: "app-designer-tree", ngImport: i0, template: "<div class=\"ui-designer-tree\">\n  <div class=\"ui-designer-tree-header\">Layers</div>\n  <div class=\"ui-designer-tree-body\">\n    @for (node of treeNodes(); track node.id) {\n      <app-designer-tree-node\n        [node]=\"node\"\n        [depth]=\"0\"\n        (select)=\"selectNode($event)\"\n      ></app-designer-tree-node>\n    }\n    @if (treeNodes().length === 0) {\n      <div class=\"ui-designer-tree-empty\">No elements</div>\n    }\n  </div>\n</div>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: DesignerTreeNodeComponent, selector: "app-designer-tree-node", inputs: ["node", "depth"], outputs: ["select"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DesignerTreeComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-designer-tree", standalone: true, imports: [CommonModule, DesignerTreeNodeComponent, ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-designer-tree\"\n  class=\"flex flex-col h-full bg-[var(--bg-elevated)]\"\n>\n  <div\n    class=\"px-4 py-3 text-xs font-semibold uppercase tracking-wide border-b text-[var(--text-secondary)] border-[var(--border-color)]\"\n  >\n    Layers\n  </div>\n  <div class=\"flex-1 overflow-y-auto py-1 text-sm\">\n    @for (node of treeNodes(); track node.id) {\n      <app-designer-tree-node\n        [node]=\"node\"\n        [depth]=\"0\"\n        (select)=\"selectNode($event)\"\n      ></app-designer-tree-node>\n    }\n    @if (treeNodes().length === 0) {\n      <div class=\"px-4 py-3 text-center text-[var(--text-muted)]\">\n        No elements\n      </div>\n    }\n  </div>\n</div>\n" }]
+            args: [{ selector: "app-designer-tree", standalone: true, imports: [CommonModule, DesignerTreeNodeComponent], template: "<div class=\"ui-designer-tree\">\n  <div class=\"ui-designer-tree-header\">Layers</div>\n  <div class=\"ui-designer-tree-body\">\n    @for (node of treeNodes(); track node.id) {\n      <app-designer-tree-node\n        [node]=\"node\"\n        [depth]=\"0\"\n        (select)=\"selectNode($event)\"\n      ></app-designer-tree-node>\n    }\n    @if (treeNodes().length === 0) {\n      <div class=\"ui-designer-tree-empty\">No elements</div>\n    }\n  </div>\n</div>\n" }]
         }] });
 registerSchemaComponent("app-designer-tree", DesignerTreeComponent);
 
@@ -10091,9 +10105,20 @@ class LanguageSelectorComponent {
     languages = [];
     placeholder = "";
     width = "";
+    classes = "";
+    sourceLang = ""; // for source selector
+    targetLang = ""; // for target selector
     changed = new EventEmitter();
     get parsedLanguages() {
-        return parseJsonOrDefault(this.languages).map((lang) => ({
+        const arr = parseJsonOrDefault(this.languages);
+        // Handle string arrays (e.g., ["en", "es", "fr"])
+        if (arr.length > 0 && typeof arr[0] === 'string') {
+            return arr.map(code => ({
+                value: code,
+                label: code.toUpperCase()
+            }));
+        }
+        return arr.map((lang) => ({
             value: lang.value ?? lang.code ?? "",
             label: lang.label ?? lang.name ?? lang.code ?? "",
         }));
@@ -10103,11 +10128,11 @@ class LanguageSelectorComponent {
         this.changed.emit(this.value);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LanguageSelectorComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: LanguageSelectorComponent, isStandalone: true, selector: "app-language-selector", inputs: { label: "label", labelId: "labelId", value: "value", languages: "languages", placeholder: "placeholder", width: "width" }, outputs: { changed: "changed" }, ngImport: i0, template: "<div\n  appApplyTheme=\"app-language-selector\"\n  class=\"relative inline-flex items-center gap-2\"\n>\n  @if (label) {\n    <label\n      [attr.id]=\"labelId\"\n      class=\"text-sm text-[var(--text-secondary)] whitespace-nowrap\"\n      >{{ label }}</label\n    >\n  }\n  <select\n    [value]=\"value\"\n    (change)=\"handleChange($event)\"\n    [attr.aria-labelledby]=\"labelId || null\"\n    class=\"p-1.5 pr-8 rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)] text-[var(--text-primary)] text-sm cursor-pointer appearance-none min-w-28\"\n  >\n    @for (lang of parsedLanguages; track lang.value) {\n      <option [value]=\"lang.value\" [selected]=\"lang.value === value\">\n        {{ lang.label }}\n      </option>\n    }\n  </select>\n  <app-icon\n    class=\"absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none\"\n    icon=\"chevron-down\"\n    [size]=\"16\"\n  />\n</div>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size"] }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: LanguageSelectorComponent, isStandalone: true, selector: "app-language-selector", inputs: { label: "label", labelId: "labelId", value: "value", languages: "languages", placeholder: "placeholder", width: "width", classes: "classes", sourceLang: "sourceLang", targetLang: "targetLang" }, outputs: { changed: "changed" }, ngImport: i0, template: "<div class=\"ui-language-selector\">\n  @if (label) {\n    <label [attr.id]=\"labelId\">{{ label }}</label>\n  }\n  <select\n    [value]=\"value\"\n    (change)=\"handleChange($event)\"\n    [attr.aria-labelledby]=\"labelId || null\"\n  >\n    @for (lang of parsedLanguages; track lang.value) {\n      <option [value]=\"lang.value\" [selected]=\"lang.value === value\">\n        {{ lang.label }}\n      </option>\n    }\n  </select>\n  <app-icon class=\"ui-language-selector-icon\" icon=\"chevron-down\" [size]=\"16\" />\n</div>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LanguageSelectorComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-language-selector", standalone: true, imports: [IconComponent, ApplyThemeDirective], template: "<div\n  appApplyTheme=\"app-language-selector\"\n  class=\"relative inline-flex items-center gap-2\"\n>\n  @if (label) {\n    <label\n      [attr.id]=\"labelId\"\n      class=\"text-sm text-[var(--text-secondary)] whitespace-nowrap\"\n      >{{ label }}</label\n    >\n  }\n  <select\n    [value]=\"value\"\n    (change)=\"handleChange($event)\"\n    [attr.aria-labelledby]=\"labelId || null\"\n    class=\"p-1.5 pr-8 rounded-lg border border-[var(--border-color)] bg-[var(--bg-elevated)] text-[var(--text-primary)] text-sm cursor-pointer appearance-none min-w-28\"\n  >\n    @for (lang of parsedLanguages; track lang.value) {\n      <option [value]=\"lang.value\" [selected]=\"lang.value === value\">\n        {{ lang.label }}\n      </option>\n    }\n  </select>\n  <app-icon\n    class=\"absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none\"\n    icon=\"chevron-down\"\n    [size]=\"16\"\n  />\n</div>\n" }]
+            args: [{ selector: "app-language-selector", standalone: true, imports: [IconComponent], template: "<div class=\"ui-language-selector\">\n  @if (label) {\n    <label [attr.id]=\"labelId\">{{ label }}</label>\n  }\n  <select\n    [value]=\"value\"\n    (change)=\"handleChange($event)\"\n    [attr.aria-labelledby]=\"labelId || null\"\n  >\n    @for (lang of parsedLanguages; track lang.value) {\n      <option [value]=\"lang.value\" [selected]=\"lang.value === value\">\n        {{ lang.label }}\n      </option>\n    }\n  </select>\n  <app-icon class=\"ui-language-selector-icon\" icon=\"chevron-down\" [size]=\"16\" />\n</div>\n" }]
         }], propDecorators: { label: [{
                 type: Input
             }], labelId: [{
@@ -10119,6 +10144,12 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             }], placeholder: [{
                 type: Input
             }], width: [{
+                type: Input
+            }], classes: [{
+                type: Input
+            }], sourceLang: [{
+                type: Input
+            }], targetLang: [{
                 type: Input
             }], changed: [{
                 type: Output
@@ -10133,14 +10164,15 @@ class SwapButtonComponent {
     justify = "";
     layout = "";
     width = "";
+    classes = "";
     clicked = new EventEmitter();
     hovered = false;
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SwapButtonComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SwapButtonComponent, isStandalone: true, selector: "app-swap-button", inputs: { ariaLabel: "ariaLabel", align: "align", direction: "direction", height: "height", justify: "justify", layout: "layout", width: "width" }, outputs: { clicked: "clicked" }, ngImport: i0, template: "<button\n  appApplyTheme=\"app-swap-button\"\n  class=\"inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-color)] bg-[var(--bg-elevated)] cursor-pointer transition-all p-0 text-[var(--text-secondary)]\"\n  (mouseenter)=\"hovered = true\"\n  (mouseleave)=\"hovered = false\"\n  [class.bg-[var(--bg-hover)]]]=\"hovered\"\n  [class.bg-[var(--bg-elevated)]]]=\"!hovered\"\n  [class.text-[var(--text-primary)]]]=\"hovered\"\n  [class.text-[var(--text-secondary)]]]=\"!hovered\"\n  (click)=\"clicked.emit($event)\"\n  aria-label=\"Swap\"\n>\n  <app-icon icon=\"chevron-down\" [size]=\"20\" style=\"transform: rotate(90deg)\" />\n</button>\n", dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size"] }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SwapButtonComponent, isStandalone: true, selector: "app-swap-button", inputs: { ariaLabel: "ariaLabel", align: "align", direction: "direction", height: "height", justify: "justify", layout: "layout", width: "width", classes: "classes" }, outputs: { clicked: "clicked" }, ngImport: i0, template: "<button\n  class=\"ui-swap-button\"\n  (click)=\"clicked.emit($event)\"\n  aria-label=\"Swap\"\n>\n  <app-icon icon=\"chevron-down\" [size]=\"20\" style=\"transform: rotate(90deg)\" />\n</button>\n", dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SwapButtonComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-swap-button", standalone: true, imports: [IconComponent, ApplyThemeDirective], template: "<button\n  appApplyTheme=\"app-swap-button\"\n  class=\"inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-color)] bg-[var(--bg-elevated)] cursor-pointer transition-all p-0 text-[var(--text-secondary)]\"\n  (mouseenter)=\"hovered = true\"\n  (mouseleave)=\"hovered = false\"\n  [class.bg-[var(--bg-hover)]]]=\"hovered\"\n  [class.bg-[var(--bg-elevated)]]]=\"!hovered\"\n  [class.text-[var(--text-primary)]]]=\"hovered\"\n  [class.text-[var(--text-secondary)]]]=\"!hovered\"\n  (click)=\"clicked.emit($event)\"\n  aria-label=\"Swap\"\n>\n  <app-icon icon=\"chevron-down\" [size]=\"20\" style=\"transform: rotate(90deg)\" />\n</button>\n" }]
+            args: [{ selector: "app-swap-button", standalone: true, imports: [IconComponent], template: "<button\n  class=\"ui-swap-button\"\n  (click)=\"clicked.emit($event)\"\n  aria-label=\"Swap\"\n>\n  <app-icon icon=\"chevron-down\" [size]=\"20\" style=\"transform: rotate(90deg)\" />\n</button>\n" }]
         }], propDecorators: { ariaLabel: [{
                 type: Input
             }], align: [{
@@ -10154,6 +10186,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             }], layout: [{
                 type: Input
             }], width: [{
+                type: Input
+            }], classes: [{
                 type: Input
             }], clicked: [{
                 type: Output
@@ -10172,6 +10206,7 @@ class TextInputComponent {
     multiline = true;
     rows = 3;
     width = "";
+    classes = "";
     input = new EventEmitter();
     focused = false;
     hovered = false;
@@ -10200,11 +10235,11 @@ class TextInputComponent {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextInputComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TextInputComponent, isStandalone: true, selector: "app-text-input", inputs: { value: "value", placeholder: "placeholder", clearable: "clearable", maxChars: "maxChars", autofocus: "autofocus", height: "height", label: "label", multiline: "multiline", rows: "rows", width: "width" }, outputs: { input: "input" }, viewQueries: [{ propertyName: "textareaEl", first: true, predicate: ["textareaEl"], descendants: true }], ngImport: i0, template: "<div appApplyTheme=\"app-text-input\" class=\"relative\">\n  <textarea\n    #textareaEl\n    [placeholder]=\"placeholder\"\n    [value]=\"value\"\n    [attr.maxlength]=\"maxChars || null\"\n    (input)=\"handleInput($event)\"\n    (focus)=\"focused = true\"\n    (blur)=\"focused = false\"\n    [style.--tw-border-color]=\"\n      focused ? 'var(--accent)' : 'var(--border-color)'\n    \"\n    class=\"w-full p-2 px-3 rounded-lg border box-border outline-none resize-none min-h-10 font-inherit text-base bg-[var(--bg-primary)] text-[var(--text-primary)]\"\n    [class.focused]=\"focused\"\n  ></textarea>\n  @if (clearable && value) {\n    <button\n      class=\"absolute right-2 top-2 bg-transparent border-none cursor-pointer p-0 leading-none text-xl text-[var(--text-secondary)]\"\n      (mouseenter)=\"hovered = true\"\n      (mouseleave)=\"hovered = false\"\n      [style.color]=\"hovered ? 'var(--text-primary)' : 'var(--text-secondary)'\"\n      (click)=\"clear()\"\n      aria-label=\"Clear\"\n    >\n      &times;\n    </button>\n  }\n  @if (maxChars) {\n    <span class=\"absolute right-2 bottom-1 text-xs text-[var(--text-muted)]\"\n      >{{ value.length }}/{{ maxChars }}</span\n    >\n  }\n</div>\n", styles: [""], dependencies: [{ kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TextInputComponent, isStandalone: true, selector: "app-text-input", inputs: { value: "value", placeholder: "placeholder", clearable: "clearable", maxChars: "maxChars", autofocus: "autofocus", height: "height", label: "label", multiline: "multiline", rows: "rows", width: "width", classes: "classes" }, outputs: { input: "input" }, viewQueries: [{ propertyName: "textareaEl", first: true, predicate: ["textareaEl"], descendants: true }], ngImport: i0, template: "<div class=\"ui-text-input\">\n  <textarea\n    #textareaEl\n    class=\"ui-textarea\"\n    [placeholder]=\"placeholder\"\n    [value]=\"value\"\n    [attr.maxlength]=\"maxChars || null\"\n    (input)=\"handleInput($event)\"\n    (focus)=\"focused = true\"\n    (blur)=\"focused = false\"\n  ></textarea>\n  @if (clearable && value) {\n    <button\n      class=\"ui-text-input-clear\"\n      (click)=\"clear()\"\n      aria-label=\"Clear\"\n    >\n      &times;\n    </button>\n  }\n  @if (maxChars) {\n    <span class=\"ui-text-input-counter\">{{ value.length }}/{{ maxChars }}</span>\n  }\n</div>\n", styles: [""] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextInputComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-text-input", standalone: true, imports: [ApplyThemeDirective], template: "<div appApplyTheme=\"app-text-input\" class=\"relative\">\n  <textarea\n    #textareaEl\n    [placeholder]=\"placeholder\"\n    [value]=\"value\"\n    [attr.maxlength]=\"maxChars || null\"\n    (input)=\"handleInput($event)\"\n    (focus)=\"focused = true\"\n    (blur)=\"focused = false\"\n    [style.--tw-border-color]=\"\n      focused ? 'var(--accent)' : 'var(--border-color)'\n    \"\n    class=\"w-full p-2 px-3 rounded-lg border box-border outline-none resize-none min-h-10 font-inherit text-base bg-[var(--bg-primary)] text-[var(--text-primary)]\"\n    [class.focused]=\"focused\"\n  ></textarea>\n  @if (clearable && value) {\n    <button\n      class=\"absolute right-2 top-2 bg-transparent border-none cursor-pointer p-0 leading-none text-xl text-[var(--text-secondary)]\"\n      (mouseenter)=\"hovered = true\"\n      (mouseleave)=\"hovered = false\"\n      [style.color]=\"hovered ? 'var(--text-primary)' : 'var(--text-secondary)'\"\n      (click)=\"clear()\"\n      aria-label=\"Clear\"\n    >\n      &times;\n    </button>\n  }\n  @if (maxChars) {\n    <span class=\"absolute right-2 bottom-1 text-xs text-[var(--text-muted)]\"\n      >{{ value.length }}/{{ maxChars }}</span\n    >\n  }\n</div>\n" }]
+            args: [{ selector: "app-text-input", standalone: true, imports: [], template: "<div class=\"ui-text-input\">\n  <textarea\n    #textareaEl\n    class=\"ui-textarea\"\n    [placeholder]=\"placeholder\"\n    [value]=\"value\"\n    [attr.maxlength]=\"maxChars || null\"\n    (input)=\"handleInput($event)\"\n    (focus)=\"focused = true\"\n    (blur)=\"focused = false\"\n  ></textarea>\n  @if (clearable && value) {\n    <button\n      class=\"ui-text-input-clear\"\n      (click)=\"clear()\"\n      aria-label=\"Clear\"\n    >\n      &times;\n    </button>\n  }\n  @if (maxChars) {\n    <span class=\"ui-text-input-counter\">{{ value.length }}/{{ maxChars }}</span>\n  }\n</div>\n" }]
         }], propDecorators: { textareaEl: [{
                 type: ViewChild,
                 args: ["textareaEl"]
@@ -10228,6 +10263,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
                 type: Input
             }], width: [{
                 type: Input
+            }], classes: [{
+                type: Input
             }], input: [{
                 type: Output
             }] } });
@@ -10242,6 +10279,7 @@ class TranslationOutputComponent {
     confidence = 0;
     height = "";
     width = "";
+    classes = "";
     copied = new EventEmitter();
     isCopied = false;
     hovered = false;
@@ -10257,11 +10295,11 @@ class TranslationOutputComponent {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TranslationOutputComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TranslationOutputComponent, isStandalone: true, selector: "app-translation-output", inputs: { value: "value", placeholder: "placeholder", loading: "loading", showConfidence: "showConfidence", showCopyButton: "showCopyButton", confidence: "confidence", height: "height", width: "width" }, outputs: { copied: "copied" }, ngImport: i0, template: "<div appApplyTheme=\"app-translation-output\" class=\"relative\">\n  <textarea\n    #outputEl\n    class=\"w-full p-3 rounded-lg border box-border resize-none min-h-20 cursor-default font-inherit text-base bg-[var(--bg-primary)] text-[var(--text-primary)]\"\n    [value]=\"value\"\n    [placeholder]=\"placeholder || 'Translation will appear here...'\"\n    readonly\n  ></textarea>\n  @if (showCopyButton && value) {\n    <button\n      class=\"absolute right-2 top-2 flex items-center gap-1 p-1.5 rounded-md border cursor-pointer transition-all text-xs border-[var(--border-color)]\"\n      [style.background-color]=\"\n        hovered ? 'var(--bg-hover)' : 'var(--bg-elevated)'\n      \"\n      [style.color]=\"hovered ? 'var(--text-primary)' : 'var(--text-secondary)'\"\n      (mouseenter)=\"hovered = true\"\n      (mouseleave)=\"hovered = false\"\n      (click)=\"copyToClipboard()\"\n      aria-label=\"Copy\"\n    >\n      @if (isCopied) {\n        <span class=\"text-[var(--success)]\">Copied!</span>\n      } @else {\n        <app-icon icon=\"copy\" [size]=\"14\" />\n      }\n    </button>\n  }\n</div>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size"] }, { kind: "directive", type: ApplyThemeDirective, selector: "[appApplyTheme]", inputs: ["appApplyTheme", "themedVariant", "themedSize"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TranslationOutputComponent, isStandalone: true, selector: "app-translation-output", inputs: { value: "value", placeholder: "placeholder", loading: "loading", showConfidence: "showConfidence", showCopyButton: "showCopyButton", confidence: "confidence", height: "height", width: "width", classes: "classes" }, outputs: { copied: "copied" }, ngImport: i0, template: "<div class=\"ui-translation-output\">\n  <textarea\n    #outputEl\n    class=\"ui-textarea\"\n    [value]=\"value\"\n    [placeholder]=\"placeholder || 'Translation will appear here...'\"\n    readonly\n  ></textarea>\n  @if (showCopyButton && value) {\n    <button\n      class=\"ui-translation-output-copy\"\n      (click)=\"copyToClipboard()\"\n      aria-label=\"Copy\"\n    >\n      @if (isCopied) {\n        <span>Copied!</span>\n      } @else {\n        <app-icon icon=\"copy\" [size]=\"14\" />\n      }\n    </button>\n  }\n</div>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TranslationOutputComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-translation-output", standalone: true, imports: [IconComponent, ApplyThemeDirective], template: "<div appApplyTheme=\"app-translation-output\" class=\"relative\">\n  <textarea\n    #outputEl\n    class=\"w-full p-3 rounded-lg border box-border resize-none min-h-20 cursor-default font-inherit text-base bg-[var(--bg-primary)] text-[var(--text-primary)]\"\n    [value]=\"value\"\n    [placeholder]=\"placeholder || 'Translation will appear here...'\"\n    readonly\n  ></textarea>\n  @if (showCopyButton && value) {\n    <button\n      class=\"absolute right-2 top-2 flex items-center gap-1 p-1.5 rounded-md border cursor-pointer transition-all text-xs border-[var(--border-color)]\"\n      [style.background-color]=\"\n        hovered ? 'var(--bg-hover)' : 'var(--bg-elevated)'\n      \"\n      [style.color]=\"hovered ? 'var(--text-primary)' : 'var(--text-secondary)'\"\n      (mouseenter)=\"hovered = true\"\n      (mouseleave)=\"hovered = false\"\n      (click)=\"copyToClipboard()\"\n      aria-label=\"Copy\"\n    >\n      @if (isCopied) {\n        <span class=\"text-[var(--success)]\">Copied!</span>\n      } @else {\n        <app-icon icon=\"copy\" [size]=\"14\" />\n      }\n    </button>\n  }\n</div>\n" }]
+            args: [{ selector: "app-translation-output", standalone: true, imports: [IconComponent], template: "<div class=\"ui-translation-output\">\n  <textarea\n    #outputEl\n    class=\"ui-textarea\"\n    [value]=\"value\"\n    [placeholder]=\"placeholder || 'Translation will appear here...'\"\n    readonly\n  ></textarea>\n  @if (showCopyButton && value) {\n    <button\n      class=\"ui-translation-output-copy\"\n      (click)=\"copyToClipboard()\"\n      aria-label=\"Copy\"\n    >\n      @if (isCopied) {\n        <span>Copied!</span>\n      } @else {\n        <app-icon icon=\"copy\" [size]=\"14\" />\n      }\n    </button>\n  }\n</div>\n" }]
         }], propDecorators: { value: [{
                 type: Input
             }], placeholder: [{
@@ -10278,18 +10316,570 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
                 type: Input
             }], width: [{
                 type: Input
+            }], classes: [{
+                type: Input
             }], copied: [{
                 type: Output
             }] } });
 registerSchemaComponent("app-translation-output", TranslationOutputComponent);
+
+class MenuButtonComponent {
+    isOpen = false;
+    classes = '';
+    toggle = new EventEmitter();
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: MenuButtonComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: MenuButtonComponent, isStandalone: true, selector: "app-menu-button", inputs: { isOpen: "isOpen", classes: "classes" }, outputs: { toggle: "toggle" }, ngImport: i0, template: "<button\n  type=\"button\"\n  class=\"ui-menu-button\"\n  (click)=\"toggle.emit()\"\n  [attr.aria-expanded]=\"isOpen\"\n  aria-label=\"Open menu\"\n>\n  <span class=\"ui-menu-icon\" [class.open]=\"isOpen\">\n    <span class=\"ui-menu-line\"></span>\n    <span class=\"ui-menu-line\"></span>\n    <span class=\"ui-menu-line\"></span>\n  </span>\n</button>\n", styles: [".menu-button{display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:8px;background:transparent;border:none;border-radius:8px;cursor:pointer;transition:background-color .2s}.menu-button:hover{background:var(--hover)}.menu-icon{display:flex;flex-direction:column;gap:5px;width:20px}.menu-line{display:block;height:2px;background:var(--text-primary);border-radius:2px;transition:transform .3s,opacity .3s}.menu-icon.open .menu-line:nth-child(1){transform:translateY(7px) rotate(45deg)}.menu-icon.open .menu-line:nth-child(2){opacity:0}.menu-icon.open .menu-line:nth-child(3){transform:translateY(-7px) rotate(-45deg)}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: MenuButtonComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-menu-button", standalone: true, imports: [CommonModule], template: "<button\n  type=\"button\"\n  class=\"ui-menu-button\"\n  (click)=\"toggle.emit()\"\n  [attr.aria-expanded]=\"isOpen\"\n  aria-label=\"Open menu\"\n>\n  <span class=\"ui-menu-icon\" [class.open]=\"isOpen\">\n    <span class=\"ui-menu-line\"></span>\n    <span class=\"ui-menu-line\"></span>\n    <span class=\"ui-menu-line\"></span>\n  </span>\n</button>\n", styles: [".menu-button{display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:8px;background:transparent;border:none;border-radius:8px;cursor:pointer;transition:background-color .2s}.menu-button:hover{background:var(--hover)}.menu-icon{display:flex;flex-direction:column;gap:5px;width:20px}.menu-line{display:block;height:2px;background:var(--text-primary);border-radius:2px;transition:transform .3s,opacity .3s}.menu-icon.open .menu-line:nth-child(1){transform:translateY(7px) rotate(45deg)}.menu-icon.open .menu-line:nth-child(2){opacity:0}.menu-icon.open .menu-line:nth-child(3){transform:translateY(-7px) rotate(-45deg)}\n"] }]
+        }], propDecorators: { isOpen: [{
+                type: Input
+            }], classes: [{
+                type: Input
+            }], toggle: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-menu-button", MenuButtonComponent);
+
+class BlockComponent {
+    display = "flex";
+    direction = "column";
+    align = "stretch";
+    justify = "start";
+    wrap = "nowrap";
+    gap = "";
+    padding = "";
+    width = "";
+    height = "";
+    flex = "";
+    overflow = "";
+    inline = false;
+    children = [];
+    classes = "";
+    get alignCss() {
+        const map = {
+            start: "flex-start",
+            center: "center",
+            end: "flex-end",
+            stretch: "stretch",
+            baseline: "baseline",
+        };
+        return map[this.align] || "stretch";
+    }
+    get justifyCss() {
+        const map = {
+            start: "flex-start",
+            center: "center",
+            end: "flex-end",
+            between: "space-between",
+            around: "space-around",
+            evenly: "space-evenly",
+        };
+        return map[this.justify] || "flex-start";
+    }
+    get gapCss() {
+        if (!this.gap)
+            return "";
+        if (/^\d+$/.test(this.gap))
+            return `${this.gap}px`;
+        return this.gap;
+    }
+    get paddingCss() {
+        if (!this.padding)
+            return "";
+        if (/^\d+$/.test(this.padding))
+            return `${this.padding}px`;
+        return this.padding;
+    }
+    get widthCss() {
+        if (!this.width)
+            return "";
+        if (this.width === "full")
+            return "100%";
+        if (this.width === "screen")
+            return "100vw";
+        if (/^\d+$/.test(this.width))
+            return `${this.width}px`;
+        return this.width;
+    }
+    get heightCss() {
+        if (!this.height)
+            return "";
+        if (this.height === "full")
+            return "100%";
+        if (this.height === "screen")
+            return "100vh";
+        if (/^\d+$/.test(this.height))
+            return `${this.height}px`;
+        return this.height;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BlockComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: BlockComponent, isStandalone: true, selector: "app-block", inputs: { display: "display", direction: "direction", align: "align", justify: "justify", wrap: "wrap", gap: "gap", padding: "padding", width: "width", height: "height", flex: "flex", overflow: "overflow", inline: "inline", children: "children", classes: "classes" }, ngImport: i0, template: "<div\n  class=\"ui-block\"\n  [class]=\"classes\"\n  [style.flexDirection]=\"direction\"\n  [style.alignItems]=\"alignCss\"\n  [style.justifyContent]=\"justifyCss\"\n  [style.flexWrap]=\"wrap\"\n  [style.gap]=\"gapCss\"\n  [style.padding]=\"paddingCss\"\n  [style.width]=\"widthCss\"\n  [style.height]=\"heightCss\"\n  [style.flex]=\"flex\"\n  [style.overflow]=\"overflow\"\n>\n  @for (child of children; track child.id) {\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  }\n</div>\n", styles: [":host{display:contents}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BlockComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-block", standalone: true, imports: [CommonModule, SchemaElementComponent], template: "<div\n  class=\"ui-block\"\n  [class]=\"classes\"\n  [style.flexDirection]=\"direction\"\n  [style.alignItems]=\"alignCss\"\n  [style.justifyContent]=\"justifyCss\"\n  [style.flexWrap]=\"wrap\"\n  [style.gap]=\"gapCss\"\n  [style.padding]=\"paddingCss\"\n  [style.width]=\"widthCss\"\n  [style.height]=\"heightCss\"\n  [style.flex]=\"flex\"\n  [style.overflow]=\"overflow\"\n>\n  @for (child of children; track child.id) {\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  }\n</div>\n", styles: [":host{display:contents}\n"] }]
+        }], propDecorators: { display: [{
+                type: Input
+            }], direction: [{
+                type: Input
+            }], align: [{
+                type: Input
+            }], justify: [{
+                type: Input
+            }], wrap: [{
+                type: Input
+            }], gap: [{
+                type: Input
+            }], padding: [{
+                type: Input
+            }], width: [{
+                type: Input
+            }], height: [{
+                type: Input
+            }], flex: [{
+                type: Input
+            }], overflow: [{
+                type: Input
+            }], inline: [{
+                type: Input
+            }], children: [{
+                type: Input
+            }], classes: [{
+                type: Input
+            }] } });
+registerSchemaComponent("app-block", BlockComponent);
+
+const FONT_SIZE_MAP = {
+    xs: "text-xs",
+    sm: "text-sm",
+    md: "text-base",
+    lg: "text-lg",
+    xl: "text-xl",
+    "2xl": "text-2xl",
+    "3xl": "text-3xl",
+    "4xl": "text-4xl",
+};
+const FONT_WEIGHT_MAP = {
+    normal: "font-normal",
+    medium: "font-medium",
+    semibold: "font-semibold",
+    bold: "font-bold",
+};
+const COLOR_MAP = {
+    primary: "text-[var(--text-primary)]",
+    secondary: "text-[var(--text-secondary)]",
+    muted: "text-[var(--text-muted)]",
+    accent: "text-[var(--accent)]",
+    error: "text-[var(--error)]",
+    success: "text-[var(--success)]",
+    warning: "text-[var(--warning)]",
+    info: "text-[var(--info)]",
+};
+const TEXT_ALIGN_MAP = {
+    left: "text-left",
+    center: "text-center",
+    right: "text-right",
+    justify: "text-justify",
+};
+const TEXT_TRANSFORM_MAP = {
+    none: "normal-case",
+    uppercase: "uppercase",
+    lowercase: "lowercase",
+    capitalize: "capitalize",
+};
+class TextComponent {
+    text = "";
+    tag = "span";
+    size = "md";
+    weight = "normal";
+    color = "";
+    textAlign = "left";
+    textTransform = "none";
+    lineHeight = "";
+    letterSpacing = "";
+    whiteSpace = "";
+    truncate = false;
+    classes = "";
+    get fontSizeClass() {
+        return FONT_SIZE_MAP[this.size] || "text-base";
+    }
+    get fontWeightClass() {
+        return FONT_WEIGHT_MAP[this.weight] || "font-normal";
+    }
+    get colorClass() {
+        if (this.color && COLOR_MAP[this.color])
+            return COLOR_MAP[this.color];
+        return "";
+    }
+    get textAlignClass() {
+        return TEXT_ALIGN_MAP[this.textAlign] || "text-left";
+    }
+    get textTransformClass() {
+        return TEXT_TRANSFORM_MAP[this.textTransform] || "normal-case";
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TextComponent, isStandalone: true, selector: "app-text", inputs: { text: "text", tag: "tag", size: "size", weight: "weight", color: "color", textAlign: "textAlign", textTransform: "textTransform", lineHeight: "lineHeight", letterSpacing: "letterSpacing", whiteSpace: "whiteSpace", truncate: "truncate", classes: "classes" }, ngImport: i0, template: "@if (tag === \"p\") {\n  <p\n    class=\"ui-text\"\n    [style.lineHeight]=\"lineHeight || null\"\n    [style.letterSpacing]=\"letterSpacing || null\"\n    [style.whiteSpace]=\"whiteSpace || null\"\n    [title]=\"truncate && text ? text : ''\"\n  >\n    {{ text }}\n    <ng-content></ng-content>\n  </p>\n} @else {\n  <span\n    class=\"ui-text\"\n    [style.lineHeight]=\"lineHeight || null\"\n    [style.letterSpacing]=\"letterSpacing || null\"\n    [style.whiteSpace]=\"whiteSpace || null\"\n    [title]=\"truncate && text ? text : ''\"\n  >\n    {{ text }}\n    <ng-content></ng-content>\n  </span>\n}\n" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-text", standalone: true, imports: [], template: "@if (tag === \"p\") {\n  <p\n    class=\"ui-text\"\n    [style.lineHeight]=\"lineHeight || null\"\n    [style.letterSpacing]=\"letterSpacing || null\"\n    [style.whiteSpace]=\"whiteSpace || null\"\n    [title]=\"truncate && text ? text : ''\"\n  >\n    {{ text }}\n    <ng-content></ng-content>\n  </p>\n} @else {\n  <span\n    class=\"ui-text\"\n    [style.lineHeight]=\"lineHeight || null\"\n    [style.letterSpacing]=\"letterSpacing || null\"\n    [style.whiteSpace]=\"whiteSpace || null\"\n    [title]=\"truncate && text ? text : ''\"\n  >\n    {{ text }}\n    <ng-content></ng-content>\n  </span>\n}\n" }]
+        }], propDecorators: { text: [{
+                type: Input
+            }], tag: [{
+                type: Input
+            }], size: [{
+                type: Input
+            }], weight: [{
+                type: Input
+            }], color: [{
+                type: Input
+            }], textAlign: [{
+                type: Input
+            }], textTransform: [{
+                type: Input
+            }], lineHeight: [{
+                type: Input
+            }], letterSpacing: [{
+                type: Input
+            }], whiteSpace: [{
+                type: Input
+            }], truncate: [{
+                type: Input
+            }], classes: [{
+                type: Input
+            }] } });
+registerSchemaComponent("app-text", TextComponent);
+
+class ThemeToggleComponent {
+    themeService = inject(StyleThemeService);
+    subscription;
+    classes = "";
+    isDark = false;
+    hovered = false;
+    ngOnInit() {
+        this.isDark = this.themeService.isDarkMode();
+        this.subscription = this.themeService.themeChanged$.subscribe((state) => {
+            this.isDark = state.isDark;
+        });
+    }
+    ngOnDestroy() {
+        this.subscription?.unsubscribe();
+    }
+    toggle() {
+        this.themeService.toggleDarkMode();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ThemeToggleComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ThemeToggleComponent, isStandalone: true, selector: "app-theme-toggle", inputs: { classes: "classes" }, ngImport: i0, template: "<button\n  class=\"ui-theme-toggle\"\n  (click)=\"toggle()\"\n  aria-label=\"Toggle theme\"\n>\n  @if (isDark) {\n    <app-icon icon=\"moon\" [size]=\"20\" />\n  } @else {\n    <app-icon icon=\"sun\" [size]=\"20\" />\n  }\n</button>\n", styles: [""], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ThemeToggleComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-theme-toggle", standalone: true, imports: [IconComponent], template: "<button\n  class=\"ui-theme-toggle\"\n  (click)=\"toggle()\"\n  aria-label=\"Toggle theme\"\n>\n  @if (isDark) {\n    <app-icon icon=\"moon\" [size]=\"20\" />\n  } @else {\n    <app-icon icon=\"sun\" [size]=\"20\" />\n  }\n</button>\n" }]
+        }], propDecorators: { classes: [{
+                type: Input
+            }] } });
+registerSchemaComponent("app-theme-toggle", ThemeToggleComponent);
+
+class ShortcutsOverlayComponent {
+    visible = false;
+    title = "Keyboard Shortcuts";
+    shortcuts = "[]";
+    closed = new EventEmitter();
+    trigger = "";
+    hovered = false;
+    get parsedShortcuts() {
+        return parseJsonOrDefault(this.shortcuts);
+    }
+    close() {
+        this.visible = false;
+        this.closed.emit();
+    }
+    onEscape() {
+        if (this.visible)
+            this.close();
+    }
+    open() {
+        this.visible = true;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ShortcutsOverlayComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ShortcutsOverlayComponent, isStandalone: true, selector: "app-shortcuts-overlay", inputs: { visible: "visible", title: "title", shortcuts: "shortcuts", trigger: "trigger" }, outputs: { closed: "closed" }, host: { listeners: { "window:keydown.escape": "onEscape()" } }, ngImport: i0, template: "@if (visible) {\n  <div class=\"ui-modal-overlay\" (click)=\"close()\">\n    <div class=\"ui-shortcuts-overlay\" (click)=\"$event.stopPropagation()\">\n      <div class=\"ui-shortcuts-header\">\n        <h3>{{ title || \"Keyboard Shortcuts\" }}</h3>\n        <button\n          (click)=\"close()\"\n          aria-label=\"Close\"\n        >\n          &times;\n        </button>\n      </div>\n      <div class=\"ui-shortcuts-body\">\n        @for (shortcut of parsedShortcuts; track shortcut.key) {\n          <div class=\"ui-shortcuts-item\">\n            <kbd>{{ shortcut.key }}</kbd>\n            <span>{{ shortcut.description }}</span>\n          </div>\n        }\n      </div>\n    </div>\n  </div>\n}\n", styles: [""] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ShortcutsOverlayComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-shortcuts-overlay", standalone: true, imports: [], template: "@if (visible) {\n  <div class=\"ui-modal-overlay\" (click)=\"close()\">\n    <div class=\"ui-shortcuts-overlay\" (click)=\"$event.stopPropagation()\">\n      <div class=\"ui-shortcuts-header\">\n        <h3>{{ title || \"Keyboard Shortcuts\" }}</h3>\n        <button\n          (click)=\"close()\"\n          aria-label=\"Close\"\n        >\n          &times;\n        </button>\n      </div>\n      <div class=\"ui-shortcuts-body\">\n        @for (shortcut of parsedShortcuts; track shortcut.key) {\n          <div class=\"ui-shortcuts-item\">\n            <kbd>{{ shortcut.key }}</kbd>\n            <span>{{ shortcut.description }}</span>\n          </div>\n        }\n      </div>\n    </div>\n  </div>\n}\n" }]
+        }], propDecorators: { visible: [{
+                type: Input
+            }], title: [{
+                type: Input
+            }], shortcuts: [{
+                type: Input
+            }], closed: [{
+                type: Output
+            }], trigger: [{
+                type: Input
+            }], onEscape: [{
+                type: HostListener,
+                args: ["window:keydown.escape"]
+            }] } });
+registerSchemaComponent("app-shortcuts-overlay", ShortcutsOverlayComponent);
+
+class LocaleSwitcherComponent {
+    i18n = inject(I18nService);
+    size = "sm";
+    variant = "ghost";
+    classes = "";
+    get currentLocale() {
+        return this.i18n.locale();
+    }
+    get availableLocales() {
+        return this.i18n.getAvailableLocales();
+    }
+    setLocale(locale) {
+        this.i18n.setLocale(locale);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LocaleSwitcherComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: LocaleSwitcherComponent, isStandalone: true, selector: "app-locale-switcher", inputs: { size: "size", variant: "variant", classes: "classes" }, ngImport: i0, template: "<div class=\"ui-locale-switcher ui-locale-switcher-{{ size }} ui-locale-switcher-{{ variant }}\">\n  <select [value]=\"currentLocale\" (change)=\"setLocale($any($event.target).value)\">\n    @for (locale of availableLocales; track locale) {\n      <option [value]=\"locale\">{{ locale.toUpperCase() }}</option>\n    }\n  </select>\n  <span class=\"ui-locale-icon\">\n    <app-icon icon=\"globe\" [size]=\"16\" />\n  </span>\n</div>\n", styles: [".locale-switcher{display:inline-flex;align-items:center;position:relative;border-radius:var(--radius-sm, 4px)}.locale-select{appearance:none;background:transparent;border:none;cursor:pointer;padding:.5rem 1.5rem .5rem .5rem;font-size:inherit;color:inherit;width:100%}.locale-select:focus{outline:none}.locale-icon{position:absolute;right:.25rem;pointer-events:none;display:flex;align-items:center}.locale-switcher-sm .locale-select{padding:.25rem 1.25rem .25rem .25rem;font-size:.875rem}.locale-switcher-md .locale-select{padding:.375rem 1.375rem .375rem .375rem;font-size:1rem}.locale-switcher-lg .locale-select{padding:.5rem 1.5rem .5rem .5rem;font-size:1.125rem}.locale-switcher-ghost .locale-select{background:transparent}.locale-switcher-solid .locale-select{background:var(--bg-elevated);border-radius:var(--radius-md)}.locale-switcher-outline .locale-select{background:transparent;border:1px solid var(--border-color);border-radius:var(--radius-sm)}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LocaleSwitcherComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-locale-switcher", standalone: true, imports: [IconComponent], template: "<div class=\"ui-locale-switcher ui-locale-switcher-{{ size }} ui-locale-switcher-{{ variant }}\">\n  <select [value]=\"currentLocale\" (change)=\"setLocale($any($event.target).value)\">\n    @for (locale of availableLocales; track locale) {\n      <option [value]=\"locale\">{{ locale.toUpperCase() }}</option>\n    }\n  </select>\n  <span class=\"ui-locale-icon\">\n    <app-icon icon=\"globe\" [size]=\"16\" />\n  </span>\n</div>\n", styles: [".locale-switcher{display:inline-flex;align-items:center;position:relative;border-radius:var(--radius-sm, 4px)}.locale-select{appearance:none;background:transparent;border:none;cursor:pointer;padding:.5rem 1.5rem .5rem .5rem;font-size:inherit;color:inherit;width:100%}.locale-select:focus{outline:none}.locale-icon{position:absolute;right:.25rem;pointer-events:none;display:flex;align-items:center}.locale-switcher-sm .locale-select{padding:.25rem 1.25rem .25rem .25rem;font-size:.875rem}.locale-switcher-md .locale-select{padding:.375rem 1.375rem .375rem .375rem;font-size:1rem}.locale-switcher-lg .locale-select{padding:.5rem 1.5rem .5rem .5rem;font-size:1.125rem}.locale-switcher-ghost .locale-select{background:transparent}.locale-switcher-solid .locale-select{background:var(--bg-elevated);border-radius:var(--radius-md)}.locale-switcher-outline .locale-select{background:transparent;border:1px solid var(--border-color);border-radius:var(--radius-sm)}\n"] }]
+        }], propDecorators: { size: [{
+                type: Input
+            }], variant: [{
+                type: Input
+            }], classes: [{
+                type: Input
+            }] } });
+registerSchemaComponent("app-locale-switcher", LocaleSwitcherComponent);
+
+class RowComponent {
+    classes = '';
+    children = [];
+    gap;
+    align;
+    justify;
+    width;
+    height;
+    responsive = true;
+    get layoutClasses() {
+        const classes = ["flex"];
+        // Row direction (horizontal by default)
+        classes.push("flex-row");
+        // Gap
+        if (this.gap) {
+            classes.push(`gap-${this.gap}`);
+        }
+        // Alignment
+        if (this.align) {
+            const alignMap = {
+                start: "items-start",
+                center: "items-center",
+                end: "items-end",
+                stretch: "items-stretch",
+                baseline: "items-baseline",
+            };
+            if (alignMap[this.align]) {
+                classes.push(alignMap[this.align]);
+            }
+        }
+        // Justify
+        if (this.justify) {
+            const justifyMap = {
+                start: "justify-start",
+                center: "justify-center",
+                end: "justify-end",
+                between: "justify-between",
+                around: "justify-justify",
+                evenly: "justify-evenly",
+            };
+            if (justifyMap[this.justify]) {
+                classes.push(justifyMap[this.justify]);
+            }
+        }
+        // Width
+        if (this.width === "full")
+            classes.push("w-full");
+        else if (this.width === "auto")
+            classes.push("w-auto");
+        // Height
+        if (this.height === "full")
+            classes.push("h-full");
+        else if (this.height === "auto")
+            classes.push("h-auto");
+        return classes.join(" ");
+    }
+    // Mobile: switch to column layout at md breakpoint
+    get mobileLayoutClasses() {
+        if (!this.responsive)
+            return "";
+        return "md:flex-col";
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: RowComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: RowComponent, isStandalone: true, selector: "app-row", inputs: { classes: "classes", children: "children", gap: "gap", align: "align", justify: "justify", width: "width", height: "height", responsive: "responsive" }, ngImport: i0, template: "<div class=\"ui-row\">\n  <ng-container *ngFor=\"let child of children\">\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  </ng-container>\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: RowComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-row", standalone: true, imports: [CommonModule, SchemaElementComponent], template: "<div class=\"ui-row\">\n  <ng-container *ngFor=\"let child of children\">\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  </ng-container>\n</div>\n" }]
+        }], propDecorators: { classes: [{
+                type: Input
+            }], children: [{
+                type: Input
+            }], gap: [{
+                type: Input
+            }], align: [{
+                type: Input
+            }], justify: [{
+                type: Input
+            }], width: [{
+                type: Input
+            }], height: [{
+                type: Input
+            }], responsive: [{
+                type: Input
+            }] } });
+registerSchemaComponent("app-row", RowComponent);
+
+class ColumnComponent {
+    classes = '';
+    children = [];
+    gap;
+    align;
+    justify;
+    width;
+    height;
+    get layoutClasses() {
+        const classes = ["flex", "flex-col"];
+        // Gap
+        if (this.gap) {
+            classes.push(`gap-${this.gap}`);
+        }
+        // Alignment
+        if (this.align) {
+            const alignMap = {
+                start: "items-start",
+                center: "items-center",
+                end: "items-end",
+                stretch: "items-stretch",
+                baseline: "items-baseline",
+            };
+            if (alignMap[this.align]) {
+                classes.push(alignMap[this.align]);
+            }
+        }
+        // Justify
+        if (this.justify) {
+            const justifyMap = {
+                start: "justify-start",
+                center: "justify-center",
+                end: "justify-end",
+                between: "justify-between",
+                around: "justify-justify",
+                evenly: "justify-evenly",
+            };
+            if (justifyMap[this.justify]) {
+                classes.push(justifyMap[this.justify]);
+            }
+        }
+        // Width
+        if (this.width === "full")
+            classes.push("w-full");
+        else if (this.width === "auto")
+            classes.push("w-auto");
+        // Height
+        if (this.height === "full")
+            classes.push("h-full");
+        else if (this.height === "auto")
+            classes.push("h-auto");
+        return classes.join(" ");
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ColumnComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: ColumnComponent, isStandalone: true, selector: "app-column", inputs: { classes: "classes", children: "children", gap: "gap", align: "align", justify: "justify", width: "width", height: "height" }, ngImport: i0, template: "<div class=\"ui-column\">\n  <ng-container *ngFor=\"let child of children\">\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  </ng-container>\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ColumnComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-column", standalone: true, imports: [CommonModule, SchemaElementComponent], template: "<div class=\"ui-column\">\n  <ng-container *ngFor=\"let child of children\">\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  </ng-container>\n</div>\n" }]
+        }], propDecorators: { classes: [{
+                type: Input
+            }], children: [{
+                type: Input
+            }], gap: [{
+                type: Input
+            }], align: [{
+                type: Input
+            }], justify: [{
+                type: Input
+            }], width: [{
+                type: Input
+            }], height: [{
+                type: Input
+            }] } });
+registerSchemaComponent("app-column", ColumnComponent);
+
+class StackComponent {
+    classes = '';
+    children = [];
+    gap;
+    align;
+    width;
+    height;
+    get layoutClasses() {
+        const classes = ["flex", "flex-col"];
+        // Gap
+        if (this.gap) {
+            classes.push(`gap-${this.gap}`);
+        }
+        // Alignment
+        if (this.align) {
+            const alignMap = {
+                start: "items-start",
+                center: "items-center",
+                end: "items-end",
+                stretch: "items-stretch",
+                baseline: "items-baseline",
+            };
+            if (alignMap[this.align]) {
+                classes.push(alignMap[this.align]);
+            }
+        }
+        // Width
+        if (this.width === "full")
+            classes.push("w-full");
+        else if (this.width === "auto")
+            classes.push("w-auto");
+        // Height
+        if (this.height === "full")
+            classes.push("h-full");
+        else if (this.height === "auto")
+            classes.push("h-auto");
+        return classes.join(" ");
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: StackComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: StackComponent, isStandalone: true, selector: "app-stack", inputs: { classes: "classes", children: "children", gap: "gap", align: "align", width: "width", height: "height" }, ngImport: i0, template: "<div class=\"ui-stack\">\n  <ng-container *ngFor=\"let child of children\">\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  </ng-container>\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: StackComponent, decorators: [{
+            type: Component,
+            args: [{ selector: "app-stack", standalone: true, imports: [CommonModule, SchemaElementComponent], template: "<div class=\"ui-stack\">\n  <ng-container *ngFor=\"let child of children\">\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  </ng-container>\n</div>\n" }]
+        }], propDecorators: { classes: [{
+                type: Input
+            }], children: [{
+                type: Input
+            }], gap: [{
+                type: Input
+            }], align: [{
+                type: Input
+            }], width: [{
+                type: Input
+            }], height: [{
+                type: Input
+            }] } });
+registerSchemaComponent("app-stack", StackComponent);
 
 // Side-effect import: Import ALL Angular components to trigger registerSchemaComponent()
 // Each component file calls registerSchemaComponent() on module load,
 // which registers the component in SCHEMA_COMPONENT_MAP for dynamic resolution.
 // This file MUST be imported before any schema rendering.
 // UI Components
-// Layout/Text Components
-// (block.component and text.component not yet in dist - removed until library is rebuilt)
 
 // UI Components
 const uiComponents = [
@@ -10657,9 +11247,6 @@ const feedbackComponents = [
         category: "forms",
     },
 ];
-const components = uiComponents;
-// Data Components (placeholder for @tauri-front/data package)
-const dataComponents = [];
 
 /**
  * Abstract base component that provides a destroy$ Subject for subscription cleanup.
@@ -10740,7 +11327,7 @@ class SchemaRouteViewerComponent {
                 styles["grid-template-rows"] = val;
             }
         }
-        // Gap: schema value is a Tailwind spacing token (4 = 1rem)
+        // Gap: schema value is a spacing token (4 = 1rem)
         const rowGap = layout.rowGap ?? layout.gap;
         const colGap = layout.colGap ?? layout.gap;
         if (rowGap !== undefined || colGap !== undefined) {
@@ -10846,11 +11433,11 @@ class SchemaRouteViewerComponent {
             this.router.navigate(this.route);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaRouteViewerComponent, deps: [{ token: SchemaRouterService }, { token: SchemaRendererService }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaRouteViewerComponent, isStandalone: true, selector: "lib-schema-route-viewer", inputs: { route: "route", showLayoutRegions: "showLayoutRegions" }, usesOnChanges: true, ngImport: i0, template: "@if (headerRegion(); as region) {\n  <header class=\"schema-layout-header\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]=\"containerClass()\" [ngStyle]=\"gridStyles()\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]=\"element\"\n        [elements]=\"p.canvasElements || []\"\n      ></app-schema-element>\n    }\n  </div>\n} @else if (router.schema() && router.schema()!.pages?.length) {\n  <div class=\"schema-page p-8 text-center\">\n    <div class=\"text-4xl mb-4\">&#9888;</div>\n    <h2 class=\"text-xl font-bold mb-2\">Page Not Found</h2>\n    <p class=\"text-base-content/70\">\n      Route \"{{ router.currentRoute() }}\" not found in schema.\n      Available pages: {{ getAvailableRoutes() }}\n    </p>\n  </div>\n} @else {\n  <div class=\"schema-page p-8 text-center\">\n    <div class=\"text-base-content/50\">Waiting for schema...</div>\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class=\"schema-layout-footer\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class=\"schema-layout-bottom-nav\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class=\"schema-layout-overlay\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{min-height:100%}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaRouteViewerComponent, isStandalone: true, selector: "lib-schema-route-viewer", inputs: { route: "route", showLayoutRegions: "showLayoutRegions" }, usesOnChanges: true, ngImport: i0, template: "@if (headerRegion(); as region) {\n  <header class=\"schema-layout-header\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]=\"containerClass()\" [ngStyle]=\"gridStyles()\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]=\"element\"\n        [elements]=\"p.canvasElements || []\"\n      ></app-schema-element>\n    }\n  </div>\n} @else if (router.schema() && router.schema()!.pages?.length) {\n  <div class=\"schema-page sf-p-8 sf-text-center\">\n    <div class=\"sf-text-4xl sf-mb-4\">&#9888;</div>\n    <h2 class=\"sf-text-xl sf-font-bold sf-mb-2\">Page Not Found</h2>\n    <p style=\"color: var(--text); opacity: 0.7;\">\n      Route \"{{ router.currentRoute() }}\" not found in schema.\n      Available pages: {{ getAvailableRoutes() }}\n    </p>\n  </div>\n} @else {\n  <div class=\"schema-page sf-p-8 sf-text-center\">\n    <div style=\"color: var(--text); opacity: 0.5;\">Waiting for schema...</div>\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class=\"schema-layout-footer\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class=\"schema-layout-bottom-nav\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class=\"schema-layout-overlay\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{min-height:100%}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaRouteViewerComponent, decorators: [{
             type: Component,
-            args: [{ selector: "lib-schema-route-viewer", standalone: true, imports: [CommonModule, SchemaElementComponent], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (headerRegion(); as region) {\n  <header class=\"schema-layout-header\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]=\"containerClass()\" [ngStyle]=\"gridStyles()\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]=\"element\"\n        [elements]=\"p.canvasElements || []\"\n      ></app-schema-element>\n    }\n  </div>\n} @else if (router.schema() && router.schema()!.pages?.length) {\n  <div class=\"schema-page p-8 text-center\">\n    <div class=\"text-4xl mb-4\">&#9888;</div>\n    <h2 class=\"text-xl font-bold mb-2\">Page Not Found</h2>\n    <p class=\"text-base-content/70\">\n      Route \"{{ router.currentRoute() }}\" not found in schema.\n      Available pages: {{ getAvailableRoutes() }}\n    </p>\n  </div>\n} @else {\n  <div class=\"schema-page p-8 text-center\">\n    <div class=\"text-base-content/50\">Waiting for schema...</div>\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class=\"schema-layout-footer\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class=\"schema-layout-bottom-nav\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class=\"schema-layout-overlay\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{min-height:100%}\n"] }]
+            args: [{ selector: "lib-schema-route-viewer", standalone: true, imports: [CommonModule, SchemaElementComponent], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (headerRegion(); as region) {\n  <header class=\"schema-layout-header\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]=\"containerClass()\" [ngStyle]=\"gridStyles()\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]=\"element\"\n        [elements]=\"p.canvasElements || []\"\n      ></app-schema-element>\n    }\n  </div>\n} @else if (router.schema() && router.schema()!.pages?.length) {\n  <div class=\"schema-page sf-p-8 sf-text-center\">\n    <div class=\"sf-text-4xl sf-mb-4\">&#9888;</div>\n    <h2 class=\"sf-text-xl sf-font-bold sf-mb-2\">Page Not Found</h2>\n    <p style=\"color: var(--text); opacity: 0.7;\">\n      Route \"{{ router.currentRoute() }}\" not found in schema.\n      Available pages: {{ getAvailableRoutes() }}\n    </p>\n  </div>\n} @else {\n  <div class=\"schema-page sf-p-8 sf-text-center\">\n    <div style=\"color: var(--text); opacity: 0.5;\">Waiting for schema...</div>\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class=\"schema-layout-footer\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class=\"schema-layout-bottom-nav\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class=\"schema-layout-overlay\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{min-height:100%}\n"] }]
         }], ctorParameters: () => [{ type: SchemaRouterService }, { type: SchemaRendererService }], propDecorators: { route: [{
                 type: Input
             }], showLayoutRegions: [{
@@ -11411,6 +11998,43 @@ class SchemaRouterService {
                 ],
             };
         }
+        if (route === "/about") {
+            return {
+                id: "about-page",
+                name: "About",
+                route: "/about",
+                layouts: [],
+                canvasElements: [
+                    {
+                        id: "about-container",
+                        componentId: "app-stack",
+                        props: { gap: 16, align: "center", justify: "center" },
+                        children: [
+                            {
+                                id: "about-icon",
+                                componentId: "app-icon",
+                                props: { icon: "info", size: 64 },
+                            },
+                            {
+                                id: "about-title",
+                                componentId: "app-text",
+                                props: { text: "Application Name", variant: "h2" },
+                            },
+                            {
+                                id: "about-version",
+                                componentId: "app-text",
+                                props: { text: "Version 1.0.0" },
+                            },
+                            {
+                                id: "about-desc",
+                                componentId: "app-text",
+                                props: { text: "A modern desktop application" },
+                            },
+                        ],
+                    },
+                ],
+            };
+        }
         return null;
     }
     getPage(pageId) {
@@ -11489,28 +12113,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
         }], ctorParameters: () => [{ type: GuardService, decorators: [{
                     type: Optional
                 }] }] });
-
-class ToastComponent {
-    toast = input.required(/* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "toast" }] : /* istanbul ignore next */ []));
-    dismiss = output();
-    onDismiss() {
-        this.dismiss.emit(this.toast().id);
-    }
-    onAction() {
-        const action = this.toast().action;
-        if (action) {
-            action.callback();
-        }
-        this.dismiss.emit(this.toast().id);
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ToastComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ToastComponent, isStandalone: true, selector: "app-toast", inputs: { toast: { classPropertyName: "toast", publicName: "toast", isSignal: true, isRequired: true, transformFunction: null } }, outputs: { dismiss: "dismiss" }, ngImport: i0, template: "<div\n  class=\"relative flex items-start gap-3 rounded-lg border-l-4 bg-[var(--bg-toast)] p-4 text-[var(--text-main)] shadow-lg\"\n  [class.border-[var(--color-success)]]=\"toast().type === 'success'\"\n  [class.border-[var(--color-error)]]=\"toast().type === 'error'\"\n  [class.border-[var(--color-warning)]]=\"toast().type === 'warning'\"\n  [class.border-[var(--color-info)]]=\"toast().type === 'info'\"\n  role=\"alert\"\n>\n  <div class=\"mt-0.5 flex-shrink-0\">\n    @switch (toast().type) {\n      @case (\"success\") {\n        <svg\n          class=\"h-5 w-5 text-[var(--color-success)]\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M5 13l4 4L19 7\"\n          />\n        </svg>\n      }\n      @case (\"error\") {\n        <svg\n          class=\"h-5 w-5 text-[var(--color-error)]\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M6 18L18 6M6 6l12 12\"\n          />\n        </svg>\n      }\n      @case (\"warning\") {\n        <svg\n          class=\"h-5 w-5 text-[var(--color-warning)]\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z\"\n          />\n        </svg>\n      }\n      @case (\"info\") {\n        <svg\n          class=\"h-5 w-5 text-[var(--color-info)]\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\"\n          />\n        </svg>\n      }\n    }\n  </div>\n\n  <div class=\"min-w-0 flex-1\">\n    @if (toast().title) {\n      <p class=\"text-sm font-semibold\">{{ toast().title }}</p>\n    }\n    <p class=\"text-sm\" [class.font-medium]=\"!toast().title\">\n      {{ toast().message }}\n    </p>\n    @if (toast().action) {\n      <button\n        class=\"mt-2 text-sm font-medium text-[var(--color-success)] transition-colors hover:text-[var(--color-success)]\"\n        (click)=\"onAction()\"\n      >\n        {{ toast().action!.label }}\n      </button>\n    }\n  </div>\n\n  <button\n    class=\"flex-shrink-0 text-[var(--text-dim)] transition-colors hover:text-[var(--text-main)]\"\n    (click)=\"onDismiss()\"\n    aria-label=\"Dismiss\"\n  >\n    <svg class=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n      <path\n        stroke-linecap=\"round\"\n        stroke-linejoin=\"round\"\n        stroke-width=\"2\"\n        d=\"M6 18L18 6M6 6l12 12\"\n      />\n    </svg>\n  </button>\n\n  @if (!toast().persistent && (toast().duration ?? 0) > 0) {\n    <div\n      class=\"absolute right-0 bottom-0 left-0 h-1 overflow-hidden rounded-b-lg bg-[var(--bg-elevated)]\"\n    >\n      <div\n        class=\"h-full\"\n        [class.bg-[var(--color-success)]]=\"toast().type === 'success'\"\n        [class.bg-[var(--color-error)]]=\"toast().type === 'error'\"\n        [class.bg-[var(--color-warning)]]=\"toast().type === 'warning'\"\n        [class.bg-[var(--color-info)]]=\"toast().type === 'info'\"\n        class=\"w-full\"\n      ></div>\n    </div>\n  }\n</div>\n" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ToastComponent, decorators: [{
-            type: Component,
-            args: [{ selector: "app-toast", standalone: true, template: "<div\n  class=\"relative flex items-start gap-3 rounded-lg border-l-4 bg-[var(--bg-toast)] p-4 text-[var(--text-main)] shadow-lg\"\n  [class.border-[var(--color-success)]]=\"toast().type === 'success'\"\n  [class.border-[var(--color-error)]]=\"toast().type === 'error'\"\n  [class.border-[var(--color-warning)]]=\"toast().type === 'warning'\"\n  [class.border-[var(--color-info)]]=\"toast().type === 'info'\"\n  role=\"alert\"\n>\n  <div class=\"mt-0.5 flex-shrink-0\">\n    @switch (toast().type) {\n      @case (\"success\") {\n        <svg\n          class=\"h-5 w-5 text-[var(--color-success)]\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M5 13l4 4L19 7\"\n          />\n        </svg>\n      }\n      @case (\"error\") {\n        <svg\n          class=\"h-5 w-5 text-[var(--color-error)]\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M6 18L18 6M6 6l12 12\"\n          />\n        </svg>\n      }\n      @case (\"warning\") {\n        <svg\n          class=\"h-5 w-5 text-[var(--color-warning)]\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z\"\n          />\n        </svg>\n      }\n      @case (\"info\") {\n        <svg\n          class=\"h-5 w-5 text-[var(--color-info)]\"\n          fill=\"none\"\n          viewBox=\"0 0 24 24\"\n          stroke=\"currentColor\"\n        >\n          <path\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            d=\"M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\"\n          />\n        </svg>\n      }\n    }\n  </div>\n\n  <div class=\"min-w-0 flex-1\">\n    @if (toast().title) {\n      <p class=\"text-sm font-semibold\">{{ toast().title }}</p>\n    }\n    <p class=\"text-sm\" [class.font-medium]=\"!toast().title\">\n      {{ toast().message }}\n    </p>\n    @if (toast().action) {\n      <button\n        class=\"mt-2 text-sm font-medium text-[var(--color-success)] transition-colors hover:text-[var(--color-success)]\"\n        (click)=\"onAction()\"\n      >\n        {{ toast().action!.label }}\n      </button>\n    }\n  </div>\n\n  <button\n    class=\"flex-shrink-0 text-[var(--text-dim)] transition-colors hover:text-[var(--text-main)]\"\n    (click)=\"onDismiss()\"\n    aria-label=\"Dismiss\"\n  >\n    <svg class=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n      <path\n        stroke-linecap=\"round\"\n        stroke-linejoin=\"round\"\n        stroke-width=\"2\"\n        d=\"M6 18L18 6M6 6l12 12\"\n      />\n    </svg>\n  </button>\n\n  @if (!toast().persistent && (toast().duration ?? 0) > 0) {\n    <div\n      class=\"absolute right-0 bottom-0 left-0 h-1 overflow-hidden rounded-b-lg bg-[var(--bg-elevated)]\"\n    >\n      <div\n        class=\"h-full\"\n        [class.bg-[var(--color-success)]]=\"toast().type === 'success'\"\n        [class.bg-[var(--color-error)]]=\"toast().type === 'error'\"\n        [class.bg-[var(--color-warning)]]=\"toast().type === 'warning'\"\n        [class.bg-[var(--color-info)]]=\"toast().type === 'info'\"\n        class=\"w-full\"\n      ></div>\n    </div>\n  }\n</div>\n" }]
-        }], propDecorators: { toast: [{ type: i0.Input, args: [{ isSignal: true, alias: "toast", required: true }] }], dismiss: [{ type: i0.Output, args: ["dismiss"] }] } });
 
 const DEFAULT_DURATIONS = {
     success: 3000,
@@ -11622,11 +12224,11 @@ class ToastContainerComponent {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ToastContainerComponent, deps: [{ token: ToastService }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ToastContainerComponent, isStandalone: true, selector: "app-toast-container", inputs: { position: "position" }, ngImport: i0, template: "@if (visibleToasts().length > 0) {\n  <div\n    class=\"fixed z-50 flex w-80 max-w-full flex-col gap-2 p-4\"\n    [ngClass]=\"positionClass\"\n  >\n    @for (toast of visibleToasts(); track toast.id) {\n      <app-toast [toast]=\"toast\" (dismiss)=\"dismiss($event)\"></app-toast>\n    }\n  </div>\n}\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "component", type: ToastComponent, selector: "app-toast", inputs: ["toast"], outputs: ["dismiss"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ToastContainerComponent, isStandalone: true, selector: "app-toast-container", inputs: { position: "position" }, ngImport: i0, template: "@if (visibleToasts().length > 0) {\n  <div\n    class=\"sf-fixed sf-z-50 sf-flex sf-w-80 sf-max-w-full sf-flex-col sf-gap-2 sf-p-4\"\n    [ngClass]=\"positionClass\"\n  >\n    @for (toast of visibleToasts(); track toast.id) {\n      <app-toast [toast]=\"toast\" (dismiss)=\"dismiss($event)\"></app-toast>\n    }\n  </div>\n}\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "component", type: ToastComponent, selector: "app-toast", inputs: ["toast"], outputs: ["dismiss"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ToastContainerComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-toast-container", standalone: true, imports: [CommonModule, ToastComponent], template: "@if (visibleToasts().length > 0) {\n  <div\n    class=\"fixed z-50 flex w-80 max-w-full flex-col gap-2 p-4\"\n    [ngClass]=\"positionClass\"\n  >\n    @for (toast of visibleToasts(); track toast.id) {\n      <app-toast [toast]=\"toast\" (dismiss)=\"dismiss($event)\"></app-toast>\n    }\n  </div>\n}\n" }]
+            args: [{ selector: "app-toast-container", standalone: true, imports: [CommonModule, ToastComponent], template: "@if (visibleToasts().length > 0) {\n  <div\n    class=\"sf-fixed sf-z-50 sf-flex sf-w-80 sf-max-w-full sf-flex-col sf-gap-2 sf-p-4\"\n    [ngClass]=\"positionClass\"\n  >\n    @for (toast of visibleToasts(); track toast.id) {\n      <app-toast [toast]=\"toast\" (dismiss)=\"dismiss($event)\"></app-toast>\n    }\n  </div>\n}\n" }]
         }], ctorParameters: () => [{ type: ToastService }], propDecorators: { position: [{
                 type: Input
             }] } });
@@ -12246,7 +12848,7 @@ class SchemaShellComponent {
         this.loadSchema();
     }
     /**
-     * Returns CSS classes for a region container by mapping its props to Tailwind-style classes.
+     * Returns CSS classes for a region container by mapping its props to sf-prefixed classes.
      * Uses the same mapPropsToClasses() logic as schema elements for consistent styling.
      */
     getRegionClasses(region) {
@@ -12258,7 +12860,7 @@ class SchemaShellComponent {
             .join(" ");
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaShellComponent, deps: [{ token: InvokeWrapperService }, { token: SchemaRouterService }, { token: SchemaRendererService }, { token: StyleThemeService }, { token: ThemeToggleService }, { token: FallbackService }, { token: HandlerExecutorService }, { token: SignalStoreService }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaShellComponent, isStandalone: true, selector: "lib-schema-shell", inputs: { appId: "appId", commandName: "commandName", defaultTheme: "defaultTheme", initialRoute: "initialRoute", errorFallbackCommandName: "errorFallbackCommandName", includeOverlays: "includeOverlays" }, host: { listeners: { "window:toggle-dark": "onWindowToggleDark($event)" } }, ngImport: i0, template: "@if (loading()) {\n  <div class=\"flex flex-col items-center justify-center gap-4 min-h-screen\">\n    <div\n      class=\"w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin\"\n    ></div>\n    <p class=\"text-base-content/70 text-lg\">Loading application...</p>\n  </div>\n} @else if (error(); as err) {\n  <div class=\"flex flex-col items-center justify-center min-h-screen p-8\">\n    <div\n      class=\"w-20 h-20 flex items-center justify-center rounded-full bg-warning/10 text-warning text-4xl mb-4\"\n    >\n      &#9888;\n    </div>\n    <h2 class=\"text-2xl font-bold text-base-content mb-2\">\n      Application Not Available\n    </h2>\n    <p class=\"text-base-content/70 text-center max-w-md mb-6\">{{ err }}</p>\n    <button class=\"btn btn-primary\" (click)=\"retry()\">Retry</button>\n  </div>\n} @else {\n  <div class=\"min-h-screen p-4 md:p-8 bg-gradient-to-br from-indigo-100 via-slate-50 to-indigo-100 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900\">\n    <div class=\"mx-auto max-w-6xl\">\n      <div\n        class=\"app-layout\"\n        [style.grid-template-columns]=\"gridColumns()\"\n        [style.grid-template-rows]=\"gridRows()\"\n        [style.grid-template-areas]=\"gridAreas()\"\n      >\n        @if (headerRegion(); as region) {\n          <div\n            data-region=\"header\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: header\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (sidebarLeftRegion(); as region) {\n          <div\n            data-region=\"sidebar-left\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: sidebar-left\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        <div data-region=\"content\" style=\"grid-area: content\">\n          <main class=\"rounded-2xl p-6 md:p-8 shadow-2xl backdrop-blur-lg bg-white/80 dark:bg-slate-800/80 dark:border-slate-700 border border-slate-300\">\n            <lib-schema-route-viewer />\n          </main>\n        </div>\n\n        @if (sidebarRightRegion(); as region) {\n          <div\n            data-region=\"sidebar-right\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: sidebar-right\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (footerRegion(); as region) {\n          <div\n            data-region=\"footer\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: footer\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (bottomNavRegion(); as region) {\n          <div\n            data-region=\"bottom-nav\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: bottom-nav\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @for (region of otherRegions(); track region.id) {\n          <div\n            data-region=\"other\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: other\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n      </div>\n\n      @for (region of overlayRegions(); track region.id) {\n        <div class=\"layout-overlay\" data-region=\"overlay\">\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </div>\n      }\n    </div>\n  </div>\n}\n\n@if (includeOverlays) {\n  <app-toast-container position=\"top-right\" />\n}\n", styles: [":host{display:block;height:100%}.app-layout{display:grid;min-height:100vh}[data-region=content],[data-region=sidebar-left],[data-region=sidebar-right]{overflow:auto}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaRouteViewerComponent, selector: "lib-schema-route-viewer", inputs: ["route", "showLayoutRegions"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "component", type: ToastContainerComponent, selector: "app-toast-container", inputs: ["position"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaShellComponent, isStandalone: true, selector: "lib-schema-shell", inputs: { appId: "appId", commandName: "commandName", defaultTheme: "defaultTheme", initialRoute: "initialRoute", errorFallbackCommandName: "errorFallbackCommandName", includeOverlays: "includeOverlays" }, host: { listeners: { "window:toggle-dark": "onWindowToggleDark($event)" } }, ngImport: i0, template: "@if (loading()) {\n  <div class=\"ui-flex ui-flex-col ui-items-center ui-justify-center ui-gap-4 ui-min-h-screen\">\n    <div\n      class=\"ui-w-10 ui-h-10 ui-border-4 ui-border-primary ui-border-t-transparent ui-rounded-full ui-animate-spin\"\n    ></div>\n    <p class=\"ui-text-base-content ui-text-muted-70 ui-text-lg\">Loading application...</p>\n  </div>\n} @else if (error(); as err) {\n  <div class=\"ui-flex ui-flex-col ui-items-center ui-justify-center ui-min-h-screen ui-p-8\">\n    <div\n      class=\"ui-w-20 ui-h-20 ui-flex ui-items-center ui-justify-center ui-rounded-full ui-bg-warning-10 ui-text-warning ui-text-4xl ui-mb-4\"\n    >\n      &#9888;\n    </div>\n    <h2 class=\"ui-text-2xl ui-font-bold ui-text-base-content ui-mb-2\">\n      Application Not Available\n    </h2>\n    <p class=\"ui-text-base-content ui-text-muted-70 ui-text-center ui-max-w-md ui-mb-6\">{{ err }}</p>\n    <button class=\"ui-btn ui-btn-primary\" (click)=\"retry()\">Retry</button>\n  </div>\n} @else {\n  <div class=\"ui-min-h-screen ui-p-4 ui-md-p-8 ui-bg-base-content\">\n    <div class=\"ui-mx-auto ui-max-w-6xl\">\n      <div\n        class=\"app-layout\"\n        [style.grid-template-columns]=\"gridColumns()\"\n        [style.grid-template-rows]=\"gridRows()\"\n        [style.grid-template-areas]=\"gridAreas()\"\n      >\n        @if (headerRegion(); as region) {\n          <div\n            data-region=\"header\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: header\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (sidebarLeftRegion(); as region) {\n          <div\n            data-region=\"sidebar-left\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: sidebar-left\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        <div data-region=\"content\" style=\"grid-area: content\">\n          <main class=\"ui-m3-surface-container-high ui-rounded-lg ui-p-6 ui-md-p-8\">\n            <lib-schema-route-viewer />\n          </main>\n        </div>\n\n        @if (sidebarRightRegion(); as region) {\n          <div\n            data-region=\"sidebar-right\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: sidebar-right\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (footerRegion(); as region) {\n          <div\n            data-region=\"footer\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: footer\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (bottomNavRegion(); as region) {\n          <div\n            data-region=\"bottom-nav\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: bottom-nav\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @for (region of otherRegions(); track region.id) {\n          <div\n            data-region=\"other\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: other\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n      </div>\n\n      @for (region of overlayRegions(); track region.id) {\n        <div class=\"layout-overlay\" data-region=\"overlay\">\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </div>\n      }\n    </div>\n  </div>\n}\n\n@if (includeOverlays) {\n  <app-toast-container position=\"top-right\" />\n}\n", styles: [":host{display:block;height:100%}.app-layout{display:grid;min-height:100vh}[data-region=content],[data-region=sidebar-left],[data-region=sidebar-right]{overflow:auto}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaRouteViewerComponent, selector: "lib-schema-route-viewer", inputs: ["route", "showLayoutRegions"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "component", type: ToastContainerComponent, selector: "app-toast-container", inputs: ["position"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaShellComponent, decorators: [{
             type: Component,
@@ -12267,7 +12869,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
                         SchemaRouteViewerComponent,
                         SchemaElementComponent,
                         ToastContainerComponent,
-                    ], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (loading()) {\n  <div class=\"flex flex-col items-center justify-center gap-4 min-h-screen\">\n    <div\n      class=\"w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin\"\n    ></div>\n    <p class=\"text-base-content/70 text-lg\">Loading application...</p>\n  </div>\n} @else if (error(); as err) {\n  <div class=\"flex flex-col items-center justify-center min-h-screen p-8\">\n    <div\n      class=\"w-20 h-20 flex items-center justify-center rounded-full bg-warning/10 text-warning text-4xl mb-4\"\n    >\n      &#9888;\n    </div>\n    <h2 class=\"text-2xl font-bold text-base-content mb-2\">\n      Application Not Available\n    </h2>\n    <p class=\"text-base-content/70 text-center max-w-md mb-6\">{{ err }}</p>\n    <button class=\"btn btn-primary\" (click)=\"retry()\">Retry</button>\n  </div>\n} @else {\n  <div class=\"min-h-screen p-4 md:p-8 bg-gradient-to-br from-indigo-100 via-slate-50 to-indigo-100 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900\">\n    <div class=\"mx-auto max-w-6xl\">\n      <div\n        class=\"app-layout\"\n        [style.grid-template-columns]=\"gridColumns()\"\n        [style.grid-template-rows]=\"gridRows()\"\n        [style.grid-template-areas]=\"gridAreas()\"\n      >\n        @if (headerRegion(); as region) {\n          <div\n            data-region=\"header\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: header\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (sidebarLeftRegion(); as region) {\n          <div\n            data-region=\"sidebar-left\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: sidebar-left\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        <div data-region=\"content\" style=\"grid-area: content\">\n          <main class=\"rounded-2xl p-6 md:p-8 shadow-2xl backdrop-blur-lg bg-white/80 dark:bg-slate-800/80 dark:border-slate-700 border border-slate-300\">\n            <lib-schema-route-viewer />\n          </main>\n        </div>\n\n        @if (sidebarRightRegion(); as region) {\n          <div\n            data-region=\"sidebar-right\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: sidebar-right\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (footerRegion(); as region) {\n          <div\n            data-region=\"footer\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: footer\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (bottomNavRegion(); as region) {\n          <div\n            data-region=\"bottom-nav\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: bottom-nav\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @for (region of otherRegions(); track region.id) {\n          <div\n            data-region=\"other\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: other\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n      </div>\n\n      @for (region of overlayRegions(); track region.id) {\n        <div class=\"layout-overlay\" data-region=\"overlay\">\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </div>\n      }\n    </div>\n  </div>\n}\n\n@if (includeOverlays) {\n  <app-toast-container position=\"top-right\" />\n}\n", styles: [":host{display:block;height:100%}.app-layout{display:grid;min-height:100vh}[data-region=content],[data-region=sidebar-left],[data-region=sidebar-right]{overflow:auto}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n"] }]
+                    ], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (loading()) {\n  <div class=\"ui-flex ui-flex-col ui-items-center ui-justify-center ui-gap-4 ui-min-h-screen\">\n    <div\n      class=\"ui-w-10 ui-h-10 ui-border-4 ui-border-primary ui-border-t-transparent ui-rounded-full ui-animate-spin\"\n    ></div>\n    <p class=\"ui-text-base-content ui-text-muted-70 ui-text-lg\">Loading application...</p>\n  </div>\n} @else if (error(); as err) {\n  <div class=\"ui-flex ui-flex-col ui-items-center ui-justify-center ui-min-h-screen ui-p-8\">\n    <div\n      class=\"ui-w-20 ui-h-20 ui-flex ui-items-center ui-justify-center ui-rounded-full ui-bg-warning-10 ui-text-warning ui-text-4xl ui-mb-4\"\n    >\n      &#9888;\n    </div>\n    <h2 class=\"ui-text-2xl ui-font-bold ui-text-base-content ui-mb-2\">\n      Application Not Available\n    </h2>\n    <p class=\"ui-text-base-content ui-text-muted-70 ui-text-center ui-max-w-md ui-mb-6\">{{ err }}</p>\n    <button class=\"ui-btn ui-btn-primary\" (click)=\"retry()\">Retry</button>\n  </div>\n} @else {\n  <div class=\"ui-min-h-screen ui-p-4 ui-md-p-8 ui-bg-base-content\">\n    <div class=\"ui-mx-auto ui-max-w-6xl\">\n      <div\n        class=\"app-layout\"\n        [style.grid-template-columns]=\"gridColumns()\"\n        [style.grid-template-rows]=\"gridRows()\"\n        [style.grid-template-areas]=\"gridAreas()\"\n      >\n        @if (headerRegion(); as region) {\n          <div\n            data-region=\"header\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: header\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (sidebarLeftRegion(); as region) {\n          <div\n            data-region=\"sidebar-left\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: sidebar-left\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        <div data-region=\"content\" style=\"grid-area: content\">\n          <main class=\"ui-m3-surface-container-high ui-rounded-lg ui-p-6 ui-md-p-8\">\n            <lib-schema-route-viewer />\n          </main>\n        </div>\n\n        @if (sidebarRightRegion(); as region) {\n          <div\n            data-region=\"sidebar-right\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: sidebar-right\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (footerRegion(); as region) {\n          <div\n            data-region=\"footer\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: footer\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (bottomNavRegion(); as region) {\n          <div\n            data-region=\"bottom-nav\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: bottom-nav\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @for (region of otherRegions(); track region.id) {\n          <div\n            data-region=\"other\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: other\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n      </div>\n\n      @for (region of overlayRegions(); track region.id) {\n        <div class=\"layout-overlay\" data-region=\"overlay\">\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </div>\n      }\n    </div>\n  </div>\n}\n\n@if (includeOverlays) {\n  <app-toast-container position=\"top-right\" />\n}\n", styles: [":host{display:block;height:100%}.app-layout{display:grid;min-height:100vh}[data-region=content],[data-region=sidebar-left],[data-region=sidebar-right]{overflow:auto}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n"] }]
         }], ctorParameters: () => [{ type: InvokeWrapperService }, { type: SchemaRouterService }, { type: SchemaRendererService }, { type: StyleThemeService }, { type: ThemeToggleService }, { type: FallbackService }, { type: HandlerExecutorService }, { type: SignalStoreService }], propDecorators: { appId: [{
                 type: Input
             }], commandName: [{
@@ -12508,6 +13110,71 @@ class ApiException extends Error {
         this.name = "ApiException";
     }
 }
+
+class LoggerService {
+    _logs = [];
+    get logs() {
+        return this._logs;
+    }
+    log(level, message, context) {
+        const entry = {
+            timestamp: new Date(),
+            level,
+            message,
+            context,
+        };
+        this._logs.push(entry);
+        this.writeToConsole(entry);
+    }
+    debug(message, context) {
+        this.log("debug", message, context);
+    }
+    info(message, context) {
+        this.log("info", message, context);
+    }
+    warn(message, context) {
+        this.log("warn", message, context);
+    }
+    error(message, context) {
+        this.log("error", message, context);
+    }
+    getFilteredLogs(level) {
+        if (!level)
+            return [...this._logs];
+        return this._logs.filter((log) => log.level === level);
+    }
+    exportLogs() {
+        return JSON.stringify(this._logs, null, 2);
+    }
+    clear() {
+        this._logs = [];
+    }
+    writeToConsole(entry) {
+        const prefix = `[${entry.timestamp.toISOString()}] [${entry.level.toUpperCase()}]`;
+        const contextStr = entry.context ? ` [${entry.context}]` : "";
+        const fullMessage = `${prefix}${contextStr} ${entry.message}`;
+        switch (entry.level) {
+            case "debug":
+                console.debug(fullMessage);
+                break;
+            case "info":
+                console.info(fullMessage);
+                break;
+            case "warn":
+                console.warn(fullMessage);
+                break;
+            case "error":
+                console.error(fullMessage);
+                break;
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LoggerService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LoggerService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LoggerService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }] });
 
 class SignalLoggerService {
     _entries = signal([], /* @ts-ignore */
@@ -13240,7 +13907,7 @@ class UnifiedStorageService {
     }
 }
 
-class CrudService {
+class LocalCrudService {
     async find(entity, id) {
         const result = await this.execute("find", entity, {
             filter: { id },
@@ -13284,10 +13951,10 @@ class CrudService {
         });
         return result.exists;
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CrudService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CrudService, providedIn: "root" });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LocalCrudService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LocalCrudService, providedIn: "root" });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CrudService, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LocalCrudService, decorators: [{
             type: Injectable,
             args: [{ providedIn: "root" }]
         }] });
@@ -14765,5 +15432,5 @@ class AboutService {
  * Generated bundle index. Do not edit.
  */
 
-export { AboutService, ApiCrudService, ApiException, BaseCrudService, BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, LocalStorageService, PaginationComponent, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, CrudService as RemoteCrudService, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStore, SignalStoreService, SignalSyncService, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createSignalStore, createState, createStateSubject, dataComponents, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue$1 as getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
+export { AboutService, ApiCrudService, ApiException, BaseCrudService, BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, LocalStorageService, LoggerService, PaginationComponent, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, LocalCrudService as RemoteCrudService, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStore, SignalStoreService, SignalSyncService, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createSignalStore, createState, createStateSubject, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue$1 as getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
 //# sourceMappingURL=tauri-front-shared.mjs.map

@@ -9,7 +9,6 @@ export interface ResolvedStyles {
 
 export interface StyleResolutionOptions {
   applyThemeVariables: boolean;
-  extractTailwind: boolean;
   prefix?: string;
 }
 
@@ -17,9 +16,6 @@ export interface StyleResolutionOptions {
 export class StyleResolver {
   private theme: Theme | null = null;
   private colorMode: "light" | "dark" | "system" = "system";
-
-  private tailwindClassPattern =
-    /^(?:w-|h-|p-|m-|mt-|mb-|ml-|mr-|px-|py-|pt-|pb-|pl-|pr-|gap-|space-|flex|grid|block|inline|hidden|static|relative|absolute|fixed|sticky|inset-|top-|right-|bottom-|left-|z-|text-|bg-|border-|rounded|shadow|opacity|font-|leading-|tracking-|whitespace|overflow|truncate|uppercase|lowercase|capitalize|normal-case|italic|oblique|underline|line-through|no-underline|resize|select|cursor|pointer|not-allowed|animate|transition|transform|rotate|scale|skew|origin|from-|to-|via-|gradient|animate-|duration-|ease-|delay-|repeat|reverse|ping-|pulse-|visible|invisible|opacity-|scale-|rotate-|translate-|skew-|ring-|outline-|appearance-|list-|backdrop-|placeholder-|fill-|stroke-|sr-)/;
 
   setTheme(theme: Theme): void {
     this.theme = theme;
@@ -34,17 +30,14 @@ export class StyleResolver {
     const inlineStyles: Record<string, string> = {};
     const cssVariables: Record<string, string> = {};
 
-    const tailwindClasses: string[] = [];
-    const customClasses: string[] = [];
+    const resolvedClasses: string[] = [];
 
     for (const cls of classes) {
-      if (this.isTailwindClass(cls)) {
-        tailwindClasses.push(cls);
-      } else if (cls.startsWith("--")) {
+      if (cls.startsWith("--")) {
         const [varName, value] = this.parseCssVariable(cls);
         cssVariables[varName] = value;
       } else {
-        customClasses.push(cls);
+        resolvedClasses.push(cls);
       }
     }
 
@@ -54,7 +47,7 @@ export class StyleResolver {
     }
 
     return {
-      classes: [...customClasses, ...tailwindClasses],
+      classes: resolvedClasses,
       inlineStyles,
       cssVariables,
     };
@@ -115,11 +108,6 @@ export class StyleResolver {
     }
   }
 
-  extractTailwindClasses(classString: string): string[] {
-    const parsed = this.parseClasses(classString);
-    return parsed.filter((cls) => this.isTailwindClass(cls));
-  }
-
   buildClassString(classes: string[], prefix?: string): string {
     const finalClasses = prefix
       ? classes.map((c) => (c.startsWith(prefix) ? c : `${prefix}${c}`))
@@ -138,16 +126,6 @@ export class StyleResolver {
       return [match[1], match[2]];
     }
     return [varString, ""];
-  }
-
-  private isTailwindClass(className: string): boolean {
-    if (!className) return false;
-    if (this.tailwindClassPattern.test(className)) return true;
-    if (className.includes(":")) {
-      const [base] = className.split(":");
-      return this.tailwindClassPattern.test(base);
-    }
-    return false;
   }
 
   private mergeClassLists(base: string[], override: string[]): string[] {
@@ -186,7 +164,8 @@ export class StyleResolver {
     if (colors.bgElevated) dest["--color-bg-elevated"] = colors.bgElevated;
     if (colors.bgHover) dest["--color-bg-hover"] = colors.bgHover;
     if (colors.textPrimary) dest["--color-text-primary"] = colors.textPrimary;
-    if (colors.textSecondary) dest["--color-text-secondary"] = colors.textSecondary;
+    if (colors.textSecondary)
+      dest["--color-text-secondary"] = colors.textSecondary;
     if (colors.textMuted) dest["--color-text-muted"] = colors.textMuted;
     if (colors.border) dest["--color-border"] = colors.border;
     if (colors.borderLight) dest["--color-border-light"] = colors.borderLight;

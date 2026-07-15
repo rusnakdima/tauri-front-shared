@@ -1,26 +1,36 @@
 @if (loading()) {
-  <div class="flex flex-col items-center justify-center gap-4 min-h-screen">
+  <div
+    class="ui-flex ui-flex-col ui-items-center ui-justify-center ui-gap-4 ui-min-h-screen"
+  >
     <div
-      class="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"
+      class="ui-w-10 ui-h-10 ui-border-4 ui-border-primary ui-border-t-transparent ui-rounded-full ui-animate-spin"
     ></div>
-    <p class="text-base-content/70 text-lg">Loading application...</p>
+    <p class="ui-text-base-content ui-text-muted-70 ui-text-lg">
+      Loading application...
+    </p>
   </div>
 } @else if (error(); as err) {
-  <div class="flex flex-col items-center justify-center min-h-screen p-8">
+  <div
+    class="ui-flex ui-flex-col ui-items-center ui-justify-center ui-min-h-screen ui-p-8"
+  >
     <div
-      class="w-20 h-20 flex items-center justify-center rounded-full bg-warning/10 text-warning text-4xl mb-4"
+      class="ui-w-20 ui-h-20 ui-flex ui-items-center ui-justify-center ui-rounded-full ui-bg-warning-10 ui-text-warning ui-text-4xl ui-mb-4"
     >
       &#9888;
     </div>
-    <h2 class="text-2xl font-bold text-base-content mb-2">
+    <h2 class="ui-text-2xl ui-font-bold ui-text-base-content ui-mb-2">
       Application Not Available
     </h2>
-    <p class="text-base-content/70 text-center max-w-md mb-6">{{ err }}</p>
-    <button class="btn btn-primary" (click)="retry()">Retry</button>
+    <p
+      class="ui-text-base-content ui-text-muted-70 ui-text-center ui-max-w-md ui-mb-6"
+    >
+      {{ err }}
+    </p>
+    <button class="ui-btn ui-btn-primary" (click)="retry()">Retry</button>
   </div>
 } @else {
-  <div class="min-h-screen p-4 md:p-8 bg-gradient-to-br from-indigo-100 via-slate-50 to-indigo-100 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-    <div class="mx-auto max-w-6xl">
+  <div class="ui-min-h-screen ui-p-4 ui-md-p-8 ui-bg-base-content">
+    <div class="ui-mx-auto ui-max-w-6xl">
       <div
         class="app-layout"
         [style.grid-template-columns]="gridColumns()"
@@ -58,7 +68,9 @@
         }
 
         <div data-region="content" style="grid-area: content">
-          <main class="rounded-2xl p-6 md:p-8 shadow-2xl backdrop-blur-lg bg-white/80 dark:bg-slate-800/80 dark:border-slate-700 border border-slate-300">
+          <main
+            class="ui-m3-surface-container-high ui-rounded-lg ui-p-6 ui-md-p-8"
+          >
             <lib-schema-route-viewer />
           </main>
         </div>

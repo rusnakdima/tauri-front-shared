@@ -1,78 +1,44 @@
 @if (isOpen()) {
-  <div
-    appApplyTheme="app-command-palette"
-    class="fixed inset-0 flex items-start justify-center pt-[15vh] z-[9999] animate-fade-in bg-[var(--bg-overlay,rgba(0,0,0,0.5))] backdrop-blur-[4px]"
-    (click)="close()"
-  >
-    <div
-      class="w-full max-w-[560px] rounded-xl overflow-hidden animate-slide-down bg-[var(--bg-elevated)] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-[var(--border-subtle)]"
-      (click)="$event.stopPropagation()"
-    >
-      <div
-        class="flex items-center gap-3 px-4 py-3 border-b border-[var(--border-subtle)]"
-      >
-        <app-icon
-          class="text-xl text-gray-500 flex-shrink-0"
-          icon="search"
-          [size]="20"
-        />
+  <div class="ui-command-palette-overlay" (click)="close()">
+    <div class="ui-command-palette" (click)="$event.stopPropagation()">
+      <div class="ui-command-palette-search">
+        <app-icon icon="search" [size]="20" />
         <input
           type="text"
-          class="flex-1 bg-transparent border-none outline-none text-base text-[var(--text-primary)]"
           [placeholder]="placeholder"
           [value]="searchQuery()"
           (input)="onSearchChange($any($event.target).value)"
           autofocus
         />
-        <kbd
-          class="px-2 py-1 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]"
-          >Esc</kbd
-        >
+        <kbd>Esc</kbd>
       </div>
-      <div class="max-h-[320px] overflow-y-auto">
+      <div class="ui-command-palette-results">
         @if (filteredCommands().length === 0) {
-          <div
-            class="flex flex-col items-center justify-center gap-2 py-12 text-[var(--text-muted)]"
-          >
-            <app-icon class="text-4xl" icon="search" [size]="40" />
+          <div class="ui-command-palette-empty">
+            <app-icon icon="search" [size]="40" />
             <span>No commands found</span>
           </div>
         } @else {
           @for (group of groupedCommands(); track group.key) {
-            <div class="py-2">
-              <div
-                class="px-4 py-1 text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]"
-              >
+            <div class="ui-command-palette-group">
+              <div class="ui-command-palette-group-label">
                 {{ group.key }}
               </div>
               @for (command of group.value; track command.id) {
                 <button
                   type="button"
-                  class="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm border-none cursor-pointer transition-colors duration-100"
-                  [class]="
-                    isSelected(command)
-                      ? 'bg-blue-50 hover:bg-blue-100'
-                      : 'hover:bg-gray-100'
-                  "
-                  [class.opacity-50]="command.disabled"
-                  [class.cursor-not-allowed]="command.disabled"
-                  [class.text-[var(--text-primary)]]="!command.disabled"
+                  class="ui-command-palette-item"
+                  [class.ui-command-palette-item-selected]="isSelected(command)"
+                  [class.ui-command-palette-item-disabled]="command.disabled"
                   [disabled]="command.disabled"
                   (click)="selectCommand(command)"
                 >
                   @if (command.icon) {
-                    <app-icon
-                      class="text-xl text-gray-500 flex-shrink-0"
-                      [icon]="command.icon"
-                      [size]="20"
-                    />
+                    <app-icon [icon]="command.icon" [size]="20" />
                   }
-                  <span class="flex-1">{{ command.label }}</span>
+                  <span>{{ command.label }}</span>
                   @if (command.shortcut) {
-                    <kbd
-                      class="px-1.5 py-0.5 text-xs rounded bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-subtle)]"
-                      >{{ command.shortcut }}</kbd
-                    >
+                    <kbd>{{ command.shortcut }}</kbd>
                   }
                 </button>
               }
@@ -80,30 +46,10 @@
           }
         }
       </div>
-      <div
-        class="flex items-center gap-4 px-4 py-2 border-t border-[var(--border-subtle)] bg-[var(--bg-secondary)]"
-      >
-        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"
-          ><kbd
-            class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]"
-            >↑↓</kbd
-          >
-          Navigate</span
-        >
-        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"
-          ><kbd
-            class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]"
-            >↵</kbd
-          >
-          Select</span
-        >
-        <span class="flex items-center gap-1 text-xs text-[var(--text-muted)]"
-          ><kbd
-            class="px-1 py-0.5 text-[10px] rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-subtle)]"
-            >Esc</kbd
-          >
-          Close</span
-        >
+      <div class="ui-command-palette-footer">
+        <span><kbd>↑↓</kbd> Navigate</span>
+        <span><kbd>↵</kbd> Select</span>
+        <span><kbd>Esc</kbd> Close</span>
       </div>
     </div>
   </div>

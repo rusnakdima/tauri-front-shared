@@ -7,9 +7,7 @@
 import "./components/button/button.component";
 import "./components/input/input.component";
 import "./components/empty-state/empty-state.component";
-import "./components/modal/modal.component";
 import "./components/dialog/dialog.component";
-import "./components/confirm-dialog/confirm-dialog.component";
 import "./components/loading/loading.component";
 import "./components/radio/radio.component";
 import "./components/slider/slider.component";
@@ -34,7 +32,9 @@ import "./components/page-toolbar/page-toolbar.component";
 import "./components/split-view/split-view.component";
 import "./components/avatar/avatar.component";
 import "./components/chip/chip.component";
-import "./components/pagination/pagination.component";
+import "./core/lib/modal/modal.component";
+import "./core/lib/confirm-dialog/confirm-dialog.component";
+import "./core/lib/pagination/pagination.component";
 import "./components/tabs/tabs.component";
 import "./components/progress-bar/progress-bar.component";
 import "./components/segment-selector/segment-selector.component";
@@ -46,7 +46,7 @@ import "./components/divider/divider.component";
 import "./components/tree/tree.component";
 import "./components/form/form.component";
 import "./components/checkbox/checkbox.component";
-import "./components/toast/toast-component";
+import "./core/lib/toast/toast.component";
 
 // Nav Components
 import "./ui/nav/nav-item";
@@ -64,6 +64,16 @@ import "./components/language-selector/language-selector.component";
 import "./components/swap-button/swap-button.component";
 import "./components/text-input/text-input.component";
 import "./components/translation-output/translation-output.component";
+import "./components/menu/menu-button.component";
 
 // Layout/Text Components
-// (block.component and text.component not yet in dist - removed until library is rebuilt)
+import "./components/block/block.component";
+import "./components/text/text.component";
+import "./components/theme-toggle/theme-toggle.component";
+import "./components/shortcuts-overlay/shortcuts-overlay.component";
+import "./components/locale-switcher/locale-switcher.component";
+
+// Flutter-like Layout Components
+import "./components/layout/row/row.component";
+import "./components/layout/column/column.component";
+import "./components/layout/stack/stack.component";

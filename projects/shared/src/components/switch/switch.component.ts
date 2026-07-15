@@ -1,11 +1,10 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 @Component({
   selector: "app-switch",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./switch.component.html",
   styleUrls: ["./switch.component.css"],
 })

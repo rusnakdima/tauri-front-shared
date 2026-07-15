@@ -1,14 +1,7 @@
-<div appApplyTheme="app-avatar">
+<div class="ui-avatar">
   @if (src && !imgError) {
-    <img
-      class="w-full h-full object-cover"
-      [src]="src"
-      [alt]="alt"
-      (error)="imgError = true"
-    />
+    <img [src]="src" [alt]="alt" (error)="imgError = true" />
   } @else {
-    <span class="font-semibold text-[var(--text-secondary)] uppercase">{{
-      initials
-    }}</span>
+    <span class="ui-avatar-initials">{{ initials }}</span>
   }
 </div>

@@ -1,12 +1,7 @@
-<div
-  appApplyTheme="app-main-editor"
-  class="flex flex-col h-full bg-[var(--bg-primary)]"
->
-  <div
-    class="flex items-center gap-1 py-[6px] px-3 bg-[var(--bg-elevated)] border-b border-[var(--border-color)] min-h-[2.5rem]"
-  >
+<div class="ui-main-editor">
+  <div class="ui-main-editor-toolbar">
     <button
-      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"
+      class="ui-icon-btn"
       [disabled]="!designer.canUndo()"
       (click)="designer.undo()"
       title="Undo"
@@ -14,55 +9,40 @@
       <app-icon icon="undo" [size]="18" />
     </button>
     <button
-      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"
+      class="ui-icon-btn"
       [disabled]="!designer.canRedo()"
       (click)="designer.redo()"
       title="Redo"
     >
       <app-icon icon="redo" [size]="18" />
     </button>
-    <div class="w-px h-5 mx-1 bg-[var(--border-color)]"></div>
+    <div class="ui-toolbar-divider"></div>
     <button
-      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"
-      [class.text-[var(--accent)]]]="designer.showGrid()"
-      [class.text-[var(--text-secondary)]]]="!designer.showGrid()"
-      [class.bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]]]="
-        designer.showGrid()
-      "
-      [class.bg-transparent]="!designer.showGrid()"
+      class="ui-icon-btn"
+      [class.ui-icon-btn-active]="designer.showGrid()"
       (click)="designer.toggleGrid()"
       title="Toggle grid"
     >
       <app-icon icon="grid" [size]="18" />
     </button>
-    <div class="w-px h-5 mx-1 bg-[var(--border-color)]"></div>
-    <button
-      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"
-      (click)="zoomOut()"
-      title="Zoom out"
-    >
+    <div class="ui-toolbar-divider"></div>
+    <button class="ui-icon-btn" (click)="zoomOut()" title="Zoom out">
       <app-icon icon="zoom_out" [size]="18" />
     </button>
-    <span class="text-xs min-w-10 text-center text-[var(--text-secondary)]"
-      >{{ designer.zoom() }}%</span
-    >
-    <button
-      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"
-      (click)="zoomIn()"
-      title="Zoom in"
-    >
+    <span class="ui-zoom-label">{{ designer.zoom() }}%</span>
+    <button class="ui-icon-btn" (click)="zoomIn()" title="Zoom in">
       <app-icon icon="zoom_in" [size]="18" />
     </button>
     <button
-      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 text-[var(--text-secondary)]"
+      class="ui-icon-btn"
       (click)="designer.setZoom(100)"
       title="Reset zoom"
     >
       <app-icon icon="fit_screen" [size]="18" />
     </button>
-    <div class="flex-1"></div>
+    <div class="ui-toolbar-spacer"></div>
     <button
-      class="flex items-center justify-center w-8 h-8 rounded-md border-none bg-transparent text-base transition-all duration-150 hover:disabled:opacity-30 text-[var(--text-secondary)] cursor-pointer"
+      class="ui-icon-btn"
       [disabled]="!designer.selectedId()"
       (click)="deleteSelected()"
       title="Delete selected"
@@ -70,7 +50,7 @@
       <app-icon icon="delete" [size]="18" />
     </button>
   </div>
-  <div class="flex-1 overflow-auto relative" (click)="onCanvasClick($event)">
+  <div class="ui-main-editor-canvas" (click)="onCanvasClick($event)">
     <app-canvas></app-canvas>
   </div>
 </div>

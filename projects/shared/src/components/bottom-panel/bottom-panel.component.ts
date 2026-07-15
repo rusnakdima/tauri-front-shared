@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 import { parseJsonOrDefault } from "../../utils/json";
 
 export interface BottomPanelTab {
@@ -11,7 +10,7 @@ export interface BottomPanelTab {
 @Component({
   selector: "app-bottom-panel",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./bottom-panel.component.html",
   styleUrls: ["./bottom-panel.component.css"],
 })

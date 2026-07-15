@@ -1,12 +1,11 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 import { IconComponent } from "../icons/icons.component";
 
 @Component({
   selector: "app-chip",
   standalone: true,
-  imports: [IconComponent, ApplyThemeDirective],
+  imports: [IconComponent],
   templateUrl: "./chip.component.html",
   styleUrls: ["./chip.component.css"],
 })

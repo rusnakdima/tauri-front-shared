@@ -6,14 +6,13 @@ import {
   HostListener,
 } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 export type DialogSize = "sm" | "md" | "lg";
 
 @Component({
   selector: "app-dialog",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./dialog.component.html",
   styleUrls: ["./dialog.component.css"],
 })

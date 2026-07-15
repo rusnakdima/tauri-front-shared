@@ -48,14 +48,16 @@ const NEUMORPHISM_TOKENS_CSS = `
   --bg-elevated: #e8ecf4;
   --border-color: #a3b1c6;
   --error: #e53e3e;
-  --warning: #ff9800;
-  --success: #48bb78;
+  --warning: #b34700;
+  --success: #2d7a3a;
   --info: #4299e1;
   --bg-primary: #e0e5ec;
+  --bg-secondary: #d8dce8;
+  --bg-tertiary: #d0d4e0;
 }
 
 /* Dark mode */
-:root.dark {
+body[data-style="neumorphism"][data-theme="dark"] {
   --color-neu-base: #2d3748;
   --color-neu-base-dark: #1a202c;
   --color-neu-base-light: #4a5568;
@@ -70,10 +72,12 @@ const NEUMORPHISM_TOKENS_CSS = `
   --gradient-neu-dark: #2d3748;
   --text-primary: #f8fafc;
   --text-secondary: #a0aec0;
-  --text-muted: #718096;
+  --text-muted: #a0aec0;
   --bg-elevated: #2d3748;
   --border-color: #4a5568;
   --bg-primary: #2d3748;
+  --bg-secondary: #252a33;
+  --bg-tertiary: #1e242e;
 }
 `;
 

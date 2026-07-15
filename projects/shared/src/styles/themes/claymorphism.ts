@@ -1,7 +1,7 @@
 const TOKENS_CSS = `
 /**
  * Claymorphism Design Tokens
- * Light mode (default) + Dark mode via :root.dark
+ * Light mode (default) + Dark mode via body[data-style="claymorphism"][data-theme="dark"]
  */
 
 /* Base colors */
@@ -9,8 +9,8 @@ const TOKENS_CSS = `
   --color-clay-base: #e0e5ec;
   --color-clay-raised: #e0e5ec;
   --color-clay-inset: #d1d9e6;
-  --color-clay-accent: #6d5dfc;
-  --color-clay-accent-hover: #5a4cdb;
+  --color-clay-accent: #3d1fcc;
+  --color-clay-accent-hover: #2d0fcc;
   --color-clay-shadow-light: rgba(255, 255, 255, 0.8);
   --color-clay-shadow-dark: rgba(163, 177, 198, 0.6);
   --color-clay-shadow-dark-strong: rgba(94, 108, 132, 0.4);
@@ -38,8 +38,8 @@ const TOKENS_CSS = `
   --border-color: #a3b1c6;
   --border-subtle: #a3b1c6;
   --error: #e53e3e;
-  --warning: #ff9800;
-  --success: #48bb78;
+  --warning: #b34700;
+  --success: #2d7a3a;
   --info: #4299e1;
 
   /* Gradient color stops for raised/inset surfaces */
@@ -48,7 +48,7 @@ const TOKENS_CSS = `
 }
 
 /* Dark mode */
-:root.dark {
+body[data-style="claymorphism"][data-theme="dark"] {
   --color-clay-base: #1a1a2e;
   --color-clay-raised: #252540;
   --color-clay-inset: #1a1a2e;
@@ -59,7 +59,7 @@ const TOKENS_CSS = `
   --color-clay-shadow-dark-strong: rgba(0, 0, 0, 0.6);
   --text-primary: #e2e8f0;
   --text-secondary: #a0aec0;
-  --text-muted: #718096;
+  --text-muted: #8899aa;
   --bg-elevated: #252540;
   --bg-primary: #1a1a2e;
   --bg-secondary: #252540;
@@ -70,7 +70,7 @@ const TOKENS_CSS = `
 `;
 
 const COMPONENTS_CSS = `
-/* Claymorphism Style System for TailwindCSS v4 */
+/* Claymorphism Style System */
 /* Class prefix: clay- */
 
 .clay {

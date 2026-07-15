@@ -1,0 +1,106 @@
+// Glassmorphism Design Tokens
+// Light mode + Dark mode
+
+:root {
+  /* Palette */
+  --primary: #6d5dfc;
+  --primary-fg: #ffffff;
+  --primary-hover: #8b7cf7;
+  --secondary: #4a5568;
+  --secondary-fg: #ffffff;
+  --background: #f0f2f5;
+  --surface: rgba(255, 255, 255, 0.4);
+  --surface-variant: rgba(255, 255, 255, 0.2);
+  --surface-hover: rgba(255, 255, 255, 0.5);
+  --text: #2d3748;
+  --text-muted: #718096;
+  --border: rgba(255, 255, 255, 0.5);
+
+  /* Semantic Colors */
+  --success: #48bb78;
+  --warning: #ff9800;
+  --error: #e53e3e;
+  --info: #4299e1;
+  --semantic-fg: #ffffff;
+
+  /* Structural */
+  --radius-sm: 8px;
+  --radius-md: 20px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  --border-width: 1px;
+  --border-style: solid;
+
+  /* Effects */
+  --shadow-sm: 0 4px 16px 0 rgba(31, 38, 135, 0.1);
+  --shadow-md: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  --shadow-lg: 0 16px 48px 0 rgba(31, 38, 135, 0.2);
+  --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-focus: 0 0 0 3px rgba(109, 93, 252, 0.3);
+  --glass-blur: blur(16px);
+
+  /* Typography */
+  --font-family: "Poppins", "Segoe UI", sans-serif;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Glass-specific variables */
+  --color-glass-bg: rgba(255, 255, 255, 0.1);
+  --color-glass-bg-hover: rgba(255, 255, 255, 0.15);
+  --color-glass-bg-active: rgba(255, 255, 255, 0.2);
+  --color-glass-border: rgba(255, 255, 255, 0.45);
+  --color-glass-border-strong: rgba(255, 255, 255, 0.6);
+  --color-glass-white: rgba(255, 255, 255, 0.8);
+  --color-glass-dark: rgba(0, 0, 0, 0.3);
+  --color-glass-dark-strong: rgba(0, 0, 0, 0.5);
+
+  /* Semantic aliases */
+  --accent: var(--primary);
+  --accent-hover: var(--primary-hover);
+  --text-on-accent: var(--primary-fg);
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --bg-elevated: rgba(255, 255, 255, 0.15);
+  --border-subtle: rgba(255, 255, 255, 0.15);
+  --bg-primary: var(--background);
+  --bg-secondary: rgba(25, 25, 45, 0.75);
+  --bg-tertiary: rgba(10, 10, 20, 0.95);
+}
+
+body[data-style="glassmorphism"] {
+  --font-family: "Poppins", "Segoe UI", sans-serif;
+  --background: #f0f2f5;
+  --surface: rgba(255, 255, 255, 0.4);
+  --surface-variant: rgba(255, 255, 255, 0.2);
+  --surface-hover: rgba(255, 255, 255, 0.5);
+  --border: rgba(255, 255, 255, 0.5);
+  --shadow-md: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  --shadow-sm: 0 4px 16px 0 rgba(31, 38, 135, 0.1);
+  --glass-blur: blur(16px);
+  --radius-md: 20px;
+  --text: #2d3748;
+  --text-muted: #718096;
+}
+
+body[data-style="glassmorphism"][data-theme="dark"] {
+  --primary: #a78bfa;
+  --primary-fg: #1e1b4b;
+  --primary-hover: #8b7cf7;
+  --secondary: #94a3b8;
+  --background: #0f172a;
+  --surface: rgba(30, 41, 59, 0.5);
+  --surface-variant: rgba(15, 23, 42, 0.4);
+  --surface-hover: rgba(40, 55, 75, 0.6);
+  --border: rgba(255, 255, 255, 0.1);
+  --shadow-md: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 4px 16px 0 rgba(0, 0, 0, 0.3);
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --glass-blur: blur(16px);
+
+  /* Glass dark variables */
+  --color-glass-bg: rgba(255, 255, 255, 0.08);
+  --color-glass-bg-hover: rgba(255, 255, 255, 0.12);
+  --color-glass-border: rgba(255, 255, 255, 0.25);
+  --bg-elevated: rgba(255, 255, 255, 0.1);
+  --bg-primary: var(--background);
+}

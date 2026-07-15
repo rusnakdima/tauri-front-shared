@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 import { parseJsonOrDefault } from "../../utils/json";
 
 export interface SidebarItem {
@@ -13,7 +12,7 @@ export interface SidebarItem {
 @Component({
   selector: "app-sidebar",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./sidebar.component.html",
   styleUrls: ["./sidebar.component.css"],
 })

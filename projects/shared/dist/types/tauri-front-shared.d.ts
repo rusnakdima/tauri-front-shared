@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { EventEmitter, OnDestroy, OnInit, OnChanges, SimpleChanges, AfterViewInit, Type, Signal as Signal$2, Provider, EnvironmentProviders, TemplateRef, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, EventEmitter, OnDestroy, OnInit, OnChanges, SimpleChanges, AfterViewInit, Type, Signal as Signal$2, Provider, EnvironmentProviders, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import * as _angular_router from '@angular/router';
 import { Routes, Router, CanActivateFn } from '@angular/router';
@@ -68,7 +68,7 @@ interface ElementConfig {
     gridPosition: GridPosition;
     classes: string;
 }
-interface ToastNotification$1 {
+interface ToastNotification {
     id: string;
     message: string;
     type: "success" | "error" | "warning" | "info";
@@ -250,6 +250,8 @@ interface AppSchema {
 }
 
 declare class PaginationComponent {
+    private cdr;
+    constructor(cdr: ChangeDetectorRef);
     totalItems: number;
     currentPage: number;
     pageSize: number;
@@ -269,10 +271,63 @@ declare class PaginationComponent {
     static ɵcmp: i0.ɵɵComponentDeclaration<PaginationComponent, "app-pagination", never, { "totalItems": { "alias": "totalItems"; "required": false; }; "currentPage": { "alias": "currentPage"; "required": false; }; "pageSize": { "alias": "pageSize"; "required": false; }; }, { "pageChange": "pageChange"; "pageSizeChange": "pageSizeChange"; }, never, never, true, never>;
 }
 
+type ToastType = "success" | "error" | "warning" | "info";
+interface ToastAction {
+    label: string;
+    callback: () => void;
+}
+interface ToastConfig {
+    id: string;
+    type: ToastType;
+    message: string;
+    title?: string;
+    duration?: number;
+    persistent?: boolean;
+    action?: ToastAction;
+    position?: ToastPosition;
+}
+type ToastPosition = "top-right" | "top-left" | "bottom-right" | "bottom-left" | "top-center" | "bottom-center";
+declare class ToastService {
+    private toastsSignal;
+    private counter;
+    private autoDismissTimers;
+    readonly toasts: i0.Signal<ToastConfig[]>;
+    private generateId;
+    show(options: Omit<ToastConfig, "id"> & {
+        id?: string;
+    }): string;
+    success(message: string, options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>): string;
+    error(message: string, options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>): string;
+    warning(message: string, options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>): string;
+    info(message: string, options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>): string;
+    dismiss(id: string): void;
+    dismissAll(): void;
+    update(id: string, changes: Partial<Pick<ToastConfig, "message" | "title" | "type" | "duration" | "persistent" | "action">>): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ToastService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ToastService>;
+}
+
+type Locale = "en" | "ru";
+declare class I18nService {
+    private readonly _locale;
+    get locale(): i0.Signal<Locale>;
+    get translations(): Record<string, string>;
+    setLocale(locale: Locale): void;
+    /**
+     * Translate a key. Falls back to English, then to the key itself.
+     */
+    t(key: string): string;
+    /**
+     * Get all available locales.
+     */
+    getAvailableLocales(): Locale[];
+    static ɵfac: i0.ɵɵFactoryDeclaration<I18nService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<I18nService>;
+}
+
 declare const uiComponents: SharedComponentDef[];
 declare const layoutComponents: SharedComponentDef[];
 declare const feedbackComponents: SharedComponentDef[];
-declare const dataComponents: SharedComponentDef[];
 
 /**
  * Abstract base component that provides a destroy$ Subject for subscription cleanup.
@@ -302,18 +357,8 @@ declare class SignalStoreService {
     static ɵprov: i0.ɵɵInjectableDeclaration<SignalStoreService>;
 }
 
-interface ToastNotification {
-    id: string;
-    message: string;
-    type: "success" | "error" | "warning" | "info";
-    duration: number;
-    icon?: string;
-}
 declare class EventBusService {
     private handlers;
-    private toasts;
-    readonly pendingToasts: i0.Signal<ToastNotification[]>;
-    readonly hasToasts: () => boolean;
     emit(event: string, data?: unknown): void;
     on(event: string, handler: (data: unknown) => void, context?: unknown): () => void;
     once(event: string, handler: (data: unknown) => void, context?: unknown): () => void;
@@ -321,17 +366,6 @@ declare class EventBusService {
     offAll(event?: string): void;
     hasListeners(event: string): boolean;
     getListenerCount(event: string): number;
-    private generateId;
-    showToast(message: string, type?: ToastNotification["type"], duration?: number): string;
-    success(message: string, duration?: number): string;
-    error(message: string, duration?: number): string;
-    warning(message: string, duration?: number): string;
-    info(message: string, duration?: number): string;
-    dismissToast(id: string): void;
-    dismissAllToasts(): void;
-    notify(notification: ToastNotification): string;
-    getToast(id: string): ToastNotification | undefined;
-    clearHistory(): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<EventBusService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<EventBusService>;
 }
@@ -390,7 +424,7 @@ interface CrudQuery {
     limit?: number;
     offset?: number;
 }
-declare class CrudService$1 {
+declare class CrudService {
     private storage;
     init(storage: StorageServiceInterface): void;
     private getStorage;
@@ -412,8 +446,8 @@ declare class CrudService$1 {
         id: string;
     }>(collection: string, items: T[]): void;
     batchDelete(collection: string, ids: string[]): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CrudService$1, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<CrudService$1>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<CrudService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<CrudService>;
 }
 
 interface DataBinding {
@@ -428,7 +462,7 @@ declare class DataBindingResolverService {
     private crudService;
     private _params;
     private _functions;
-    constructor(signalStore: SignalStoreService, crudService: CrudService$1);
+    constructor(signalStore: SignalStoreService, crudService: CrudService);
     setParams(params: Record<string, string>): void;
     registerFunction(name: string, fn: Function): void;
     registerFunctions(fns: Record<string, Function>): void;
@@ -481,24 +515,6 @@ declare class LayoutEngineService {
     };
     static ɵfac: i0.ɵɵFactoryDeclaration<LayoutEngineService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<LayoutEngineService>;
-}
-
-type Locale = "en" | "ru";
-declare class I18nService {
-    private readonly _locale;
-    get locale(): i0.Signal<Locale>;
-    get translations(): Record<string, string>;
-    setLocale(locale: Locale): void;
-    /**
-     * Translate a key. Falls back to English, then to the key itself.
-     */
-    t(key: string): string;
-    /**
-     * Get all available locales.
-     */
-    getAvailableLocales(): Locale[];
-    static ɵfac: i0.ɵɵFactoryDeclaration<I18nService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<I18nService>;
 }
 
 type StyleVariant = "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3" | "brutalism" | "skeuomorphism";
@@ -611,7 +627,6 @@ declare class SchemaRendererService {
     bindEvents(el: HTMLElement, events: Record<string, string | Function>, _elementId: string): void;
     mapPropsToClasses(componentId: string, props: Record<string, unknown>, theme: StyleVariant, explicitVariant?: string, explicitSize?: string, globalContext?: GlobalStyleContext): string[];
     resolveClasses(elementClasses: string, defaultClasses: string): string;
-    resolveDataBinding(binding: unknown): unknown;
     private getDataBindingValue;
     private parseBindingPath;
     private getNestedValue;
@@ -866,35 +881,6 @@ declare class SchemaRouterService {
     static ɵprov: i0.ɵɵInjectableDeclaration<SchemaRouterService>;
 }
 
-declare class SchemaRouteViewerComponent implements OnInit, OnChanges {
-    router: SchemaRouterService;
-    private renderer;
-    route: string;
-    /** When true, renders schema layoutRegions (header, footer, bottom-nav, overlay) */
-    showLayoutRegions: boolean;
-    readonly page: i0.Signal<_tauri_front_shared.Page | null>;
-    /** CSS grid properties to apply via ngStyle */
-    readonly gridStyles: i0.Signal<Record<string, string>>;
-    /** CSS classes: schema-page + layout class */
-    readonly containerClass: i0.Signal<string>;
-    /** All layout regions from the renderer, re-computed when route changes */
-    private readonly rawRegions;
-    private getRegionType;
-    private isRegionVisible;
-    private regionByType;
-    readonly headerRegion: i0.Signal<LayoutElement | null>;
-    readonly footerRegion: i0.Signal<LayoutElement | null>;
-    readonly bottomNavRegion: i0.Signal<LayoutElement | null>;
-    readonly overlayRegions: i0.Signal<LayoutElement[]>;
-    constructor(router: SchemaRouterService, renderer: SchemaRendererService);
-    /** Returns a comma-separated list of available page routes for the error message */
-    getAvailableRoutes(): string;
-    ngOnInit(): void;
-    ngOnChanges(changes: SimpleChanges): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<SchemaRouteViewerComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<SchemaRouteViewerComponent, "lib-schema-route-viewer", never, { "route": { "alias": "route"; "required": false; }; "showLayoutRegions": { "alias": "showLayoutRegions"; "required": false; }; }, {}, never, never, true, never>;
-}
-
 interface RetryOptions {
     maxAttempts: number;
     initialDelayMs: number;
@@ -1074,7 +1060,7 @@ declare class SchemaShellComponent implements OnInit, OnDestroy {
     private loadSchema;
     retry(): void;
     /**
-     * Returns CSS classes for a region container by mapping its props to Tailwind-style classes.
+     * Returns CSS classes for a region container by mapping its props to sf-prefixed classes.
      * Uses the same mapPropsToClasses() logic as schema elements for consistent styling.
      */
     getRegionClasses(region: LayoutElement | null): string;
@@ -1082,40 +1068,33 @@ declare class SchemaShellComponent implements OnInit, OnDestroy {
     static ɵcmp: i0.ɵɵComponentDeclaration<SchemaShellComponent, "lib-schema-shell", never, { "appId": { "alias": "appId"; "required": false; }; "commandName": { "alias": "commandName"; "required": false; }; "defaultTheme": { "alias": "defaultTheme"; "required": false; }; "initialRoute": { "alias": "initialRoute"; "required": false; }; "errorFallbackCommandName": { "alias": "errorFallbackCommandName"; "required": false; }; "includeOverlays": { "alias": "includeOverlays"; "required": false; }; }, {}, never, never, true, never>;
 }
 
-type ToastType = "success" | "error" | "warning" | "info";
-interface ToastAction {
-    label: string;
-    callback: () => void;
-}
-interface ToastConfig {
-    id: string;
-    type: ToastType;
-    message: string;
-    title?: string;
-    duration?: number;
-    persistent?: boolean;
-    action?: ToastAction;
-    position?: ToastPosition;
-}
-type ToastPosition = "top-right" | "top-left" | "bottom-right" | "bottom-left" | "top-center" | "bottom-center";
-declare class ToastService {
-    private toastsSignal;
-    private counter;
-    private autoDismissTimers;
-    readonly toasts: i0.Signal<ToastConfig[]>;
-    private generateId;
-    show(options: Omit<ToastConfig, "id"> & {
-        id?: string;
-    }): string;
-    success(message: string, options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>): string;
-    error(message: string, options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>): string;
-    warning(message: string, options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>): string;
-    info(message: string, options?: Partial<Omit<ToastConfig, "id" | "type" | "message">>): string;
-    dismiss(id: string): void;
-    dismissAll(): void;
-    update(id: string, changes: Partial<Pick<ToastConfig, "message" | "title" | "type" | "duration" | "persistent" | "action">>): void;
-    static ɵfac: i0.ɵɵFactoryDeclaration<ToastService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<ToastService>;
+declare class SchemaRouteViewerComponent implements OnInit, OnChanges {
+    router: SchemaRouterService;
+    private renderer;
+    route: string;
+    /** When true, renders schema layoutRegions (header, footer, bottom-nav, overlay) */
+    showLayoutRegions: boolean;
+    readonly page: i0.Signal<_tauri_front_shared.Page | null>;
+    /** CSS grid properties to apply via ngStyle */
+    readonly gridStyles: i0.Signal<Record<string, string>>;
+    /** CSS classes: schema-page + layout class */
+    readonly containerClass: i0.Signal<string>;
+    /** All layout regions from the renderer, re-computed when route changes */
+    private readonly rawRegions;
+    private getRegionType;
+    private isRegionVisible;
+    private regionByType;
+    readonly headerRegion: i0.Signal<LayoutElement | null>;
+    readonly footerRegion: i0.Signal<LayoutElement | null>;
+    readonly bottomNavRegion: i0.Signal<LayoutElement | null>;
+    readonly overlayRegions: i0.Signal<LayoutElement[]>;
+    constructor(router: SchemaRouterService, renderer: SchemaRendererService);
+    /** Returns a comma-separated list of available page routes for the error message */
+    getAvailableRoutes(): string;
+    ngOnInit(): void;
+    ngOnChanges(changes: SimpleChanges): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<SchemaRouteViewerComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SchemaRouteViewerComponent, "lib-schema-route-viewer", never, { "route": { "alias": "route"; "required": false; }; "showLayoutRegions": { "alias": "showLayoutRegions"; "required": false; }; }, {}, never, never, true, never>;
 }
 
 interface AppError {
@@ -1179,6 +1158,29 @@ declare class ApiException extends Error {
     code?: string | undefined;
     details?: unknown | undefined;
     constructor(message: string, code?: string | undefined, details?: unknown | undefined);
+}
+
+type LogLevel$1 = "debug" | "info" | "warn" | "error";
+interface LogEntry$1 {
+    timestamp: Date;
+    level: LogLevel$1;
+    message: string;
+    context?: string;
+}
+declare class LoggerService {
+    private _logs;
+    get logs(): LogEntry$1[];
+    log(level: LogLevel$1, message: string, context?: string): void;
+    debug(message: string, context?: string): void;
+    info(message: string, context?: string): void;
+    warn(message: string, context?: string): void;
+    error(message: string, context?: string): void;
+    getFilteredLogs(level?: LogLevel$1): LogEntry$1[];
+    exportLogs(): string;
+    clear(): void;
+    private writeToConsole;
+    static ɵfac: i0.ɵɵFactoryDeclaration<LoggerService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<LoggerService>;
 }
 
 type LogLevel = "debug" | "info" | "warn" | "error";
@@ -1408,7 +1410,7 @@ declare class SignalStore {
 }
 declare function createSignalStore(): SignalStore;
 
-declare abstract class CrudService {
+declare abstract class LocalCrudService {
     abstract execute<T>(operation: string, entity: string, params?: Record<string, unknown>): Promise<T>;
     find<T>(entity: string, id: string): Promise<T | null>;
     findAll<T>(entity: string, filter?: unknown): Promise<T[]>;
@@ -1418,8 +1420,8 @@ declare abstract class CrudService {
     delete(entity: string, id: string): Promise<void>;
     count(entity: string): Promise<number>;
     exists(entity: string, id: string): Promise<boolean>;
-    static ɵfac: i0.ɵɵFactoryDeclaration<CrudService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<CrudService>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<LocalCrudService, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<LocalCrudService>;
 }
 
 declare enum ResponseStatus {
@@ -1956,5 +1958,5 @@ declare class AboutService {
     private isNewerVersion;
 }
 
-export { AboutService, ApiCrudService, ApiException, BaseCrudService, BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, LocalStorageService, PaginationComponent, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, CrudService as RemoteCrudService, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStore, SignalStoreService, SignalSyncService, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createSignalStore, createState, createStateSubject, dataComponents, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
-export type { AppError, AppProvider, AppSchema, BaseEntity, BaseServiceConfig, CacheEntry, CanvasElement, ColorMode, ComponentBehavior, ComponentDef, ComponentStyleMap, CrudFilter, DataBinding, DownloadProgress, ElementConfig, ElementEvents, GridPosition, GridTemplate, HandlerDefinition, Layout, LayoutElement, LoadingState, Page, Permission, PermissionCheckResult, QueryFilter, RenderContext, ResizeObserverCallback, ResizeObserverEntry, Response, Role, SchemaSetupOptions, Signal, StorageValidator, StyleVariant, Theme, ToastNotification$1 as ToastNotification, TodoPermissionContext, UiSchema, UnifiedAppConfig, UpdateInfo, User };
+export { AboutService, ApiCrudService, ApiException, BaseCrudService, BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, LocalStorageService, LoggerService, PaginationComponent, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, LocalCrudService as RemoteCrudService, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStore, SignalStoreService, SignalSyncService, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createSignalStore, createState, createStateSubject, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
+export type { AppError, AppProvider, AppSchema, BaseEntity, BaseServiceConfig, CacheEntry, CanvasElement, ColorMode, ComponentBehavior, ComponentDef, ComponentStyleMap, CrudFilter, DataBinding, DownloadProgress, ElementConfig, ElementEvents, GridPosition, GridTemplate, HandlerDefinition, Layout, LayoutElement, LoadingState, LogEntry$1 as LogEntry, LogLevel$1 as LogLevel, Page, Permission, PermissionCheckResult, QueryFilter, RenderContext, ResizeObserverCallback, ResizeObserverEntry, Response, Role, SchemaSetupOptions, Signal, StorageValidator, StyleVariant, Theme, ToastNotification, TodoPermissionContext, UiSchema, UnifiedAppConfig, UpdateInfo, User };

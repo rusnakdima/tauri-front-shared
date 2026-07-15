@@ -1,6 +1,6 @@
 // Glassmorphism CSS - inline for reliable loading
 export const GLASSMORPHISM_CSS = `
-/* Glassmorphism Style System for TailwindCSS v4 */
+/* Glassmorphism Style System */
 /* Class prefix: glass- */
 
 /* Glass-specific variables */
@@ -36,8 +36,8 @@ export const GLASSMORPHISM_CSS = `
   --bg-elevated: rgba(255, 255, 255, 0.15);
   --border-color: rgba(255, 255, 255, 0.45);
   --error: #e53e3e;
-  --warning: #ff9800;
-  --success: #48bb78;
+  --warning: #b34700;
+  --success: #2d7a3a;
   --info: #4299e1;
   --bg-primary: rgba(15, 15, 30, 0.9);
   --bg-secondary: rgba(25, 25, 45, 0.75);
@@ -46,7 +46,7 @@ export const GLASSMORPHISM_CSS = `
 }
 
 /* Dark mode — lighter glass surfaces for contrast */
-:root.dark {
+body[data-style="glassmorphism"][data-theme="dark"] {
   --color-glass-bg: rgba(255, 255, 255, 0.08);
   --color-glass-bg-hover: rgba(255, 255, 255, 0.12);
   --color-glass-bg-active: rgba(255, 255, 255, 0.18);

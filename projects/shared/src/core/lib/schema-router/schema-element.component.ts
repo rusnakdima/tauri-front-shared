@@ -25,9 +25,7 @@ import { getCurrentStyle } from "../../../styles/style-registry";
   templateUrl: "./schema-element.component.html",
   styleUrl: "./schema-element.component.css",
 })
-export class SchemaElementComponent
-  implements AfterViewInit, OnChanges
-{
+export class SchemaElementComponent implements AfterViewInit, OnChanges {
   private rendererService = inject(SchemaRendererService);
   private appRef = inject(ApplicationRef);
   private injector = inject(Injector);
@@ -111,13 +109,22 @@ export class SchemaElementComponent
     });
 
     // Use setInput on ComponentRef for proper Angular input binding + change detection
+    this.componentRef.setInput("classes", this.classes);
     for (const [key, value] of Object.entries(this.props)) {
       this.componentRef.setInput(key, value);
     }
+    // Pass children to container components (e.g., app-block with nested elements)
+    if (this.element.children && this.element.children.length > 0) {
+      this.componentRef.setInput("children", this.element.children);
+    }
 
-    this.componentRef.changeDetectorRef.detectChanges();
+    // Use microtask to allow child ngOnInit to run before change detection.
+    // Without this, the child's @if (isDark) in ThemeToggleComponent evaluates
+    // before ngOnInit sets isDark, rendering an empty container.
+    Promise.resolve().then(() => {
+      this.componentRef?.changeDetectorRef.detectChanges();
+    });
   }
-
 
   get gridStyle(): Partial<CSSStyleDeclaration> {
     const gp = this.element.gridPosition;

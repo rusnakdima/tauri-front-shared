@@ -1,0 +1,116 @@
+// M3 Material Design 3 Design Tokens
+// Light mode + Dark mode via body[data-style="m3"][data-theme="dark"]
+
+:root {
+  /* Palette */
+  --primary: #6750a4;
+  --primary-fg: #ffffff;
+  --primary-hover: #5d4895;
+  --secondary: #625b71;
+  --secondary-fg: #ffffff;
+  --background: #fffbfe;
+  --surface: #f4eff4;
+  --surface-variant: #e7e0ec;
+  --surface-hover: #e0d9e5;
+  --text: #1c1b1f;
+  --text-muted: #49454f;
+  --border: #cac4d0;
+
+  /* Semantic Colors */
+  --success: #198754;
+  --warning: #ffc107;
+  --error: #b3261e;
+  --info: #0dcaf0;
+  --semantic-fg: #ffffff;
+
+  /* Structural */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  --border-width: 1px;
+  --border-style: solid;
+
+  /* Effects */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-focus: 0 0 0 3px rgba(103, 80, 164, 0.3);
+  --glass-blur: none;
+
+  /* Typography */
+  --font-family: "Roboto", "Segoe UI", system-ui, sans-serif;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* M3 Extended tokens (preserved for compatibility) */
+  --color-m3-primary: var(--primary);
+  --color-m3-primary-container: #eaddff;
+  --color-m3-on-primary: var(--primary-fg);
+  --color-m3-secondary: var(--secondary);
+  --color-m3-secondary-container: #e8def8;
+  --color-m3-on-secondary: var(--secondary-fg);
+  --color-m3-error: var(--error);
+  --color-m3-background: var(--background);
+  --color-m3-surface: var(--surface);
+  --color-m3-surface-dim: #ded8e1;
+  --color-m3-surface-container: #f3edf7;
+  --color-m3-on-surface: var(--text);
+  --color-m3-on-surface-variant: var(--text-muted);
+  --color-m3-outline: var(--border);
+  --color-m3-outline-variant: #cac4d0;
+
+  /* Semantic aliases */
+  --accent: var(--primary);
+  --accent-hover: var(--primary-hover);
+  --text-on-accent: var(--primary-fg);
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --bg-elevated: var(--surface);
+  --border-subtle: var(--border);
+  --bg-primary: var(--background);
+  --bg-secondary: var(--surface);
+  --bg-tertiary: var(--surface-variant);
+}
+
+body[data-style="m3"][data-theme="dark"] {
+  --primary: #d0bcff;
+  --primary-fg: #381e72;
+  --primary-hover: #bfa6f5;
+  --secondary: #ccc2dc;
+  --secondary-fg: #332d41;
+  --background: #1c1b1f;
+  --surface: #2b2930;
+  --surface-variant: #49454f;
+  --surface-hover: #55515c;
+  --text: #e6e1e5;
+  --text-muted: #cac4d0;
+  --border: #49454f;
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-focus: 0 0 0 3px rgba(208, 188, 255, 0.3);
+
+  /* M3 Extended tokens dark */
+  --color-m3-primary: var(--primary);
+  --color-m3-on-primary: var(--primary-fg);
+  --color-m3-secondary: var(--secondary);
+  --color-m3-on-secondary: var(--secondary-fg);
+  --color-m3-error: #f2b8b5;
+  --color-m3-background: var(--background);
+  --color-m3-surface: var(--surface);
+  --color-m3-surface-dim: #141218;
+  --color-m3-on-surface: var(--text);
+  --color-m3-on-surface-variant: var(--text-muted);
+  --color-m3-outline: var(--border);
+
+  /* Semantic aliases dark */
+  --accent: var(--primary);
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --bg-elevated: var(--surface);
+  --border-subtle: var(--border);
+  --bg-primary: var(--background);
+  --bg-secondary: var(--surface);
+  --bg-tertiary: var(--surface-variant);
+}

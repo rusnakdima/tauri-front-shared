@@ -1,0 +1,17 @@
+<div
+  class="ui-locale-switcher ui-locale-switcher-{{ size }} ui-locale-switcher-{{
+    variant
+  }}"
+>
+  <select
+    [value]="currentLocale"
+    (change)="setLocale($any($event.target).value)"
+  >
+    @for (locale of availableLocales; track locale) {
+      <option [value]="locale">{{ locale.toUpperCase() }}</option>
+    }
+  </select>
+  <span class="ui-locale-icon">
+    <app-icon icon="globe" [size]="16" />
+  </span>
+</div>

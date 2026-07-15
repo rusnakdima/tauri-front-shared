@@ -8,12 +8,11 @@ import {
   OnDestroy,
 } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 @Component({
   selector: "app-split-view",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./split-view.component.html",
   styleUrls: ["./split-view.component.css"],
 })

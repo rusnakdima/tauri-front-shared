@@ -1,12 +1,10 @@
 import { Component, Input, inject } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
-
 @Component({
   selector: "app-json-view",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./json-view.component.html",
   styleUrls: ["./json-view.component.css"],
 })

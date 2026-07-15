@@ -10,7 +10,6 @@ export {
   uiComponents,
   layoutComponents,
   feedbackComponents,
-  dataComponents,
 } from "./components";
 
 // Core SDUI services (core/lib/)
@@ -22,8 +21,8 @@ export type { DataBinding } from "./core/lib/schema-renderer/data-binding-resolv
 export { LayoutEngineService } from "./core/lib/schema-renderer/layout-engine";
 export type { GridTemplate } from "./core/lib/schema-renderer/layout-engine";
 export { SchemaRouterService } from "./core/lib/schema-router/schema-router.service";
-export { SchemaRouteViewerComponent } from "./core/lib/schema-router/schema-route-viewer.component";
 export { SchemaShellComponent } from "./core/lib/schema-router/schema-shell.component";
+export { SchemaRouteViewerComponent } from "./core/lib/schema-router/schema-route-viewer.component";
 export { GuardService } from "./core/lib/schema-router/guard.service";
 export { EventBusService } from "./core/lib/events/event-bus.service";
 export { I18nService } from "./core/lib/i18n/i18n.service";
@@ -35,6 +34,7 @@ export {
 } from "./core/lib/handler-executor/handler-executor.service";
 
 // Missing services
+export { LoggerService, type LogEntry, type LogLevel } from "./core-logger";
 export { SignalStoreService } from "./core/lib/signal-store/signal-store.service";
 export { SignalLoggerService } from "./core/lib/signal-logger/signal-logger.service";
 export { SignalSyncService } from "./core/lib/signal-sync/signal-sync.service";
@@ -63,7 +63,7 @@ export { SignalStore, createSignalStore } from "./core-storage/signal-store";
 
 // Existing working services
 export { InvokeWrapperService } from "./core-api/invoke-wrapper.service";
-export { CrudService as RemoteCrudService } from "./core-crud/crud.service";
+export { LocalCrudService as RemoteCrudService } from "./core-crud/crud.service";
 
 // Unified CRUD service — maps to Rust define_crud_routes! commands
 export { ApiCrudService, type CrudFilter } from "./core-api/api-crud.service";
@@ -187,8 +187,10 @@ export {
   getComponentStyleClasses,
 } from "./styles/style-registry";
 export type { StyleVariant, ComponentStyleMap } from "./styles/style-registry";
-export { StyleThemeService } from "./styles/theme.service";
-export { StyleThemeService as ThemeService } from "./styles/theme.service";
+export {
+  StyleThemeService,
+  StyleThemeService as ThemeService,
+} from "./styles/theme.service";
 export { ThemeToggleService } from "./styles/theme-toggle.service";
 
 // RBAC / Permission Service
@@ -210,7 +212,7 @@ export {
 } from "./core/lib/rbac/rbac-has-permission.directive";
 
 // Components
-export { PaginationComponent } from "./components/pagination/pagination.component";
+export { PaginationComponent } from "./core/lib/pagination/pagination.component";
 
 // Update services
 export {

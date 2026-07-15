@@ -3,12 +3,11 @@ import { CommonModule } from "@angular/common";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { SchemaElementComponent } from "../../core/lib/schema-router/schema-element.component";
 import type { CanvasElement } from "../../core/lib/types";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 @Component({
   selector: "app-card",
   standalone: true,
-  imports: [CommonModule, SchemaElementComponent, ApplyThemeDirective],
+  imports: [CommonModule, SchemaElementComponent],
   templateUrl: "./card.component.html",
   styleUrls: ["./card.component.css"],
 })
@@ -20,6 +19,7 @@ export class CardComponent {
   @Input() borderRadius = 8;
   @Input() padding = 16;
   @Input() children: CanvasElement[] = [];
+  @Input() classes = "";
 }
 
 registerSchemaComponent("app-card", CardComponent);

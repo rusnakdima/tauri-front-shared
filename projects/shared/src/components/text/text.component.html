@@ -1,24 +1,9 @@
 @if (tag === "p") {
   <p
-    appApplyTheme="app-text"
-    class="app-text m-0"
-    [class]="
-      fontSizeClass +
-      ' ' +
-      fontWeightClass +
-      ' ' +
-      colorClass +
-      ' ' +
-      textAlignClass +
-      ' ' +
-      textTransformClass
-    "
+    class="ui-text"
     [style.lineHeight]="lineHeight || null"
     [style.letterSpacing]="letterSpacing || null"
     [style.whiteSpace]="whiteSpace || null"
-    [class.truncate]="truncate"
-    [class.overflow-hidden]="truncate"
-    [class.text-ellipsis]="truncate"
     [title]="truncate && text ? text : ''"
   >
     {{ text }}
@@ -26,25 +11,10 @@
   </p>
 } @else {
   <span
-    appApplyTheme="app-text"
-    class="app-text m-0"
-    [class]="
-      fontSizeClass +
-      ' ' +
-      fontWeightClass +
-      ' ' +
-      colorClass +
-      ' ' +
-      textAlignClass +
-      ' ' +
-      textTransformClass
-    "
+    class="ui-text"
     [style.lineHeight]="lineHeight || null"
     [style.letterSpacing]="letterSpacing || null"
     [style.whiteSpace]="whiteSpace || null"
-    [class.truncate]="truncate"
-    [class.overflow-hidden]="truncate"
-    [class.text-ellipsis]="truncate"
     [title]="truncate && text ? text : ''"
   >
     {{ text }}

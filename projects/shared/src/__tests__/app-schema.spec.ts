@@ -23,7 +23,12 @@ describe("AppSchema contract", () => {
   });
 
   it("LayoutElement type is exported", () => {
-    const layout: LayoutElement = { id: "l1", componentId: "header-region", region: "header", children: [] };
+    const layout: LayoutElement = {
+      id: "l1",
+      componentId: "header-region",
+      region: "header",
+      children: [],
+    };
     expect(layout.id).toBe("l1");
   });
 

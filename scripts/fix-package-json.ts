@@ -16,11 +16,12 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { fileURLToPath } from "url";
 
 // Script lives at <repo>/scripts/fix-package-json.ts.
 // Dist is always at <repo>/projects/shared/dist when run from the shared project.
 // Support an optional CLI argument to override for other projects.
-const repoRoot = path.resolve(__dirname, "..");
+const repoRoot = path.resolve(fileURLToPath(import.meta.url), "..");
 const DIST_DIR = process.argv[2]
   ? path.resolve(process.argv[2])
   : path.join(repoRoot, "projects/shared/dist");

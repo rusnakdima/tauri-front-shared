@@ -1,30 +1,17 @@
 <div
-  class="flex items-center gap-2 px-2 py-1 cursor-pointer rounded transition-colors duration-100"
+  class="ui-designer-tree-node"
   [style.paddingLeft.px]="depth * 16 + 8"
-  [class.bg-[color-mix(in_srgb,_var(--accent)_20%,_transparent)]]]="
-    node.selected
-  "
-  [class.bg-transparent]="!node.selected"
-  [class.text-[var(--accent)]]="node.selected"
-  [style.color]="node.selected ? 'var(--accent)' : 'inherit'"
+  [class.ui-designer-tree-node-selected]="node.selected"
   (click)="select.emit(node)"
 >
-  <span
-    class="w-3 text-center flex-shrink-0 cursor-pointer text-xs text-[var(--text-muted)]"
-    (click)="toggle($event)"
-  >
+  <span class="ui-designer-tree-node-toggle" (click)="toggle($event)">
     @if (node.children?.length) {
       {{ node.expanded ? "▼" : "▶" }}
     }
   </span>
-  <span class="text-sm flex-shrink-0 text-[var(--text-secondary)]">{{
-    node.icon
-  }}</span>
-  <span
-    class="text-sm flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[var(--text-primary)]"
-    >{{ node.label }}</span
-  >
-  <span class="text-xs font-mono text-[var(--text-muted)]">{{ node.id }}</span>
+  <span class="ui-designer-tree-node-icon">{{ node.icon }}</span>
+  <span class="ui-designer-tree-node-label">{{ node.label }}</span>
+  <span class="ui-designer-tree-node-id">{{ node.id }}</span>
 </div>
 @if (node.expanded && node.children?.length) {
   @for (child of node.children; track child.id) {

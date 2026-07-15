@@ -16,7 +16,10 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "paths": {
+      "@tauri-front/shared": ["../projects/shared/dist/types/tauri-front-shared.d.ts"]
+    }
   },
   "include": ["src"]
 }

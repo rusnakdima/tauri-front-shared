@@ -1,23 +1,17 @@
-<header
-  appApplyTheme="app-header"
-  class="flex items-center gap-4 p-4 border-b min-h-[56px] border-[var(--border-color)]"
-  [style.background]="'var(--bg-header, var(--bg-elevated))'"
->
+<header class="ui-header">
   @if (showBack) {
     <button
-      class="flex items-center justify-center w-9 h-9 rounded-lg border p-0 text-xl transition-all cursor-pointer hover:bg-[var(--bg-hover)] bg-[var(--bg-elevated)] border-[var(--border-color)] text-[var(--text-primary)]"
+      class="ui-btn ui-btn-icon"
       (click)="navigateBack.emit()"
       aria-label="Back"
     >
       &larr;
     </button>
   }
-  <div class="flex-1 flex flex-col gap-1">
-    <h1 class="m-0 text-xl font-semibold text-[var(--text-primary)]">
-      {{ title }}
-    </h1>
+  <div class="ui-header-content">
+    <h1>{{ title }}</h1>
     @if (parsedBreadcrumbs.length) {
-      <div class="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+      <div class="ui-header-breadcrumbs">
         @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {
           @if (!last && crumb.href) {
             <a [href]="crumb.href">{{ crumb.label }}</a>
@@ -25,7 +19,7 @@
             <span>{{ crumb.label }}</span>
           }
           @if (!last) {
-            <span class="opacity-50">/</span>
+            <span>/</span>
           }
         }
       </div>

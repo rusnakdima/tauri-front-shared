@@ -11,11 +11,11 @@
       "types": "./types/tauri-front-shared.d.ts",
       "default": "./fesm2022/tauri-front-shared.mjs"
     },
+    "./styles": {
+      "default": "./styles/ui-system.css"
+    },
     "./package.json": {
       "default": "./package.json"
-    },
-    "./styles/*": {
-      "default": "./styles/*"
     }
   },
   "peerDependencies": {
@@ -29,10 +29,7 @@
   },
   "module": "fesm2022/tauri-front-shared.mjs",
   "typings": "types/tauri-front-shared.d.ts",
-  "sideEffects": [
-    "./fesm2022/tauri-front-shared.mjs",
-    "./**/*.css"
-  ],
+  "sideEffects": false,
   "dependencies": {
     "tslib": "^2.3.0"
   }

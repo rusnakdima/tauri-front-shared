@@ -8,12 +8,11 @@ import {
   AfterViewInit,
 } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 @Component({
   selector: "app-text-input",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./text-input.component.html",
   styleUrls: ["./text-input.component.css"],
 })
@@ -29,6 +28,7 @@ export class TextInputComponent implements AfterViewInit {
   @Input() multiline = true;
   @Input() rows = 3;
   @Input() width = "";
+  @Input() classes = "";
   @Output() input = new EventEmitter<string>();
   focused = false;
   hovered = false;

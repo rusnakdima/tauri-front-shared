@@ -1,6 +1,5 @@
 <div
-  appApplyTheme="app-canvas"
-  class="min-w-full min-h-full relative grid bg-[var(--bg-primary)]"
+  class="ui-canvas"
   [style.--grid-cols]="designer.gridColumns.toString()"
   [style.zoom]="designer.zoom() / 100"
   (dragover)="onDragOver($event)"
@@ -8,33 +7,19 @@
   (drop)="onDrop($event)"
 >
   @if (designer.showGrid()) {
-    <div
-      class="absolute inset-0 pointer-events-none grid grid-cols-[repeat(var(--grid-cols),1fr)]"
-    >
+    <div class="ui-canvas-grid">
       @for (cell of gridCells; track cell) {
-        <div
-          class="border-r border-b min-h-16 border-[var(--border-color)]"
-        ></div>
+        <div></div>
       }
     </div>
   }
   @if (elements.length > 0) {
     @for (el of elements; track el.id) {
       <div
-        class="border-2 border-dashed rounded-lg p-2 cursor-move flex items-center gap-2 relative z-10 min-h-12 transition-colors duration-150 bg-[var(--bg-elevated)]"
-        [ngClass]="
-          designer.selectedId() === el.id || dropIndicator?.parentId === el.id
-            ? 'border-[var(--accent)]'
-            : 'border-transparent'
-        "
-        [class.ring-2]="designer.selectedId() === el.id"
-        [class.drop-target]="dropIndicator?.parentId === el.id"
-        [style.box-shadow]="
-          designer.selectedId() === el.id
-            ? '0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent))'
-            : dropIndicator?.parentId === el.id
-              ? 'none'
-              : 'none'
+        class="ui-canvas-element"
+        [class.ui-canvas-element-selected]="designer.selectedId() === el.id"
+        [class.ui-canvas-element-drop-target]="
+          dropIndicator?.parentId === el.id
         "
         [style.gridColumn]="getGridColumn(el)"
         [style.gridRow]="getGridRow(el)"
@@ -45,42 +30,31 @@
         (dragover)="onElementDragOver($event, el)"
         (dragleave)="onElementDragLeave(el)"
       >
-        <span class="text-sm text-[var(--text-secondary)]">{{
-          getIcon(el)
-        }}</span>
-        <span class="text-sm font-medium text-[var(--text-primary)]">{{
-          el.componentId
-        }}</span>
-        <span class="text-xs font-mono ml-auto text-[var(--text-muted)]">{{
-          el.id
-        }}</span>
+        <span>{{ getIcon(el) }}</span>
+        <span>{{ el.componentId }}</span>
+        <span class="ui-canvas-element-id">{{ el.id }}</span>
         <button
-          class="w-5 h-5 rounded-full border-0 bg-transparent cursor-pointer text-sm leading-none flex items-center justify-center p-0 opacity-0 transition-opacity duration-150 hover:opacity-100 text-[var(--text-muted)] bg-[var(--error)]"
-          [style.--tw-text-opacity]="'1'"
+          class="ui-canvas-element-delete"
           (click)="deleteElement($event, el.id)"
           title="Delete"
         >
           ×
         </button>
         @if (el.children?.length) {
-          <div
-            class="text-xs px-1.5 py-0.5 rounded text-[var(--accent)] bg-[color-mix(in_srgb,_var(--accent)_15%,_transparent)]"
-          >
+          <div class="ui-canvas-element-children">
             {{ el.children!.length }} children
           </div>
         }
       </div>
     }
   } @else {
-    <div
-      class="border-2 border-dashed rounded-lg bg-secondary flex items-center justify-center grid-column-1/-1 min-h-[200px] border-[var(--border-color)]"
-    >
-      <div class="text-sm text-[var(--text-muted)]">Drag components here</div>
+    <div class="ui-canvas-empty">
+      <div>Drag components here</div>
     </div>
   }
   @if (dropIndicator && !dropIndicator.parentId) {
     <div
-      class="absolute left-0 right-0 h-0.5 z-20 pointer-events-none bg-[var(--accent)]"
+      class="ui-canvas-drop-indicator"
       [style.top.px]="dropIndicator.y"
     ></div>
   }

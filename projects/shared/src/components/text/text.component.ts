@@ -1,6 +1,5 @@
 import { Component, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 export type TextSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
 export type TextWeight = "normal" | "medium" | "semibold" | "bold";
@@ -35,14 +34,14 @@ const FONT_WEIGHT_MAP: Record<TextWeight, string> = {
 };
 
 const COLOR_MAP: Record<TextColor, string> = {
-  primary: "text-[color:var(--text-primary)]",
-  secondary: "text-[color:var(--text-secondary)]",
-  muted: "text-[color:var(--text-muted)]",
-  accent: "text-[color:var(--accent)]",
-  error: "text-[color:var(--error)]",
-  success: "text-[color:var(--success)]",
-  warning: "text-[color:var(--warning)]",
-  info: "text-[color:var(--info)]",
+  primary: "text-[var(--text-primary)]",
+  secondary: "text-[var(--text-secondary)]",
+  muted: "text-[var(--text-muted)]",
+  accent: "text-[var(--accent)]",
+  error: "text-[var(--error)]",
+  success: "text-[var(--success)]",
+  warning: "text-[var(--warning)]",
+  info: "text-[var(--info)]",
 };
 
 const TEXT_ALIGN_MAP: Record<TextAlign, string> = {
@@ -62,7 +61,7 @@ const TEXT_TRANSFORM_MAP: Record<TextTransform, string> = {
 @Component({
   selector: "app-text",
   standalone: true,
-  imports: [ApplyThemeDirective],
+  imports: [],
   templateUrl: "./text.component.html",
 })
 export class TextComponent {
@@ -77,6 +76,7 @@ export class TextComponent {
   @Input() letterSpacing = "";
   @Input() whiteSpace = "";
   @Input() truncate = false;
+  @Input() classes = "";
 
   get fontSizeClass(): string {
     return FONT_SIZE_MAP[this.size] || "text-base";

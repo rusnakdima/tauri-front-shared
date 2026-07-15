@@ -1,0 +1,21 @@
+// Theme SCSS Entry Point
+// This file imports all theme SCSS files for compilation
+
+// Import theme tokens and components
+@use "themes/m3/tokens" as m3-tokens;
+@use "themes/m3/components" as m3-components;
+
+@use "themes/neumorphism/tokens" as neu-tokens;
+@use "themes/neumorphism/components" as neu-components;
+
+@use "themes/claymorphism/tokens" as clay-tokens;
+@use "themes/claymorphism/components" as clay-components;
+
+@use "themes/glassmorphism/tokens" as glass-tokens;
+@use "themes/glassmorphism/components" as glass-components;
+
+@use "themes/brutalism/tokens" as brut-tokens;
+@use "themes/brutalism/components" as brut-components;
+
+@use "themes/skeuomorphism/tokens" as skeu-tokens;
+@use "themes/skeuomorphism/components" as skeu-components;

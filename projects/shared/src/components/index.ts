@@ -1,11 +1,18 @@
 // Re-export Angular components from local source files.
 
+// Re-export component arrays from components.ts
+export {
+  uiComponents,
+  layoutComponents,
+  feedbackComponents,
+} from "../components";
+
 export * from "./button/button.component";
 export * from "./input/input.component";
 export * from "./empty-state/empty-state.component";
-export * from "./modal/modal.component";
+
 export * from "./dialog/dialog.component";
-export * from "./confirm-dialog/confirm-dialog.component";
+
 export * from "./loading/loading.component";
 export * from "./radio/radio.component";
 export * from "./slider/slider.component";
@@ -30,7 +37,7 @@ export * from "./page-toolbar/page-toolbar.component";
 export * from "./split-view/split-view.component";
 export * from "./avatar/avatar.component";
 export * from "./chip/chip.component";
-export * from "./pagination/pagination.component";
+
 export * from "./tabs/tabs.component";
 export * from "./progress-bar/progress-bar.component";
 export * from "./segment-selector/segment-selector.component";
@@ -39,6 +46,5 @@ export * from "./language-selector/language-selector.component";
 export * from "./swap-button/swap-button.component";
 export * from "./text-input/text-input.component";
 export * from "./translation-output/translation-output.component";
-export * from "./toast/toast-component";
+
 export * from "./designer-tree/designer-tree.component";
-// block.component and text.component not yet in dist - re-add when library is rebuilt

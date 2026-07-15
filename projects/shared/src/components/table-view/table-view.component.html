@@ -1,24 +1,16 @@
-<table appApplyTheme="app-table-view" class="w-full border-collapse text-sm">
+<table class="ui-table">
   <thead>
     <tr>
       @for (col of parsedColumns; track col.key) {
-        <th
-          class="text-left p-3 bg-[color:var(--bg-secondary)] text-[color:var(--text-primary)] font-semibold border-b border-[color:var(--border-color)]"
-        >
-          {{ col.name }}
-        </th>
+        <th>{{ col.name }}</th>
       }
     </tr>
   </thead>
   <tbody>
     @for (row of parsedData; track row) {
-      <tr class="hover:bg-[color:var(--bg-hover)]">
+      <tr>
         @for (col of parsedColumns; track col.key) {
-          <td
-            class="p-3 text-[color:var(--text-primary)] border-b border-[color:var(--border-color)]"
-          >
-            {{ row[col.key] }}
-          </td>
+          <td>{{ row[col.key] }}</td>
         }
       </tr>
     }

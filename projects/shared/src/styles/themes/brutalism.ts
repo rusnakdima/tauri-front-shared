@@ -9,7 +9,7 @@ export const BRUTALISM_CSS = `
 :root {
   --color-brut-base: #f5f5f0;
   --color-brut-ink: #0a0a0a;
-  --color-brut-accent: #ff3b30;
+  --color-brut-accent: #d63000;
   --color-brut-accent-2: #ffd60a;
   --color-brut-success: #00c853;
   --color-brut-border: var(--color-brut-ink);
@@ -29,13 +29,14 @@ export const BRUTALISM_CSS = `
   --text-on-accent: #ffffff;
   --text-primary: var(--color-brut-ink);
   --text-secondary: #3d3d3d;
-  --text-muted: #6b6b6b;
+  --text-muted: #686870;
   --text-on-error: #ffffff;
   --text-on-warning: #0a0a0a;
-  --text-on-success: #ffffff;
+  --text-on-success: var(--color-brut-ink);
   --bg-primary: var(--color-brut-base);
   --bg-elevated: #ffffff;
   --bg-hover: #e8e8e3;
+  --bg-secondary: #ecece7;
   --bg-tertiary: #d4d4cf;
   --border-color: var(--color-brut-ink);
   --border-subtle: var(--color-brut-ink);
@@ -168,7 +169,7 @@ export const BRUTALISM_CSS = `
 .brut-block { border: 4px solid var(--color-brut-border); box-shadow: var(--shadow-brut-md); background: var(--bg-elevated); }
 
 /* Dark mode overrides for layout components */
-:root.dark {
+body[data-style="brutalism"][data-theme="dark"] {
   --color-brut-base: #1a1a1a;
   --color-brut-ink: #f5f5f0;
   --color-brut-accent: #ff453a;
@@ -180,100 +181,101 @@ export const BRUTALISM_CSS = `
   --bg-primary: #1a1a1a;
   --bg-elevated: #2a2a2a;
   --bg-hover: #3a3a3a;
+  --bg-secondary: #252525;
   --bg-tertiary: #404040;
   --border-color: #f5f5f0;
   --border-subtle: #c0c0c0;
   --error: #ff453a;
 }
 
-:root.dark .brut-data-table,
-:root.dark .brut-sidebar,
-:root.dark .brut-header,
-:root.dark .brut-footer,
-:root.dark .brut-page-container,
-:root.dark .brut-panel,
-:root.dark .brut-segment-selector,
-:root.dark .brut-split-view,
-:root.dark .brut-stats-card,
-:root.dark .brut-table,
-:root.dark .brut-tree,
-:root.dark .brut-canvas,
-:root.dark .brut-main-editor,
-:root.dark .brut-canvas-toolbar,
-:root.dark .brut-page-toolbar,
-:root.dark .brut-command-palette,
-:root.dark .brut-component-palette,
-:root.dark .brut-locale-switcher,
-:root.dark .brut-json-view,
-:root.dark .brut-form,
-:root.dark .brut-properties-panel,
-:root.dark .brut-bottom-panel,
-:root.dark .brut-designer-tree,
-:root.dark .brut-designer-sidebar,
-:root.dark .brut-block {
+body[data-style="brutalism"][data-theme="dark"] .brut-data-table,
+body[data-style="brutalism"][data-theme="dark"] .brut-sidebar,
+body[data-style="brutalism"][data-theme="dark"] .brut-header,
+body[data-style="brutalism"][data-theme="dark"] .brut-footer,
+body[data-style="brutalism"][data-theme="dark"] .brut-page-container,
+body[data-style="brutalism"][data-theme="dark"] .brut-panel,
+body[data-style="brutalism"][data-theme="dark"] .brut-segment-selector,
+body[data-style="brutalism"][data-theme="dark"] .brut-split-view,
+body[data-style="brutalism"][data-theme="dark"] .brut-stats-card,
+body[data-style="brutalism"][data-theme="dark"] .brut-table,
+body[data-style="brutalism"][data-theme="dark"] .brut-tree,
+body[data-style="brutalism"][data-theme="dark"] .brut-canvas,
+body[data-style="brutalism"][data-theme="dark"] .brut-main-editor,
+body[data-style="brutalism"][data-theme="dark"] .brut-canvas-toolbar,
+body[data-style="brutalism"][data-theme="dark"] .brut-page-toolbar,
+body[data-style="brutalism"][data-theme="dark"] .brut-command-palette,
+body[data-style="brutalism"][data-theme="dark"] .brut-component-palette,
+body[data-style="brutalism"][data-theme="dark"] .brut-locale-switcher,
+body[data-style="brutalism"][data-theme="dark"] .brut-json-view,
+body[data-style="brutalism"][data-theme="dark"] .brut-form,
+body[data-style="brutalism"][data-theme="dark"] .brut-properties-panel,
+body[data-style="brutalism"][data-theme="dark"] .brut-bottom-panel,
+body[data-style="brutalism"][data-theme="dark"] .brut-designer-tree,
+body[data-style="brutalism"][data-theme="dark"] .brut-designer-sidebar,
+body[data-style="brutalism"][data-theme="dark"] .brut-block {
   background: var(--bg-elevated);
   box-shadow: var(--shadow-brut-md);
 }
 
-/* Brut card dark mode - uses var(--bg-elevated) which is overridden in :root.dark */
-:root.dark .brut-card {
+/* Brut card dark mode - uses var(--bg-elevated) which is overridden in body[data-style="brutalism"][data-theme="dark"] */
+body[data-style="brutalism"][data-theme="dark"] .brut-card {
   background: var(--bg-elevated);
   border-color: var(--border-color);
   color: var(--text-primary);
 }
 
 /* Brut button dark mode */
-:root.dark .brut-btn {
+body[data-style="brutalism"][data-theme="dark"] .brut-btn {
   background: var(--bg-elevated);
   border-color: var(--border-color);
   color: var(--text-primary);
 }
 
 /* Brut input dark mode */
-:root.dark .brut-input {
+body[data-style="brutalism"][data-theme="dark"] .brut-input {
   background: var(--bg-elevated);
   border-color: var(--border-color);
   color: var(--text-primary);
 }
 
 /* Brut modal dark mode */
-:root.dark .brut-modal {
+body[data-style="brutalism"][data-theme="dark"] .brut-modal {
   background: var(--bg-elevated);
   border-color: var(--border-color);
   color: var(--text-primary);
 }
 
 /* Brut chip dark mode */
-:root.dark .brut-chip {
+body[data-style="brutalism"][data-theme="dark"] .brut-chip {
   background: var(--accent);
   color: var(--text-on-accent);
 }
 
 /* Brut badge dark mode */
-:root.dark .brut-badge {
+body[data-style="brutalism"][data-theme="dark"] .brut-badge {
   background: var(--accent);
   color: var(--text-on-accent);
 }
 
 /* Brut tab dark mode */
-:root.dark .brut-tab {
+body[data-style="brutalism"][data-theme="dark"] .brut-tab {
   background: var(--bg-elevated);
   border-color: var(--border-color);
   color: var(--text-primary);
 }
 
-:root.dark .brut-tab.active {
+body[data-style="brutalism"][data-theme="dark"] .brut-tab.active {
   background: var(--accent);
   color: var(--text-on-accent);
 }
 
 /* Brut divider dark mode */
-:root.dark .brut-divider {
+body[data-style="brutalism"][data-theme="dark"] .brut-divider {
   background: var(--border-color);
 }
 
 /* Brut spinner dark mode */
-:root.dark .brut-spinner {
+body[data-style="brutalism"][data-theme="dark"] .brut-spinner {
   border-color: var(--border-color);
   border-top-color: var(--accent);
 }

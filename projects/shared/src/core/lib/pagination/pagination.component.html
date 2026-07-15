@@ -1,17 +1,23 @@
 <div
-  class="flex w-full items-center justify-between border-t border-[var(--border-subtle)] bg-transparent px-6 py-3"
+  class="sf-flex sf-w-full sf-items-center sf-justify-between sf-border-t sf-bg-transparent"
+  style="border-color: var(--border-subtle)"
 >
-  <div class="flex items-center gap-6">
-    <span class="text-sm text-[var(--text-dim)]">
+  <div class="sf-flex sf-items-center sf-gap-6">
+    <span style="color: var(--text-dim)">
       Showing
-      <span class="font-bold text-[var(--text-main)]">{{ startIndex }}</span
-      >-<span class="font-bold text-[var(--text-main)]">{{ endIndex }}</span> of
-      <span class="font-bold text-[var(--text-main)]">{{ totalItems }}</span>
+      <span style="color: var(--text-main)">{{ startIndex }}</span
+      >-<span style="color: var(--text-main)">{{ endIndex }}</span> of
+      <span style="color: var(--text-main)">{{ totalItems }}</span>
     </span>
-    <div class="flex items-center gap-3">
-      <span class="text-xs text-[var(--text-muted)]">Rows per page:</span>
+    <div class="sf-flex sf-items-center sf-gap-3">
+      <span style="color: var(--text-muted)">Rows per page:</span>
       <select
-        class="cursor-pointer rounded-lg border border-[var(--border-visible)] bg-[var(--bg-card)] px-3 py-1.5 text-sm text-[var(--text-main)] focus:border-[var(--accent)] focus:outline-none"
+        class="sf-cursor-pointer sf-border sf-bg-transparent sf-text-sm sf-focus-outline-none"
+        style="
+          border-color: var(--border-visible);
+          color: var(--text-main);
+          background: var(--bg-card);
+        "
         [value]="pageSize"
         (change)="onPageSizeChange(+$any($event.target).value)"
       >
@@ -23,9 +29,10 @@
     </div>
   </div>
 
-  <div class="flex items-center gap-2">
+  <div class="sf-flex sf-items-center sf-gap-2">
     <button
-      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"
+      class="sf-transition-all sf-disabled-cursor-not-allowed sf-disabled-opacity-30 sf-hover-bg-card sf-hover-text-main"
+      style="color: var(--text-dim)"
       [disabled]="!hasPrevPage"
       (click)="firstPage()"
       title="First page"
@@ -33,18 +40,20 @@
       <i class="fa fa-angles-left" style="font-size: 14px"></i>
     </button>
     <button
-      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"
+      class="sf-transition-all sf-disabled-cursor-not-allowed sf-disabled-opacity-30 sf-hover-bg-card sf-hover-text-main"
+      style="color: var(--text-dim)"
       [disabled]="!hasPrevPage"
       (click)="prevPage()"
       title="Previous page"
     >
       <i class="fa fa-chevron-left" style="font-size: 14px"></i>
     </button>
-    <span class="px-3 text-sm text-[var(--text-dim)]"
+    <span class="sf-text-sm" style="color: var(--text-dim)"
       >Page {{ currentPage + 1 }} of {{ totalPages || 1 }}</span
     >
     <button
-      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"
+      class="sf-transition-all sf-disabled-cursor-not-allowed sf-disabled-opacity-30 sf-hover-bg-card sf-hover-text-main"
+      style="color: var(--text-dim)"
       [disabled]="!hasNextPage"
       (click)="nextPage()"
       title="Next page"
@@ -52,7 +61,8 @@
       <i class="fa fa-chevron-right" style="font-size: 14px"></i>
     </button>
     <button
-      class="rounded-lg p-2 text-[var(--text-dim)] transition-all hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-30"
+      class="sf-transition-all sf-disabled-cursor-not-allowed sf-disabled-opacity-30 sf-hover-bg-card sf-hover-text-main"
+      style="color: var(--text-dim)"
       [disabled]="!hasNextPage"
       (click)="lastPage()"
       title="Last page"

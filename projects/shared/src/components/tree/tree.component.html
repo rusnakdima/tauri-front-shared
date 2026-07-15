@@ -1,10 +1,9 @@
-<div appApplyTheme="app-tree">
+<div class="ui-tree">
   @for (node of parsedNodes; track node.id) {
     <app-tree-node
       [node]="node"
       [depth]="0"
       (selected)="onNodeSelected($event)"
-      class="block text-sm"
     ></app-tree-node>
   }
 </div>

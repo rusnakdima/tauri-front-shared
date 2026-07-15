@@ -1,11 +1,4 @@
-<button
-  appApplyTheme="app-theme-toggle"
-  class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-[var(--border-color)] bg-transparent cursor-pointer transition-all p-0 text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"
-  (mouseenter)="hovered = true"
-  (mouseleave)="hovered = false"
-  (click)="toggle()"
-  aria-label="Toggle theme"
->
+<button class="ui-theme-toggle" (click)="toggle()" aria-label="Toggle theme">
   @if (isDark) {
     <app-icon icon="moon" [size]="20" />
   } @else {

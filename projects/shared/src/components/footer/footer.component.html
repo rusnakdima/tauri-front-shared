@@ -1,11 +1,6 @@
-<footer
-  appApplyTheme="app-footer"
-  class="flex items-center justify-center px-4 py-4 min-h-[48px] border-t border-[var(--border-color)] bg-[var(--bg-elevated)]"
->
+<footer class="ui-footer">
   @if (text) {
-    <p class="text-sm text-center m-0 text-[var(--text-secondary)]">
-      {{ text }}
-    </p>
+    <p>{{ text }}</p>
   }
   <ng-content></ng-content>
 </footer>

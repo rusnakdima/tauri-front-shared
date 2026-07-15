@@ -1,13 +1,10 @@
 <div
-  appApplyTheme="app-split-view"
+  class="ui-split-view"
   #container
-  [class]="
-    'flex h-full w-full overflow-hidden ' +
-    (direction === 'vertical' ? 'flex-col' : '')
-  "
+  [class.ui-split-view-vertical]="direction === 'vertical'"
 >
   <div
-    class="split-pane first overflow-auto shrink-0"
+    class="ui-split-pane-first"
     [style]="
       direction === 'horizontal'
         ? 'height: 100%; width: ' + split + '%; flex-grow: 0'
@@ -17,18 +14,14 @@
     <ng-content select="[slot=first]"></ng-content>
   </div>
   <div
-    class="split-divider shrink-0 relative z-10 transition-colors duration-150 bg-[color:var(--border-color)]"
-    [class.dragging]="isDragging"
-    [class.cursor-col-resize]="direction === 'horizontal'"
-    [class.cursor-row-resize]="direction === 'vertical'"
-    [class.w-1.5]="direction === 'horizontal'"
-    [class.h-full]="direction === 'horizontal'"
-    [class.w-full]="direction === 'vertical'"
-    [class.h-1.5]="direction === 'vertical'"
+    class="ui-split-divider"
+    [class.ui-split-divider-dragging]="isDragging"
+    [class.ui-split-divider-horizontal]="direction === 'horizontal'"
+    [class.ui-split-divider-vertical]="direction === 'vertical'"
     (mousedown)="onDividerMouseDown($event)"
   ></div>
   <div
-    class="split-pane second overflow-auto"
+    class="ui-split-pane-second"
     [style]="
       direction === 'horizontal'
         ? 'flex: 1; height: 100%'

@@ -1,2 +1,2 @@
-export * from "./nav-item.js";
-export * from "./nav-group.js";
+export * from "./nav-item.ts";
+export * from "./nav-group.ts";

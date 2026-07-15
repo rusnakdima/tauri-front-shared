@@ -3,7 +3,6 @@ import { CommonModule } from "@angular/common";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { SchemaElementComponent } from "../../core/lib/schema-router/schema-element.component";
 import type { CanvasElement } from "../../core/lib/types";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 export type BlockDirection =
   "row" | "column" | "row-reverse" | "column-reverse";
@@ -15,7 +14,7 @@ export type BlockWrap = "nowrap" | "wrap" | "wrap-reverse";
 @Component({
   selector: "app-block",
   standalone: true,
-  imports: [CommonModule, SchemaElementComponent, ApplyThemeDirective],
+  imports: [CommonModule, SchemaElementComponent],
   templateUrl: "./block.component.html",
   styleUrls: ["./block.component.css"],
 })
@@ -33,6 +32,7 @@ export class BlockComponent {
   @Input() overflow = "";
   @Input() inline = false;
   @Input() children: CanvasElement[] = [];
+  @Input() classes = "";
 
   get alignCss(): string {
     const map: Record<string, string> = {

@@ -2,14 +2,13 @@ import { Component, inject, computed } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { DesignerCanvasService } from "../../core/lib/designer/designer-canvas.service";
-import { ApplyThemeDirective } from "../../styles/theme-integration/apply-theme.directive";
 
 type Tab = "props" | "style" | "events";
 
 @Component({
   selector: "app-properties-panel",
   standalone: true,
-  imports: [CommonModule, ApplyThemeDirective],
+  imports: [CommonModule],
   templateUrl: "./properties-panel.component.html",
   styleUrls: ["./properties-panel.component.css"],
 })

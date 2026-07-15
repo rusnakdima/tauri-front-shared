@@ -14,8 +14,8 @@ const SKEUOMORPHISM_TOKENS_CSS = `
   --color-skeu-leather-dark: #4a2e18;
   --color-skeu-paper: #f5e6c8;
   --color-skeu-ink: #2b1810;
-  --color-skeu-accent: #b8860b;
-  --color-skeu-accent-dark: #8b6508;
+  --color-skeu-accent: #7a5200;
+  --color-skeu-accent-dark: #5c3d00;
   --color-skeu-cream: #faf3e0;
   --color-skeu-glass: rgba(255,255,255,0.2);
 
@@ -58,6 +58,7 @@ const SKEUOMORPHISM_TOKENS_CSS = `
   --bg-primary: var(--color-skeu-base);
   --bg-elevated: var(--color-skeu-paper);
   --bg-hover: #dcc99e;
+  --bg-secondary: #d4c99e;
   --bg-tertiary: #c4b58a;
   --border-color: var(--color-skeu-leather-dark);
   --border-subtle: #a8916b;
@@ -71,7 +72,7 @@ const SKEUOMORPHISM_TOKENS_CSS = `
 }
 
 /* Dark mode */
-:root.dark {
+body[data-style="skeuomorphism"][data-theme="dark"] {
   --color-skeu-base: #2b1810;
   --color-skeu-leather: #8b6508;
   --color-skeu-leather-dark: #5a3d1a;
@@ -86,10 +87,11 @@ const SKEUOMORPHISM_TOKENS_CSS = `
   --gradient-input: linear-gradient(180deg, #5a4030 0%, #3d2b1f 100%);
   --text-primary: #f5e6c8;
   --text-secondary: #dcc99e;
-  --text-muted: #a8916b;
+  --text-muted: #9f9f9f;
   --bg-primary: #2b1810;
   --bg-elevated: #3d2b1f;
   --bg-hover: #4a3025;
+  --bg-secondary: #352a20;
   --bg-tertiary: #1f140f;
   --border-color: #8b6508;
   --border-subtle: #5a3d1a;
@@ -240,98 +242,98 @@ const SKEUOMORPHISM_COMPONENTS_CSS = `
 .skeu-block { background: var(--gradient-paper); border: 1px solid var(--color-skeu-leather-dark); border-radius: 8px; box-shadow: var(--shadow-skeu-outset); }
 
 /* Skeuomorphism Dark Mode Overrides */
-:root.dark .skeu-card {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-card {
   background: var(--gradient-leather);
   border-color: var(--color-skeu-leather-dark);
   color: var(--color-skeu-cream);
 }
 
-:root.dark .skeu-card.paper {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-card.paper {
   background: var(--gradient-paper);
   border-color: #5a3d1a;
   color: var(--text-primary);
 }
 
-:root.dark .skeu-btn {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-btn {
   background: var(--gradient-leather);
   border-color: var(--color-skeu-leather-dark);
   color: var(--color-skeu-cream);
 }
 
-:root.dark .skeu-btn-primary {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-btn-primary {
   background: var(--gradient-accent);
   color: var(--color-skeu-cream);
   border-color: #5a4406;
 }
 
-:root.dark .skeu-input {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-input {
   background: var(--gradient-input);
   border-color: var(--color-skeu-leather-dark);
   color: var(--text-primary);
 }
 
-:root.dark .skeu-modal {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-modal {
   background: var(--gradient-paper);
   border-color: var(--color-skeu-leather-dark);
   color: var(--text-primary);
 }
 
-:root.dark .skeu-chip {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-chip {
   background: var(--gradient-leather);
   color: var(--color-skeu-cream);
   border-color: var(--color-skeu-leather-dark);
 }
 
-:root.dark .skeu-badge {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-badge {
   background: var(--gradient-accent);
   color: var(--color-skeu-cream);
   border-color: #5a4406;
 }
 
-:root.dark .skeu-tab {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-tab {
   background: var(--gradient-tab);
   color: var(--text-primary);
   border-color: var(--color-skeu-leather-dark);
 }
 
-:root.dark .skeu-tab.active {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-tab.active {
   background: var(--gradient-paper);
   color: var(--text-primary);
 }
 
-:root.dark .skeu-divider {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-divider {
   background: var(--gradient-divider);
 }
 
-:root.dark .skeu-spinner {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-spinner {
   background: conic-gradient(from 0deg, transparent 0deg, var(--accent) 360deg);
 }
 
-:root.dark .skeu-sidebar,
-:root.dark .skeu-header,
-:root.dark .skeu-footer,
-:root.dark .skeu-canvas-toolbar,
-:root.dark .skeu-page-toolbar,
-:root.dark .skeu-component-palette,
-:root.dark .skeu-locale-switcher,
-:root.dark .skeu-properties-panel,
-:root.dark .skeu-designer-sidebar {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-sidebar,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-header,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-footer,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-canvas-toolbar,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-page-toolbar,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-component-palette,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-locale-switcher,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-properties-panel,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-designer-sidebar {
   background: var(--gradient-leather);
   border-color: var(--color-skeu-leather-dark);
 }
 
-:root.dark .skeu-page-container,
-:root.dark .skeu-split-view,
-:root.dark .skeu-canvas,
-:root.dark .skeu-main-editor,
-:root.dark .skeu-bottom-panel {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-page-container,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-split-view,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-canvas,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-main-editor,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-bottom-panel {
   background: var(--bg-primary);
 }
 
-:root.dark .skeu-panel,
-:root.dark .skeu-form,
-:root.dark .skeu-designer-tree,
-:root.dark .skeu-block {
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-panel,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-form,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-designer-tree,
+body[data-style="skeuomorphism"][data-theme="dark"] .skeu-block {
   background: var(--gradient-paper);
   border-color: var(--color-skeu-leather-dark);
 }

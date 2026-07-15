@@ -1,8 +1,9 @@
 @if (isVisible()) {
   <div
-    class="modal-backdrop fixed inset-0 z-50 flex justify-center bg-[var(--bg-backdrop)] backdrop-blur-sm transition-opacity duration-200"
-    [class.opacity-0]="isAnimating()"
-    [class.opacity-100]="!isAnimating()"
+    class="modal-backdrop sf-fixed sf-inset-0 sf-z-50 sf-flex sf-justify-center sf-backdrop-blur-sm sf-transition-opacity sf-duration-200"
+    style="background: var(--bg-backdrop)"
+    [class.sf-opacity-0]="isAnimating()"
+    [class.sf-opacity-100]="!isAnimating()"
     [class]="contentPositionClasses"
     (click)="onBackdropClick($event)"
   >
@@ -10,29 +11,32 @@
       role="dialog"
       aria-modal="true"
       [attr.aria-labelledby]="'modal-title-' + title()"
-      class="relative w-full rounded-2xl border border-[var(--border-visible)] bg-[var(--bg-modal)] shadow-2xl backdrop-blur-md transition-all duration-200"
-      [class.scale-95]="isAnimating()"
-      [class.scale-100]="!isAnimating()"
+      class="sf-relative sf-w-full sf-rounded-2xl sf-border sf-shadow-2xl sf-backdrop-blur-md sf-transition-all sf-duration-200"
+      style="border-color: var(--border-visible); background: var(--bg-modal)"
+      [class.sf-scale-95]="isAnimating()"
+      [class.sf-scale-100]="!isAnimating()"
       [class]="sizeClasses"
     >
       @if (showHeader()) {
         <div
-          class="flex items-center justify-between border-b border-[var(--border-subtle)] px-6 py-4"
+          class="sf-flex sf-items-center sf-justify-between sf-border-b"
+          style="border-color: var(--border-subtle)"
         >
-          <h2
-            [id]="'modal-title-' + title()"
-            class="text-lg font-semibold text-[var(--text-main)]"
-          >
+          <h2 [id]="'modal-title-' + title()" style="color: var(--text-main)">
             {{ title() }}
           </h2>
           @if (showCloseButton()) {
             <button
               type="button"
               (click)="onClose()"
-              class="rounded-lg p-1.5 text-[var(--text-dim)] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--text-main)]"
+              class="sf-text-[var(--text-dim)] sf-transition-colors sf-hover-bg-accent-10 sf-hover-text-main"
               aria-label="Close modal"
             >
-              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <svg
+                class="sf-h-5 sf-w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
                 <path
                   fill-rule="evenodd"
                   d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -44,13 +48,14 @@
         </div>
       }
 
-      <div class="max-h-[calc(100vh-12rem)] overflow-y-auto px-6 py-4">
+      <div style="max-height: calc(100vh - 12rem)" class="sf-overflow-y-auto">
         <ng-content></ng-content>
       </div>
 
       @if (showFooter()) {
         <div
-          class="flex items-center justify-end gap-3 border-t border-[var(--border-subtle)] px-6 py-4"
+          class="sf-flex sf-items-center sf-justify-end sf-gap-3 sf-border-t"
+          style="border-color: var(--border-subtle)"
         >
           <ng-content select="[modal-footer]"></ng-content>
         </div>

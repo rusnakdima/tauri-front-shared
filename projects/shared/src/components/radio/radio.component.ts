@@ -6,7 +6,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./radio.component.html",
-  styleUrls: ["./radio.component.css"],
+  styleUrls: ["./radio.component.scss"],
 })
 export class RadioComponent {
   @Input() name = "";

@@ -1,0 +1,124 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "cli": {
+    "packageManager": "bun",
+    "analytics": false
+  },
+  "projects": {
+    "dev-app": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:component": {
+          "skipTests": true,
+          "style": "none",
+          "standalone": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:resolver": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "outputPath": "dist/dev-app",
+            "index": "index.html",
+            "styles": [
+              "@tauri-front/shared/styles/themes/m3/tokens.css",
+              "@tauri-front/shared/styles/themes/m3/components.css",
+              "@tauri-front/shared/styles/themes/glassmorphism/tokens.css",
+              "@tauri-front/shared/styles/themes/glassmorphism/components.css",
+              "@tauri-front/shared/styles/themes/neumorphism/tokens.css",
+              "@tauri-front/shared/styles/themes/neumorphism/components.css",
+              "@tauri-front/shared/styles/themes/claymorphism/tokens.css",
+              "@tauri-front/shared/styles/themes/claymorphism/components.css",
+              "@tauri-front/shared/styles/themes/brutalism/tokens.css",
+              "@tauri-front/shared/styles/themes/brutalism/components.css",
+              "@tauri-front/shared/styles/themes/skeuomorphism/tokens.css",
+              "@tauri-front/shared/styles/themes/skeuomorphism/components.css",
+              "@tauri-front/shared/styles/ui-system.css"
+            ],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              }
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": {
+                "scripts": true,
+                "styles": true,
+                "fonts": true
+              },
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "1MB",
+                  "maximumError": "2MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "options": {
+            "port": 4200
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "dev-app:build:production"
+            },
+            "development": {
+              "buildTarget": "dev-app:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        }
+      }
+    }
+  }
+}

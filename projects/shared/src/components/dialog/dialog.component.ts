@@ -14,7 +14,7 @@ export type DialogSize = "sm" | "md" | "lg";
   standalone: true,
   imports: [],
   templateUrl: "./dialog.component.html",
-  styleUrls: ["./dialog.component.css"],
+  styleUrls: ["./dialog.component.scss"],
 })
 export class DialogComponent {
   @Input() open = false;

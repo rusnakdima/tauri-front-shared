@@ -6,7 +6,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./json-view.component.html",
-  styleUrls: ["./json-view.component.css"],
+  styleUrls: ["./json-view.component.scss"],
 })
 export class JsonViewComponent {
   @Input() data: unknown = {};

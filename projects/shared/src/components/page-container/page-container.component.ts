@@ -6,7 +6,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./page-container.component.html",
-  styleUrls: ["./page-container.component.css"],
+  styleUrls: ["./page-container.component.scss"],
 })
 export class PageContainerComponent {
   @Input() title = "";

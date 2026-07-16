@@ -40,8 +40,8 @@ const NEUMORPHISM_TOKENS_CSS = `
   --accent-hover: #5a4cdb;
   --text-on-accent: #ffffff;
   --text-primary: #2d3748;
-  --text-secondary: #718096;
-  --text-muted: #a0aec0;
+  --text-secondary: #4a5568;
+  --text-muted: #4a5568;
   --text-on-error: #ffffff;
   --text-on-warning: #ffffff;
   --text-on-success: #ffffff;

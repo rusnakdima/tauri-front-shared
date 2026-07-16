@@ -71,7 +71,7 @@ const MI_ICONS: Record<string, string> = {
   standalone: true,
   imports: [],
   templateUrl: "./icons.component.html",
-  styleUrls: ["./icons.component.css"],
+  styleUrls: ["./icons.component.scss"],
 })
 export class IconComponent {
   @Input() icon = "";

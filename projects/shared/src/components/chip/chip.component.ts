@@ -7,7 +7,7 @@ import { IconComponent } from "../icons/icons.component";
   standalone: true,
   imports: [IconComponent],
   templateUrl: "./chip.component.html",
-  styleUrls: ["./chip.component.css"],
+  styleUrls: ["./chip.component.scss"],
 })
 export class ChipComponent {
   @Input() label = "";

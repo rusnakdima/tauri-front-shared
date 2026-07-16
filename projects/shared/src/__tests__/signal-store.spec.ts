@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { SignalStore, createSignalStore } from "../core-storage/signal-store";
+import { SignalStore, createSignalStore } from "../utils/legacy/signal-store";
 
 describe("SignalStore", () => {
   let store: SignalStore;

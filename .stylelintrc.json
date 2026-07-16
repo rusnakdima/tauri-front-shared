@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "color-no-hex": true,
+    "function-allowed-list": ["var", "calc", "rgba", "hsla", "rgb", "hsl", "min", "max", "clamp"],
+    "shorthand-property-no-redundant-values": true
+  },
+  "ignoreFiles": ["node_modules/**", "dist/**", "**/*.css", "**/dist/**"]
+}

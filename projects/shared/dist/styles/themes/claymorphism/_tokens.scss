@@ -32,15 +32,21 @@
   --border-style: solid;
 
   /* Effects */
-  --shadow-sm: 4px 4px 8px #d1d5db, -4px -4px 8px #ffffff, inset 2px 2px 4px rgba(0, 0, 0, 0.03), inset -2px -2px 4px rgba(255, 255, 255, 0.8);
-  --shadow-md: 8px 8px 16px #d1d5db, -8px -8px 16px #ffffff, inset 4px 4px 8px rgba(0, 0, 0, 0.03), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+  --shadow-sm:
+    4px 4px 8px #d1d5db, -4px -4px 8px #ffffff,
+    inset 2px 2px 4px rgba(0, 0, 0, 0.03),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.8);
+  --shadow-md:
+    8px 8px 16px #d1d5db, -8px -8px 16px #ffffff,
+    inset 4px 4px 8px rgba(0, 0, 0, 0.03),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.8);
   --shadow-lg: 12px 12px 24px #d1d5db, -12px -12px 24px #ffffff;
   --shadow-inset: inset 6px 6px 12px #d1d5db, inset -6px -6px 12px #ffffff;
   --shadow-focus: 0 0 0 4px rgba(103, 80, 164, 0.2);
   --glass-blur: none;
 
   /* Typography */
-  --font-family: 'Quicksand', sans-serif;
+  --font-family: "Quicksand", sans-serif;
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Claymorphism-specific variables */
@@ -64,20 +70,59 @@
 }
 
 body[data-style="claymorphism"] {
-  --font-family: 'Quicksand', sans-serif;
+  --font-family: "Quicksand", sans-serif;
   --background: #f1f5f9;
   --surface: #ffffff;
   --surface-variant: #f8fafc;
   --surface-hover: #ffffff;
   --border: transparent;
-  --shadow-md: 8px 8px 16px #d1d5db, -8px -8px 16px #ffffff, inset 4px 4px 8px rgba(0, 0, 0, 0.03), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
-  --shadow-sm: 4px 4px 8px #d1d5db, -4px -4px 8px #ffffff, inset 2px 2px 4px rgba(0, 0, 0, 0.03), inset -2px -2px 4px rgba(255, 255, 255, 0.8);
+  --shadow-md:
+    8px 8px 16px #d1d5db, -8px -8px 16px #ffffff,
+    inset 4px 4px 8px rgba(0, 0, 0, 0.03),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+  --shadow-sm:
+    4px 4px 8px #d1d5db, -4px -4px 8px #ffffff,
+    inset 2px 2px 4px rgba(0, 0, 0, 0.03),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.8);
   --shadow-inset: inset 6px 6px 12px #d1d5db, inset -6px -6px 12px #ffffff;
   --shadow-focus: 0 0 0 4px rgba(103, 80, 164, 0.2);
   --radius-md: 32px;
   --radius-sm: 16px;
   --text: #2d3748;
   --text-muted: #718096;
+}
+
+[data-theme="claymorphism"] {
+  --sdui-surface-bg: var(--surface, #ffffff);
+  --sdui-surface-border: transparent;
+  --sdui-surface-border-width: 0px;
+  --sdui-scrim: rgba(0,0,0,0.5);
+  --sdui-elevation-1: 4px 4px 8px rgba(163,177,198,.5), -4px -4px 8px rgba(255,255,255,.9);
+  --sdui-elevation-2: 6px 6px 12px rgba(163,177,198,.5), -6px -6px 12px rgba(255,255,255,.9);
+  --sdui-elevation-3: 8px 8px 16px rgba(163,177,198,.5), -8px -8px 16px rgba(255,255,255,.9);
+  --sdui-elevation-4: 10px 10px 20px rgba(163,177,198,.5), -10px -10px 20px rgba(255,255,255,.9);
+  --sdui-elevation-5: 12px 12px 24px rgba(163,177,198,.5), -12px -12px 24px rgba(255,255,255,.9);
+  --sdui-radius-sm: var(--radius-sm, 16px);
+  --sdui-radius-md: var(--radius-md, 32px);
+  --sdui-radius-lg: var(--radius-lg, 40px);
+  --sdui-radius-full: 9999px;
+  --sdui-blur: 0px;
+  --sdui-texture-bg: none;
+  --sdui-text-primary: var(--text, #2d3748);
+  --sdui-text-secondary: var(--text-muted, #718096);
+  --sdui-text-on-surface: var(--text, #2d3748);
+  --sdui-state-hover-overlay: rgba(0,0,0,.05);
+  --sdui-state-focus-overlay: rgba(103,80,164,.15);
+  --sdui-state-pressed-overlay: rgba(0,0,0,.1);
+  --sdui-motion-duration-fast: 150ms;
+  --sdui-motion-duration-normal: 250ms;
+  --sdui-motion-easing: cubic-bezier(.2,0,0,1);
+}
+
+[data-theme="claymorphism"][data-theme-mode="dark"] {
+  --sdui-surface-bg: #334155;
+  --sdui-text-primary: #f8fafc;
+  --sdui-text-secondary: #94a3b8;
 }
 
 body[data-style="claymorphism"][data-theme="dark"] {
@@ -91,8 +136,14 @@ body[data-style="claymorphism"][data-theme="dark"] {
   --text: #f8fafc;
   --text-muted: #94a3b8;
   --border: transparent;
-  --shadow-md: 8px 8px 16px #0f172a, -8px -8px 16px #1e293b, inset 4px 4px 8px rgba(0, 0, 0, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.1);
-  --shadow-sm: 4px 4px 8px #0f172a, -4px -4px 8px #1e293b, inset 2px 2px 4px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(255, 255, 255, 0.1);
+  --shadow-md:
+    8px 8px 16px #0f172a, -8px -8px 16px #1e293b,
+    inset 4px 4px 8px rgba(0, 0, 0, 0.2),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.1);
+  --shadow-sm:
+    4px 4px 8px #0f172a, -4px -4px 8px #1e293b,
+    inset 2px 2px 4px rgba(0, 0, 0, 0.2),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.1);
   --shadow-inset: inset 6px 6px 12px #0f172a, inset -6px -6px 12px #1e293b;
   --shadow-focus: 0 0 0 4px rgba(167, 139, 250, 0.3);
 

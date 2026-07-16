@@ -1,0 +1,103 @@
+{
+  "hash": "7d0bd64b",
+  "configHash": "24bd82f7",
+  "lockfileHash": "2d3f1994",
+  "browserHash": "d08e776d",
+  "optimized": {
+    "@angular/common": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
+      "file": "@angular_common.js",
+      "fileHash": "be2e4397",
+      "needsInterop": false
+    },
+    "@angular/common/http": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
+      "file": "@angular_common_http.js",
+      "fileHash": "20e9d15d",
+      "needsInterop": false
+    },
+    "@angular/core": {
+      "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "22a14b65",
+      "needsInterop": false
+    },
+    "@angular/forms": {
+      "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
+      "file": "@angular_forms.js",
+      "fileHash": "a48e09e8",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "d4dd17f8",
+      "needsInterop": false
+    },
+    "@angular/platform-browser/animations/async": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/animations-async.mjs",
+      "file": "@angular_platform-browser_animations_async.js",
+      "fileHash": "bcba4a30",
+      "needsInterop": false
+    },
+    "@angular/router": {
+      "src": "../../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
+      "file": "@angular_router.js",
+      "fileHash": "555d24b8",
+      "needsInterop": false
+    },
+    "@tauri-apps/api/core": {
+      "src": "../../../../../../node_modules/@tauri-apps/api/core.js",
+      "file": "@tauri-apps_api_core.js",
+      "fileHash": "11b2de77",
+      "needsInterop": false
+    },
+    "@tauri-apps/api/event": {
+      "src": "../../../../../../node_modules/@tauri-apps/api/event.js",
+      "file": "@tauri-apps_api_event.js",
+      "fileHash": "50d6dbf1",
+      "needsInterop": false
+    },
+    "rxjs": {
+      "src": "../../../../../../node_modules/rxjs/dist/esm5/index.js",
+      "file": "rxjs.js",
+      "fileHash": "3b738d71",
+      "needsInterop": false
+    },
+    "zone.js": {
+      "src": "../../../../../../node_modules/zone.js/fesm2015/zone.js",
+      "file": "zone__js.js",
+      "fileHash": "fa0af203",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "browser-DDSHIXHG": {
+      "file": "browser-DDSHIXHG.js"
+    },
+    "chunk-HS2WOJK2": {
+      "file": "chunk-HS2WOJK2.js"
+    },
+    "chunk-OJPYQW7V": {
+      "file": "chunk-OJPYQW7V.js"
+    },
+    "chunk-LOM2IDVQ": {
+      "file": "chunk-LOM2IDVQ.js"
+    },
+    "chunk-PKCIR7H5": {
+      "file": "chunk-PKCIR7H5.js"
+    },
+    "chunk-HA3HJ75D": {
+      "file": "chunk-HA3HJ75D.js"
+    },
+    "chunk-RSS3ODKE": {
+      "file": "chunk-RSS3ODKE.js"
+    },
+    "chunk-ZL6KJDKT": {
+      "file": "chunk-ZL6KJDKT.js"
+    },
+    "chunk-FMGVFGPW": {
+      "file": "chunk-FMGVFGPW.js"
+    }
+  }
+}

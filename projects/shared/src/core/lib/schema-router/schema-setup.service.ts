@@ -15,7 +15,7 @@ import {
   type HandlerDefinition,
 } from "../handler-executor/handler-executor.service";
 import type { UiSchema, Page } from "../types";
-import { logger } from "../../../utils/logger";
+import { logger } from "../../../utils/legacy/logger";
 
 export interface SchemaSetupOptions {
   /** Initial route to navigate to after schema loads */

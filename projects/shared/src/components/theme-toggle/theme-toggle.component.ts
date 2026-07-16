@@ -9,7 +9,7 @@ import { IconComponent } from "../icons/icons.component";
   standalone: true,
   imports: [IconComponent],
   templateUrl: "./theme-toggle.component.html",
-  styleUrls: ["./theme-toggle.component.css"],
+  styleUrls: ["./theme-toggle.component.scss"],
 })
 export class ThemeToggleComponent implements OnInit, OnDestroy {
   private themeService = inject(StyleThemeService);

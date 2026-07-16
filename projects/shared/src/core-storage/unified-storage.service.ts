@@ -1,4 +1,4 @@
-import { SignalStore } from "./signal-store";
+import { SignalStore } from "../utils/legacy/signal-store";
 import { StorageCacheService } from "./storage-cache.service";
 import { StorageQueryService, type QueryFilter } from "./storage-query.service";
 

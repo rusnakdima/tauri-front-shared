@@ -29,7 +29,7 @@ export const BRUTALISM_CSS = `
   --text-on-accent: #ffffff;
   --text-primary: var(--color-brut-ink);
   --text-secondary: #3d3d3d;
-  --text-muted: #686870;
+  --text-muted: #595959;
   --text-on-error: #ffffff;
   --text-on-warning: #0a0a0a;
   --text-on-success: var(--color-brut-ink);

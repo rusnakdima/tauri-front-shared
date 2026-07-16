@@ -6,7 +6,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./textarea.component.html",
-  styleUrls: ["./textarea.component.css"],
+  styleUrls: ["./textarea.component.scss"],
 })
 export class TextareaComponent {
   @Input() label = "";

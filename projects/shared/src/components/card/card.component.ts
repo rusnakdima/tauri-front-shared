@@ -9,7 +9,7 @@ import type { CanvasElement } from "../../core/lib/types";
   standalone: true,
   imports: [CommonModule, SchemaElementComponent],
   templateUrl: "./card.component.html",
-  styleUrls: ["./card.component.css"],
+  styleUrls: ["./card.component.scss"],
 })
 export class CardComponent {
   @Input() title = "";

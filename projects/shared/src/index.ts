@@ -34,7 +34,6 @@ export {
 } from "./core/lib/handler-executor/handler-executor.service";
 
 // Missing services
-export { LoggerService, type LogEntry, type LogLevel } from "./core-logger";
 export { SignalStoreService } from "./core/lib/signal-store/signal-store.service";
 export { SignalLoggerService } from "./core/lib/signal-logger/signal-logger.service";
 export { SignalSyncService } from "./core/lib/signal-sync/signal-sync.service";
@@ -59,14 +58,10 @@ export {
   StorageQueryService,
   type QueryFilter,
 } from "./core-storage/storage-query.service";
-export { SignalStore, createSignalStore } from "./core-storage/signal-store";
 
 // Existing working services
 export { InvokeWrapperService } from "./core-api/invoke-wrapper.service";
-export { LocalCrudService as RemoteCrudService } from "./core-crud/crud.service";
-
-// Unified CRUD service — maps to Rust define_crud_routes! commands
-export { ApiCrudService, type CrudFilter } from "./core-api/api-crud.service";
+export { ApiCrudService } from "./core-api/api-crud.service";
 
 // Schema setup — unified schema loading and Angular route registration
 export {
@@ -80,13 +75,6 @@ export {
   type UnifiedAppConfig,
   type AppProvider,
 } from "./core/providers/unified-config";
-
-// Base CRUD service
-export {
-  BaseCrudService,
-  type BaseEntity,
-  type BaseServiceConfig,
-} from "./core-crud/base-crud.service";
 
 // Core API types
 export type { Response } from "./core-api/tauri/response";
@@ -180,6 +168,8 @@ export {
 // Style system
 export {
   loadStyleVariant,
+  loadStyleVariantNoop,
+  setTheme,
   setCurrentStyle,
   getCurrentStyle,
   getAllStyleVariants,

@@ -6,7 +6,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./badge.component.html",
-  styleUrls: ["./badge.component.css"],
+  styleUrls: ["./badge.component.scss"],
 })
 export class BadgeComponent {
   @Input() variant: "default" | "primary" | "success" | "warning" | "danger" =

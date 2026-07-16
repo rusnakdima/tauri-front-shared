@@ -47,8 +47,8 @@
   --accent-hover: #5a4cdb;
   --text-on-accent: #ffffff;
   --text-primary: #2d3748;
-  --text-secondary: #718096;
-  --text-muted: #a0aec0;
+  --text-secondary: #4a5568;
+  --text-muted: #4a5568;
   --text-on-error: #ffffff;
   --text-on-warning: #ffffff;
   --text-on-success: #ffffff;
@@ -81,4 +81,37 @@
   --bg-elevated: #2d3748;
   --border-color: #4a5568;
   --bg-primary: #2d3748;
+}
+
+[data-theme="neumorphism"] {
+  --sdui-surface-bg: var(--color-neu-base, #e0e5ec);
+  --sdui-surface-border: transparent;
+  --sdui-surface-border-width: 0px;
+  --sdui-scrim: rgba(0,0,0,0.5);
+  --sdui-elevation-1: inset 3px 3px 6px rgba(163,177,198,.6), inset -3px -3px 6px rgba(255,255,255,.8);
+  --sdui-elevation-2: inset 4px 4px 8px rgba(163,177,198,.6), inset -4px -4px 8px rgba(255,255,255,.8);
+  --sdui-elevation-3: inset 6px 6px 12px rgba(163,177,198,.6), inset -6px -6px 12px rgba(255,255,255,.8);
+  --sdui-elevation-4: inset 8px 8px 16px rgba(163,177,198,.6), inset -8px -8px 16px rgba(255,255,255,.8);
+  --sdui-elevation-5: inset 10px 10px 20px rgba(163,177,198,.6), inset -10px -10px 20px rgba(255,255,255,.8);
+  --sdui-radius-sm: var(--radius-neu-sm, 8px);
+  --sdui-radius-md: var(--radius-neu-md, 12px);
+  --sdui-radius-lg: var(--radius-neu-lg, 16px);
+  --sdui-radius-full: 9999px;
+  --sdui-blur: 0px;
+  --sdui-texture-bg: none;
+  --sdui-text-primary: var(--color-neu-text, #2d3748);
+  --sdui-text-secondary: var(--color-neu-text-light, #718096);
+  --sdui-text-on-surface: var(--color-neu-text, #2d3748);
+  --sdui-state-hover-overlay: rgba(255,255,255,.1);
+  --sdui-state-focus-overlay: rgba(109,93,252,.2);
+  --sdui-state-pressed-overlay: rgba(0,0,0,.1);
+  --sdui-motion-duration-fast: 150ms;
+  --sdui-motion-duration-normal: 250ms;
+  --sdui-motion-easing: cubic-bezier(.2,0,0,1);
+}
+
+[data-theme="neumorphism"][data-theme-mode="dark"] {
+  --sdui-surface-bg: var(--color-neu-base, #2d3748);
+  --sdui-text-primary: var(--color-neu-text-dark, #f8fafc);
+  --sdui-text-secondary: var(--color-neu-text-light, #a0aec0);
 }

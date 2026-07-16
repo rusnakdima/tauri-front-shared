@@ -4,6 +4,7 @@ import {
   inject,
   AfterViewInit,
   OnChanges,
+  OnInit,
   SimpleChanges,
   ViewChild,
   ViewContainerRef,
@@ -17,18 +18,20 @@ import { SCHEMA_COMPONENT_MAP } from "../schema-component.registry";
 import type { CanvasElement } from "../types";
 import { SchemaRendererService } from "../schema-renderer/schema-renderer.service";
 import { getCurrentStyle } from "../../../styles/style-registry";
+import { StyleThemeService } from "../../../styles/theme.service";
 
 @Component({
   selector: "app-schema-element",
   standalone: true,
   imports: [CommonModule],
   templateUrl: "./schema-element.component.html",
-  styleUrl: "./schema-element.component.css",
+  styleUrls: ["./schema-element.component.scss"],
 })
-export class SchemaElementComponent implements AfterViewInit, OnChanges {
+export class SchemaElementComponent implements AfterViewInit, OnChanges, OnInit {
   private rendererService = inject(SchemaRendererService);
   private appRef = inject(ApplicationRef);
   private injector = inject(Injector);
+  private styleThemeService = inject(StyleThemeService);
 
   @Input({ required: true }) element!: CanvasElement;
   @Input({ required: true }) elements: CanvasElement[] = [];
@@ -47,7 +50,7 @@ export class SchemaElementComponent implements AfterViewInit, OnChanges {
 
   get classes(): string {
     const base = this.element.classes ?? "";
-    if (!this.element.props) return base;
+    if (!this.element.props) return this.normalizeClasses(base);
     const theme = getCurrentStyle();
     const mapped = this.rendererService.mapPropsToClasses(
       this.element.componentId,
@@ -55,7 +58,38 @@ export class SchemaElementComponent implements AfterViewInit, OnChanges {
       theme,
     );
     const mappedStr = mapped.join(" ").trim();
-    return mappedStr ? `${base} ${mappedStr}` : base;
+    return this.normalizeClasses(mappedStr ? `${base} ${mappedStr}` : base);
+  }
+
+  /**
+   * Normalizes schema element classes: trims, deduplicates, and warns on
+   * legacy sf-* patterns. Acts as a safety net for schemas that haven't yet
+   * been migrated to ui-* tokens.
+   */
+  private normalizeClasses(classes: string): string {
+    const seen = new Set<string>();
+    return classes
+      .trim()
+      .split(/\s+/)
+      .filter((cls) => {
+        if (cls.startsWith("sf-")) {
+          console.warn(
+            `[SchemaElement] legacy sf-* class "${cls}" found in schema element "${this.element.id}" — migrate to ui-*`,
+          );
+          return false; // drop legacy classes
+        }
+        if (seen.has(cls)) return false; // deduplicate
+        seen.add(cls);
+        return true;
+      })
+      .join(" ");
+  }
+
+  ngOnInit() {
+    const schemaTheme = this.element.theme;
+    if (schemaTheme && !(this.element as any)["parentId"]) {
+      this.styleThemeService.loadTheme(schemaTheme as any);
+    }
   }
 
   get childElements(): CanvasElement[] {

@@ -14,7 +14,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./text-input.component.html",
-  styleUrls: ["./text-input.component.css"],
+  styleUrls: ["./text-input.component.scss"],
 })
 export class TextInputComponent implements AfterViewInit {
   @ViewChild("textareaEl") textareaEl!: ElementRef<HTMLTextAreaElement>;

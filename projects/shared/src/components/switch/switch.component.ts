@@ -6,7 +6,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./switch.component.html",
-  styleUrls: ["./switch.component.css"],
+  styleUrls: ["./switch.component.scss"],
 })
 export class SwitchComponent {
   @Input() checked = false;

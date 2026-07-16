@@ -13,7 +13,7 @@ type RowData = Record<string, unknown>;
   standalone: true,
   imports: [],
   templateUrl: "./table-view.component.html",
-  styleUrls: ["./table-view.component.css"],
+  styleUrls: ["./table-view.component.scss"],
 })
 export class TableViewComponent {
   @Input() columns: string | ColumnDef[] = "[]";

@@ -6,7 +6,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./spinner.component.html",
-  styleUrls: ["./spinner.component.css"],
+  styleUrls: ["./spinner.component.scss"],
 })
 export class SpinnerComponent {
   @Input() size: "sm" | "md" | "lg" | "xl" = "md";

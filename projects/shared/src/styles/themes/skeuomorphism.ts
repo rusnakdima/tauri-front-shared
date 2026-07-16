@@ -54,7 +54,7 @@ const SKEUOMORPHISM_TOKENS_CSS = `
   --text-on-accent: var(--color-skeu-cream);
   --text-primary: var(--color-skeu-ink);
   --text-secondary: #5c3d20;
-  --text-muted: #8a6f50;
+  --text-muted: #3d2817;
   --bg-primary: var(--color-skeu-base);
   --bg-elevated: var(--color-skeu-paper);
   --bg-hover: #dcc99e;

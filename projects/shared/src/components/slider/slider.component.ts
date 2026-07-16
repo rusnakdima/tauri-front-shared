@@ -6,7 +6,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./slider.component.html",
-  styleUrls: ["./slider.component.css"],
+  styleUrls: ["./slider.component.scss"],
 })
 export class SliderComponent {
   @Input() min = 0;

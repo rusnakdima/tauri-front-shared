@@ -27,9 +27,9 @@ export const GLASSMORPHISM_CSS = `
   --accent: var(--color-glass-accent);
   --accent-hover: var(--color-glass-accent-hover);
   --text-on-accent: #ffffff;
-  --text-primary: #2d3748;
-  --text-secondary: #718096;
-  --text-muted: #a0aec0;
+  --text-primary: #4a5568;
+  --text-secondary: #64748b;
+  --text-muted: #1e293b;
   --text-on-error: #ffffff;
   --text-on-warning: #ffffff;
   --text-on-success: #ffffff;
@@ -40,7 +40,7 @@ export const GLASSMORPHISM_CSS = `
   --success: #2d7a3a;
   --info: #4299e1;
   --bg-primary: rgba(15, 15, 30, 0.9);
-  --bg-secondary: rgba(25, 25, 45, 0.75);
+  --bg-secondary: rgba(25, 25, 45, 0.92);
   --bg-tertiary: rgba(10, 10, 20, 0.95);
   --border-subtle: rgba(255, 255, 255, 0.15);
 }
@@ -56,13 +56,13 @@ body[data-style="glassmorphism"][data-theme="dark"] {
   --color-glass-blur: rgba(255, 255, 255, 0.03);
   --color-glass-dark: rgba(0, 0, 0, 0.5);
   --color-glass-dark-strong: rgba(0, 0, 0, 0.7);
-  --text-primary: #e2e8f0;
-  --text-secondary: #c0c0c0;
-  --text-muted: #909090;
-  --bg-elevated: rgba(255, 255, 255, 0.1);
+  --text-primary: #1e293b;
+  --text-secondary: #334155;
+  --text-muted: #475569;
+  --bg-elevated: rgba(255, 255, 255, 0.72);
   --border-color: rgba(255, 255, 255, 0.25);
   --bg-primary: rgba(5, 5, 15, 0.95);
-  --bg-secondary: rgba(15, 15, 30, 0.85);
+  --bg-secondary: rgba(15, 15, 30, 0.92);
   --bg-tertiary: rgba(10, 10, 20, 0.98);
   --border-subtle: rgba(255, 255, 255, 0.08);
 }

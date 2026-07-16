@@ -4,27 +4,22 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "dev": "ng serve",
+    "build": "ng build",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@angular/common": "^20.0.0",
-    "@angular/core": "^20.0.0",
-    "@angular/platform-browser": "^20.0.0",
-    "@angular/platform-browser-dynamic": "^20.0.0",
-    "@angular/router": "^20.0.0",
     "@tauri-front/shared": "file:../projects/shared/dist",
-    "rxjs": "^7.8.2",
-    "zone.js": "^0.15.0"
+    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/plugin-opener": "^2",
+    "zone.js": "^0.16.2"
   },
   "devDependencies": {
-    "@analogjs/vite-plugin-angular": "^2.6.3",
-    "@angular-devkit/build-angular": "^20.3.32",
-    "@angular/compiler": "^20.3.25",
-    "@angular/compiler-cli": "^20.3.25",
-    "@tauri-apps/api": "^2.11.1",
-    "typescript": "^5.9.3",
-    "vite": "^6.0.0"
+    "@angular/build": "^22.0.0",
+    "@angular/core": "^22.0.6",
+    "@angular/cli": "^22.0.6",
+    "@angular/compiler-cli": "^22.0.6",
+    "@tauri-apps/cli": "^2.11.1",
+    "typescript": "~6.0.3"
   }
 }

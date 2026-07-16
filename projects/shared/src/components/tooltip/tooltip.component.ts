@@ -6,7 +6,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./tooltip.component.html",
-  styleUrls: ["./tooltip.component.css"],
+  styleUrls: ["./tooltip.component.scss"],
 })
 export class TooltipComponent {
   @Input() text = "";

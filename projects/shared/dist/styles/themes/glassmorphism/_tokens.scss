@@ -40,7 +40,7 @@
   --glass-blur: blur(16px);
 
   /* Typography */
-  --font-family: 'Poppins', 'Segoe UI', sans-serif;
+  --font-family: "Poppins", "Segoe UI", sans-serif;
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Glass-specific variables */
@@ -57,8 +57,8 @@
   --accent: var(--primary);
   --accent-hover: var(--primary-hover);
   --text-on-accent: var(--primary-fg);
-  --text-primary: var(--text);
-  --text-secondary: var(--text-muted);
+  --text-primary: #1e293b;
+  --text-secondary: #1e293b;
   --bg-elevated: rgba(255, 255, 255, 0.15);
   --border-subtle: rgba(255, 255, 255, 0.15);
   --bg-primary: var(--background);
@@ -67,7 +67,7 @@
 }
 
 body[data-style="glassmorphism"] {
-  --font-family: 'Poppins', 'Segoe UI', sans-serif;
+  --font-family: "Poppins", "Segoe UI", sans-serif;
   --background: #f0f2f5;
   --surface: rgba(255, 255, 255, 0.4);
   --surface-variant: rgba(255, 255, 255, 0.2);
@@ -79,6 +79,40 @@ body[data-style="glassmorphism"] {
   --radius-md: 20px;
   --text: #2d3748;
   --text-muted: #718096;
+}
+
+[data-theme="glassmorphism"] {
+  --sdui-surface-bg: var(--color-glass-bg, rgba(255,255,255,.1));
+  --sdui-surface-border: var(--color-glass-border, rgba(255,255,255,.45));
+  --sdui-surface-border-width: 1px;
+  --sdui-scrim: rgba(0,0,0,0.5);
+  --sdui-elevation-1: 0 4px 16px 1px rgba(0,0,0,.15), 0 2px 4px 1px rgba(0,0,0,.1);
+  --sdui-elevation-2: 0 8px 24px 2px rgba(0,0,0,.2), 0 4px 8px 2px rgba(0,0,0,.1);
+  --sdui-elevation-3: 0 12px 32px 3px rgba(0,0,0,.25), 0 6px 12px 2px rgba(0,0,0,.15);
+  --sdui-elevation-4: 0 16px 40px 4px rgba(0,0,0,.3), 0 8px 16px 3px rgba(0,0,0,.2);
+  --sdui-elevation-5: 0 20px 48px 5px rgba(0,0,0,.35), 0 10px 20px 4px rgba(0,0,0,.25);
+  --sdui-radius-sm: var(--radius-sm, 8px);
+  --sdui-radius-md: var(--radius-md, 20px);
+  --sdui-radius-lg: var(--radius-lg, 24px);
+  --sdui-radius-full: 9999px;
+  --sdui-blur: 12px;
+  --sdui-texture-bg: none;
+  --sdui-text-primary: #2d3748;
+  --sdui-text-secondary: #718096;
+  --sdui-text-on-surface: #ffffff;
+  --sdui-state-hover-overlay: rgba(255,255,255,.08);
+  --sdui-state-focus-overlay: rgba(109,93,252,.15);
+  --sdui-state-pressed-overlay: rgba(255,255,255,.12);
+  --sdui-motion-duration-fast: 150ms;
+  --sdui-motion-duration-normal: 250ms;
+  --sdui-motion-easing: cubic-bezier(.2,0,0,1);
+}
+
+[data-theme="glassmorphism"][data-theme-mode="dark"] {
+  --sdui-surface-bg: var(--color-glass-dark, rgba(0,0,0,.3));
+  --sdui-surface-border: var(--color-glass-border-strong, rgba(255,255,255,.2));
+  --sdui-text-primary: #f8fafc;
+  --sdui-text-secondary: #94a3b8;
 }
 
 body[data-style="glassmorphism"][data-theme="dark"] {
@@ -103,4 +137,10 @@ body[data-style="glassmorphism"][data-theme="dark"] {
   --color-glass-border: rgba(255, 255, 255, 0.25);
   --bg-elevated: rgba(255, 255, 255, 0.1);
   --bg-primary: var(--background);
+
+  /* Hardcode text tokens so they override var() from :root */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --bg-secondary: rgba(15, 23, 42, 0.9);
+  --bg-tertiary: rgba(10, 15, 30, 0.98);
 }

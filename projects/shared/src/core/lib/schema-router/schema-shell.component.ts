@@ -28,7 +28,7 @@ import {
 import { SchemaRouteViewerComponent } from "./schema-route-viewer.component";
 import { SchemaElementComponent } from "./schema-element.component";
 import type { LayoutElement, RegionType, UiSchema } from "../types";
-import { logger } from "../../../utils/logger";
+import { logger } from "../../../utils/legacy/logger";
 
 @Component({
   selector: "lib-schema-shell",

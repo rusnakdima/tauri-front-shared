@@ -14,7 +14,7 @@ import { ComponentRegistryService } from "../component-registry.service";
 import { DataBindingResolverService } from "./data-binding-resolver";
 import { LayoutEngineService, GridTemplate } from "./layout-engine";
 import { I18nService } from "../i18n/i18n.service";
-import { logger } from "../../../utils/logger";
+import { logger } from "../../../utils/legacy/logger";
 import {
   StyleVariant,
   getCurrentStyle,

@@ -236,6 +236,8 @@ export interface CanvasElement {
   position?: { x: number; y: number; width: number; height: number };
   zIndex?: number;
   dataBinding?: { entity: string; field: string };
+  // Per-element theme override (e.g. "material-design-v3")
+  theme?: string;
   styles?: {
     custom?: Record<string, string>;
     states?: {
@@ -288,6 +290,7 @@ export interface LayoutElement {
 // Root app schema with layout regions
 export interface AppSchema {
   id: string;
+  theme?: string;
   schemaVersion?: string;
   app?: { id?: string; name?: string; style?: string };
   layout?: LayoutElement;

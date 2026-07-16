@@ -1,8 +1,12 @@
 {
   "name": "@tauri-front/shared",
-  "version": "0.1.1-1782666230370",
+  "version": "0.1.1-1782666230371",
   "description": "Unified shared library for Tauri apps with style variants",
   "type": "module",
+  "sideEffects": [
+    "./fesm2022/tauri-front-shared.mjs",
+    "./**/*.css"
+  ],
   "main": "./fesm2022/tauri-front-shared.mjs",
   "types": "./index.d.ts",
   "exports": {
@@ -13,6 +17,93 @@
     },
     "./styles": {
       "default": "./styles/ui-system.css"
+    },
+    "./styles.css": {
+      "default": "./styles/ui-system.css"
+    },
+    "./styles/utilities": {
+      "default": "./styles/library-utilities.css"
+    },
+    "./styles/utilities.css": {
+      "default": "./styles/library-utilities.css"
+    },
+    "./styles/ui-system": {
+      "default": "./styles/ui-system.css"
+    },
+    "./styles/ui-system.css": {
+      "default": "./styles/ui-system.css"
+    },
+    "./styles/themes/m3/tokens": {
+      "default": "./styles/themes/m3/tokens.css"
+    },
+    "./styles/themes/m3/tokens.css": {
+      "default": "./styles/themes/m3/tokens.css"
+    },
+    "./styles/themes/m3/components": {
+      "default": "./styles/themes/m3/components.css"
+    },
+    "./styles/themes/m3/components.css": {
+      "default": "./styles/themes/m3/components.css"
+    },
+    "./styles/themes/glassmorphism/tokens": {
+      "default": "./styles/themes/glassmorphism/tokens.css"
+    },
+    "./styles/themes/glassmorphism/tokens.css": {
+      "default": "./styles/themes/glassmorphism/tokens.css"
+    },
+    "./styles/themes/glassmorphism/components": {
+      "default": "./styles/themes/glassmorphism/components.css"
+    },
+    "./styles/themes/glassmorphism/components.css": {
+      "default": "./styles/themes/glassmorphism/components.css"
+    },
+    "./styles/themes/neumorphism/tokens": {
+      "default": "./styles/themes/neumorphism/tokens.css"
+    },
+    "./styles/themes/neumorphism/tokens.css": {
+      "default": "./styles/themes/neumorphism/tokens.css"
+    },
+    "./styles/themes/neumorphism/components": {
+      "default": "./styles/themes/neumorphism/components.css"
+    },
+    "./styles/themes/neumorphism/components.css": {
+      "default": "./styles/themes/neumorphism/components.css"
+    },
+    "./styles/themes/claymorphism/tokens": {
+      "default": "./styles/themes/claymorphism/tokens.css"
+    },
+    "./styles/themes/claymorphism/tokens.css": {
+      "default": "./styles/themes/claymorphism/tokens.css"
+    },
+    "./styles/themes/claymorphism/components": {
+      "default": "./styles/themes/claymorphism/components.css"
+    },
+    "./styles/themes/claymorphism/components.css": {
+      "default": "./styles/themes/claymorphism/components.css"
+    },
+    "./styles/themes/brutalism/tokens": {
+      "default": "./styles/themes/brutalism/tokens.css"
+    },
+    "./styles/themes/brutalism/tokens.css": {
+      "default": "./styles/themes/brutalism/tokens.css"
+    },
+    "./styles/themes/brutalism/components": {
+      "default": "./styles/themes/brutalism/components.css"
+    },
+    "./styles/themes/brutalism/components.css": {
+      "default": "./styles/themes/brutalism/components.css"
+    },
+    "./styles/themes/skeuomorphism/tokens": {
+      "default": "./styles/themes/skeuomorphism/tokens.css"
+    },
+    "./styles/themes/skeuomorphism/tokens.css": {
+      "default": "./styles/themes/skeuomorphism/tokens.css"
+    },
+    "./styles/themes/skeuomorphism/components": {
+      "default": "./styles/themes/skeuomorphism/components.css"
+    },
+    "./styles/themes/skeuomorphism/components.css": {
+      "default": "./styles/themes/skeuomorphism/components.css"
     },
     "./package.json": {
       "default": "./package.json"
@@ -29,7 +120,6 @@
   },
   "module": "fesm2022/tauri-front-shared.mjs",
   "typings": "types/tauri-front-shared.d.ts",
-  "sideEffects": false,
   "dependencies": {
     "tslib": "^2.3.0"
   }

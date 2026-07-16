@@ -6,7 +6,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./stats-card.component.html",
-  styleUrls: ["./stats-card.component.css"],
+  styleUrls: ["./stats-card.component.scss"],
 })
 export class StatsCardComponent {
   @Input() label = "";

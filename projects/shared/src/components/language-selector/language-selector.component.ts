@@ -13,7 +13,7 @@ export interface LanguageOption {
   standalone: true,
   imports: [IconComponent],
   templateUrl: "./language-selector.component.html",
-  styleUrls: ["./language-selector.component.css"],
+  styleUrls: ["./language-selector.component.scss"],
 })
 export class LanguageSelectorComponent {
   @Input() label = "";

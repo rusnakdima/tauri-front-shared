@@ -40,7 +40,7 @@
   --glass-blur: none;
 
   /* Typography */
-  --font-family: 'Space Mono', 'Courier New', monospace;
+  --font-family: "Space Mono", "Courier New", monospace;
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Brutalism-specific variables */
@@ -82,8 +82,47 @@ body[data-style="brutalism"] {
   --radius-md: 0px;
   --radius-lg: 0px;
   --radius-full: 0px;
-  --font-family: 'Space Mono', 'Courier New', monospace;
+  --font-family: "Space Mono", "Courier New", monospace;
   --text-muted: #3d3d3d;
+}
+
+[data-theme="brutalism"] {
+  --sdui-surface-bg: var(--background, #ffffff);
+  --sdui-surface-border: #000000;
+  --sdui-surface-border-width: 2px;
+  --sdui-scrim: rgba(0,0,0,0.5);
+  --sdui-elevation-1: 4px 4px 0 #000;
+  --sdui-elevation-2: 6px 6px 0 #000;
+  --sdui-elevation-3: 8px 8px 0 #000;
+  --sdui-elevation-4: 10px 10px 0 #000;
+  --sdui-elevation-5: 12px 12px 0 #000;
+  --sdui-radius-sm: 0px;
+  --sdui-radius-md: 0px;
+  --sdui-radius-lg: 0px;
+  --sdui-radius-full: 0px;
+  --sdui-blur: 0px;
+  --sdui-texture-bg: none;
+  --sdui-text-primary: #000000;
+  --sdui-text-secondary: #3d3d3d;
+  --sdui-text-on-surface: #ffffff;
+  --sdui-state-hover-overlay: rgba(0,0,0,.05);
+  --sdui-state-focus-overlay: rgba(0,0,0,.15);
+  --sdui-state-pressed-overlay: rgba(0,0,0,.1);
+  --sdui-motion-duration-fast: 0ms;
+  --sdui-motion-duration-normal: 0ms;
+  --sdui-motion-easing: linear;
+}
+
+[data-theme="brutalism"][data-theme-mode="dark"] {
+  --sdui-surface-bg: #000000;
+  --sdui-surface-border: #ffffff;
+  --sdui-text-primary: #ffffff;
+  --sdui-text-secondary: #c0c0c0;
+  --sdui-elevation-1: 4px 4px 0 #fff;
+  --sdui-elevation-2: 6px 6px 0 #fff;
+  --sdui-elevation-3: 8px 8px 0 #fff;
+  --sdui-elevation-4: 10px 10px 0 #fff;
+  --sdui-elevation-5: 12px 12px 0 #fff;
 }
 
 body[data-style="brutalism"][data-theme="dark"] {
@@ -108,7 +147,7 @@ body[data-style="brutalism"][data-theme="dark"] {
   --radius-md: 0px;
   --radius-lg: 0px;
   --radius-full: 0px;
-  --font-family: 'Space Mono', 'Courier New', monospace;
+  --font-family: "Space Mono", "Courier New", monospace;
 
   /* Brutalism dark variables */
   --color-brut-base: #1a1a1a;

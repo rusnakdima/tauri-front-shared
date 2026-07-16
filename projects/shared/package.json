@@ -1,8 +1,9 @@
 {
   "name": "@tauri-front/shared",
-  "version": "0.1.1-1782666230370",
+  "version": "0.1.1-1782666230371",
   "description": "Unified shared library for Tauri apps with style variants",
   "type": "module",
+  "sideEffects": ["./fesm2022/tauri-front-shared.mjs", "./**/*.css"],
   "main": "./fesm2022/tauri-front-shared.mjs",
   "types": "./index.d.ts",
   "exports": {
@@ -13,10 +14,99 @@
     },
     "./styles": {
       "default": "./styles/ui-system.css"
+    },
+    "./styles.css": {
+      "default": "./styles/ui-system.css"
+    },
+    "./styles/utilities": {
+      "default": "./styles/library-utilities.css"
+    },
+    "./styles/utilities.css": {
+      "default": "./styles/library-utilities.css"
+    },
+    "./styles/ui-system": {
+      "default": "./styles/ui-system.css"
+    },
+    "./styles/ui-system.css": {
+      "default": "./styles/ui-system.css"
+    },
+    "./styles/themes/m3/tokens": {
+      "default": "./styles/themes/m3/tokens.css"
+    },
+    "./styles/themes/m3/tokens.css": {
+      "default": "./styles/themes/m3/tokens.css"
+    },
+    "./styles/themes/m3/components": {
+      "default": "./styles/themes/m3/components.css"
+    },
+    "./styles/themes/m3/components.css": {
+      "default": "./styles/themes/m3/components.css"
+    },
+    "./styles/themes/glassmorphism/tokens": {
+      "default": "./styles/themes/glassmorphism/tokens.css"
+    },
+    "./styles/themes/glassmorphism/tokens.css": {
+      "default": "./styles/themes/glassmorphism/tokens.css"
+    },
+    "./styles/themes/glassmorphism/components": {
+      "default": "./styles/themes/glassmorphism/components.css"
+    },
+    "./styles/themes/glassmorphism/components.css": {
+      "default": "./styles/themes/glassmorphism/components.css"
+    },
+    "./styles/themes/neumorphism/tokens": {
+      "default": "./styles/themes/neumorphism/tokens.css"
+    },
+    "./styles/themes/neumorphism/tokens.css": {
+      "default": "./styles/themes/neumorphism/tokens.css"
+    },
+    "./styles/themes/neumorphism/components": {
+      "default": "./styles/themes/neumorphism/components.css"
+    },
+    "./styles/themes/neumorphism/components.css": {
+      "default": "./styles/themes/neumorphism/components.css"
+    },
+    "./styles/themes/claymorphism/tokens": {
+      "default": "./styles/themes/claymorphism/tokens.css"
+    },
+    "./styles/themes/claymorphism/tokens.css": {
+      "default": "./styles/themes/claymorphism/tokens.css"
+    },
+    "./styles/themes/claymorphism/components": {
+      "default": "./styles/themes/claymorphism/components.css"
+    },
+    "./styles/themes/claymorphism/components.css": {
+      "default": "./styles/themes/claymorphism/components.css"
+    },
+    "./styles/themes/brutalism/tokens": {
+      "default": "./styles/themes/brutalism/tokens.css"
+    },
+    "./styles/themes/brutalism/tokens.css": {
+      "default": "./styles/themes/brutalism/tokens.css"
+    },
+    "./styles/themes/brutalism/components": {
+      "default": "./styles/themes/brutalism/components.css"
+    },
+    "./styles/themes/brutalism/components.css": {
+      "default": "./styles/themes/brutalism/components.css"
+    },
+    "./styles/themes/skeuomorphism/tokens": {
+      "default": "./styles/themes/skeuomorphism/tokens.css"
+    },
+    "./styles/themes/skeuomorphism/tokens.css": {
+      "default": "./styles/themes/skeuomorphism/tokens.css"
+    },
+    "./styles/themes/skeuomorphism/components": {
+      "default": "./styles/themes/skeuomorphism/components.css"
+    },
+    "./styles/themes/skeuomorphism/components.css": {
+      "default": "./styles/themes/skeuomorphism/components.css"
     }
   },
   "scripts": {
-    "build": "ng-packagr -p ng-package.json && node ../../scripts/fix-package-json.ts",
+    "lint:styles": "stylelint \"src/styles/**/*.scss\"",
+    "build:scss": "sass --no-source-map --style=compressed src/styles/library-utilities.scss dist/styles/library-utilities.css && sass --no-source-map --style=compressed src/styles/ui-system.scss dist/styles/ui-system.css",
+    "build": "npm run build:scss && ng-packagr -p ng-package.json && node ../../scripts/fix-package-json.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -38,7 +128,9 @@
     "@tauri-apps/api": "^2.11.1",
     "jsdom": "^24.0.0",
     "ng-packagr": "^22.0.0",
+    "sass": "^1.77.0",
     "typescript": "~6.0.0",
-    "vitest": "^1.0.0"
+    "vitest": "^1.0.0",
+    "stylelint": "^16.0.0"
   }
 }

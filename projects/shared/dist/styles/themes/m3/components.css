@@ -1017,7 +1017,9 @@
   justify-content: center;
   border: 1px solid var(--color-m3-outline);
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .m3-toggle:hover {

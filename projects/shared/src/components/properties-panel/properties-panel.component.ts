@@ -10,7 +10,7 @@ type Tab = "props" | "style" | "events";
   standalone: true,
   imports: [CommonModule],
   templateUrl: "./properties-panel.component.html",
-  styleUrls: ["./properties-panel.component.css"],
+  styleUrls: ["./properties-panel.component.scss"],
 })
 export class PropertiesPanelComponent {
   protected designer = inject(DesignerCanvasService);

@@ -7,7 +7,7 @@ import { IconComponent } from "../icons/icons.component";
   standalone: true,
   imports: [IconComponent],
   templateUrl: "./input.component.html",
-  styleUrls: ["./input.component.css"],
+  styleUrls: ["./input.component.scss"],
 })
 export class InputComponent {
   @Input() type = "text";

@@ -26,7 +26,7 @@
   --text-on-accent: #ffffff;
   --text-primary: var(--color-brut-ink);
   --text-secondary: #3d3d3d;
-  --text-muted: #6b6b6b;
+  --text-muted: #595959;
   --text-on-error: #ffffff;
   --text-on-warning: #0a0a0a;
   --text-on-success: #ffffff;
@@ -59,4 +59,43 @@
   --border-color: #f5f5f0;
   --border-subtle: #c0c0c0;
   --error: #ff453a;
+}
+
+[data-theme="brutalism"] {
+  --sdui-surface-bg: var(--color-brut-base, #f5f5f0);
+  --sdui-surface-border: #000000;
+  --sdui-surface-border-width: 2px;
+  --sdui-scrim: rgba(0,0,0,0.5);
+  --sdui-elevation-1: 4px 4px 0 #000;
+  --sdui-elevation-2: 6px 6px 0 #000;
+  --sdui-elevation-3: 8px 8px 0 #000;
+  --sdui-elevation-4: 10px 10px 0 #000;
+  --sdui-elevation-5: 12px 12px 0 #000;
+  --sdui-radius-sm: 0px;
+  --sdui-radius-md: 0px;
+  --sdui-radius-lg: 0px;
+  --sdui-radius-full: 0px;
+  --sdui-blur: 0px;
+  --sdui-texture-bg: none;
+  --sdui-text-primary: #000000;
+  --sdui-text-secondary: #3d3d3d;
+  --sdui-text-on-surface: #ffffff;
+  --sdui-state-hover-overlay: rgba(0,0,0,.05);
+  --sdui-state-focus-overlay: rgba(0,0,0,.15);
+  --sdui-state-pressed-overlay: rgba(0,0,0,.1);
+  --sdui-motion-duration-fast: 0ms;
+  --sdui-motion-duration-normal: 0ms;
+  --sdui-motion-easing: linear;
+}
+
+[data-theme="brutalism"][data-theme-mode="dark"] {
+  --sdui-surface-bg: #1a1a1a;
+  --sdui-surface-border: #ffffff;
+  --sdui-text-primary: #f5f5f0;
+  --sdui-text-secondary: #c0c0c0;
+  --sdui-elevation-1: 4px 4px 0 #fff;
+  --sdui-elevation-2: 6px 6px 0 #fff;
+  --sdui-elevation-3: 8px 8px 0 #fff;
+  --sdui-elevation-4: 10px 10px 0 #fff;
+  --sdui-elevation-5: 12px 12px 0 #fff;
 }

@@ -1,10 +1,12 @@
 import "@tauri-front/shared";
-import "zone.js";
-import "@angular/compiler";
+import { loadStyleVariant } from "@tauri-front/shared";
 import { bootstrapApplication } from "@angular/platform-browser";
 import { AppComponent } from "./app/app.component";
 import { appConfig } from "./app/app.config";
 
-bootstrapApplication(AppComponent, appConfig).catch((err) =>
-  console.error(err),
-);
+loadStyleVariant("material-design-v3").then(() => {
+  bootstrapApplication(AppComponent, appConfig).catch((err) => {
+    const error = err instanceof Error ? err : new Error(String(err));
+    console.error(err);
+  });
+});

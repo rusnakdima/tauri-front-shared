@@ -3,7 +3,7 @@ import { type Routes, type Route } from "@angular/router";
 import type { UiSchema, Page, Layout } from "../types";
 import { GuardService } from "./guard.service";
 import { SchemaRouteViewerComponent } from "./schema-route-viewer.component";
-import { logger } from "../../../utils/logger";
+import { logger } from "../../../utils/legacy/logger";
 
 export interface RouteConfig {
   path: string;

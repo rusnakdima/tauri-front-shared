@@ -7,7 +7,7 @@ import { parseJsonOrDefault } from "../../utils/json";
   standalone: true,
   imports: [],
   templateUrl: "./select.component.html",
-  styleUrls: ["./select.component.css"],
+  styleUrls: ["./select.component.scss"],
 })
 export class SelectComponent {
   @Input() options: string | string[] = "[]";

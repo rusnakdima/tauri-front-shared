@@ -12,7 +12,7 @@ interface Breadcrumb {
   standalone: true,
   imports: [],
   templateUrl: "./header.component.html",
-  styleUrls: ["./header.component.css"],
+  styleUrls: ["./header.component.scss"],
 })
 export class HeaderComponent {
   @Input() title = "";

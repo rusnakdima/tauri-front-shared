@@ -4,7 +4,7 @@ import {
   type InvokeOptions,
 } from "./invoke-wrapper.service";
 import type { Response } from "./tauri/response";
-import { invokeWithRetry, type RetryOptions } from "./retry.service";
+import { invokeWithRetry, type RetryOptions } from "./invoke-wrapper.service";
 
 export type { RetryOptions, InvokeOptions };
 export type { Response };

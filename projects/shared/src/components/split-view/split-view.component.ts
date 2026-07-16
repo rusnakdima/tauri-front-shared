@@ -14,7 +14,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./split-view.component.html",
-  styleUrls: ["./split-view.component.css"],
+  styleUrls: ["./split-view.component.scss"],
 })
 export class SplitViewComponent implements OnDestroy {
   @ViewChild("container") containerEl!: ElementRef<HTMLElement>;

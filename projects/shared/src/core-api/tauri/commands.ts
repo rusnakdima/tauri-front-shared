@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { Response, ResponseStatus } from "./response";
 import { AppError, ErrorType } from "./error";
-import { invokeWithRetry } from "../retry.service";
+import { invokeWithRetry } from "../invoke-wrapper.service";
 
 export interface InvokeOptionsWithRetry {
   timeout?: number;

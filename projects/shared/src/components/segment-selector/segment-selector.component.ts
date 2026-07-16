@@ -7,7 +7,7 @@ import { parseJsonOrDefault } from "../../utils/json";
   standalone: true,
   imports: [],
   templateUrl: "./segment-selector.component.html",
-  styleUrls: ["./segment-selector.component.css"],
+  styleUrls: ["./segment-selector.component.scss"],
 })
 export class SegmentSelectorComponent {
   @Input() options: string | string[] = "[]";

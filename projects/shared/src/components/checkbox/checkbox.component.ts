@@ -6,7 +6,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./checkbox.component.html",
-  styleUrls: ["./checkbox.component.css"],
+  styleUrls: ["./checkbox.component.scss"],
 })
 export class CheckboxComponent {
   @Input() checked = false;

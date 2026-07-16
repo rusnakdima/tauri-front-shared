@@ -13,7 +13,7 @@ export type ButtonSize = "sm" | "md" | "lg";
   standalone: true,
   imports: [IconComponent],
   templateUrl: "./button.component.html",
-  styleUrls: ["./button.component.css"],
+  styleUrls: ["./button.component.scss"],
 })
 export class ButtonComponent {
   private i18n = inject(I18nService);

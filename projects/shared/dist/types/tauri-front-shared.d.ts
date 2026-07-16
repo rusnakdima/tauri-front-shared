@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { ChangeDetectorRef, EventEmitter, OnDestroy, OnInit, OnChanges, SimpleChanges, AfterViewInit, Type, Signal as Signal$2, Provider, EnvironmentProviders, TemplateRef, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, EventEmitter, OnDestroy, OnInit, OnChanges, SimpleChanges, AfterViewInit, Type, Signal as Signal$1, Provider, EnvironmentProviders, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import * as _angular_router from '@angular/router';
 import { Routes, Router, CanActivateFn } from '@angular/router';
@@ -193,6 +193,7 @@ interface CanvasElement {
         entity: string;
         field: string;
     };
+    theme?: string;
     styles?: {
         custom?: Record<string, string>;
         states?: {
@@ -236,6 +237,7 @@ interface LayoutElement {
 }
 interface AppSchema {
     id: string;
+    theme?: string;
     schemaVersion?: string;
     app?: {
         id?: string;
@@ -542,6 +544,13 @@ interface StyleVariantConfig {
     componentStyles: ComponentStyleMap;
 }
 declare function loadStyleVariant(variant: StyleVariant): Promise<void>;
+/**
+ * SCSS-only fallback — sets body[data-style] without injecting runtime CSS.
+ * Apps using static SCSS themes (tokens.css loaded via angular.json) call this
+ * instead of loadStyleVariant to avoid double-injection of theme styles.
+ */
+declare function loadStyleVariantNoop(variant?: StyleVariant): Promise<void>;
+declare function setTheme(variant: StyleVariant): void;
 declare function setCurrentStyle(variant: StyleVariant): void;
 declare function getCurrentStyle(): StyleVariant;
 declare function getStyleClassPrefix(variant: StyleVariant): string;
@@ -886,7 +895,6 @@ interface RetryOptions {
     initialDelayMs: number;
     maxDelayMs: number;
 }
-
 interface InvokeOptions {
     suppressError?: boolean;
     signal?: AbortSignal;
@@ -906,10 +914,12 @@ declare class StyleThemeService {
         variant: StyleVariant;
         isDark: boolean;
     }>;
+    readonly theme: i0.WritableSignal<StyleVariant>;
     constructor();
     /** No-op for API compatibility; initialization runs in the constructor. */
     init(): void;
     loadTheme(variant: StyleVariant): Promise<void>;
+    private persistDarkModePreference;
     /** Convenience alias for apps that use simple theme names (e.g. "light", "dark"). */
     setTheme(theme: string): Promise<void>;
     private resolveThemeVariant;
@@ -920,6 +930,8 @@ declare class StyleThemeService {
     toggleDarkMode(): void;
     isDarkMode(): boolean;
     setDarkMode(enabled: boolean): void;
+    private static readonly THEMES;
+    cycle(): void;
     getCurrentTheme(): StyleVariant;
     private injectDarkModeVariables;
     private removeDarkModeVariables;
@@ -1160,29 +1172,6 @@ declare class ApiException extends Error {
     constructor(message: string, code?: string | undefined, details?: unknown | undefined);
 }
 
-type LogLevel$1 = "debug" | "info" | "warn" | "error";
-interface LogEntry$1 {
-    timestamp: Date;
-    level: LogLevel$1;
-    message: string;
-    context?: string;
-}
-declare class LoggerService {
-    private _logs;
-    get logs(): LogEntry$1[];
-    log(level: LogLevel$1, message: string, context?: string): void;
-    debug(message: string, context?: string): void;
-    info(message: string, context?: string): void;
-    warn(message: string, context?: string): void;
-    error(message: string, context?: string): void;
-    getFilteredLogs(level?: LogLevel$1): LogEntry$1[];
-    exportLogs(): string;
-    clear(): void;
-    private writeToConsole;
-    static ɵfac: i0.ɵɵFactoryDeclaration<LoggerService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<LoggerService>;
-}
-
 type LogLevel = "debug" | "info" | "warn" | "error";
 interface LogEntry {
     level: LogLevel;
@@ -1237,10 +1226,11 @@ declare class SignalSyncService {
     static ɵprov: i0.ɵɵInjectableDeclaration<SignalSyncService>;
 }
 
-declare class SchemaElementComponent implements AfterViewInit, OnChanges {
+declare class SchemaElementComponent implements AfterViewInit, OnChanges, OnInit {
     private rendererService;
     private appRef;
     private injector;
+    private styleThemeService;
     element: CanvasElement;
     elements: CanvasElement[];
     private dynamicHost;
@@ -1248,6 +1238,13 @@ declare class SchemaElementComponent implements AfterViewInit, OnChanges {
     get componentType(): Type<any> | null;
     get tag(): string;
     get classes(): string;
+    /**
+     * Normalizes schema element classes: trims, deduplicates, and warns on
+     * legacy sf-* patterns. Acts as a safety net for schemas that haven't yet
+     * been migrated to ui-* tokens.
+     */
+    private normalizeClasses;
+    ngOnInit(): void;
     get childElements(): CanvasElement[];
     get props(): Record<string, unknown>;
     ngAfterViewInit(): void;
@@ -1313,7 +1310,6 @@ declare class IndexedDbService implements StorageService {
 }
 
 type FilterOperator = "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "contains" | "in";
-
 interface QueryFilter {
     field: string;
     operator: FilterOperator;
@@ -1358,8 +1354,8 @@ declare class StorageCacheService {
     clear(): void;
     clearPattern(pattern: string): void;
     hasCachedData(key: string): boolean;
-    getReactiveCache<T>(key: string): Signal$2<T> | undefined;
-    setReactiveCache<T>(key: string, value: Signal$2<T>): void;
+    getReactiveCache<T>(key: string): Signal$1<T> | undefined;
+    setReactiveCache<T>(key: string, value: Signal$1<T>): void;
     getCacheTimestamp(key: string): number | undefined;
     setCacheTimestamp(key: string, timestamp: number): void;
     isCacheValid(key: string, ttlMs?: number): boolean;
@@ -1383,45 +1379,6 @@ declare class StorageCacheService {
     getSubCache(name: string): StorageCacheService;
     static ɵfac: i0.ɵɵFactoryDeclaration<StorageCacheService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<StorageCacheService>;
-}
-
-type Subscriber = (key: string, value: unknown) => void;
-/** Angular-signal-compatible callable that reads/writes a key in the store */
-type Signal$1<T> = {
-    (): T;
-    set(value: T): void;
-    update(fn: (prev: T) => T): void;
-};
-declare class SignalStore {
-    private store;
-    private subscribers;
-    set(key: string, value: unknown): void;
-    get(key: string): unknown;
-    update(key: string, fn: (value: unknown) => unknown): void;
-    delete(key: string): void;
-    keys(): string[];
-    toJSON(): Record<string, unknown>;
-    fromJSON(json: Record<string, unknown>): void;
-    subscribe(callback: Subscriber): () => void;
-    /** Creates an Angular-signal-compatible callable for a store key */
-    signal<T>(key: string, initialValue: T): Signal$1<T>;
-    private notify;
-    private notifyAll;
-}
-declare function createSignalStore(): SignalStore;
-
-declare abstract class LocalCrudService {
-    abstract execute<T>(operation: string, entity: string, params?: Record<string, unknown>): Promise<T>;
-    find<T>(entity: string, id: string): Promise<T | null>;
-    findAll<T>(entity: string, filter?: unknown): Promise<T[]>;
-    create<T>(entity: string, data: unknown): Promise<T>;
-    update<T>(entity: string, id: string, data: unknown): Promise<T>;
-    patch<T>(entity: string, id: string, data: unknown): Promise<T>;
-    delete(entity: string, id: string): Promise<void>;
-    count(entity: string): Promise<number>;
-    exists(entity: string, id: string): Promise<boolean>;
-    static ɵfac: i0.ɵɵFactoryDeclaration<LocalCrudService, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<LocalCrudService>;
 }
 
 declare enum ResponseStatus {
@@ -1568,81 +1525,6 @@ type AppProvider = Provider | EnvironmentProviders;
  */
 declare function provideUnifiedApp(config?: UnifiedAppConfig): AppProvider[];
 
-interface BaseEntity {
-    id: string;
-    createdAt?: string | Date;
-    updatedAt?: string | Date;
-}
-interface BaseServiceConfig {
-    /** API endpoint name (e.g., 'scene', 'source', 'profile') */
-    endpoint: string;
-    /** Entity name for notifications (e.g., 'Scene', 'Source', 'Profile') */
-    entityName: string;
-    /** Default filter object for load operations */
-    defaultFilter?: Record<string, unknown>;
-    /** Whether to show success notifications on create/update/delete */
-    showNotifications?: boolean;
-    /** Custom error messages */
-    errorMessages?: {
-        load?: string;
-        create?: string;
-        update?: string;
-        delete?: string;
-    };
-}
-/** Minimal MainService interface for BaseCrudService */
-interface MainServiceForCrud {
-    invoke<T>(cmd: string, args?: Record<string, unknown>): Promise<T>;
-    getAll<T>(apiName: string, filter?: Record<string, unknown>): Promise<T>;
-    get<T>(apiName: string, filter?: Record<string, unknown>): Promise<T>;
-    create<T>(apiName: string, data: unknown): Promise<T>;
-    update<T>(apiName: string, id: string, data: unknown): Promise<T>;
-    patch<T>(apiName: string, id: string, data: unknown): Promise<T>;
-    delete(apiName: string, id: string): Promise<void>;
-}
-/** Minimal StorageCacheService interface for BaseCrudService */
-interface StorageCacheServiceForCrud {
-    isCacheValid(key: string, ttlMs?: number): boolean;
-    getReactiveCache<T>(key: string): (() => T) | undefined;
-    setCacheTimestamp(key: string, timestamp: number): void;
-    invalidateCache(): void;
-}
-/** Minimal StorageQueryService interface for BaseCrudService */
-interface StorageQueryServiceForCrud {
-}
-declare abstract class BaseCrudService<T extends BaseEntity> {
-    protected readonly config: BaseServiceConfig;
-    protected readonly mainService: MainServiceForCrud;
-    protected readonly cacheService: StorageCacheServiceForCrud;
-    protected readonly queryService: StorageQueryServiceForCrud;
-    protected readonly entitiesSignal: Signal$1<T[]>;
-    protected readonly activeEntitySignal: Signal$1<T | null>;
-    protected readonly activeEntityIdSignal: Signal$1<string | null>;
-    /** Call as a function: entities() returns T[] */
-    readonly entities: () => T[];
-    readonly activeEntity: () => T | null;
-    readonly activeEntityId: () => string | null;
-    constructor(config: BaseServiceConfig, mainService: MainServiceForCrud, cacheService: StorageCacheServiceForCrud, queryService: StorageQueryServiceForCrud);
-    protected getEntityName(): string;
-    protected getEndpoint(): string;
-    load(filter?: Record<string, unknown>): Promise<T[]>;
-    get(filter: Record<string, unknown>): Promise<T | null>;
-    create(data: Omit<T, "id" | "createdAt" | "updatedAt">, _showSuccess?: boolean): Promise<T | null>;
-    update(id: string, updates: Partial<T>, _showSuccess?: boolean): Promise<T | null>;
-    patch(id: string, updates: Partial<T>, _showSuccess?: boolean): Promise<T | null>;
-    delete(id: string, _showSuccess?: boolean): Promise<boolean>;
-    setActiveEntityId(id: string | null): void;
-    private invalidateEndpointCache;
-    protected setEntities(entities: T[]): void;
-    protected addEntity(entity: T): void;
-    protected updateEntity(entity: T): void;
-    protected removeEntity(id: string): void;
-    protected setActiveEntity(entity: T | null): void;
-    updateOrder(items: T[]): Promise<void>;
-    static ɵfac: i0.ɵɵFactoryDeclaration<BaseCrudService<any>, never>;
-    static ɵprov: i0.ɵɵInjectableDeclaration<BaseCrudService<any>>;
-}
-
 interface InvokeOptionsWithRetry {
     timeout?: number;
     retryCount?: number;
@@ -1745,7 +1627,9 @@ declare function upsertEntity<T extends {
 }>(items: T[], entity: T): T[];
 declare function deduplicateById<T extends {
     id: string;
-}>(items: T[]): T[];
+}>(items: T[], options?: {
+    filterDeleted?: boolean;
+}): T[];
 declare function groupByField<T>(items: T[], field: keyof T): Record<string, T[]>;
 
 declare function trackByRow(index: number, row: Record<string, unknown>): string;
@@ -1958,5 +1842,5 @@ declare class AboutService {
     private isNewerVersion;
 }
 
-export { AboutService, ApiCrudService, ApiException, BaseCrudService, BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, LocalStorageService, LoggerService, PaginationComponent, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, LocalCrudService as RemoteCrudService, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStore, SignalStoreService, SignalSyncService, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createSignalStore, createState, createStateSubject, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
-export type { AppError, AppProvider, AppSchema, BaseEntity, BaseServiceConfig, CacheEntry, CanvasElement, ColorMode, ComponentBehavior, ComponentDef, ComponentStyleMap, CrudFilter, DataBinding, DownloadProgress, ElementConfig, ElementEvents, GridPosition, GridTemplate, HandlerDefinition, Layout, LayoutElement, LoadingState, LogEntry$1 as LogEntry, LogLevel$1 as LogLevel, Page, Permission, PermissionCheckResult, QueryFilter, RenderContext, ResizeObserverCallback, ResizeObserverEntry, Response, Role, SchemaSetupOptions, Signal, StorageValidator, StyleVariant, Theme, ToastNotification, TodoPermissionContext, UiSchema, UnifiedAppConfig, UpdateInfo, User };
+export { AboutService, ApiCrudService, ApiException, BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, LocalStorageService, PaginationComponent, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStoreService, SignalSyncService, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createState, createStateSubject, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, loadStyleVariantNoop, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, setTheme, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
+export type { AppError, AppProvider, AppSchema, CacheEntry, CanvasElement, ColorMode, ComponentBehavior, ComponentDef, ComponentStyleMap, DataBinding, DownloadProgress, ElementConfig, ElementEvents, GridPosition, GridTemplate, HandlerDefinition, Layout, LayoutElement, LoadingState, Page, Permission, PermissionCheckResult, QueryFilter, RenderContext, ResizeObserverCallback, ResizeObserverEntry, Response, Role, SchemaSetupOptions, Signal, StorageValidator, StyleVariant, Theme, ToastNotification, TodoPermissionContext, UiSchema, UnifiedAppConfig, UpdateInfo, User };

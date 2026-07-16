@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { invokeWithRetry } from "../core-api/retry.service";
+import { invokeWithRetry } from "../core-api/invoke-wrapper.service";
 
 describe("invokeWithRetry", () => {
   beforeEach(() => {

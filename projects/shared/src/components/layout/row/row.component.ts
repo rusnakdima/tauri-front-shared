@@ -8,7 +8,7 @@ import { registerSchemaComponent } from "../../../core/lib/schema-component.regi
   standalone: true,
   imports: [CommonModule, SchemaElementComponent],
   templateUrl: "./row.component.html",
-  styleUrl: "./row.component.css",
+  styleUrl: "./row.component.scss",
 })
 export class RowComponent {
   @Input() classes = "";

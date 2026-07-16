@@ -6,7 +6,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./canvas-toolbar.component.html",
-  styleUrls: ["./canvas-toolbar.component.css"],
+  styleUrls: ["./canvas-toolbar.component.scss"],
 })
 export class CanvasToolbarComponent {
   @Input() zoomLevel = 100;

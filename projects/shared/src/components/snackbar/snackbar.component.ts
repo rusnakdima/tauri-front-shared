@@ -16,7 +16,7 @@ export type SnackbarType = "default" | "success" | "error" | "warning" | "info";
   standalone: true,
   imports: [],
   templateUrl: "./snackbar.component.html",
-  styleUrls: ["./snackbar.component.css"],
+  styleUrls: ["./snackbar.component.scss"],
 })
 export class SnackbarComponent implements OnChanges, OnDestroy {
   @Input() message = "";

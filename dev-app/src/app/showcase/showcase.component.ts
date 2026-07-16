@@ -9,12 +9,13 @@ import {
   ApplicationRef,
   inject,
 } from "@angular/core";
-import { NgComponentOutlet, NgIf } from "@angular/common";
+import { NgComponentOutlet } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { SCHEMA_COMPONENT_MAP, loadStyleVariant } from "@tauri-front/shared";
 
-// Static list of known component selectors from register-components.ts
+// Static list of known component selectors — only components that call registerSchemaComponent()
 const KNOWN_COMPONENTS = [
+  // UI Components
   "app-avatar",
   "app-badge",
   "app-button",
@@ -29,23 +30,21 @@ const KNOWN_COMPONENTS = [
   "app-radio",
   "app-tabs",
   "app-progress-bar",
-  "app-pagination",
   "app-loading",
   "app-spinner",
   "app-tooltip",
   "app-snackbar",
   "app-divider",
+  // Data / Layout Components
   "app-tree",
   "app-form",
   "app-dialog",
-  "app-modal",
-  "app-confirm-dialog",
-  "app-toast",
   "app-json-view",
   "app-stats-card",
   "app-empty-state",
   "app-segment-selector",
   "app-data-table",
+  "app-table-view",
   "app-bottom-panel",
   "app-header",
   "app-footer",
@@ -53,23 +52,35 @@ const KNOWN_COMPONENTS = [
   "app-page-container",
   "app-page-toolbar",
   "app-split-view",
+  // Designer Components
   "app-component-palette",
   "app-canvas",
   "app-properties-panel",
-  "app-icon",
-  "app-nav-item",
-  "app-nav-group",
   "app-canvas-toolbar",
   "app-designer-sidebar",
+  "app-designer-tree",
   "app-main-editor",
   "app-command-palette",
+  // Navigation
+  "app-nav-item",
+  "app-nav-group",
+  // App / Translator Components
   "app-language-selector",
   "app-swap-button",
   "app-text-input",
   "app-translation-output",
   "app-theme-toggle",
   "app-shortcuts-overlay",
-  "app-table-view",
+  // Layout Primitives
+  "app-block",
+  "app-text",
+  "app-locale-switcher",
+  "app-menu-button",
+  "app-row",
+  "app-column",
+  "app-stack",
+  // Icon
+  "app-icon",
 ];
 
 export interface ShowcaseComponentDef {
@@ -136,7 +147,7 @@ const PREVIEW_CONFIG: Record<string, PreviewConfig> = {
 @Component({
   selector: "app-showcase",
   standalone: true,
-  imports: [FormsModule, NgComponentOutlet, NgIf],
+  imports: [FormsModule, NgComponentOutlet],
   template: `
     <div class="showcase-container">
       <div class="showcase-filters">
@@ -459,13 +470,11 @@ export class ShowcaseComponent implements OnInit {
 
   getDefaultProps(selector: string): Record<string, unknown> {
     const defaults: Record<string, Record<string, unknown>> = {
+      // UI Components
       "app-button": { variant: "solid", label: "Submit" },
       "app-card": { title: "Dashboard", subtitle: "Welcome back, User" },
       "app-input": { placeholder: "Enter text...", label: "Input" },
-      "app-textarea": {
-        placeholder: "Enter description...",
-        label: "Textarea",
-      },
+      "app-textarea": { placeholder: "Enter description...", label: "Textarea" },
       "app-badge": { label: "NEW", variant: "primary" },
       "app-chip": { label: "Design", removable: false },
       "app-avatar": { name: "User", size: "md" },
@@ -476,15 +485,57 @@ export class ShowcaseComponent implements OnInit {
       "app-progress-bar": { value: 65, max: 100 },
       "app-spinner": { size: "md" },
       "app-divider": {},
-      "app-select": {
-        placeholder: "Select...",
-        options: ["Option A", "Option B", "Option C"],
-      },
+      "app-select": { placeholder: "Select...", options: ["Option A", "Option B", "Option C"] },
       "app-tooltip": { content: "Tooltip text" },
-      "app-empty-state": {
-        title: "No Data",
-        message: "There is no data to display",
-      },
+      "app-snackbar": { message: "Item saved", action: "Undo" },
+      // Data / Layout Components
+      "app-tree": { nodes: [{ id: "1", label: "Root", expanded: true, children: [{ id: "2", label: "Child 1" }, { id: "3", label: "Child 2" }] }] },
+      "app-form": { heading: "Contact Form", submitText: "Submit", cancelText: "Cancel" },
+      "app-dialog": { open: false, title: "Dialog Title" },
+      "app-json-view": { data: { name: "example", value: 42, active: true } },
+      "app-stats-card": { label: "Revenue", value: "$12,450" },
+      "app-empty-state": { title: "No Data", message: "There is no data to display" },
+      "app-segment-selector": { options: ["Day", "Week", "Month"], selected: "Week" },
+      "app-data-table": { columns: [], data: [] },
+      "app-table-view": {},
+      "app-bottom-panel": {},
+      "app-header": { title: "App Title", subtitle: "Subtitle" },
+      "app-footer": { text: "© 2026 My App" },
+      "app-sidebar": { collapsed: false, items: [] },
+      "app-page-container": { title: "Page Title", padding: 24 },
+      "app-page-toolbar": {},
+      "app-split-view": { direction: "horizontal", split: 50 },
+      // Designer Components
+      "app-component-palette": { searchable: false },
+      "app-canvas": {},
+      "app-properties-panel": {},
+      "app-canvas-toolbar": { zoomLevel: 100, showGrid: true },
+      "app-designer-sidebar": {},
+      "app-designer-tree": {},
+      "app-main-editor": {},
+      "app-command-palette": { placeholder: "Search commands..." },
+      // Navigation
+      "app-nav-item": { label: "Home", icon: "home" },
+      "app-nav-group": { label: "Settings" },
+      // App / Translator Components
+      "app-language-selector": { placeholder: "Select language" },
+      "app-swap-button": { ariaLabel: "Swap languages" },
+      "app-text-input": { placeholder: "Type translation...", multiline: true, rows: 3 },
+      "app-translation-output": { value: "Translated text appears here", placeholder: "Output" },
+      "app-theme-toggle": {},
+      "app-shortcuts-overlay": { visible: false },
+      // Layout Primitives
+      "app-block": { display: "flex", direction: "column", padding: "16px" },
+      "app-text": { content: "Sample text content", size: "md" },
+      "app-locale-switcher": { size: "sm" },
+      "app-menu-button": { isOpen: false },
+      "app-row": {},
+      "app-column": {},
+      "app-stack": {},
+      // Icon
+      "app-icon": { name: "star" },
+      // Loading (uses size input)
+      "app-loading": { size: "md" },
     };
     return defaults[selector] || {};
   }
@@ -514,6 +565,7 @@ function getCategory(selector: string): string {
     "switch",
     "chip",
     "badge",
+    "menu-button",
   ];
   const layout = [
     "header",
@@ -523,26 +575,28 @@ function getCategory(selector: string): string {
     "page-toolbar",
     "split-view",
     "bottom-panel",
+    "block",
+    "text",
+    "row",
+    "column",
+    "stack",
   ];
   const data = [
     "table",
     "data-table",
+    "table-view",
     "tree",
     "stats-card",
     "progress-bar",
-    "pagination",
     "json-view",
     "segment-selector",
   ];
   const feedback = [
-    "toast",
     "snackbar",
     "tooltip",
     "loading",
     "spinner",
     "dialog",
-    "modal",
-    "confirm-dialog",
     "empty-state",
     "divider",
   ];
@@ -565,7 +619,8 @@ function getCategory(selector: string): string {
     s.includes("text-input") ||
     s.includes("translation") ||
     s.includes("theme") ||
-    s.includes("shortcuts")
+    s.includes("shortcuts") ||
+    s.includes("locale")
   )
     return "App";
   return "Other";

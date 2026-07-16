@@ -7,7 +7,7 @@ import { IconComponent } from "../icons/icons.component";
   standalone: true,
   imports: [IconComponent],
   templateUrl: "./translation-output.component.html",
-  styleUrls: ["./translation-output.component.css"],
+  styleUrls: ["./translation-output.component.scss"],
 })
 export class TranslationOutputComponent {
   @Input() value = "";

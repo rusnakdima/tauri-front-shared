@@ -104,38 +104,34 @@ let CURRENT_STYLE: StyleVariant = "material-design-v3";
 const STYLE_ELEMENTS: Map<StyleVariant, HTMLStyleElement> = new Map();
 
 export async function loadStyleVariant(variant: StyleVariant): Promise<void> {
+  setTheme(variant);
+}
+
+/**
+ * SCSS-only fallback — sets body[data-style] without injecting runtime CSS.
+ * Apps using static SCSS themes (tokens.css loaded via angular.json) call this
+ * instead of loadStyleVariant to avoid double-injection of theme styles.
+ */
+export async function loadStyleVariantNoop(variant: StyleVariant = "material-design-v3"): Promise<void> {
+  setTheme(variant);
+}
+
+export function setTheme(variant: StyleVariant): void {
   const config = STYLE_VARIANTS[variant];
   if (!config) {
     console.warn(`Unknown style variant: ${variant}`);
     return;
   }
-
-  if (!config.cssString) {
-    console.warn(`No CSS loaded for variant: ${variant}`);
-    return;
-  }
-
-  // Clear any existing combined theme style element
-  const existingThemeStyle = document.getElementById("style-theme");
-  if (existingThemeStyle) {
-    existingThemeStyle.remove();
-  }
-
-  // Inject combined theme CSS as a single <style id="style-theme"> element
-  const style = document.createElement("style");
-  style.textContent = config.cssString;
-  style.id = "style-theme";
-  document.head.appendChild(style);
-
-  // Set body[data-style] attribute
-  document.body.setAttribute("data-style", variant);
-
-  // Set body[data-theme] based on current dark mode state (default to light)
-  const isDark = document.body.getAttribute("data-theme") === "dark";
-  document.body.setAttribute("data-theme", isDark ? "dark" : "light");
-
+  document.documentElement.setAttribute("data-theme", variant);
+  document.body.setAttribute("data-theme", variant);
+  const isDark = document.body.getAttribute("data-theme-mode") === "dark";
+  document.documentElement.setAttribute("data-theme-mode", isDark ? "dark" : "light");
+  document.body.setAttribute("data-theme-mode", isDark ? "dark" : "light");
+  CURRENT_STYLE = variant;
   LOADED_STYLES.add(variant);
-  STYLE_ELEMENTS.set(variant, style);
+  document.dispatchEvent(
+    new CustomEvent("style-changed", { detail: { variant, prefix: config.classPrefix } }),
+  );
 }
 
 export function unloadStyleVariant(variant: StyleVariant): void {

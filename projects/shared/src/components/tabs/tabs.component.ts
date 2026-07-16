@@ -7,7 +7,7 @@ import { parseJsonOrDefault } from "../../utils/json";
   standalone: true,
   imports: [],
   templateUrl: "./tabs.component.html",
-  styleUrls: ["./tabs.component.css"],
+  styleUrls: ["./tabs.component.scss"],
 })
 export class TabsComponent {
   @Input() tabs: string | string[] = "[]";

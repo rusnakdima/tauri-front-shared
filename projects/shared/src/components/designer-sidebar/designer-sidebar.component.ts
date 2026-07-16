@@ -5,7 +5,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./designer-sidebar.component.html",
-  styleUrls: ["./designer-sidebar.component.css"],
+  styleUrls: ["./designer-sidebar.component.scss"],
 })
 export class DesignerSidebarComponent {
   @Input() position: "left" | "right" = "left";

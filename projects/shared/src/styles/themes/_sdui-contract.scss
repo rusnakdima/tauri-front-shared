@@ -1,0 +1,98 @@
+/**
+ * SDUI Design Token Contract
+ *
+ * Canonical list of all --sdui-* CSS custom properties.
+ * Every theme MUST fill every token in this list.
+ *
+ * These defaults match Material Design 3 light theme.
+ * Components reference ONLY these tokens — no theme shall use raw values.
+ *
+ * Token naming convention: --sdui-<category>-<property>
+ * Categories: surface, text, state, motion, elevation, radius, blur, texture
+ */
+
+/* === SURFACE === */
+:root,
+[data-theme] {
+  /* Background surfaces */
+  --sdui-surface-bg: #fffbfe;
+  --sdui-surface-border: #cac4d0;
+  --sdui-surface-border-width: 1px;
+  --sdui-surface-hover: #f4eff4;
+  --sdui-surface-elevated: #ffffff;
+
+  /* === TEXT === */
+  --sdui-text-primary: #1c1b1f;
+  --sdui-text-secondary: #49454f;
+  --sdui-text-muted: #79747e;
+  --sdui-text-on-surface: #ffffff;
+  --sdui-text-on-accent: #ffffff;
+  --sdui-text-on-error: #ffffff;
+  --sdui-text-on-warning: #000000;
+  --sdui-text-on-success: #ffffff;
+
+  /* === SEMANTIC ACCENT === */
+  --sdui-accent: #6750a4;
+  --sdui-accent-hover: #5d4895;
+  --sdui-accent-fg: #ffffff;
+
+  /* === SEMANTIC STATUS === */
+  --sdui-error: #b3261e;
+  --sdui-error-fg: #ffffff;
+  --sdui-warning: #ffc107;
+  --sdui-warning-fg: #000000;
+  --sdui-success: #198754;
+  --sdui-success-fg: #ffffff;
+  --sdui-info: #0dcaf0;
+  --sdui-info-fg: #000000;
+
+  /* === BORDERS === */
+  --sdui-border: #cac4d0;
+  --sdui-border-subtle: #e7e0ec;
+
+  /* === ELEVATION (box-shadow stacks) === */
+  /* Elevation 1 — subtle, for cards at rest */
+  --sdui-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.1);
+  /* Elevation 2 — standard, for cards on hover / dropdowns */
+  --sdui-elevation-2: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  /* Elevation 3 — elevated, for modals / sheets */
+  --sdui-elevation-3: 0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  /* Elevation 4 — high, for dialogs */
+  --sdui-elevation-4: 0 6px 12px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.06);
+  /* Elevation 5 — highest, for tooltips */
+  --sdui-elevation-5: 0 8px 16px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.06);
+  /* Inset shadow (for pressed/inset states) */
+  --sdui-shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  /* Focus ring */
+  --sdui-shadow-focus: 0 0 0 3px rgba(103, 80, 164, 0.3);
+
+  /* === RADIUS === */
+  --sdui-radius-xs: 4px;
+  --sdui-radius-sm: 8px;
+  --sdui-radius-md: 12px;
+  --sdui-radius-lg: 16px;
+  --sdui-radius-xl: 24px;
+  --sdui-radius-2xl: 28px;
+  --sdui-radius-full: 9999px;
+
+  /* === BLUR (glassmorphism) === */
+  /* 0 for all non-glass themes; glassmorphism overrides this */
+  --sdui-blur: 0px;
+  --sdui-scrim: rgba(0, 0, 0, 0.5);
+
+  /* === TEXTURE (skeuomorphism) === */
+  /* none for most themes; skeuomorphism overrides with url() */
+  --sdui-texture-bg: none;
+
+  /* === STATE OVERLAYS === */
+  /* Semi-transparent layers applied on hover/focus/pressed */
+  --sdui-state-hover-overlay: rgba(0, 0, 0, 0.08);
+  --sdui-state-focus-overlay: rgba(103, 80, 164, 0.12);
+  --sdui-state-pressed-overlay: rgba(0, 0, 0, 0.12);
+  --sdui-state-selected-overlay: rgba(103, 80, 164, 0.16);
+
+  /* === MOTION === */
+  --sdui-motion-duration-fast: 150ms;
+  --sdui-motion-duration-normal: 250ms;
+  --sdui-motion-easing: cubic-bezier(0.2, 0, 0, 1);
+}

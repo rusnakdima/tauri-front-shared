@@ -17,7 +17,7 @@ export interface TreeNode {
   standalone: true,
   imports: [CommonModule],
   templateUrl: "./tree-node.component.html",
-  styleUrls: ["./tree-node.component.css"],
+  styleUrls: ["./tree-node.component.scss"],
 })
 export class TreeNodeComponent {
   @Input() node!: TreeNode;
@@ -46,7 +46,7 @@ export class TreeNodeComponent {
   standalone: true,
   imports: [CommonModule, TreeNodeComponent],
   templateUrl: "./tree.component.html",
-  styleUrls: ["./tree.component.css"],
+  styleUrls: ["./tree.component.scss"],
 })
 export class TreeComponent {
   @Input() nodes: string | TreeNode[] = "[]";

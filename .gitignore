@@ -28,3 +28,6 @@ lib/
 
 # Angular cache (nested)
 **/.angular/
+
+# Schemas (temporary dev files)
+/schemas/

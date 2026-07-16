@@ -15,95 +15,41 @@
       "types": "./types/tauri-front-shared.d.ts",
       "default": "./fesm2022/tauri-front-shared.mjs"
     },
-    "./styles": {
-      "default": "./styles/ui-system.css"
+    "./styles/themes/m3/theme": {
+      "default": "./styles/themes/m3/theme.css"
     },
-    "./styles.css": {
-      "default": "./styles/ui-system.css"
+    "./styles/themes/m3/theme.css": {
+      "default": "./styles/themes/m3/theme.css"
     },
-    "./styles/utilities": {
-      "default": "./styles/library-utilities.css"
+    "./styles/themes/glassmorphism/theme": {
+      "default": "./styles/themes/glassmorphism/theme.css"
     },
-    "./styles/utilities.css": {
-      "default": "./styles/library-utilities.css"
+    "./styles/themes/glassmorphism/theme.css": {
+      "default": "./styles/themes/glassmorphism/theme.css"
     },
-    "./styles/ui-system": {
-      "default": "./styles/ui-system.css"
+    "./styles/themes/neumorphism/theme": {
+      "default": "./styles/themes/neumorphism/theme.css"
     },
-    "./styles/ui-system.css": {
-      "default": "./styles/ui-system.css"
+    "./styles/themes/neumorphism/theme.css": {
+      "default": "./styles/themes/neumorphism/theme.css"
     },
-    "./styles/themes/m3/tokens": {
-      "default": "./styles/themes/m3/tokens.css"
+    "./styles/themes/claymorphism/theme": {
+      "default": "./styles/themes/claymorphism/theme.css"
     },
-    "./styles/themes/m3/tokens.css": {
-      "default": "./styles/themes/m3/tokens.css"
+    "./styles/themes/claymorphism/theme.css": {
+      "default": "./styles/themes/claymorphism/theme.css"
     },
-    "./styles/themes/m3/components": {
-      "default": "./styles/themes/m3/components.css"
+    "./styles/themes/brutalism/theme": {
+      "default": "./styles/themes/brutalism/theme.css"
     },
-    "./styles/themes/m3/components.css": {
-      "default": "./styles/themes/m3/components.css"
+    "./styles/themes/brutalism/theme.css": {
+      "default": "./styles/themes/brutalism/theme.css"
     },
-    "./styles/themes/glassmorphism/tokens": {
-      "default": "./styles/themes/glassmorphism/tokens.css"
+    "./styles/themes/skeuomorphism/theme": {
+      "default": "./styles/themes/skeuomorphism/theme.css"
     },
-    "./styles/themes/glassmorphism/tokens.css": {
-      "default": "./styles/themes/glassmorphism/tokens.css"
-    },
-    "./styles/themes/glassmorphism/components": {
-      "default": "./styles/themes/glassmorphism/components.css"
-    },
-    "./styles/themes/glassmorphism/components.css": {
-      "default": "./styles/themes/glassmorphism/components.css"
-    },
-    "./styles/themes/neumorphism/tokens": {
-      "default": "./styles/themes/neumorphism/tokens.css"
-    },
-    "./styles/themes/neumorphism/tokens.css": {
-      "default": "./styles/themes/neumorphism/tokens.css"
-    },
-    "./styles/themes/neumorphism/components": {
-      "default": "./styles/themes/neumorphism/components.css"
-    },
-    "./styles/themes/neumorphism/components.css": {
-      "default": "./styles/themes/neumorphism/components.css"
-    },
-    "./styles/themes/claymorphism/tokens": {
-      "default": "./styles/themes/claymorphism/tokens.css"
-    },
-    "./styles/themes/claymorphism/tokens.css": {
-      "default": "./styles/themes/claymorphism/tokens.css"
-    },
-    "./styles/themes/claymorphism/components": {
-      "default": "./styles/themes/claymorphism/components.css"
-    },
-    "./styles/themes/claymorphism/components.css": {
-      "default": "./styles/themes/claymorphism/components.css"
-    },
-    "./styles/themes/brutalism/tokens": {
-      "default": "./styles/themes/brutalism/tokens.css"
-    },
-    "./styles/themes/brutalism/tokens.css": {
-      "default": "./styles/themes/brutalism/tokens.css"
-    },
-    "./styles/themes/brutalism/components": {
-      "default": "./styles/themes/brutalism/components.css"
-    },
-    "./styles/themes/brutalism/components.css": {
-      "default": "./styles/themes/brutalism/components.css"
-    },
-    "./styles/themes/skeuomorphism/tokens": {
-      "default": "./styles/themes/skeuomorphism/tokens.css"
-    },
-    "./styles/themes/skeuomorphism/tokens.css": {
-      "default": "./styles/themes/skeuomorphism/tokens.css"
-    },
-    "./styles/themes/skeuomorphism/components": {
-      "default": "./styles/themes/skeuomorphism/components.css"
-    },
-    "./styles/themes/skeuomorphism/components.css": {
-      "default": "./styles/themes/skeuomorphism/components.css"
+    "./styles/themes/skeuomorphism/theme.css": {
+      "default": "./styles/themes/skeuomorphism/theme.css"
     },
     "./package.json": {
       "default": "./package.json"

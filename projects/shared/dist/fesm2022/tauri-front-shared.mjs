@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { signal, Injectable, Input, Component, inject, EventEmitter, Output, HostListener, computed, effect, Injector, ApplicationRef, ViewContainerRef, ViewChild, input, output, ChangeDetectionStrategy, CUSTOM_ELEMENTS_SCHEMA, Optional, provideBrowserGlobalErrorListeners, provideZoneChangeDetection, Directive } from '@angular/core';
+import { Input, Component, EventEmitter, Output, ChangeDetectionStrategy, signal, HostListener, computed, Injectable, effect, inject, Injector, ApplicationRef, ViewContainerRef, ViewChild, input, output, CUSTOM_ELEMENTS_SCHEMA, Optional, provideBrowserGlobalErrorListeners, provideZoneChangeDetection, Directive } from '@angular/core';
 import * as i1 from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { BehaviorSubject, Subject, map, distinctUntilChanged } from 'rxjs';
@@ -15,181 +15,113 @@ function registerSchemaComponent(selector, component) {
     SCHEMA_COMPONENT_MAP.set(selector, component);
 }
 
-// Flat key-value translation maps for i18n
-// All schema text should use i18nKey referencing these keys
-const EN = {
-    // App-level
-    "app.title": "Translator",
-    "app.subtitle": "Translate text between 15 languages instantly",
-    // Header
-    "header.shortcuts": "Shortcuts",
-    "header.theme": "Theme",
-    // Labels
-    "label.from": "From",
-    "label.to": "To",
-    // Buttons
-    "button.translate": "Translate",
-    "button.clear": "Clear",
-    // Footer
-    "footer.text": "Translator - Translate text between 15 languages instantly",
-    // Shortcuts overlay
-    "shortcuts.title": "Keyboard Shortcuts",
-    "shortcuts.description": "Press the following keys to trigger actions",
-    // App language selector
-    "lang.selector.label": "Language",
-    // Input placeholders
-    "input.placeholder": "Enter text to translate...",
-    "output.placeholder": "Translation will appear here as you type...",
-};
-const RU = {
-    // App-level
-    "app.title": "Переводчик",
-    "app.subtitle": "Переводите текст между 15 языками мгновенно",
-    // Header
-    "header.shortcuts": "Ярлыки",
-    "header.theme": "Тема",
-    // Labels
-    "label.from": "С",
-    "label.to": "На",
-    // Buttons
-    "button.translate": "Перевести",
-    "button.clear": "Очистить",
-    // Footer
-    "footer.text": "Переводчик — переводите текст между 15 языками мгновенно",
-    // Shortcuts overlay
-    "shortcuts.title": "Горячие клавиши",
-    "shortcuts.description": "Нажмите следующие клавиши для выполнения действий",
-    // App language selector
-    "lang.selector.label": "Язык",
-    // Input placeholders
-    "input.placeholder": "Введите текст для перевода...",
-    "output.placeholder": "Перевод появится здесь по мере ввода...",
-};
-
-const TRANSLATIONS = {
-    en: EN,
-    ru: RU,
-};
-class I18nService {
-    _locale = signal("en", /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "_locale" }] : /* istanbul ignore next */ []));
-    get locale() {
-        return this._locale.asReadonly();
-    }
-    get translations() {
-        return TRANSLATIONS[this._locale()];
-    }
-    setLocale(locale) {
-        this._locale.set(locale);
-    }
-    /**
-     * Translate a key. Falls back to English, then to the key itself.
-     */
-    t(key) {
-        const locale = this._locale();
-        return TRANSLATIONS[locale]?.[key] ?? TRANSLATIONS["en"]?.[key] ?? key;
-    }
-    /**
-     * Get all available locales.
-     */
-    getAvailableLocales() {
-        return ["en", "ru"];
-    }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: I18nService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: I18nService, providedIn: "root" });
-}
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: I18nService, decorators: [{
-            type: Injectable,
-            args: [{ providedIn: "root" }]
-        }] });
-
-// Material Icons mapping - using Google Material Icons names
+// MDI Font icon mapping - using @mdi/font icon names (kebab-case)
 const MI_ICONS = {
     // Navigation
     home: "home",
     menu: "menu",
     close: "close",
     check: "check",
-    "chevron-down": "expand_more",
-    "chevron-right": "chevron_right",
+    "chevron-down": "chevron-down",
+    "chevron-right": "chevron-right",
     // Actions
-    edit: "edit",
+    edit: "pencil",
     delete: "delete",
-    add: "add",
-    search: "search",
+    add: "plus",
+    search: "magnify",
     undo: "undo",
     redo: "redo",
-    remove: "remove",
+    remove: "minus",
     fit_screen: "fullscreen",
-    grid: "grid_view",
-    grid_on: "grid_view",
-    zoom_in: "zoom_in",
-    zoom_out: "zoom_out",
+    grid: "view-grid",
+    grid_on: "view-grid",
+    zoom_in: "magnify-plus",
+    zoom_out: "magnify-minus",
     // Status
-    info: "info",
-    warning: "warning",
-    error: "error",
-    success: "check_circle",
+    info: "information",
+    warning: "alert",
+    error: "alert-circle",
+    success: "check-circle",
     // Content
-    user: "person",
-    settings: "settings",
+    user: "account",
+    settings: "cog",
     star: "star",
-    heart: "favorite",
+    heart: "heart",
     // Media
     image: "image",
-    camera: "camera_alt",
+    camera: "camera",
     // Files
-    file: "description",
+    file: "file-document",
     folder: "folder",
     // Misc
-    sun: "light_mode",
-    moon: "dark_mode",
+    sun: "white-balance-sunny",
+    moon: "moon-waning-crescent",
     download: "download",
     upload: "upload",
-    copy: "content_copy",
+    copy: "content-copy",
     // Translation & Input
     translate: "translate",
     keyboard: "keyboard",
     // Additional
-    search_off: "search_off",
-    swap_vert: "swap_vert",
-    expand_more: "expand_more",
-    dark_mode: "dark_mode",
-    light_mode: "light_mode",
-    arrow_back: "arrow_back",
-    arrow_forward: "arrow_forward",
-    first_page: "first_page",
-    last_page: "last_page",
-    chevron_left: "chevron_left",
-    chevron_right: "chevron_right",
-    content_copy: "content_copy",
+    search_off: "magnify-close",
+    swap_vert: "swap-vertical",
+    expand_more: "chevron-down",
+    dark_mode: "weather-night",
+    light_mode: "white-balance-sunny",
+    arrow_back: "arrow-left",
+    arrow_forward: "arrow-right",
+    first_page: "page-first",
+    last_page: "page-last",
+    chevron_left: "chevron-left",
+    chevron_right: "chevron-right",
+    content_copy: "content-copy",
     clear: "close",
-    language: "translate",
+    language: "web",
     xmark: "close",
+    // Schema icons
+    "alert-triangle": "alert",
+    globe: "web",
 };
 class IconComponent {
     icon = "";
     size = 24;
     classes = "";
-    get materialIcon() {
-        return MI_ICONS[this.icon] || MI_ICONS["info"] || "help";
+    spin = false;
+    get iconName() {
+        return MI_ICONS[this.icon] || MI_ICONS["info"] || "information";
+    }
+    get sizeClass() {
+        if (this.size === 16)
+            return "text-[16px]";
+        if (this.size === 18)
+            return "text-[18px]";
+        if (this.size === 20)
+            return "text-[20px]";
+        if (this.size === 24)
+            return "text-[24px]";
+        if (this.size === 32)
+            return "text-[32px]";
+        if (this.size === 48)
+            return "text-[48px]";
+        return `text-[${this.size}px]`;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: IconComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: IconComponent, isStandalone: true, selector: "app-icon", inputs: { icon: "icon", size: "size", classes: "classes" }, ngImport: i0, template: "<span class=\"ui-icon\">\n  <i class=\"material-icons\" [style.font-size.px]=\"size\">{{ materialIcon }}</i>\n</span>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: IconComponent, isStandalone: true, selector: "app-icon", inputs: { icon: "icon", size: "size", classes: "classes", spin: "spin" }, ngImport: i0, template: "<i class=\"mdi mdi-{{ iconName }} {{ sizeClass }}\" [class.mdi-spin]=\"spin\"></i>\n", styles: [":host{display:inline-flex;align-items:center;justify-content:center}\n"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: IconComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-icon", standalone: true, imports: [], template: "<span class=\"ui-icon\">\n  <i class=\"material-icons\" [style.font-size.px]=\"size\">{{ materialIcon }}</i>\n</span>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-icon", standalone: true, imports: [], template: "<i class=\"mdi mdi-{{ iconName }} {{ sizeClass }}\" [class.mdi-spin]=\"spin\"></i>\n", styles: [":host{display:inline-flex;align-items:center;justify-content:center}\n"] }]
         }], propDecorators: { icon: [{
                 type: Input
             }], size: [{
                 type: Input
             }], classes: [{
                 type: Input
+            }], spin: [{
+                type: Input
             }] } });
 
 class ButtonComponent {
-    i18n = inject(I18nService);
     variant = "primary";
     buttonStyle = "solid";
     size = "md";
@@ -200,19 +132,8 @@ class ButtonComponent {
     fullWidth = false;
     type = "button";
     label = "";
-    set i18nKey(value) {
-        if (value !== undefined && value !== null) {
-            this.label = this.i18n.t(value);
-        }
-    }
     classes = "";
     ariaLabel = "";
-    align = "";
-    direction = "";
-    height = "";
-    justify = "";
-    layout = "";
-    width = "";
     clicked = new EventEmitter();
     handleClick(e) {
         if (this.disabled || this.loading) {
@@ -222,22 +143,124 @@ class ButtonComponent {
         }
         this.clicked.emit(e);
     }
-    getButtonClass() {
-        const sizeClass = this.size === "sm"
-            ? "py-1 px-2 text-sm"
-            : this.size === "lg"
-                ? "py-3 px-6 text-lg"
-                : "";
-        return [sizeClass, this.fullWidth ? "w-full" : ""]
-            .filter(Boolean)
-            .join(" ");
+    getButtonClasses() {
+        const base = 'inline-flex items-center justify-center gap-2 font-medium rounded-md transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
+        // Size classes
+        const sizeClasses = {
+            sm: 'h-8 px-3 text-sm',
+            md: 'h-10 px-4 text-base',
+            lg: 'h-12 px-6 text-lg',
+        };
+        // Variant + style classes for solid style
+        const solidVariants = {
+            primary: 'bg-primary text-on-primary hover:brightness-110 active:brightness-90 shadow-1 hover:shadow-2',
+            danger: 'bg-error text-on-error hover:brightness-110 active:brightness-90 shadow-1 hover:shadow-2',
+            warning: 'bg-warning text-on-error hover:brightness-110 active:brightness-90 shadow-1 hover:shadow-2',
+            success: 'bg-success text-white hover:brightness-110 active:brightness-90 shadow-1 hover:shadow-2',
+            info: 'bg-info text-white hover:brightness-110 active:brightness-90 shadow-1 hover:shadow-2',
+        };
+        // Outline style
+        const outlineVariants = {
+            primary: 'border-2 border-primary text-primary bg-transparent hover:bg-primary/10 active:bg-primary/20',
+            danger: 'border-2 border-error text-error bg-transparent hover:bg-error/10 active:bg-error/20',
+            warning: 'border-2 border-warning text-warning bg-transparent hover:bg-warning/10 active:bg-warning/20',
+            success: 'border-2 border-success text-success bg-transparent hover:bg-success/10 active:bg-success/20',
+            info: 'border-2 border-info text-info bg-transparent hover:bg-info/10 active:bg-info/20',
+        };
+        // Soft style (filled background with muted text)
+        const softVariants = {
+            primary: 'bg-primary-container text-on-primary-container hover:bg-primary-container/80 active:bg-primary-container/60',
+            danger: 'bg-error-container text-on-error-container hover:bg-error-container/80 active:bg-error-container/60',
+            warning: 'bg-warning/20 text-warning hover:bg-warning/30 active:bg-warning/40',
+            success: 'bg-success/20 text-success hover:bg-success/30 active:bg-success/40',
+            info: 'bg-info/20 text-info hover:bg-info/30 active:bg-info/40',
+        };
+        // Ghost style (no background, just hover state)
+        const ghostVariants = {
+            primary: 'bg-transparent text-primary hover:bg-[--state-hover] active:bg-[--state-pressed]',
+            danger: 'bg-transparent text-error hover:bg-[--state-hover] active:bg-[--state-pressed]',
+            warning: 'bg-transparent text-warning hover:bg-[--state-hover] active:bg-[--state-pressed]',
+            success: 'bg-transparent text-success hover:bg-[--state-hover] active:bg-[--state-pressed]',
+            info: 'bg-transparent text-info hover:bg-[--state-hover] active:bg-[--state-pressed]',
+        };
+        // Text style (no background at all)
+        const textVariants = {
+            primary: 'bg-transparent text-primary hover:bg-[--state-hover] active:bg-[--state-pressed]',
+            danger: 'bg-transparent text-error hover:bg-[--state-hover] active:bg-[--state-pressed]',
+            warning: 'bg-transparent text-warning hover:bg-[--state-hover] active:bg-[--state-pressed]',
+            success: 'bg-transparent text-success hover:bg-[--state-hover] active:bg-[--state-pressed]',
+            info: 'bg-transparent text-info hover:bg-[--state-hover] active:bg-[--state-pressed]',
+        };
+        const styleMap = {
+            solid: solidVariants,
+            outline: outlineVariants,
+            soft: softVariants,
+            ghost: ghostVariants,
+        };
+        const variantClasses = styleMap[this.buttonStyle]?.[this.variant] || solidVariants[this.variant];
+        const sizeClass = sizeClasses[this.size];
+        return [
+            base,
+            variantClasses,
+            sizeClass,
+            this.fullWidth ? 'w-full' : '',
+            this.classes,
+        ].filter(Boolean).join(' ');
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ButtonComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ButtonComponent, isStandalone: true, selector: "app-button", inputs: { variant: "variant", buttonStyle: "buttonStyle", size: "size", disabled: "disabled", loading: "loading", icon: "icon", iconPosition: "iconPosition", fullWidth: "fullWidth", type: "type", label: "label", i18nKey: "i18nKey", classes: "classes", ariaLabel: "ariaLabel", align: "align", direction: "direction", height: "height", justify: "justify", layout: "layout", width: "width" }, outputs: { clicked: "clicked" }, ngImport: i0, template: "<button\n  [attr.type]=\"type || 'button'\"\n  class=\"ui-btn ui-btn-primary\"\n  [class]=\"classes\"\n  [disabled]=\"disabled || loading\"\n  (click)=\"handleClick($event)\"\n>\n  @if (loading) {\n    <span class=\"app-btn-spinner\"></span>\n  } @else {\n    @if (icon && iconPosition === \"left\") {\n      <app-icon class=\"app-btn-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n    @if (label) {\n      <span>{{ label }}</span>\n    } @else {\n      <ng-content></ng-content>\n    }\n    @if (icon && iconPosition === \"right\") {\n      <app-icon class=\"app-btn-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n  }\n</button>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ButtonComponent, isStandalone: true, selector: "app-button", inputs: { variant: "variant", buttonStyle: "buttonStyle", size: "size", disabled: "disabled", loading: "loading", icon: "icon", iconPosition: "iconPosition", fullWidth: "fullWidth", type: "type", label: "label", classes: "classes", ariaLabel: "ariaLabel" }, outputs: { clicked: "clicked" }, ngImport: i0, template: `
+    <button
+      [type]="type || 'button'"
+      [disabled]="disabled || loading"
+      [class]="getButtonClasses()"
+      (click)="handleClick($event)"
+      [attr.aria-label]="ariaLabel || null"
+    >
+      @if (loading) {
+        <span class="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full"></span>
+      } @else {
+        @if (icon && iconPosition === "left") {
+          <app-icon class="w-5 h-5 flex-shrink-0" [icon]="icon" [size]="20" />
+        }
+        @if (label) {
+          <span>{{ label }}</span>
+        } @else {
+          <ng-content></ng-content>
+        }
+        @if (icon && iconPosition === "right") {
+          <app-icon class="w-5 h-5 flex-shrink-0" [icon]="icon" [size]="20" />
+        }
+      }
+    </button>
+  `, isInline: true, styles: [":host{display:inline-flex}:host(.full-width){width:100%}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ButtonComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-button", standalone: true, imports: [IconComponent], template: "<button\n  [attr.type]=\"type || 'button'\"\n  class=\"ui-btn ui-btn-primary\"\n  [class]=\"classes\"\n  [disabled]=\"disabled || loading\"\n  (click)=\"handleClick($event)\"\n>\n  @if (loading) {\n    <span class=\"app-btn-spinner\"></span>\n  } @else {\n    @if (icon && iconPosition === \"left\") {\n      <app-icon class=\"app-btn-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n    @if (label) {\n      <span>{{ label }}</span>\n    } @else {\n      <ng-content></ng-content>\n    }\n    @if (icon && iconPosition === \"right\") {\n      <app-icon class=\"app-btn-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n  }\n</button>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-button", standalone: true, imports: [IconComponent], changeDetection: ChangeDetectionStrategy.OnPush, template: `
+    <button
+      [type]="type || 'button'"
+      [disabled]="disabled || loading"
+      [class]="getButtonClasses()"
+      (click)="handleClick($event)"
+      [attr.aria-label]="ariaLabel || null"
+    >
+      @if (loading) {
+        <span class="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full"></span>
+      } @else {
+        @if (icon && iconPosition === "left") {
+          <app-icon class="w-5 h-5 flex-shrink-0" [icon]="icon" [size]="20" />
+        }
+        @if (label) {
+          <span>{{ label }}</span>
+        } @else {
+          <ng-content></ng-content>
+        }
+        @if (icon && iconPosition === "right") {
+          <app-icon class="w-5 h-5 flex-shrink-0" [icon]="icon" [size]="20" />
+        }
+      }
+    </button>
+  `, styles: [":host{display:inline-flex}:host(.full-width){width:100%}\n"] }]
         }], propDecorators: { variant: [{
                 type: Input
             }], buttonStyle: [{
@@ -258,23 +281,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
                 type: Input
             }], label: [{
                 type: Input
-            }], i18nKey: [{
-                type: Input
             }], classes: [{
                 type: Input
             }], ariaLabel: [{
-                type: Input
-            }], align: [{
-                type: Input
-            }], direction: [{
-                type: Input
-            }], height: [{
-                type: Input
-            }], justify: [{
-                type: Input
-            }], layout: [{
-                type: Input
-            }], width: [{
                 type: Input
             }], clicked: [{
                 type: Output
@@ -282,7 +291,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
 registerSchemaComponent("app-button", ButtonComponent);
 
 class InputComponent {
-    type = "text";
+    type = 'text';
     placeholder = "";
     label = "";
     icon = "";
@@ -291,17 +300,82 @@ class InputComponent {
     error = "";
     input = new EventEmitter();
     blurred = new EventEmitter();
-    focused = false;
+    focused = signal(false, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "focused" }] : /* istanbul ignore next */ []));
     handleInput(e) {
         this.value = e.target.value;
         this.input.emit(this.value);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: InputComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: InputComponent, isStandalone: true, selector: "app-input", inputs: { type: "type", placeholder: "placeholder", label: "label", icon: "icon", disabled: "disabled", value: "value", error: "error" }, outputs: { input: "input", blurred: "blurred" }, ngImport: i0, template: "<div class=\"ui-input-group\">\n  @if (label) {\n    <label>{{ label }}</label>\n  }\n  <div class=\"ui-input-wrap\" [class.ui-input-focused]=\"focused\">\n    @if (icon) {\n      <app-icon class=\"ui-input-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n    <input\n      #inputEl\n      [attr.type]=\"type\"\n      class=\"ui-input\"\n      [class.ui-input-with-icon]=\"!!icon\"\n      [placeholder]=\"placeholder\"\n      [disabled]=\"disabled\"\n      [value]=\"value\"\n      (input)=\"handleInput($event)\"\n      (focus)=\"focused = true\"\n      (blur)=\"focused = false\"\n    />\n  </div>\n  @if (error) {\n    <span class=\"ui-input-error\">{{ error }}</span>\n  }\n</div>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: InputComponent, isStandalone: true, selector: "app-input", inputs: { type: "type", placeholder: "placeholder", label: "label", icon: "icon", disabled: "disabled", value: "value", error: "error" }, outputs: { input: "input", blurred: "blurred" }, ngImport: i0, template: `
+    <div class="flex flex-col gap-1.5">
+      @if (label) {
+        <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+      }
+      <div
+        class="flex items-center gap-2 h-10 px-4 rounded-md bg-surface-container border transition-colors duration-200"
+        [class.border-outline]="!focused() && !error"
+        [class.border-primary]="focused() && !error"
+        [class.border-error]="!!error"
+        [class.ring-2]="focused()"
+        [class.ring-primary]="focused() && !error"
+        [class.ring-error]="focused() && error"
+      >
+        @if (icon) {
+          <app-icon class="w-5 h-5 text-on-surface-variant flex-shrink-0" [icon]="icon" [size]="20" />
+        }
+        <input
+          [attr.type]="type"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [value]="value"
+          (input)="handleInput($event)"
+          (focus)="focused.set(true)"
+          (blur)="focused.set(false); blurred.emit()"
+          class="flex-1 bg-transparent text-on-surface placeholder:text-on-surface-variant outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+        />
+      </div>
+      @if (error) {
+        <span class="text-sm text-error">{{ error }}</span>
+      }
+    </div>
+  `, isInline: true, styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: InputComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-input", standalone: true, imports: [IconComponent], template: "<div class=\"ui-input-group\">\n  @if (label) {\n    <label>{{ label }}</label>\n  }\n  <div class=\"ui-input-wrap\" [class.ui-input-focused]=\"focused\">\n    @if (icon) {\n      <app-icon class=\"ui-input-icon\" [icon]=\"icon\" [size]=\"20\" />\n    }\n    <input\n      #inputEl\n      [attr.type]=\"type\"\n      class=\"ui-input\"\n      [class.ui-input-with-icon]=\"!!icon\"\n      [placeholder]=\"placeholder\"\n      [disabled]=\"disabled\"\n      [value]=\"value\"\n      (input)=\"handleInput($event)\"\n      (focus)=\"focused = true\"\n      (blur)=\"focused = false\"\n    />\n  </div>\n  @if (error) {\n    <span class=\"ui-input-error\">{{ error }}</span>\n  }\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-input", standalone: true, imports: [IconComponent], changeDetection: ChangeDetectionStrategy.OnPush, template: `
+    <div class="flex flex-col gap-1.5">
+      @if (label) {
+        <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+      }
+      <div
+        class="flex items-center gap-2 h-10 px-4 rounded-md bg-surface-container border transition-colors duration-200"
+        [class.border-outline]="!focused() && !error"
+        [class.border-primary]="focused() && !error"
+        [class.border-error]="!!error"
+        [class.ring-2]="focused()"
+        [class.ring-primary]="focused() && !error"
+        [class.ring-error]="focused() && error"
+      >
+        @if (icon) {
+          <app-icon class="w-5 h-5 text-on-surface-variant flex-shrink-0" [icon]="icon" [size]="20" />
+        }
+        <input
+          [attr.type]="type"
+          [placeholder]="placeholder"
+          [disabled]="disabled"
+          [value]="value"
+          (input)="handleInput($event)"
+          (focus)="focused.set(true)"
+          (blur)="focused.set(false); blurred.emit()"
+          class="flex-1 bg-transparent text-on-surface placeholder:text-on-surface-variant outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+        />
+      </div>
+      @if (error) {
+        <span class="text-sm text-error">{{ error }}</span>
+      }
+    </div>
+  `, styles: [":host{display:block}\n"] }]
         }], propDecorators: { type: [{
                 type: Input
             }], placeholder: [{
@@ -483,15 +557,63 @@ class SwitchComponent {
     label = "";
     disabled = false;
     changed = new EventEmitter();
-    handleChange(e) {
-        this.changed.emit(e.target.checked);
+    toggle() {
+        if (!this.disabled) {
+            this.checked = !this.checked;
+            this.changed.emit(this.checked);
+        }
+    }
+    getSwitchClasses() {
+        const base = 'w-11 h-6 rounded-full p-0.5 transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
+        const bg = this.checked ? 'bg-primary' : 'bg-outline';
+        return `${base} ${bg}`;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SwitchComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SwitchComponent, isStandalone: true, selector: "app-switch", inputs: { checked: "checked", label: "label", disabled: "disabled" }, outputs: { changed: "changed" }, ngImport: i0, template: "<label class=\"ui-switch\" [class.ui-switch-checked]=\"checked\">\n  <input\n    type=\"checkbox\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n    class=\"ui-switch-input\"\n  />\n  <span class=\"ui-switch-slider\"></span>\n  @if (label) {\n    <span class=\"ui-switch-label\">{{ label }}</span>\n  }\n</label>\n", styles: [":host{display:inline-flex;align-items:center}.slider:before{content:\"\";position:absolute;width:1rem;height:1rem;left:2px;top:2px;background-color:#fff;border-radius:50%;transition:transform .2s}.switch-checked .slider:before{transform:translate(1.25rem)}input:disabled~.slider{opacity:.5;cursor:not-allowed}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SwitchComponent, isStandalone: true, selector: "app-switch", inputs: { checked: "checked", label: "label", disabled: "disabled" }, outputs: { changed: "changed" }, ngImport: i0, template: `
+    <label class="inline-flex items-center gap-3 cursor-pointer" [class.opacity-50]="disabled" [class.cursor-not-allowed]="disabled">
+      <button
+        type="button"
+        role="switch"
+        [attr.aria-checked]="checked"
+        [disabled]="disabled"
+        (click)="toggle()"
+        [class]="getSwitchClasses()"
+      >
+        <span
+          class="inline-block w-5 h-5 rounded-full bg-on-primary shadow-1 transition-transform duration-200"
+          [class.translate-x-5]="checked"
+          [class.translate-x-0]="!checked"
+        ></span>
+      </button>
+      @if (label) {
+        <span class="text-on-surface">{{ label }}</span>
+      }
+    </label>
+  `, isInline: true, styles: [":host{display:inline-flex}\n"], changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SwitchComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-switch", standalone: true, imports: [], template: "<label class=\"ui-switch\" [class.ui-switch-checked]=\"checked\">\n  <input\n    type=\"checkbox\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n    class=\"ui-switch-input\"\n  />\n  <span class=\"ui-switch-slider\"></span>\n  @if (label) {\n    <span class=\"ui-switch-label\">{{ label }}</span>\n  }\n</label>\n", styles: [":host{display:inline-flex;align-items:center}.slider:before{content:\"\";position:absolute;width:1rem;height:1rem;left:2px;top:2px;background-color:#fff;border-radius:50%;transition:transform .2s}.switch-checked .slider:before{transform:translate(1.25rem)}input:disabled~.slider{opacity:.5;cursor:not-allowed}\n"] }]
+            args: [{ selector: "app-switch", standalone: true, imports: [], changeDetection: ChangeDetectionStrategy.OnPush, template: `
+    <label class="inline-flex items-center gap-3 cursor-pointer" [class.opacity-50]="disabled" [class.cursor-not-allowed]="disabled">
+      <button
+        type="button"
+        role="switch"
+        [attr.aria-checked]="checked"
+        [disabled]="disabled"
+        (click)="toggle()"
+        [class]="getSwitchClasses()"
+      >
+        <span
+          class="inline-block w-5 h-5 rounded-full bg-on-primary shadow-1 transition-transform duration-200"
+          [class.translate-x-5]="checked"
+          [class.translate-x-0]="!checked"
+        ></span>
+      </button>
+      @if (label) {
+        <span class="text-on-surface">{{ label }}</span>
+      }
+    </label>
+  `, styles: [":host{display:inline-flex}\n"] }]
         }], propDecorators: { checked: [{
                 type: Input
             }], label: [{
@@ -508,18 +630,68 @@ class TextareaComponent {
     placeholder = "";
     disabled = false;
     value = "";
+    rows = 4;
+    error = "";
     flexGrow = false;
     input = new EventEmitter();
+    focused = signal(false, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "focused" }] : /* istanbul ignore next */ []));
     handleInput(e) {
         this.value = e.target.value;
         this.input.emit(this.value);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextareaComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TextareaComponent, isStandalone: true, selector: "app-textarea", inputs: { label: "label", placeholder: "placeholder", disabled: "disabled", value: "value", flexGrow: "flexGrow" }, outputs: { input: "input" }, ngImport: i0, template: "@if (label) {\n  <label>{{ label }}</label>\n}\n<textarea\n  class=\"ui-textarea\"\n  [style.flexGrow]=\"flexGrow ? 1 : null\"\n  [placeholder]=\"placeholder\"\n  [disabled]=\"disabled\"\n  (input)=\"handleInput($event)\"\n></textarea>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TextareaComponent, isStandalone: true, selector: "app-textarea", inputs: { label: "label", placeholder: "placeholder", disabled: "disabled", value: "value", rows: "rows", error: "error", flexGrow: "flexGrow" }, outputs: { input: "input" }, ngImport: i0, template: `
+    <div class="flex flex-col gap-1.5">
+      @if (label) {
+        <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+      }
+      <textarea
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [value]="value"
+        [rows]="rows"
+        (input)="handleInput($event)"
+        (focus)="focused.set(true)"
+        (blur)="focused.set(false)"
+        class="px-4 py-3 rounded-md bg-surface-container border transition-colors duration-200 resize-none text-on-surface placeholder:text-on-surface-variant outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+        [class.border-outline]="!focused() && !error"
+        [class.border-primary]="focused() && !error"
+        [class.ring-primary]="focused() && !error"
+        [class.error]="!!error"
+      ></textarea>
+      @if (error) {
+        <span class="text-sm text-error">{{ error }}</span>
+      }
+    </div>
+  `, isInline: true, styles: [":host{display:block}textarea{min-height:80px}\n"], changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextareaComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-textarea", standalone: true, imports: [], template: "@if (label) {\n  <label>{{ label }}</label>\n}\n<textarea\n  class=\"ui-textarea\"\n  [style.flexGrow]=\"flexGrow ? 1 : null\"\n  [placeholder]=\"placeholder\"\n  [disabled]=\"disabled\"\n  (input)=\"handleInput($event)\"\n></textarea>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-textarea", standalone: true, imports: [], changeDetection: ChangeDetectionStrategy.OnPush, template: `
+    <div class="flex flex-col gap-1.5">
+      @if (label) {
+        <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+      }
+      <textarea
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [value]="value"
+        [rows]="rows"
+        (input)="handleInput($event)"
+        (focus)="focused.set(true)"
+        (blur)="focused.set(false)"
+        class="px-4 py-3 rounded-md bg-surface-container border transition-colors duration-200 resize-none text-on-surface placeholder:text-on-surface-variant outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+        [class.border-outline]="!focused() && !error"
+        [class.border-primary]="focused() && !error"
+        [class.ring-primary]="focused() && !error"
+        [class.error]="!!error"
+      ></textarea>
+      @if (error) {
+        <span class="text-sm text-error">{{ error }}</span>
+      }
+    </div>
+  `, styles: [":host{display:block}textarea{min-height:80px}\n"] }]
         }], propDecorators: { label: [{
                 type: Input
             }], placeholder: [{
@@ -527,6 +699,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             }], disabled: [{
                 type: Input
             }], value: [{
+                type: Input
+            }], rows: [{
+                type: Input
+            }], error: [{
                 type: Input
             }], flexGrow: [{
                 type: Input
@@ -629,4171 +805,63 @@ const logger = {
     error: (message, ...args) => console.error(`[SCHEMA] ${message}`, ...args),
 };
 
-const TOKENS_CSS = `
 /**
- * Claymorphism Design Tokens
- * Light mode (default) + Dark mode via body[data-style="claymorphism"][data-theme="dark"]
+ * Style Registry - TailwindCSS v4 Theme System
+ *
+ * Themes are loaded dynamically at runtime via CSS <link> injection.
+ * Each theme has a theme.css file with @theme directive.
  */
-
-/* Base colors */
-:root {
-  --color-clay-base: #e0e5ec;
-  --color-clay-raised: #e0e5ec;
-  --color-clay-inset: #d1d9e6;
-  --color-clay-accent: #3d1fcc;
-  --color-clay-accent-hover: #2d0fcc;
-  --color-clay-shadow-light: rgba(255, 255, 255, 0.8);
-  --color-clay-shadow-dark: rgba(163, 177, 198, 0.6);
-  --color-clay-shadow-dark-strong: rgba(94, 108, 132, 0.4);
-
-  /* Radius tokens */
-  --radius-clay-sm: 12px;
-  --radius-clay-md: 20px;
-  --radius-clay-lg: 24px;
-  --radius-clay-xl: 32px;
-
-  /* Semantic tokens */
-  --accent: var(--color-clay-accent);
-  --accent-hover: var(--color-clay-accent-hover);
-  --text-on-accent: #ffffff;
-  --text-primary: #2d3748;
-  --text-secondary: #4a5568;
-  --text-muted: #4a5568;
-  --text-on-error: #ffffff;
-  --text-on-warning: #ffffff;
-  --text-on-success: #ffffff;
-  --bg-elevated: #e8ecf4;
-  --bg-primary: #e0e5ec;
-  --bg-secondary: #d1d9e6;
-  --bg-tertiary: #c8ccd4;
-  --border-color: #a3b1c6;
-  --border-subtle: #a3b1c6;
-  --error: #e53e3e;
-  --warning: #b34700;
-  --success: #2d7a3a;
-  --info: #4299e1;
-
-  /* Gradient color stops for raised/inset surfaces */
-  --gradient-clay-light: #f0f5fc;
-  --gradient-clay-dark: #d4d9e4;
-}
-
-/* Dark mode */
-body[data-style="claymorphism"][data-theme="dark"] {
-  --color-clay-base: #1a1a2e;
-  --color-clay-raised: #252540;
-  --color-clay-inset: #1a1a2e;
-  --color-clay-accent: #8b7cf7;
-  --color-clay-accent-hover: #6d5dfc;
-  --color-clay-shadow-light: rgba(255, 255, 255, 0.1);
-  --color-clay-shadow-dark: rgba(0, 0, 0, 0.4);
-  --color-clay-shadow-dark-strong: rgba(0, 0, 0, 0.6);
-  --text-primary: #e2e8f0;
-  --text-secondary: #a0aec0;
-  --text-muted: #8899aa;
-  --bg-elevated: #252540;
-  --bg-primary: #1a1a2e;
-  --bg-secondary: #252540;
-  --bg-tertiary: #1a1a2e;
-  --border-color: #4a5568;
-  --border-subtle: #4a5568;
-}
-`;
-const COMPONENTS_CSS = `
-/* Claymorphism Style System */
-/* Class prefix: clay- */
-
-.clay {
-  background: var(--color-clay-raised);
-  border-radius: var(--radius-clay-lg);
-  box-shadow:
-    8px 8px 16px var(--color-clay-shadow-dark),
-    -8px -8px 16px var(--color-clay-shadow-light);
-}
-
-.clay-raised {
-  background: linear-gradient(145deg, var(--gradient-clay-light), var(--gradient-clay-dark));
-  border-radius: var(--radius-clay-lg);
-  box-shadow:
-    10px 10px 20px var(--color-clay-shadow-dark-strong),
-    -10px -10px 20px var(--color-clay-shadow-light);
-}
-
-.clay-inset {
-  background: var(--color-clay-inset);
-  border-radius: var(--radius-clay-md);
-  box-shadow:
-    inset 6px 6px 12px var(--color-clay-shadow-dark),
-    inset -6px -6px 12px var(--color-clay-shadow-light);
-}
-
-.clay-btn {
-  background: var(--color-clay-raised);
-  border-radius: var(--radius-clay-md);
-  box-shadow:
-    6px 6px 12px var(--color-clay-shadow-dark),
-    -6px -6px 12px var(--color-clay-shadow-light);
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.clay-btn:hover {
-  box-shadow:
-    8px 8px 16px var(--color-clay-shadow-dark),
-    -8px -8px 16px var(--color-clay-shadow-light);
-}
-
-.clay-btn:active,
-.clay-btn-pressed {
-  box-shadow:
-    inset 4px 4px 8px var(--color-clay-shadow-dark),
-    inset -4px -4px 8px var(--color-clay-shadow-light);
-}
-
-.clay-btn-solid {
-  background: var(--color-clay-accent);
-  color: var(--text-on-accent);
-}
-
-.clay-btn-solid:hover {
-  background: var(--color-clay-accent-hover);
-}
-
-.clay-btn-outlined {
-  background: transparent;
-  border: 2px solid var(--color-clay-accent);
-  color: var(--color-clay-accent);
-}
-
-.clay-btn-text {
-  background: transparent;
-  color: var(--color-clay-accent);
-}
-
-.clay-btn-tonal {
-  background: var(--bg-secondary);
-  color: var(--color-clay-accent);
-}
-
-.clay-btn-icon {
-  border-radius: 50%;
-  padding: 12px;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.clay-btn-sm {
-  padding: 8px 16px;
-  font-size: 14px;
-  border-radius: var(--radius-clay-sm);
-}
-
-.clay-card {
-  background: var(--color-clay-raised);
-  border-radius: var(--radius-clay-xl);
-  box-shadow:
-    12px 12px 24px var(--color-clay-shadow-dark-strong),
-    -12px -12px 24px var(--color-clay-shadow-light);
-  padding: 24px;
-}
-
-.clay-card-elevated {
-  background: linear-gradient(145deg, var(--gradient-clay-light), var(--gradient-clay-dark));
-  box-shadow:
-    16px 16px 32px var(--color-clay-shadow-dark-strong),
-    -16px -16px 32px var(--color-clay-shadow-light);
-}
-
-.clay-card-filled {
-  background: var(--bg-secondary);
-}
-
-.clay-card-outlined {
-  background: transparent;
-  border: 2px solid var(--border-color);
-  box-shadow: none;
-}
-
-.clay-input {
-  background: var(--color-clay-inset);
-  border-radius: var(--radius-clay-sm);
-  box-shadow:
-    inset 4px 4px 8px var(--color-clay-shadow-dark),
-    inset -4px -4px 8px var(--color-clay-shadow-light);
-  border: none;
-  padding: 12px 16px;
-  outline: none;
-}
-
-.clay-input:focus {
-  box-shadow:
-    inset 6px 6px 12px var(--color-clay-shadow-dark),
-    inset -6px -6px 12px var(--color-clay-shadow-light);
-}
-
-.clay-badge {
-  background: linear-gradient(145deg, var(--gradient-clay-light), var(--gradient-clay-dark));
-  border-radius: var(--radius-clay-sm);
-  box-shadow:
-    3px 3px 6px var(--color-clay-shadow-dark),
-    -3px -3px 6px var(--color-clay-shadow-light);
-  padding: 4px 12px;
-}
-
-.clay-avatar {
-  background: var(--color-clay-raised);
-  border-radius: 50%;
-  box-shadow:
-    4px 4px 8px var(--color-clay-shadow-dark),
-    -4px -4px 8px var(--color-clay-shadow-light);
-}
-
-.clay-checkbox {
-  background: var(--color-clay-inset);
-  border-radius: var(--radius-clay-sm);
-  box-shadow:
-    inset 3px 3px 6px var(--color-clay-shadow-dark),
-    inset -3px -3px 6px var(--color-clay-shadow-light);
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-}
-
-.clay-checkbox:checked {
-  background: var(--color-clay-accent);
-  box-shadow:
-    3px 3px 6px var(--color-clay-shadow-dark),
-    -3px -3px 6px var(--color-clay-shadow-light);
-}
-
-.clay-toggle {
-  background: var(--color-clay-inset);
-  border-radius: var(--radius-clay-lg);
-  box-shadow:
-    inset 2px 2px 4px var(--color-clay-shadow-dark),
-    inset -2px -2px 4px var(--color-clay-shadow-light);
-  width: 56px;
-  height: 28px;
-  cursor: pointer;
-}
-
-.clay-toggle-knob {
-  background: var(--color-clay-raised);
-  border-radius: 50%;
-  box-shadow:
-    2px 2px 4px var(--color-clay-shadow-dark),
-    -2px -2px 4px var(--color-clay-shadow-light);
-  width: 24px;
-  height: 24px;
-  margin: 2px;
-  transition: transform 0.2s ease;
-}
-
-.clay-toggle-active .clay-toggle-knob {
-  transform: translateX(28px);
-  background: var(--color-clay-accent);
-}
-
-.clay-modal {
-  background: var(--color-clay-raised);
-  border-radius: var(--radius-clay-xl);
-  box-shadow:
-    20px 20px 40px var(--color-clay-shadow-dark-strong),
-    -20px -20px 40px var(--color-clay-shadow-light);
-  padding: 32px;
-}
-
-.clay-tooltip {
-  background: var(--color-clay-raised);
-  border-radius: var(--radius-clay-sm);
-  box-shadow:
-    4px 4px 8px var(--color-clay-shadow-dark),
-    -4px -4px 8px var(--color-clay-shadow-light);
-  padding: 8px 12px;
-  font-size: 12px;
-}
-
-.clay-progress {
-  background: var(--color-clay-inset);
-  border-radius: var(--radius-clay-sm);
-  box-shadow:
-    inset 2px 2px 4px var(--color-clay-shadow-dark),
-    inset -2px -2px 4px var(--color-clay-shadow-light);
-  height: 12px;
-  overflow: hidden;
-}
-
-.clay-progress-bar {
-  background: linear-gradient(90deg, var(--color-clay-accent), #8b7cf7);
-  border-radius: var(--radius-clay-sm);
-  height: 100%;
-  transition: width 0.3s ease;
-}
-
-.clay-slider {
-  background: var(--color-clay-inset);
-  border-radius: var(--radius-clay-sm);
-  box-shadow:
-    inset 2px 2px 4px var(--color-clay-shadow-dark),
-    inset -2px -2px 4px var(--color-clay-shadow-light);
-  height: 8px;
-}
-
-.clay-slider-thumb {
-  background: var(--color-clay-raised);
-  border-radius: 50%;
-  box-shadow:
-    3px 3px 6px var(--color-clay-shadow-dark),
-    -3px -3px 6px var(--color-clay-shadow-light);
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-}
-
-.clay-divider {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--color-clay-shadow-dark),
-    transparent
-  );
-  height: 1px;
-  margin: 16px 0;
-}
-
-.clay-text {
-  color: var(--text-secondary);
-  text-shadow: 1px 1px 2px var(--color-clay-shadow-light);
-}
-
-.clay-text-primary {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-.clay-text-accent {
-  color: var(--color-clay-accent);
-}
-
-.clay-data-table {
-  background: var(--color-clay-raised);
-  border-radius: var(--radius-clay-lg);
-  box-shadow:
-    8px 8px 16px var(--color-clay-shadow-dark),
-    -8px -8px 16px var(--color-clay-shadow-light);
-}
-
-.clay-sidebar {
-  background: var(--color-clay-raised);
-  box-shadow:
-    8px 8px 16px var(--color-clay-shadow-dark),
-    -8px -8px 16px var(--color-clay-shadow-light);
-}
-
-.clay-header,
-.clay-footer {
-  background: var(--color-clay-raised);
-  box-shadow:
-    8px 8px 16px var(--color-clay-shadow-dark),
-    -8px -8px 16px var(--color-clay-shadow-light);
-}
-
-.clay-page-container {
-  background: var(--color-clay-base);
-}
-
-.clay-panel {
-  background: var(--color-clay-raised);
-  box-shadow:
-    8px 8px 16px var(--color-clay-shadow-dark),
-    -8px -8px 16px var(--color-clay-shadow-light);
-  border-radius: var(--radius-clay-lg);
-}
-
-.clay-segment-selector {
-  background: var(--color-clay-inset);
-  box-shadow:
-    inset 6px 6px 12px var(--color-clay-shadow-dark),
-    inset -6px -6px 12px var(--color-clay-shadow-light);
-  border-radius: var(--radius-clay-md);
-}
-
-.clay-split-view {
-  background: var(--color-clay-base);
-}
-
-.clay-stats-card {
-  background: var(--color-clay-raised);
-  box-shadow:
-    12px 12px 24px var(--color-clay-shadow-dark-strong),
-    -12px -12px 24px var(--color-clay-shadow-light);
-  border-radius: var(--radius-clay-xl);
-  padding: 24px;
-}
-
-.clay-table {
-  background: var(--color-clay-raised);
-  box-shadow:
-    8px 8px 16px var(--color-clay-shadow-dark),
-    -8px -8px 16px var(--color-clay-shadow-light);
-  border-radius: var(--radius-clay-md);
-}
-
-.clay-tree {
-  background: var(--color-clay-raised);
-}
-
-.clay-canvas {
-  background: var(--color-clay-base);
-}
-
-.clay-main-editor {
-  background: var(--color-clay-base);
-}
-
-.clay-canvas-toolbar,
-.clay-page-toolbar {
-  background: var(--color-clay-raised);
-  box-shadow:
-    8px 8px 16px var(--color-clay-shadow-dark),
-    -8px -8px 16px var(--color-clay-shadow-light);
-}
-
-.clay-command-palette {
-  background: var(--color-clay-raised);
-  box-shadow:
-    12px 12px 24px var(--color-clay-shadow-dark-strong),
-    -12px -12px 24px var(--color-clay-shadow-light);
-  border-radius: var(--radius-clay-xl);
-}
-
-.clay-component-palette {
-  background: var(--color-clay-raised);
-  box-shadow:
-    8px 8px 16px var(--color-clay-shadow-dark),
-    -8px -8px 16px var(--color-clay-shadow-light);
-  border-radius: var(--radius-clay-lg);
-}
-
-.clay-locale-switcher {
-  background: var(--color-clay-raised);
-  border-radius: var(--radius-clay-sm);
-  box-shadow:
-    4px 4px 8px var(--color-clay-shadow-dark),
-    -4px -4px 8px var(--color-clay-shadow-light);
-}
-
-.clay-json-view {
-  background: var(--color-clay-inset);
-  border-radius: var(--radius-clay-md);
-  font-family: monospace;
-  box-shadow:
-    inset 4px 4px 8px var(--color-clay-shadow-dark),
-    inset -4px -4px 8px var(--color-clay-shadow-light);
-}
-
-.clay-form {
-  background: var(--color-clay-raised);
-  padding: 16px;
-  border-radius: var(--radius-clay-md);
-  box-shadow:
-    6px 6px 12px var(--color-clay-shadow-dark),
-    -6px -6px 12px var(--color-clay-shadow-light);
-}
-
-.clay-properties-panel {
-  background: var(--color-clay-raised);
-  box-shadow:
-    8px 8px 16px var(--color-clay-shadow-dark),
-    -8px -8px 16px var(--color-clay-shadow-light);
-  border-radius: var(--radius-clay-lg);
-}
-
-.clay-bottom-panel {
-  background: var(--color-clay-raised);
-  box-shadow:
-    8px 8px 16px var(--color-clay-shadow-dark),
-    -8px -8px 16px var(--color-clay-shadow-light);
-}
-
-.clay-designer-tree {
-  background: var(--color-clay-raised);
-  border-radius: var(--radius-clay-md);
-}
-
-.clay-designer-sidebar {
-  background: var(--color-clay-raised);
-  box-shadow:
-    8px 8px 16px var(--color-clay-shadow-dark),
-    -8px -8px 16px var(--color-clay-shadow-light);
-}
-
-.clay-block {
-  background: var(--color-clay-raised);
-  border-radius: var(--radius-clay-lg);
-  box-shadow:
-    8px 8px 16px var(--color-clay-shadow-dark),
-    -8px -8px 16px var(--color-clay-shadow-light);
-}
-`;
-const CLAYMORPHISM_CSS = `/* Claymorphism Style System */\n${TOKENS_CSS}\n${COMPONENTS_CSS}`;
-const claymorphismComponentStyles = {
-    "app-button": {
-        variants: {
-            solid: "clay-btn clay-btn-solid",
-            outlined: "clay-btn clay-btn-outlined",
-            text: "clay-btn clay-btn-text",
-            icon: "clay-btn clay-btn-icon",
-            tonal: "clay-btn clay-btn-tonal",
-        },
-        sizes: {
-            sm: "clay-btn-sm",
-            md: "",
-            lg: "",
-        },
-    },
-    "app-card": {
-        variants: {
-            elevated: "clay-card clay-card-elevated",
-            filled: "clay-card clay-card-filled",
-            outlined: "clay-card clay-card-outlined",
-        },
-    },
-    "app-theme-toggle": { variants: { default: "clay-toggle" } },
-    "app-swap-button": { variants: { default: "clay-swap-btn" } },
-    "app-language-selector": { variants: { default: "clay-lang-selector" } },
-    "app-text-input": { variants: { default: "clay-input" } },
-    "app-translation-output": { variants: { default: "clay-output" } },
-    "app-shortcuts-overlay": { variants: { default: "clay-overlay" } },
-    "app-dialog": {
-        variants: {
-            solid: "clay-modal",
-        },
-    },
-    "app-confirm-dialog": {
-        variants: {
-            solid: "clay-modal",
-        },
-    },
-    "app-modal": {
-        variants: {
-            solid: "clay-modal",
-        },
-    },
-    "app-checkbox": {
-        variants: {
-            outlined: "clay-checkbox",
-        },
-    },
-    "app-switch": {
-        variants: {
-            outlined: "clay-toggle",
-        },
-    },
-    "app-slider": {
-        variants: {
-            outline: "clay-slider",
-        },
-    },
-    "app-progress-bar": {
-        variants: {
-            linear: "clay-progress",
-        },
-    },
-    "app-text": {
-        variants: {
-            default: "clay-text",
-        },
-    },
-    "app-textarea": {
-        variants: {
-            default: "clay-input",
-        },
-    },
-    "app-avatar": {
-        variants: {
-            image: "clay-avatar",
-            initials: "clay-avatar",
-            icon: "clay-avatar",
-        },
-    },
-    "app-chip": {
-        variants: {
-            assist: "clay-chip",
-            filter: "clay-chip",
-            input: "clay-chip",
-            suggestion: "clay-chip",
-        },
-    },
-    "app-radio": {
-        variants: {
-            outlined: "clay-radio",
-        },
-    },
-    "app-snackbar": {
-        variants: {
-            standard: "clay-snackbar",
-        },
-    },
-    "app-tooltip": {
-        variants: {
-            default: "clay-tooltip",
-        },
-    },
-    "app-pagination": {
-        variants: {
-            default: "clay-pagination",
-        },
-    },
-};
-
-// Glassmorphism CSS - inline for reliable loading
-const GLASSMORPHISM_CSS = `
-/* Glassmorphism Style System */
-/* Class prefix: glass- */
-
-/* Glass-specific variables */
-:root {
-  --color-glass-bg: rgba(255, 255, 255, 0.1);
-  --color-glass-bg-hover: rgba(255, 255, 255, 0.15);
-  --color-glass-bg-active: rgba(255, 255, 255, 0.2);
-  --color-glass-border: rgba(255, 255, 255, 0.45);
-  --color-glass-border-strong: rgba(255, 255, 255, 0.6);
-  --color-glass-white: rgba(255, 255, 255, 0.8);
-  --color-glass-blur: rgba(255, 255, 255, 0.05);
-  --color-glass-accent: #6d5dfc;
-  --color-glass-accent-hover: #8b7cf7;
-  --color-glass-dark: rgba(0, 0, 0, 0.3);
-  --color-glass-dark-strong: rgba(0, 0, 0, 0.5);
-
-  /* Radius tokens */
-  --radius-glass-sm: 8px;
-  --radius-glass-md: 12px;
-  --radius-glass-lg: 16px;
-  --radius-glass-xl: 24px;
-
-  /* Semantic tokens */
-  --accent: var(--color-glass-accent);
-  --accent-hover: var(--color-glass-accent-hover);
-  --text-on-accent: #ffffff;
-  --text-primary: #4a5568;
-  --text-secondary: #64748b;
-  --text-muted: #1e293b;
-  --text-on-error: #ffffff;
-  --text-on-warning: #ffffff;
-  --text-on-success: #ffffff;
-  --bg-elevated: rgba(255, 255, 255, 0.15);
-  --border-color: rgba(255, 255, 255, 0.45);
-  --error: #e53e3e;
-  --warning: #b34700;
-  --success: #2d7a3a;
-  --info: #4299e1;
-  --bg-primary: rgba(15, 15, 30, 0.9);
-  --bg-secondary: rgba(25, 25, 45, 0.92);
-  --bg-tertiary: rgba(10, 10, 20, 0.95);
-  --border-subtle: rgba(255, 255, 255, 0.15);
-}
-
-/* Dark mode — lighter glass surfaces for contrast */
-body[data-style="glassmorphism"][data-theme="dark"] {
-  --color-glass-bg: rgba(255, 255, 255, 0.08);
-  --color-glass-bg-hover: rgba(255, 255, 255, 0.12);
-  --color-glass-bg-active: rgba(255, 255, 255, 0.18);
-  --color-glass-border: rgba(255, 255, 255, 0.25);
-  --color-glass-border-strong: rgba(255, 255, 255, 0.35);
-  --color-glass-white: rgba(255, 255, 255, 0.6);
-  --color-glass-blur: rgba(255, 255, 255, 0.03);
-  --color-glass-dark: rgba(0, 0, 0, 0.5);
-  --color-glass-dark-strong: rgba(0, 0, 0, 0.7);
-  --text-primary: #1e293b;
-  --text-secondary: #334155;
-  --text-muted: #475569;
-  --bg-elevated: rgba(255, 255, 255, 0.72);
-  --border-color: rgba(255, 255, 255, 0.25);
-  --bg-primary: rgba(5, 5, 15, 0.95);
-  --bg-secondary: rgba(15, 15, 30, 0.92);
-  --bg-tertiary: rgba(10, 10, 20, 0.98);
-  --border-subtle: rgba(255, 255, 255, 0.08);
-}
-
-/* Base glass surface */
-.glass {
-  background: var(--color-glass-bg);
-  backdrop-filter: blur(var(--radius-glass-md));
-  -webkit-backdrop-filter: blur(var(--radius-glass-md));
-  border: 1px solid var(--color-glass-border);
-  border-radius: var(--radius-glass-lg);
-}
-
-/* Glassmorphism surface */
-.glass-surface {
-  background: linear-gradient(
-    135deg,
-    var(--color-glass-bg) 0%,
-    var(--color-glass-blur) 100%
-  );
-  backdrop-filter: blur(var(--radius-glass-xl));
-  -webkit-backdrop-filter: blur(var(--radius-glass-xl));
-  border: 1px solid var(--color-glass-border-strong);
-  border-radius: var(--radius-glass-xl);
-  box-shadow:
-    0 8px 32px var(--color-glass-dark),
-    inset 0 1px 0 var(--color-glass-white);
-}
-
-/* Glassmorphism light variant */
-.glass-light {
-  background: var(--color-glass-bg-active);
-  backdrop-filter: blur(var(--radius-glass-sm));
-  -webkit-backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border-strong);
-  border-radius: var(--radius-glass-md);
-}
-
-/* Glassmorphism dark variant */
-.glass-dark {
-  background: var(--color-glass-dark);
-  backdrop-filter: blur(var(--radius-glass-md));
-  -webkit-backdrop-filter: blur(var(--radius-glass-md));
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-glass-lg);
-  box-shadow: 0 8px 32px var(--color-glass-dark-strong);
-}
-
-/* Glassmorphism button */
-.glass-btn {
-  background: var(--color-glass-bg);
-  backdrop-filter: blur(var(--radius-glass-sm));
-  -webkit-backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border);
-  border-radius: var(--radius-glass-md);
-  color: var(--color-glass-white);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.glass-btn:hover {
-  background: var(--color-glass-bg-hover);
-  border-color: var(--color-glass-border-strong);
-  box-shadow:
-    0 4px 16px var(--color-glass-dark),
-    inset 0 1px 0 var(--color-glass-white);
-}
-
-.glass-btn:active,
-.glass-btn-pressed {
-  background: var(--color-glass-bg-active);
-  transform: scale(0.98);
-}
-
-/* Glassmorphism primary button */
-.glass-btn-primary {
-  background: linear-gradient(
-    135deg,
-    var(--color-glass-accent) 0%,
-    var(--color-glass-accent-hover) 100%
-  );
-  backdrop-filter: blur(var(--radius-glass-sm));
-  -webkit-backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border);
-  color: white;
-  box-shadow:
-    0 4px 16px var(--color-glass-accent),
-    inset 0 1px 0 var(--color-glass-white);
-}
-
-.glass-btn-primary:hover {
-  background: linear-gradient(
-    135deg,
-    var(--color-glass-accent-hover) 0%,
-    var(--color-glass-accent) 100%
-  );
-  box-shadow:
-    0 6px 24px var(--color-glass-accent),
-    inset 0 1px 0 var(--color-glass-white);
-}
-
-/* Glassmorphism button variants */
-.glass-btn-solid {
-  background: var(--color-glass-bg-active);
-  backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border-strong);
-}
-
-.glass-btn-outlined {
-  background: transparent;
-  backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border-strong);
-}
-
-.glass-btn-text {
-  background: transparent;
-  backdrop-filter: none;
-  border: none;
-  color: var(--color-glass-white);
-}
-
-.glass-btn-icon {
-  background: var(--color-glass-bg);
-  backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border);
-  border-radius: var(--radius-glass-md);
-  padding: 8px;
-}
-
-.glass-btn-tonal {
-  background: var(--color-glass-bg-hover);
-  backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border);
-}
-
-.glass-btn-sm {
-  background: var(--color-glass-bg);
-  backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border);
-  border-radius: var(--radius-glass-sm);
-  padding: 6px 12px;
-  font-size: 12px;
-}
-
-/* Glassmorphism card */
-.glass-card {
-  background: linear-gradient(
-    135deg,
-    var(--bg-elevated) 0%,
-    var(--color-glass-blur) 100%
-  );
-  backdrop-filter: blur(var(--radius-glass-xl));
-  -webkit-backdrop-filter: blur(var(--radius-glass-xl));
-  border: 1px solid var(--color-glass-border-strong);
-  border-radius: var(--radius-glass-xl);
-  box-shadow:
-    0 8px 32px var(--color-glass-dark),
-    inset 0 1px 0 var(--color-glass-white);
-  padding: 24px;
-}
-
-/* Glassmorphism card variants */
-.glass-card-elevated {
-  background: linear-gradient(
-    135deg,
-    var(--color-glass-bg-hover) 0%,
-    var(--color-glass-bg) 100%
-  );
-  backdrop-filter: blur(var(--radius-glass-xl));
-  border: 1px solid var(--color-glass-border-strong);
-  box-shadow:
-    0 12px 40px var(--color-glass-dark-strong),
-    inset 0 1px 0 var(--color-glass-white);
-}
-
-.glass-card-filled {
-  background: var(--color-glass-bg-hover);
-  backdrop-filter: blur(var(--radius-glass-md));
-  border: 1px solid var(--color-glass-border);
-}
-
-.glass-card-outlined {
-  background: transparent;
-  backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border-strong);
-  box-shadow: none;
-}
-
-/* Glassmorphism input */
-.glass-input {
-  background: var(--color-glass-blur);
-  backdrop-filter: blur(var(--radius-glass-sm));
-  -webkit-backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border);
-  border-radius: var(--radius-glass-sm);
-  color: var(--color-glass-white);
-  padding: 12px 16px;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-.glass-input::placeholder {
-  color: var(--color-glass-white);
-}
-
-.glass-input:focus {
-  background: var(--color-glass-bg);
-  border-color: var(--color-glass-accent);
-  box-shadow:
-    0 0 0 3px var(--color-glass-accent),
-    inset 0 1px 0 var(--color-glass-white);
-}
-
-/* Glassmorphism badge */
-.glass-badge {
-  background: var(--color-glass-bg-hover);
-  backdrop-filter: blur(var(--radius-glass-sm));
-  -webkit-backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border);
-  border-radius: var(--radius-glass-sm);
-  padding: 4px 12px;
-  color: var(--color-glass-white);
-  font-size: 12px;
-  font-weight: 500;
-}
-
-/* Glassmorphism avatar */
-.glass-avatar {
-  background: linear-gradient(
-    135deg,
-    var(--color-glass-bg-active) 0%,
-    var(--color-glass-bg) 100%
-  );
-  backdrop-filter: blur(var(--radius-glass-md));
-  -webkit-backdrop-filter: blur(var(--radius-glass-md));
-  border: 2px solid var(--color-glass-border);
-  border-radius: 50%;
-  box-shadow: 0 4px 16px var(--color-glass-dark);
-}
-
-/* Glassmorphism checkbox */
-.glass-checkbox {
-  background: var(--color-glass-blur);
-  backdrop-filter: blur(var(--radius-glass-sm));
-  -webkit-backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border);
-  border-radius: 6px;
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.glass-checkbox:checked {
-  background: var(--color-glass-accent);
-  border-color: var(--color-glass-accent);
-  box-shadow:
-    0 0 0 3px var(--color-glass-accent),
-    inset 0 1px 0 var(--color-glass-white);
-}
-
-/* Glassmorphism toggle/switch */
-.glass-toggle {
-  background: var(--color-glass-bg);
-  backdrop-filter: blur(var(--radius-glass-sm));
-  -webkit-backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border);
-  border-radius: 20px;
-  width: 56px;
-  height: 28px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.glass-toggle-knob {
-  background: linear-gradient(
-    135deg,
-    var(--color-glass-white) 0%,
-    var(--color-glass-white) 100%
-  );
-  border-radius: 50%;
-  box-shadow: 0 2px 8px var(--color-glass-dark);
-  width: 22px;
-  height: 22px;
-  margin: 2px;
-  transition: all 0.3s ease;
-}
-
-.glass-toggle-active {
-  background: var(--color-glass-accent);
-  border-color: var(--color-glass-accent);
-}
-
-.glass-toggle-active .glass-toggle-knob {
-  transform: translateX(28px);
-  background: white;
-}
-
-/* Glassmorphism modal/dialog */
-.glass-modal {
-  background: linear-gradient(
-    135deg,
-    var(--color-glass-bg-active) 0%,
-    var(--color-glass-bg) 100%
-  );
-  backdrop-filter: blur(var(--radius-glass-xl));
-  -webkit-backdrop-filter: blur(var(--radius-glass-xl));
-  border: 1px solid var(--color-glass-border-strong);
-  border-radius: var(--radius-glass-xl);
-  box-shadow:
-    0 24px 48px var(--color-glass-dark-strong),
-    inset 0 1px 0 var(--color-glass-white);
-  padding: 32px;
-}
-
-/* Glassmorphism tooltip */
-.glass-tooltip {
-  background: linear-gradient(
-    135deg,
-    var(--color-glass-dark) 0%,
-    var(--color-glass-dark-strong) 100%
-  );
-  backdrop-filter: blur(var(--radius-glass-md));
-  -webkit-backdrop-filter: blur(var(--radius-glass-md));
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-glass-sm);
-  padding: 8px 12px;
-  color: var(--color-glass-white);
-  font-size: 12px;
-  box-shadow: 0 4px 16px var(--color-glass-dark-strong);
-}
-
-/* Glassmorphism progress bar */
-.glass-progress {
-  background: var(--color-glass-bg);
-  backdrop-filter: blur(var(--radius-glass-sm));
-  -webkit-backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border);
-  border-radius: var(--radius-glass-sm);
-  height: 12px;
-  overflow: hidden;
-}
-
-.glass-progress-bar {
-  background: linear-gradient(
-    90deg,
-    var(--color-glass-accent),
-    var(--color-glass-accent-hover),
-    var(--color-glass-accent)
-  );
-  background-size: 200% 100%;
-  border-radius: var(--radius-glass-sm);
-  height: 100%;
-  animation: glass-progress-shine 2s ease-in-out infinite;
-  box-shadow: 0 0 20px var(--color-glass-accent);
-}
-
-@keyframes glass-progress-shine {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
-}
-
-/* Glassmorphism slider */
-.glass-slider {
-  background: var(--color-glass-bg);
-  backdrop-filter: blur(var(--radius-glass-sm));
-  -webkit-backdrop-filter: blur(var(--radius-glass-sm));
-  border: 1px solid var(--color-glass-border);
-  border-radius: 8px;
-  height: 8px;
-}
-
-.glass-slider-thumb {
-  background: linear-gradient(
-    135deg,
-    var(--color-glass-white) 0%,
-    var(--color-glass-white) 100%
-  );
-  backdrop-filter: blur(var(--radius-glass-sm));
-  -webkit-backdrop-filter: blur(var(--radius-glass-sm));
-  border-radius: 50%;
-  box-shadow:
-    0 2px 8px var(--color-glass-dark),
-    inset 0 1px 0 var(--color-glass-white);
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.glass-slider-thumb:hover {
-  transform: scale(1.1);
-  box-shadow:
-    0 4px 12px var(--color-glass-dark),
-    inset 0 1px 0 var(--color-glass-white);
-}
-
-/* Glassmorphism navigation */
-.glass-nav {
-  background: linear-gradient(
-    90deg,
-    var(--color-glass-bg) 0%,
-    var(--color-glass-blur) 100%
-  );
-  backdrop-filter: blur(var(--radius-glass-md));
-  -webkit-backdrop-filter: blur(var(--radius-glass-md));
-  border-bottom: 1px solid var(--color-glass-border);
-}
-
-.glass-nav-item {
-  color: var(--color-glass-white);
-  transition: all 0.3s ease;
-  padding: 12px 16px;
-  border-radius: var(--radius-glass-sm);
-}
-
-.glass-nav-item:hover {
-  color: white;
-  background: var(--color-glass-bg-hover);
-}
-
-.glass-nav-item-active {
-  color: white;
-  background: var(--color-glass-bg-active);
-  border-bottom: 2px solid var(--color-glass-accent);
-}
-
-/* Glassmorphism text styles */
-.glass-text {
-  color: var(--color-glass-white);
-  text-shadow: 0 1px 2px var(--color-glass-dark);
-}
-
-.glass-text-primary {
-  color: white;
-  font-weight: 600;
-}
-
-.glass-text-accent {
-  color: var(--color-glass-accent-hover);
-}
-
-/* Glassmorphism divider */
-.glass-divider {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--color-glass-border),
-    transparent
-  );
-  height: 1px;
-  margin: 16px 0;
-}
-
-/* Glassmorphism additional components */
-.glass-data-table { backdrop-filter: blur(var(--radius-glass-md)); background: var(--color-glass-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-md); }
-.glass-sidebar { backdrop-filter: blur(var(--radius-glass-md)); background: var(--bg-secondary); border-right: 1px solid var(--border-subtle); }
-.glass-header, .glass-footer { backdrop-filter: blur(var(--radius-glass-md)); background: var(--bg-secondary); border-bottom: 1px solid var(--border-subtle); }
-.glass-page-container { background: var(--bg-primary); }
-.glass-panel { backdrop-filter: blur(var(--radius-glass-md)); background: var(--color-glass-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-xl); }
-.glass-segment-selector { backdrop-filter: blur(var(--radius-glass-sm)); background: var(--color-glass-blur); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-md); }
-.glass-split-view { background: var(--bg-primary); }
-.glass-stats-card { backdrop-filter: blur(var(--radius-glass-md)); background: var(--color-glass-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-xl); padding: 24px; }
-.glass-table { backdrop-filter: blur(var(--radius-glass-sm)); background: var(--color-glass-blur); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-md); }
-.glass-tree { background: var(--color-glass-blur); }
-.glass-canvas { background: var(--bg-primary); }
-.glass-main-editor { background: var(--bg-primary); }
-.glass-canvas-toolbar, .glass-page-toolbar { backdrop-filter: blur(var(--radius-glass-md)); background: var(--bg-secondary); border-bottom: 1px solid var(--border-subtle); }
-.glass-command-palette { backdrop-filter: blur(var(--radius-glass-xl)); background: var(--bg-secondary); border: 1px solid var(--color-glass-border-strong); border-radius: var(--radius-glass-xl); }
-.glass-component-palette { backdrop-filter: blur(var(--radius-glass-md)); background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-xl); }
-.glass-locale-switcher { backdrop-filter: blur(var(--radius-glass-sm)); background: var(--color-glass-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-sm); }
-.glass-json-view { backdrop-filter: blur(var(--radius-glass-sm)); background: var(--color-glass-blur); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-sm); font-family: monospace; }
-.glass-form { backdrop-filter: blur(var(--radius-glass-sm)); background: var(--color-glass-blur); padding: 16px; border-radius: var(--radius-glass-md); }
-.glass-properties-panel { backdrop-filter: blur(var(--radius-glass-md)); background: var(--color-glass-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-xl); }
-.glass-bottom-panel { backdrop-filter: blur(var(--radius-glass-md)); background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); }
-.glass-designer-tree { backdrop-filter: blur(var(--radius-glass-sm)); background: var(--color-glass-blur); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-md); }
-.glass-designer-sidebar { backdrop-filter: blur(var(--radius-glass-md)); background: var(--bg-secondary); border-right: 1px solid var(--border-subtle); }
-.glass-block { backdrop-filter: blur(var(--radius-glass-md)); background: var(--color-glass-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-glass-md); }
-`;
-const glassmorphismComponentStyles = {
-    "app-button": {
-        variants: {
-            solid: "glass-btn glass-btn-solid",
-            outlined: "glass-btn glass-btn-outlined",
-            text: "glass-btn glass-btn-text",
-            icon: "glass-btn glass-btn-icon",
-            tonal: "glass-btn glass-btn-tonal",
-        },
-        sizes: {
-            sm: "glass-btn-sm",
-            md: "",
-            lg: "",
-        },
-    },
-    "app-card": {
-        variants: {
-            elevated: "glass-card glass-card-elevated",
-            filled: "glass-card glass-card-filled",
-            outlined: "glass-card glass-card-outlined",
-        },
-    },
-    "app-theme-toggle": { variants: { default: "glass-toggle" } },
-    "app-swap-button": { variants: { default: "glass-swap-btn" } },
-    "app-language-selector": { variants: { default: "glass-lang-selector" } },
-    "app-text-input": { variants: { default: "glass-input" } },
-    "app-translation-output": { variants: { default: "glass-output" } },
-    "app-shortcuts-overlay": { variants: { default: "glass-overlay" } },
-    "app-dialog": {
-        variants: {
-            solid: "glass-modal",
-        },
-    },
-    "app-confirm-dialog": {
-        variants: {
-            solid: "glass-modal",
-        },
-    },
-    "app-modal": {
-        variants: {
-            solid: "glass-modal",
-        },
-    },
-    "app-checkbox": {
-        variants: {
-            outlined: "glass-checkbox",
-        },
-    },
-    "app-switch": {
-        variants: {
-            outlined: "glass-toggle",
-        },
-    },
-    "app-slider": {
-        variants: {
-            outline: "glass-slider",
-        },
-    },
-    "app-progress-bar": {
-        variants: {
-            linear: "glass-progress",
-        },
-    },
-    "app-sidebar": {
-        variants: {
-            default: "glass-nav",
-        },
-    },
-    "app-text": {
-        variants: {
-            default: "glass-text",
-        },
-    },
-    "app-avatar": {
-        variants: {
-            image: "glass-avatar",
-            initials: "glass-avatar",
-            icon: "glass-avatar",
-        },
-    },
-    "app-chip": {
-        variants: {
-            assist: "glass-chip",
-            filter: "glass-chip",
-            input: "glass-chip",
-            suggestion: "glass-chip",
-        },
-    },
-    "app-radio": {
-        variants: {
-            outlined: "glass-radio",
-        },
-    },
-    "app-snackbar": {
-        variants: {
-            standard: "glass-snackbar",
-        },
-    },
-    "app-tooltip": {
-        variants: {
-            default: "glass-tooltip",
-        },
-    },
-    "app-pagination": {
-        variants: {
-            default: "glass-pagination",
-        },
-    },
-};
-
-const NEUMORPHISM_TOKENS_CSS = `
 /**
- * Neumorphism Design Tokens
- * Light mode + Dark mode
+ * Theme configuration - no cssString, themes are loaded via <link>
  */
-
-/* Neumorphic base colors */
-:root {
-  --color-neu-base: #e0e5ec;
-  --color-neu-base-dark: #c8ccd4;
-  --color-neu-base-light: #f8fafc;
-  --color-neu-shadow-dark: #a3b1c6;
-  --color-neu-shadow-light: #ffffff;
-  --color-neu-shadow-dark-strong: #8a9bb0;
-  --color-neu-shadow-light-strong: #ffffff;
-  --color-neu-accent: #6d5dfc;
-  --color-neu-accent-muted: #8b7cf7;
-  --color-neu-text: #4a5568;
-  --color-neu-text-light: #718096;
-  --color-neu-text-dark: #2d3748;
-
-  /* Gradient color stops */
-  --gradient-neu-light: #f0f5fc;
-  --gradient-neu-dark: #d4d9e4;
-
-  /* Radius tokens */
-  --radius-neu-sm: 8px;
-  --radius-neu-md: 12px;
-  --radius-neu-lg: 16px;
-  --radius-neu-xl: 24px;
-
-  /* Shadow presets */
-  --shadow-neu-outset: 6px 6px 12px var(--color-neu-shadow-dark), -6px -6px 12px var(--color-neu-shadow-light);
-  --shadow-neu-outset-strong: 10px 10px 20px var(--color-neu-shadow-dark-strong), -10px -10px 20px var(--color-neu-shadow-light-strong);
-  --shadow-neu-inset: inset 6px 6px 12px var(--color-neu-shadow-dark), inset -6px -6px 12px var(--color-neu-shadow-light);
-  --shadow-neu-inset-strong: inset 8px 8px 16px var(--color-neu-shadow-dark), inset -8px -8px 16px var(--color-neu-shadow-light);
-
-  /* Semantic tokens */
-  --accent: var(--color-neu-accent);
-  --accent-hover: #5a4cdb;
-  --text-on-accent: #ffffff;
-  --text-primary: #2d3748;
-  --text-secondary: #4a5568;
-  --text-muted: #4a5568;
-  --text-on-error: #ffffff;
-  --text-on-warning: #ffffff;
-  --text-on-success: #ffffff;
-  --bg-elevated: #e8ecf4;
-  --border-color: #a3b1c6;
-  --error: #e53e3e;
-  --warning: #b34700;
-  --success: #2d7a3a;
-  --info: #4299e1;
-  --bg-primary: #e0e5ec;
-  --bg-secondary: #d8dce8;
-  --bg-tertiary: #d0d4e0;
-}
-
-/* Dark mode */
-body[data-style="neumorphism"][data-theme="dark"] {
-  --color-neu-base: #2d3748;
-  --color-neu-base-dark: #1a202c;
-  --color-neu-base-light: #4a5568;
-  --color-neu-shadow-dark: #1a202c;
-  --color-neu-shadow-light: #4a5568;
-  --color-neu-shadow-dark-strong: #0f172a;
-  --color-neu-shadow-light-strong: #5a6578;
-  --color-neu-text: #e2e8f0;
-  --color-neu-text-light: #a0aec0;
-  --color-neu-text-dark: #f8fafc;
-  --gradient-neu-light: #4a5568;
-  --gradient-neu-dark: #2d3748;
-  --text-primary: #f8fafc;
-  --text-secondary: #a0aec0;
-  --text-muted: #a0aec0;
-  --bg-elevated: #2d3748;
-  --border-color: #4a5568;
-  --bg-primary: #2d3748;
-  --bg-secondary: #252a33;
-  --bg-tertiary: #1e242e;
-}
-`;
-const NEUMORPHISM_COMPONENTS_CSS = `
-/* Neumorphism Style System */
-/* Class prefix: neu- */
-
-/* Base neumorphism utility */
-.neu {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-lg);
-  box-shadow: var(--shadow-neu-outset);
-}
-
-/* Neumorphism raised surface */
-.neu-raised {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-xl);
-  box-shadow: var(--shadow-neu-outset-strong);
-}
-
-/* Neumorphism pressed/inset state */
-.neu-pressed {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-md);
-  box-shadow: var(--shadow-neu-inset);
-}
-
-/* Neumorphism flat surface */
-.neu-flat {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-lg);
-  box-shadow: none;
-}
-
-/* Neumorphism button */
-.neu-btn {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-md);
-  box-shadow: var(--shadow-neu-outset);
-  color: var(--color-neu-text);
-  font-weight: 500;
-  transition: all 0.15s ease;
-  cursor: pointer;
-}
-
-.neu-btn:hover {
-  box-shadow: var(--shadow-neu-outset-strong);
-}
-
-.neu-btn:active,
-.neu-btn-pressed {
-  box-shadow: var(--shadow-neu-inset);
-}
-
-.neu-btn-primary {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
-  color: var(--color-neu-accent);
-}
-
-.neu-btn-primary:active,
-.neu-btn-primary-pressed {
-  background: linear-gradient(145deg, var(--gradient-neu-dark), var(--gradient-neu-light));
-}
-
-.neu-btn-solid {
-  background: var(--color-neu-base);
-  box-shadow: var(--shadow-neu-outset);
-  color: var(--color-neu-accent);
-}
-
-.neu-btn-solid:hover {
-  box-shadow: var(--shadow-neu-outset-strong);
-}
-
-.neu-btn-solid:active {
-  box-shadow: var(--shadow-neu-inset);
-}
-
-.neu-btn-outlined {
-  background: transparent;
-  border: 2px solid var(--border-color);
-  box-shadow: none;
-  color: var(--color-neu-text);
-}
-
-.neu-btn-outlined:hover {
-  background: var(--color-neu-base);
-  box-shadow: var(--shadow-neu-outset);
-}
-
-.neu-btn-outlined:active {
-  box-shadow: var(--shadow-neu-inset);
-}
-
-.neu-btn-text {
-  background: transparent;
-  box-shadow: none;
-  color: var(--color-neu-accent);
-}
-
-.neu-btn-text:hover {
-  background: var(--color-neu-base);
-  box-shadow: var(--shadow-neu-outset);
-}
-
-.neu-btn-text:active {
-  box-shadow: var(--shadow-neu-inset);
-}
-
-.neu-btn-icon {
-  background: var(--color-neu-base);
-  border-radius: 50%;
-  box-shadow: var(--shadow-neu-outset);
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-
-.neu-btn-icon:hover {
-  box-shadow: var(--shadow-neu-outset-strong);
-}
-
-.neu-btn-icon:active {
-  box-shadow: var(--shadow-neu-inset);
-}
-
-.neu-btn-tonal {
-  background: var(--color-neu-base);
-  box-shadow: var(--shadow-neu-outset);
-  color: var(--color-neu-accent);
-}
-
-.neu-btn-tonal:hover {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
-}
-
-.neu-btn-tonal:active {
-  background: linear-gradient(145deg, var(--gradient-neu-dark), var(--gradient-neu-light));
-}
-
-.neu-btn-sm {
-  padding: 8px 16px;
-  font-size: 14px;
-  border-radius: var(--radius-neu-sm);
-}
-
-/* Neumorphism card */
-.neu-card {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-xl);
-  box-shadow: var(--shadow-neu-outset-strong);
-  padding: 24px;
-}
-
-.neu-card-elevated {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-xl);
-  box-shadow: var(--shadow-neu-outset-strong);
-  padding: 24px;
-}
-
-.neu-card-filled {
-  background: var(--bg-elevated);
-  border-radius: var(--radius-neu-xl);
-  box-shadow: var(--shadow-neu-outset);
-  padding: 24px;
-}
-
-.neu-card-outlined {
-  background: transparent;
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-neu-xl);
-  box-shadow: none;
-  padding: 24px;
-}
-
-/* Neumorphism card hoverable */
-.neu-card-hoverable {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-xl);
-  box-shadow: var(--shadow-neu-outset-strong);
-  padding: 24px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.neu-card-hoverable:hover {
-  box-shadow:
-    12px 12px 24px var(--color-neu-shadow-dark-strong),
-    -12px -12px 24px var(--color-neu-shadow-light-strong);
-}
-
-.neu-card-hoverable:active {
-  box-shadow: var(--shadow-neu-inset-strong);
-}
-
-/* Neumorphism input */
-.neu-input {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-sm);
-  box-shadow: var(--shadow-neu-inset);
-  border: none;
-  padding: 12px 16px;
-  color: var(--color-neu-text-dark);
-  outline: none;
-  transition: all 0.15s ease;
-}
-
-.neu-input::placeholder {
-  color: var(--color-neu-text-light);
-}
-
-.neu-input:focus {
-  box-shadow:
-    inset 8px 8px 16px var(--color-neu-shadow-dark),
-    inset -8px -8px 16px var(--color-neu-shadow-light);
-}
-
-/* Neumorphism textarea */
-.neu-textarea {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-md);
-  box-shadow: var(--shadow-neu-inset);
-  border: none;
-  padding: 16px;
-  color: var(--color-neu-text-dark);
-  outline: none;
-  resize: vertical;
-  min-height: 100px;
-}
-
-/* Neumorphism badge */
-.neu-badge {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
-  border-radius: var(--radius-neu-sm);
-  box-shadow:
-    3px 3px 6px var(--color-neu-shadow-dark),
-    -3px -3px 6px var(--color-neu-shadow-light);
-  padding: 4px 12px;
-  color: var(--color-neu-text);
-  font-size: 12px;
-  font-weight: 500;
-}
-
-/* Neumorphism avatar */
-.neu-avatar {
-  background: var(--color-neu-base);
-  border-radius: 50%;
-  box-shadow:
-    6px 6px 12px var(--color-neu-shadow-dark),
-    -6px -6px 12px var(--color-neu-shadow-light);
-}
-
-/* Neumorphism checkbox */
-.neu-checkbox {
-  background: var(--color-neu-base);
-  border-radius: 6px;
-  box-shadow: var(--shadow-neu-outset);
-  width: 26px;
-  height: 26px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.neu-checkbox-check {
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
-  background: var(--color-neu-accent);
-  box-shadow: var(--shadow-neu-inset);
-  opacity: 0;
-  transform: scale(0);
-  transition: all 0.15s ease;
-}
-
-.neu-checkbox:checked .neu-checkbox-check {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Neumorphism radio */
-.neu-radio {
-  background: var(--color-neu-base);
-  border-radius: 50%;
-  box-shadow: var(--shadow-neu-outset);
-  width: 26px;
-  height: 26px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.neu-radio-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--color-neu-accent);
-  box-shadow: var(--shadow-neu-inset);
-  opacity: 0;
-  transform: scale(0);
-  transition: all 0.15s ease;
-}
-
-.neu-radio:checked .neu-radio-dot {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Neumorphism toggle/switch */
-.neu-toggle {
-  background: var(--color-neu-base);
-  border-radius: 20px;
-  box-shadow: var(--shadow-neu-outset);
-  width: 60px;
-  height: 30px;
-  cursor: pointer;
-  position: relative;
-}
-
-.neu-toggle-knob {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
-  border-radius: 50%;
-  box-shadow:
-    3px 3px 6px var(--color-neu-shadow-dark),
-    -3px -3px 6px var(--color-neu-shadow-light);
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  transition: all 0.2s ease;
-}
-
-.neu-toggle-active {
-  box-shadow: var(--shadow-neu-inset);
-}
-
-.neu-toggle-active .neu-toggle-knob {
-  left: 33px;
-  background: var(--color-neu-accent);
-}
-
-/* Neumorphism slider */
-.neu-slider {
-  background: var(--color-neu-base);
-  border-radius: 10px;
-  box-shadow: var(--shadow-neu-inset);
-  height: 10px;
-  position: relative;
-}
-
-.neu-slider-thumb {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
-  border-radius: 50%;
-  box-shadow:
-    4px 4px 8px var(--color-neu-shadow-dark),
-    -4px -4px 8px var(--color-neu-shadow-light);
-  width: 28px;
-  height: 28px;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.neu-slider-thumb:hover {
-  box-shadow:
-    6px 6px 12px var(--color-neu-shadow-dark),
-    -6px -6px 12px var(--color-neu-shadow-light);
-}
-
-.neu-slider-thumb:active {
-  box-shadow: var(--shadow-neu-inset);
-}
-
-/* Neumorphism progress bar */
-.neu-progress {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-sm);
-  box-shadow: var(--shadow-neu-inset);
-  height: 14px;
-  overflow: hidden;
-}
-
-.neu-progress-bar {
-  background: linear-gradient(
-    90deg,
-    var(--color-neu-accent),
-    var(--color-neu-accent-muted)
-  );
-  border-radius: var(--radius-neu-sm);
-  height: 100%;
-  transition: width 0.3s ease;
-  box-shadow:
-    inset 2px 2px 4px var(--color-neu-shadow-dark),
-    2px 2px 4px var(--color-neu-shadow-light);
-}
-
-/* Neumorphism modal/dialog */
-.neu-modal {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-xl);
-  box-shadow:
-    20px 20px 40px var(--color-neu-shadow-dark-strong),
-    -20px -20px 40px var(--color-neu-shadow-light-strong);
-  padding: 32px;
-}
-
-/* Neumorphism tooltip */
-.neu-tooltip {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-sm);
-  box-shadow:
-    6px 6px 12px var(--color-neu-shadow-dark),
-    -6px -6px 12px var(--color-neu-shadow-light);
-  padding: 8px 14px;
-  color: var(--color-neu-text);
-  font-size: 12px;
-}
-
-/* Neumorphism divider */
-.neu-divider {
-  background: var(--color-neu-base);
-  border-radius: 2px;
-  height: 2px;
-  box-shadow:
-    inset 1px 1px 2px var(--color-neu-shadow-dark),
-    inset -1px -1px 2px var(--color-neu-shadow-light);
-  margin: 16px 0;
-}
-
-/* Neumorphism container */
-.neu-container {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-xl);
-  box-shadow:
-    8px 8px 16px var(--color-neu-shadow-dark),
-    -8px -8px 16px var(--color-neu-shadow-light);
-  padding: 24px;
-}
-
-/* Neumorphism navigation */
-.neu-nav {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-lg);
-  box-shadow:
-    4px 4px 8px var(--color-neu-shadow-dark),
-    -4px -4px 8px var(--color-neu-shadow-light);
-  padding: 8px;
-}
-
-.neu-nav-item {
-  color: var(--color-neu-text);
-  padding: 12px 20px;
-  border-radius: var(--radius-neu-md);
-  transition: all 0.15s ease;
-}
-
-.neu-nav-item:hover {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
-  box-shadow:
-    3px 3px 6px var(--color-neu-shadow-dark),
-    -3px -3px 6px var(--color-neu-shadow-light);
-}
-
-.neu-nav-item-active {
-  color: var(--color-neu-accent);
-  background: var(--color-neu-base);
-  box-shadow: var(--shadow-neu-inset);
-}
-
-/* Neumorphism tabs */
-.neu-tabs {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-lg);
-  box-shadow:
-    inset 4px 4px 8px var(--color-neu-shadow-dark),
-    inset -4px -4px 8px var(--color-neu-shadow-light);
-  padding: 6px;
-  display: flex;
-  gap: 4px;
-}
-
-.neu-tab {
-  color: var(--color-neu-text-light);
-  padding: 10px 20px;
-  border-radius: var(--radius-neu-md);
-  transition: all 0.15s ease;
-  cursor: pointer;
-}
-
-.neu-tab:hover {
-  color: var(--color-neu-text-dark);
-}
-
-.neu-tab-active {
-  color: var(--color-neu-accent);
-  background: var(--color-neu-base);
-  box-shadow:
-    3px 3px 6px var(--color-neu-shadow-dark),
-    -3px -3px 6px var(--color-neu-shadow-light);
-}
-
-/* Neumorphism pagination */
-.neu-pagination {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-lg);
-  box-shadow:
-    inset 4px 4px 8px var(--color-neu-shadow-dark),
-    inset -4px -4px 8px var(--color-neu-shadow-light);
-  padding: 6px;
-  display: flex;
-  gap: 4px;
-}
-
-.neu-page-btn {
-  color: var(--color-neu-text);
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-neu-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s ease;
-  cursor: pointer;
-  background: transparent;
-}
-
-.neu-page-btn:hover {
-  background: linear-gradient(145deg, var(--gradient-neu-light), var(--gradient-neu-dark));
-  box-shadow:
-    2px 2px 4px var(--color-neu-shadow-dark),
-    -2px -2px 4px var(--color-neu-shadow-light);
-}
-
-.neu-page-btn-active {
-  color: var(--color-neu-accent);
-  background: var(--color-neu-base);
-  box-shadow: var(--shadow-neu-inset);
-}
-
-/* Neumorphism select/dropdown */
-.neu-select {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-sm);
-  box-shadow: var(--shadow-neu-outset);
-  padding: 12px 16px;
-  color: var(--color-neu-text-dark);
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5568' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 16px center;
-  padding-right: 40px;
-}
-
-/* Neumorphism text styles */
-.neu-text {
-  color: var(--color-neu-text);
-}
-
-.neu-text-primary {
-  color: var(--color-neu-text-dark);
-  font-weight: 600;
-}
-
-.neu-text-accent {
-  color: var(--color-neu-accent);
-}
-
-/* Neumorphism icon button */
-.neu-icon-btn {
-  background: var(--color-neu-base);
-  border-radius: 50%;
-  box-shadow:
-    4px 4px 8px var(--color-neu-shadow-dark),
-    -4px -4px 8px var(--color-neu-shadow-light);
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  color: var(--color-neu-text);
-}
-
-.neu-icon-btn:hover {
-  box-shadow:
-    6px 6px 12px var(--color-neu-shadow-dark),
-    -6px -6px 12px var(--color-neu-shadow-light);
-}
-
-.neu-icon-btn:active {
-  box-shadow: var(--shadow-neu-inset);
-}
-
-/* Neumorphism spinner/loading */
-.neu-spinner {
-  background: var(--color-neu-base);
-  border-radius: 50%;
-  box-shadow: var(--shadow-neu-outset);
-  width: 40px;
-  height: 40px;
-  position: relative;
-}
-
-.neu-spinner::after {
-  content: "";
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  right: 4px;
-  bottom: 4px;
-  border-radius: 50%;
-  border: 3px solid transparent;
-  border-top-color: var(--color-neu-accent);
-  animation: neu-spin 1s linear infinite;
-}
-
-@keyframes neu-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Neumorphism empty state */
-.neu-empty {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-xl);
-  box-shadow: var(--shadow-neu-outset);
-  padding: 48px;
-  text-align: center;
-  color: var(--color-neu-text-light);
-}
-
-/* Neumorphism notification/toast */
-.neu-toast {
-  background: var(--color-neu-base);
-  border-radius: var(--radius-neu-lg);
-  box-shadow:
-    8px 8px 16px var(--color-neu-shadow-dark),
-    -8px -8px 16px var(--color-neu-shadow-light);
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.neu-toast-success {
-  border-left: 4px solid var(--success);
-}
-
-.neu-toast-error {
-  border-left: 4px solid var(--error);
-}
-
-.neu-toast-warning {
-  border-left: 4px solid var(--warning);
-}
-
-.neu-toast-info {
-  border-left: 4px solid var(--info);
-}
-
-/* Neumorphism additional components */
-.neu-data-table { background: var(--bg-elevated); border-radius: var(--radius-neu-lg); box-shadow: var(--shadow-neu-outset); }
-.neu-sidebar { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); }
-.neu-header, .neu-footer { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); }
-.neu-page-container { background: var(--bg-primary); }
-.neu-panel { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); border-radius: var(--radius-neu-lg); }
-.neu-segment-selector { background: var(--bg-elevated); box-shadow: var(--shadow-neu-inset); border-radius: var(--radius-neu-md); }
-.neu-split-view { background: var(--bg-primary); }
-.neu-stats-card { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset-strong); border-radius: var(--radius-neu-xl); padding: 24px; }
-.neu-table { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); border-radius: var(--radius-neu-md); }
-.neu-tree { background: var(--bg-elevated); }
-.neu-canvas { background: var(--bg-primary); }
-.neu-main-editor { background: var(--bg-primary); }
-.neu-canvas-toolbar, .neu-page-toolbar { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); }
-.neu-command-palette { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset-strong); border-radius: var(--radius-neu-xl); }
-.neu-component-palette { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); }
-.neu-locale-switcher { background: var(--bg-elevated); border-radius: var(--radius-neu-sm); }
-.neu-json-view { background: var(--bg-elevated); border-radius: var(--radius-neu-md); font-family: monospace; }
-.neu-form { background: var(--bg-elevated); padding: 16px; }
-.neu-properties-panel { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); border-radius: var(--radius-neu-lg); }
-.neu-bottom-panel { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); }
-.neu-designer-tree { background: var(--bg-elevated); border-radius: var(--radius-neu-md); }
-.neu-designer-sidebar { background: var(--bg-elevated); box-shadow: var(--shadow-neu-outset); }
-.neu-block { background: var(--bg-elevated); border-radius: var(--radius-neu-lg); box-shadow: var(--shadow-neu-outset); }
-`;
-const NEUMORPHISM_CSS = `/* Neumorphism Style System */\n${NEUMORPHISM_TOKENS_CSS}\n${NEUMORPHISM_COMPONENTS_CSS}`;
-const neumorphismComponentStyles = {
-    "app-button": {
-        variants: {
-            solid: "neu-btn neu-btn-solid",
-            outlined: "neu-btn neu-btn-outlined",
-            text: "neu-btn neu-btn-text",
-            icon: "neu-btn neu-btn-icon",
-            tonal: "neu-btn neu-btn-tonal",
-            primary: "neu-btn neu-btn-primary",
-        },
-        sizes: {
-            sm: "neu-btn-sm",
-            md: "",
-            lg: "",
-        },
-    },
-    "app-card": {
-        variants: {
-            elevated: "neu-card neu-card-elevated",
-            filled: "neu-card neu-card-filled",
-            outlined: "neu-card neu-card-outlined",
-        },
-    },
-    "app-theme-toggle": { variants: { default: "neu-toggle" } },
-    "app-swap-button": { variants: { default: "neu-swap-btn" } },
-    "app-language-selector": { variants: { default: "neu-lang-selector" } },
-    "app-text-input": { variants: { default: "neu-input" } },
-    "app-translation-output": { variants: { default: "neu-output" } },
-    "app-shortcuts-overlay": { variants: { default: "neu-overlay" } },
-    "app-dialog": {
-        variants: {
-            solid: "neu-modal",
-        },
-    },
-    "app-confirm-dialog": {
-        variants: {
-            solid: "neu-modal",
-        },
-    },
-    "app-modal": {
-        variants: {
-            solid: "neu-modal",
-        },
-    },
-    "app-checkbox": {
-        variants: {
-            outlined: "neu-checkbox",
-        },
-    },
-    "app-switch": {
-        variants: {
-            outlined: "neu-toggle",
-        },
-    },
-    "app-slider": {
-        variants: {
-            outline: "neu-slider",
-        },
-    },
-    "app-progress-bar": {
-        variants: {
-            linear: "neu-progress",
-        },
-    },
-    "app-tabs": {
-        variants: {
-            standard: "neu-tabs",
-        },
-    },
-    "app-toast": {
-        variants: {
-            standard: "neu-toast",
-        },
-    },
-    "app-snackbar": {
-        variants: {
-            standard: "neu-snackbar",
-        },
-    },
-    "app-radio": {
-        variants: {
-            outlined: "neu-radio",
-        },
-    },
-    "app-tooltip": {
-        variants: {
-            default: "neu-tooltip",
-        },
-    },
-    "app-empty-state": {
-        variants: {
-            standard: "neu-empty",
-        },
-    },
-    "app-pagination": {
-        variants: {
-            standard: "neu-pagination",
-        },
-    },
-    "app-select": {
-        variants: {
-            standard: "neu-select",
-        },
-    },
-    "app-spinner": {
-        variants: {
-            standard: "neu-spinner",
-        },
-    },
-    "app-loading": {
-        variants: {
-            standard: "neu-loading",
-        },
-    },
-    "app-text": {
-        variants: {
-            default: "neu-text",
-        },
-    },
-    "app-textarea": {
-        variants: {
-            default: "neu-textarea",
-        },
-    },
-    "app-avatar": {
-        variants: {
-            image: "neu-avatar",
-            initials: "neu-avatar",
-            icon: "neu-avatar",
-        },
-    },
-    "app-chip": {
-        variants: {
-            assist: "neu-chip",
-            filter: "neu-chip",
-            input: "neu-chip",
-            suggestion: "neu-chip",
-        },
-    },
-    "app-sidebar": {
-        variants: {
-            default: "neu-nav",
-        },
-    },
-    "app-block": {
-        variants: {
-            default: "neu-container",
-        },
-    },
-};
-
-const M3_TOKENS_CSS = `
-/**
- * Material Design 3 Design Tokens
- * Light mode + Dark mode
- */
-
-:root {
-  /* M3 Color System */
-  --color-m3-primary: #6750a4;
-  --color-m3-primary-container: #eaddff;
-  --color-m3-on-primary: #ffffff;
-  --color-m3-on-primary-container: #21005d;
-  --color-m3-secondary: #625b71;
-  --color-m3-secondary-container: #e8def8;
-  --color-m3-on-secondary: #ffffff;
-  --color-m3-on-secondary-container: #1d192b;
-  --color-m3-tertiary: #7d5260;
-  --color-m3-tertiary-container: #ffd8e4;
-  --color-m3-on-tertiary: #ffffff;
-  --color-m3-on-tertiary-container: #31111d;
-  --color-m3-error: #b3261e;
-  --color-m3-error-container: #f9dedc;
-  --color-m3-on-error: #ffffff;
-  --color-m3-on-error-container: #410e0b;
-  --color-m3-background: #fffbfe;
-  --color-m3-on-background: #1c1b1f;
-  --color-m3-surface: #fffbfe;
-  --color-m3-surface-dim: #ded8e1;
-  --color-m3-surface-container: #f3edf7;
-  --color-m3-surface-container-low: #f7f2fa;
-  --color-m3-surface-container-high: #ece6f0;
-  --color-m3-surface-container-highest: #e6e0e9;
-  --color-m3-on-surface: #1c1b1f;
-  --color-m3-on-surface-variant: #49454f;
-  --color-m3-outline: #79747e;
-  --color-m3-outline-variant: #cac4d0;
-  --color-m3-inverse-surface: #313033;
-  --color-m3-inverse-on-surface: #f4eff4;
-  --color-m3-inverse-primary: #d0bcff;
-  --color-m3-shadow: #000000;
-  --color-m3-scrim: #000000;
-  --color-m3-surface-tint: #6750a4;
-
-  /* Shadow tokens */
-  --shadow-m3-1: 0 1px 2px rgba(0,0,0,0.3);
-  --shadow-m3-2: 0 2px 6px rgba(0,0,0,0.3);
-  --shadow-m3-3: 0 4px 8px rgba(0,0,0,0.3);
-  --shadow-m3-4: 0 6px 10px rgba(0,0,0,0.3);
-  --shadow-m3-5: 0 8px 12px rgba(0,0,0,0.3);
-
-  /* State layer tokens */
-  --color-m3-state-hover: rgba(103, 80, 164, 0.08);
-  --color-m3-state-focus: rgba(103, 80, 164, 0.12);
-  --color-m3-state-pressed: rgba(103, 80, 164, 0.12);
-  --color-m3-state-dragged: rgba(103, 80, 164, 0.16);
-  --color-m3-state-hover-alt: rgba(103, 80, 164, 0.04);
-  --color-m3-state-selected: rgba(103, 80, 164, 0.12);
-
-  /* Radius tokens */
-  --radius-m3-extra-small: 4px;
-  --radius-m3-small: 8px;
-  --radius-m3-medium: 12px;
-  --radius-m3-large: 16px;
-  --radius-m3-extra-large: 28px;
-  --radius-m3-full: 50%;
-
-  /* Semantic aliases */
-  --accent: var(--color-m3-primary);
-  --accent-hover: #7c4dff;
-  --text-on-accent: var(--color-m3-on-primary);
-  --text-primary: var(--color-m3-on-background);
-  --text-secondary: var(--color-m3-on-surface-variant);
-  --text-muted: #6d6b74;
-  --text-on-error: var(--color-m3-on-error);
-  --text-on-warning: #ffffff;
-  --text-on-success: #ffffff;
-  --bg-elevated: var(--color-m3-surface-container);
-  --border-color: var(--color-m3-outline);
-  --error: var(--color-m3-error);
-  --warning: #b34700;
-  --success: #2d7a3a;
-  --info: #0066ff;
-  --bg-primary: var(--color-m3-background);
-  --bg-secondary: var(--color-m3-surface-container-low);
-  --bg-tertiary: var(--color-m3-surface-container);
-  --border-subtle: var(--color-m3-outline-variant);
-}
-
-/* Dark mode */
-body[data-style="m3"][data-theme="dark"] {
-  --color-m3-primary: #d0bcff;
-  --color-m3-primary-container: #4f378b;
-  --color-m3-on-primary: #381e72;
-  --color-m3-on-primary-container: #eaddff;
-  --color-m3-secondary: #ccc2dc;
-  --color-m3-secondary-container: #4a4458;
-  --color-m3-on-secondary: #332d41;
-  --color-m3-on-secondary-container: #e8def8;
-  --color-m3-tertiary: #efb8c8;
-  --color-m3-tertiary-container: #633b48;
-  --color-m3-on-tertiary: #492532;
-  --color-m3-on-tertiary-container: #ffd8e4;
-  --color-m3-error: #f2b8b5;
-  --color-m3-error-container: #8c1d18;
-  --color-m3-on-error: #601410;
-  --color-m3-on-error-container: #f9dedc;
-  --color-m3-background: #1c1b1f;
-  --color-m3-on-background: #e6e1e5;
-  --color-m3-surface: #1c1b1f;
-  --color-m3-surface-dim: #141218;
-  --color-m3-surface-container: #211f26;
-  --color-m3-surface-container-low: #1d1b22;
-  --color-m3-surface-container-high: #2b2930;
-  --color-m3-surface-container-highest: #36343b;
-  --color-m3-on-surface: #e6e1e5;
-  --color-m3-on-surface-variant: #cac4d0;
-  --color-m3-outline: #938f99;
-  --color-m3-outline-variant: #49454f;
-  --color-m3-inverse-surface: #e6e1e5;
-  --color-m3-inverse-on-surface: #313033;
-  --color-m3-inverse-primary: #6750a4;
-  --color-m3-surface-tint: #d0bcff;
-  --shadow-m3-1: 0 1px 2px rgba(0,0,0,0.5);
-  --shadow-m3-2: 0 2px 6px rgba(0,0,0,0.5);
-  --shadow-m3-3: 0 4px 8px rgba(0,0,0,0.5);
-  --shadow-m3-4: 0 6px 10px rgba(0,0,0,0.5);
-  --shadow-m3-5: 0 8px 12px rgba(0,0,0,0.5);
-  --color-m3-state-hover: rgba(208, 188, 255, 0.08);
-  --color-m3-state-focus: rgba(208, 188, 255, 0.12);
-  --color-m3-state-pressed: rgba(208, 188, 255, 0.12);
-  --color-m3-state-dragged: rgba(208, 188, 255, 0.16);
-  --color-m3-state-hover-alt: rgba(208, 188, 255, 0.04);
-  --color-m3-state-selected: rgba(208, 188, 255, 0.12);
-  --text-primary: #e6e1e5;
-  --text-secondary: #cac4d0;
-  --text-muted: #938f99;
-  --bg-elevated: #2b2930;
-  --border-color: #938f99;
-  --error: #f2b8b5;
-  --info: #60a5fa;
-  --bg-primary: #1c1b1f;
-  --bg-secondary: #1d1b22;
-  --bg-tertiary: #2b2930;
-  --border-subtle: #49454f;
-}
-`;
-const M3_COMPONENTS_CSS = `
-/* Material Design 3 Component Styles */
-
-/* M3 State layer mixin utility */
-.m3-state-layer {
-  position: relative;
-  overflow: hidden;
-}
-
-.m3-state-layer::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
-}
-
-.m3-state-layer:hover::before {
-  opacity: 1;
-  background: var(--color-m3-state-hover);
-}
-
-.m3-state-layer:focus-visible::before {
-  opacity: 1;
-  background: var(--color-m3-state-focus);
-}
-
-.m3-state-layer:active::before {
-  opacity: 1;
-  background: var(--color-m3-state-pressed);
-}
-
-/* M3 - Material 3 component base */
-.m3 {
-  font-family: "Roboto", -apple-system, BlinkMacSystemFont, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  color: var(--color-m3-on-surface);
-}
-
-/* M3 Filled button (default) */
-.m3-btn-filled {
-  background: var(--color-m3-primary);
-  color: var(--color-m3-on-primary);
-  border-radius: var(--radius-m3-extra-large);
-  padding: 10px 24px;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.1px;
-  box-shadow: var(--shadow-m3-1);
-  transition: all 0.2s ease;
-  cursor: pointer;
-  border: none;
-  position: relative;
-  overflow: hidden;
-}
-
-.m3-btn-filled:hover {
-  box-shadow: var(--shadow-m3-2);
-}
-
-.m3-btn-filled:active {
-  box-shadow: var(--shadow-m3-1);
-}
-
-.m3-btn-filled:focus-visible {
-  outline: 2px solid var(--color-m3-primary);
-  outline-offset: 2px;
-}
-
-/* M3 Outlined button */
-.m3-btn-outlined {
-  background: transparent;
-  color: var(--color-m3-primary);
-  border-radius: var(--radius-m3-extra-large);
-  padding: 10px 24px;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.1px;
-  border: 1px solid var(--color-m3-outline);
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.m3-btn-outlined:hover {
-  background: var(--color-m3-state-hover-alt);
-}
-
-.m3-btn-outlined:active {
-  background: var(--color-m3-state-pressed);
-}
-
-.m3-btn-outlined:focus-visible {
-  outline: 2px solid var(--color-m3-primary);
-  outline-offset: 2px;
-}
-
-/* M3 Text button */
-.m3-btn-text {
-  background: transparent;
-  color: var(--color-m3-primary);
-  border-radius: var(--radius-m3-extra-large);
-  padding: 10px 12px;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.1px;
-  border: none;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.m3-btn-text:hover {
-  background: var(--color-m3-state-hover-alt);
-}
-
-.m3-btn-text:active {
-  background: var(--color-m3-state-pressed);
-}
-
-/* M3 Tonal button */
-.m3-btn-tonal {
-  background: var(--color-m3-secondary-container);
-  color: var(--color-m3-on-secondary-container);
-  border-radius: var(--radius-m3-extra-large);
-  padding: 10px 24px;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.1px;
-  border: none;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.m3-btn-tonal:hover {
-  background: var(--color-m3-secondary-container);
-  box-shadow: var(--shadow-m3-1);
-}
-
-.m3-btn-tonal:active {
-  box-shadow: none;
-}
-
-/* M3 Icon button */
-.m3-btn-icon {
-  background: transparent;
-  color: var(--color-m3-on-surface-variant);
-  border-radius: var(--radius-m3-full);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.m3-btn-icon:hover {
-  background: var(--color-m3-state-hover);
-}
-
-.m3-btn-icon:active {
-  background: var(--color-m3-state-pressed);
-}
-
-.m3-btn-icon-selected {
-  background: var(--color-m3-secondary-container);
-  color: var(--color-m3-on-secondary-container);
-}
-
-/* M3 Small button */
-.m3-btn-sm {
-  padding: 6px 16px;
-  font-size: 12px;
-  border-radius: var(--radius-m3-large);
-}
-
-/* M3 FAB */
-.m3-fab {
-  background: var(--color-m3-primary-container);
-  color: var(--color-m3-on-primary-container);
-  border-radius: var(--radius-m3-large);
-  padding: 16px;
-  min-width: 56px;
-  min-height: 56px;
-  box-shadow: var(--shadow-m3-3);
-  border: none;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.m3-fab:hover {
-  box-shadow: var(--shadow-m3-4);
-}
-
-.m3-fab:active {
-  box-shadow: var(--shadow-m3-2);
-}
-
-.m3-fab-small {
-  border-radius: var(--radius-m3-medium);
-  padding: 8px;
-  min-width: 40px;
-  min-height: 40px;
-}
-
-.m3-fab-large {
-  border-radius: var(--radius-m3-large);
-  padding: 20px;
-  min-width: 96px;
-  min-height: 96px;
-}
-
-/* M3 Card - Elevated */
-.m3-card-elevated {
-  background: var(--color-m3-surface);
-  border-radius: var(--radius-m3-medium);
-  box-shadow: var(--shadow-m3-1);
-  transition: box-shadow 0.2s ease;
-  overflow: hidden;
-}
-
-.m3-card-elevated:hover {
-  box-shadow: var(--shadow-m3-2);
-}
-
-/* M3 Card - Filled */
-.m3-card-filled {
-  background: var(--color-m3-surface-container-low);
-  border-radius: var(--radius-m3-medium);
-  overflow: hidden;
-}
-
-/* M3 Card - Outlined */
-.m3-card-outlined {
-  background: var(--color-m3-surface);
-  border-radius: var(--radius-m3-medium);
-  border: 1px solid var(--color-m3-outline-variant);
-  overflow: hidden;
-}
-
-/* M3 Input - Outlined */
-.m3-input-outlined {
-  background: transparent;
-  border: 1px solid var(--color-m3-outline);
-  border-radius: var(--radius-m3-extra-small);
-  padding: 16px;
-  font-size: 16px;
-  color: var(--color-m3-on-surface);
-  transition: all 0.2s ease;
-  outline: none;
-}
-
-.m3-input-outlined:hover {
-  border-color: var(--color-m3-on-surface-variant);
-}
-
-.m3-input-outlined:focus {
-  border-color: var(--color-m3-primary);
-  border-width: 2px;
-}
-
-.m3-input-outlined::placeholder {
-  color: var(--color-m3-on-surface-variant);
-}
-
-/* M3 Input - Filled */
-.m3-input-filled {
-  background: var(--color-m3-surface-container-high);
-  border: none;
-  border-radius: var(--radius-m3-extra-small) var(--radius-m3-extra-small) 0 0;
-  padding: 16px;
-  font-size: 16px;
-  color: var(--color-m3-on-surface);
-  transition: all 0.2s ease;
-  outline: none;
-}
-
-.m3-input-filled:focus {
-  background: var(--color-m3-surface-container-highest);
-}
-
-/* M3 Chip - Assist */
-.m3-chip-assist {
-  background: var(--color-m3-surface-container-low);
-  color: var(--color-m3-on-surface-variant);
-  border-radius: var(--radius-m3-small);
-  padding: 6px 12px;
-  font-size: 14px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.m3-chip-assist:hover {
-  background: var(--color-m3-state-hover);
-}
-
-/* M3 Chip - Filter */
-.m3-chip-filter {
-  background: transparent;
-  color: var(--color-m3-on-surface-variant);
-  border-radius: var(--radius-m3-small);
-  padding: 6px 12px;
-  font-size: 14px;
-  border: 1px solid var(--color-m3-outline);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.m3-chip-filter:hover {
-  background: var(--color-m3-state-hover-alt);
-}
-
-.m3-chip-filter-selected {
-  background: var(--color-m3-secondary-container);
-  color: var(--color-m3-on-secondary-container);
-  border-color: transparent;
-}
-
-/* M3 Chip - Input */
-.m3-chip-input {
-  background: var(--color-m3-surface-container-low);
-  color: var(--color-m3-on-surface-variant);
-  border-radius: var(--radius-m3-small);
-  padding: 6px 12px;
-  font-size: 14px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-/* M3 Chip - Suggestion */
-.m3-chip-suggestion {
-  background: transparent;
-  color: var(--color-m3-on-surface-variant);
-  border-radius: var(--radius-m3-small);
-  padding: 6px 12px;
-  font-size: 14px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.m3-chip-suggestion:hover {
-  background: var(--color-m3-state-hover-alt);
-}
-
-/* M3 Badge */
-.m3-badge {
-  background: var(--color-m3-error);
-  color: var(--color-m3-on-error);
-  border-radius: var(--radius-m3-full);
-  padding: 0 6px;
-  font-size: 10px;
-  font-weight: 500;
-  min-width: 16px;
-  height: 16px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* M3 Avatar - Image */
-.m3-avatar-image {
-  background: var(--color-m3-primary-container);
-  border-radius: var(--radius-m3-full);
-  width: 40px;
-  height: 40px;
-  overflow: hidden;
-}
-
-.m3-avatar-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* M3 Avatar - Initials */
-.m3-avatar-initials {
-  background: var(--color-m3-primary-container);
-  color: var(--color-m3-on-primary-container);
-  border-radius: var(--radius-m3-full);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-/* M3 Avatar - Icon */
-.m3-avatar-icon {
-  background: var(--color-m3-secondary-container);
-  color: var(--color-m3-on-secondary-container);
-  border-radius: var(--radius-m3-full);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* M3 Checkbox */
-.m3-checkbox {
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--color-m3-outline);
-  border-radius: 2px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  appearance: none;
-  background: transparent;
-}
-
-.m3-checkbox:checked {
-  background: var(--color-m3-primary);
-  border-color: var(--color-m3-primary);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
-  background-size: 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-/* M3 Radio */
-.m3-radio {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--color-m3-outline);
-  border-radius: var(--radius-m3-full);
-  cursor: pointer;
-  appearance: none;
-  transition: all 0.2s ease;
-}
-
-.m3-radio:checked {
-  border-color: var(--color-m3-primary);
-  border-width: 10px;
-}
-
-/* M3 Switch */
-.m3-switch {
-  width: 52px;
-  height: 32px;
-  background: var(--color-m3-surface-container-highest);
-  border-radius: 16px;
-  cursor: pointer;
-  appearance: none;
-  transition: all 0.2s ease;
-  position: relative;
-  border: none;
-}
-
-.m3-switch::before {
-  content: "";
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  background: var(--color-m3-outline);
-  border-radius: var(--radius-m3-full);
-  top: 4px;
-  left: 4px;
-  transition: all 0.2s ease;
-}
-
-.m3-switch:checked {
-  background: var(--color-m3-primary-container);
-}
-
-.m3-switch:checked::before {
-  background: var(--color-m3-on-primary-container);
-  transform: translateX(20px);
-}
-
-/* M3 Slider */
-.m3-slider {
-  height: 40px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.m3-slider-track {
-  flex: 1;
-  height: 4px;
-  background: var(--color-m3-surface-container-highest);
-  border-radius: 2px;
-  position: relative;
-}
-
-.m3-slider-fill {
-  position: absolute;
-  height: 100%;
-  background: var(--color-m3-primary);
-  border-radius: 2px;
-  left: 0;
-}
-
-.m3-slider-thumb {
-  width: 20px;
-  height: 20px;
-  background: var(--color-m3-primary);
-  border-radius: var(--radius-m3-full);
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: var(--shadow-m3-2);
-  transition: all 0.1s ease;
-  cursor: grab;
-}
-
-.m3-slider-thumb:active {
-  cursor: grabbing;
-  transform: translateX(-50%) scale(1.1);
-}
-
-/* M3 Progress - Linear */
-.m3-progress-linear {
-  height: 4px;
-  background: var(--color-m3-surface-container-highest);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.m3-progress-linear-bar {
-  height: 100%;
-  background: var(--color-m3-primary);
-  border-radius: 2px;
-  transition: width 0.3s ease;
-}
-
-/* M3 Progress - Circular */
-.m3-progress-circular {
-  width: 48px;
-  height: 48px;
-  position: relative;
-}
-
-.m3-progress-circular-track {
-  position: absolute;
-  inset: 0;
-  border: 4px solid var(--color-m3-surface-container-highest);
-  border-radius: var(--radius-m3-full);
-}
-
-.m3-progress-circular-indicator {
-  position: absolute;
-  inset: 0;
-  border: 4px solid transparent;
-  border-top-color: var(--color-m3-primary);
-  border-radius: var(--radius-m3-full);
-  animation: m3-spin 1s linear infinite;
-}
-
-@keyframes m3-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* M3 Dialog */
-.m3-dialog {
-  background: var(--color-m3-surface);
-  border-radius: var(--radius-m3-extra-large);
-  padding: 24px;
-  box-shadow: var(--shadow-m3-5);
-  max-width: 560px;
-  min-width: 280px;
-}
-
-.m3-dialog-headline {
-  font-size: 24px;
-  font-weight: 400;
-  color: var(--color-m3-on-surface);
-  margin-bottom: 16px;
-}
-
-.m3-dialog-content {
-  font-size: 14px;
-  color: var(--color-m3-on-surface-variant);
-  line-height: 1.5;
-  margin-bottom: 24px;
-}
-
-.m3-dialog-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
-
-/* M3 Navigation - Rail */
-.m3-nav-rail {
-  background: var(--color-m3-surface);
-  width: 80px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px 0;
-  gap: 4px;
-}
-
-.m3-nav-rail-item {
-  width: 56px;
-  height: 56px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  border-radius: var(--radius-m3-medium);
-  color: var(--color-m3-on-surface-variant);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.m3-nav-rail-item:hover {
-  background: var(--color-m3-state-hover);
-}
-
-.m3-nav-rail-item-selected {
-  background: var(--color-m3-secondary-container);
-  color: var(--color-m3-on-secondary-container);
-}
-
-.m3-nav-rail-label {
-  font-size: 12px;
-  font-weight: 500;
-}
-
-/* M3 Navigation - Bar */
-.m3-nav-bar {
-  background: var(--color-m3-surface);
-  height: 80px;
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  padding: 0 24px;
-  box-shadow: var(--shadow-m3-2);
-}
-
-.m3-nav-bar-item {
-  flex: 1;
-  max-width: 80px;
-  height: 64px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  border-radius: var(--radius-m3-medium);
-  color: var(--color-m3-on-surface-variant);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.m3-nav-bar-item:hover {
-  background: var(--color-m3-state-hover);
-}
-
-.m3-nav-bar-item-selected {
-  color: var(--color-m3-on-secondary-container);
-}
-
-.m3-nav-bar-item-selected::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  width: 32px;
-  height: 3px;
-  background: var(--color-m3-secondary-container);
-  border-radius: 0 0 3px 3px;
-}
-
-/* M3 Tabs */
-.m3-tabs {
-  background: var(--color-m3-surface);
-  display: flex;
-  gap: 0;
-}
-
-.m3-tab {
-  color: var(--color-m3-on-surface-variant);
-  padding: 12px 24px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  position: relative;
-  transition: color 0.2s ease;
-}
-
-.m3-tab:hover {
-  color: var(--color-m3-on-surface);
-}
-
-.m3-tab-selected {
-  color: var(--color-m3-primary);
-}
-
-.m3-tab-indicator {
-  position: absolute;
-  bottom: 0;
-  height: 3px;
-  background: var(--color-m3-primary);
-  border-radius: 3px 3px 0 0;
-  transition: all 0.2s ease;
-}
-
-/* M3 Tooltip */
-.m3-tooltip {
-  background: var(--color-m3-inverse-surface);
-  color: var(--color-m3-inverse-on-surface);
-  border-radius: var(--radius-m3-extra-small);
-  padding: 6px 8px;
-  font-size: 12px;
-  line-height: 1.4;
-  max-width: 200px;
-  box-shadow: var(--shadow-m3-2);
-}
-
-/* M3 Snackbar */
-.m3-snackbar {
-  background: var(--color-m3-inverse-surface);
-  color: var(--color-m3-inverse-on-surface);
-  border-radius: var(--radius-m3-extra-small);
-  padding: 14px 16px;
-  font-size: 14px;
-  box-shadow: var(--shadow-m3-3);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  max-width: 420px;
-}
-
-.m3-snackbar-action {
-  color: var(--color-m3-inverse-primary);
-  font-weight: 500;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-}
-
-/* M3 Divider */
-.m3-divider {
-  background: var(--color-m3-outline-variant);
-  height: 1px;
-  margin: 16px 0;
-}
-
-.m3-divider-vertical {
-  background: var(--color-m3-outline-variant);
-  width: 1px;
-  margin: 0 16px;
-}
-
-/* M3 Text styles */
-.m3-display-large { font-size: 57px; font-weight: 400; letter-spacing: -0.25px; line-height: 64px; }
-.m3-display-medium { font-size: 45px; font-weight: 400; line-height: 52px; }
-.m3-display-small { font-size: 36px; font-weight: 400; line-height: 44px; }
-.m3-headline-large { font-size: 32px; font-weight: 400; line-height: 40px; }
-.m3-headline-medium { font-size: 28px; font-weight: 400; line-height: 36px; }
-.m3-headline-small { font-size: 24px; font-weight: 400; line-height: 32px; }
-.m3-title-large { font-size: 22px; font-weight: 400; line-height: 28px; }
-.m3-title-medium { font-size: 16px; font-weight: 500; letter-spacing: 0.15px; line-height: 24px; }
-.m3-title-small { font-size: 14px; font-weight: 500; letter-spacing: 0.1px; line-height: 20px; }
-.m3-body-large { font-size: 16px; font-weight: 400; letter-spacing: 0.5px; line-height: 24px; }
-.m3-body-medium { font-size: 14px; font-weight: 400; letter-spacing: 0.25px; line-height: 20px; }
-.m3-body-small { font-size: 12px; font-weight: 400; letter-spacing: 0.4px; line-height: 16px; }
-.m3-label-large { font-size: 14px; font-weight: 500; letter-spacing: 0.1px; line-height: 20px; }
-.m3-label-medium { font-size: 12px; font-weight: 500; letter-spacing: 0.5px; line-height: 16px; }
-.m3-label-small { font-size: 11px; font-weight: 500; letter-spacing: 0.5px; line-height: 16px; }
-
-/* M3 Surface containers */
-.m3-surface-dim { background: var(--color-m3-surface-dim); }
-.m3-surface-container { background: var(--color-m3-surface-container); }
-.m3-surface-container-low { background: var(--color-m3-surface-container-low); }
-.m3-surface-container-high { background: var(--color-m3-surface-container-high); }
-.m3-surface-container-highest { background: var(--color-m3-surface-container-highest); }
-
-/* M3 Additional components */
-.m3-data-table { background: var(--color-m3-surface); border-radius: var(--radius-m3-medium); box-shadow: var(--shadow-m3-1); }
-.m3-sidebar { background: var(--color-m3-surface); box-shadow: var(--shadow-m3-2); }
-.m3-header, .m3-footer { background: var(--color-m3-surface); box-shadow: var(--shadow-m3-2); }
-.m3-page-container { background: var(--color-m3-surface); }
-.m3-panel { background: var(--color-m3-surface); border-radius: var(--radius-m3-large); box-shadow: var(--shadow-m3-2); }
-.m3-segment-selector { background: var(--color-m3-surface-container-low); border-radius: var(--radius-m3-medium); }
-.m3-split-view { background: var(--color-m3-surface); }
-.m3-stats-card { background: var(--color-m3-surface); border-radius: var(--radius-m3-large); box-shadow: var(--shadow-m3-3); padding: 24px; }
-.m3-table { background: var(--color-m3-surface); border-radius: var(--radius-m3-medium); }
-.m3-tree { background: var(--color-m3-surface-container-low); border-radius: var(--radius-m3-small); }
-.m3-canvas { background: var(--color-m3-surface-dim); }
-.m3-main-editor { background: var(--color-m3-surface); }
-.m3-canvas-toolbar, .m3-page-toolbar { background: var(--color-m3-surface); box-shadow: var(--shadow-m3-2); }
-.m3-command-palette { background: var(--color-m3-surface); border-radius: var(--radius-m3-extra-large); box-shadow: var(--shadow-m3-5); }
-.m3-component-palette { background: var(--color-m3-surface); border-radius: var(--radius-m3-large); box-shadow: var(--shadow-m3-3); }
-.m3-locale-switcher { background: var(--color-m3-surface-container-high); border-radius: var(--radius-m3-small); }
-.m3-json-view { background: var(--color-m3-surface-container-highest); border-radius: var(--radius-m3-small); font-family: monospace; }
-.m3-form { background: var(--color-m3-surface-container-low); padding: 16px; border-radius: var(--radius-m3-medium); }
-.m3-properties-panel { background: var(--color-m3-surface); border-radius: var(--radius-m3-large); box-shadow: var(--shadow-m3-3); }
-.m3-bottom-panel { background: var(--color-m3-surface); box-shadow: var(--shadow-m3-2); }
-.m3-designer-tree { background: var(--color-m3-surface-container-low); border-radius: var(--radius-m3-medium); }
-.m3-designer-sidebar { background: var(--color-m3-surface); box-shadow: var(--shadow-m3-2); }
-.m3-block { background: var(--color-m3-surface); border-radius: var(--radius-m3-medium); box-shadow: var(--shadow-m3-2); }
-
-/* Missing component classes - Swap button */
-.m3-swap-btn {
-  background: var(--color-m3-secondary-container);
-  color: var(--color-m3-on-secondary-container);
-  border-radius: var(--radius-m3-full);
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  box-shadow: var(--shadow-m3-2);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.m3-swap-btn:hover {
-  box-shadow: var(--shadow-m3-3);
-  background: var(--color-m3-secondary-container);
-}
-
-.m3-swap-btn:active {
-  box-shadow: var(--shadow-m3-1);
-}
-
-/* Theme toggle button */
-.m3-toggle {
-  background: transparent;
-  color: var(--color-m3-on-surface-variant);
-  border-radius: var(--radius-m3-full);
-  width: 40px;
-  height: 40px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--color-m3-outline);
-  cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.m3-toggle:hover {
-  background: var(--color-m3-state-hover);
-}
-
-.m3-toggle:active {
-  background: var(--color-m3-state-pressed);
-}
-
-.m3-toggle:focus-visible {
-  outline: 2px solid var(--color-m3-primary);
-  outline-offset: 2px;
-}
-
-body[data-style="m3"][data-theme="dark"] .m3-toggle {
-  color: var(--color-m3-on-surface-variant);
-  border-color: var(--color-m3-outline-variant);
-}
-
-/* Missing component classes - Language selector */
-.m3-lang-selector {
-  background: var(--color-m3-surface-container-high);
-  color: var(--color-m3-on-surface);
-  border-radius: var(--radius-m3-medium);
-  padding: 8px 16px;
-  font-size: 14px;
-  border: 1px solid var(--color-m3-outline-variant);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 140px;
-}
-
-.m3-lang-selector:hover {
-  border-color: var(--color-m3-primary);
-}
-
-.m3-lang-selector:focus {
-  outline: 2px solid var(--color-m3-primary);
-  outline-offset: 2px;
-}
-
-/* Missing component classes - Translation output */
-.m3-output {
-  background: var(--color-m3-surface-container-low);
-  color: var(--color-m3-on-surface);
-  border-radius: var(--radius-m3-medium);
-  padding: 16px;
-  font-size: 16px;
-  line-height: 1.6;
-  min-height: 120px;
-  border: 1px solid var(--color-m3-outline-variant);
-}
-
-.m3-output:focus {
-  border-color: var(--color-m3-primary);
-  border-width: 2px;
-}
-
-/* Missing component classes - Shortcuts overlay */
-.m3-overlay {
-  background: var(--color-m3-surface);
-  color: var(--color-m3-on-surface);
-  border-radius: var(--radius-m3-extra-large);
-  padding: 24px;
-  box-shadow: var(--shadow-m3-5);
-  max-width: 480px;
-  min-width: 320px;
-}
-
-.m3-overlay-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-`;
-const MATERIAL_DESIGN_V3_CSS = `/* Material Design 3 Style System */\n${M3_TOKENS_CSS}\n${M3_COMPONENTS_CSS}`;
-const materialDesignV3ComponentStyles = {
-    "app-button": {
-        variants: {
-            solid: "m3-btn-filled",
-            outlined: "m3-btn-outlined",
-            text: "m3-btn-text",
-            icon: "m3-btn-icon",
-            tonal: "m3-btn-tonal",
-        },
-        sizes: {
-            sm: "m3-btn-sm",
-            md: "",
-            lg: "",
-        },
-    },
-    "app-card": {
-        variants: {
-            elevated: "m3-card-elevated",
-            filled: "m3-card-filled",
-            outlined: "m3-card-outlined",
-        },
-    },
-    "app-theme-toggle": { variants: { default: "m3-toggle" } },
-    "app-swap-button": { variants: { default: "m3-swap-btn" } },
-    "app-language-selector": { variants: { default: "m3-lang-selector" } },
-    "app-text-input": { variants: { default: "m3-input-outlined" } },
-    "app-translation-output": { variants: { default: "m3-output" } },
-    "app-shortcuts-overlay": { variants: { default: "m3-overlay" } },
-    "app-dialog": {
-        variants: {
-            solid: "m3-dialog",
-        },
-    },
-    "app-confirm-dialog": {
-        variants: {
-            solid: "m3-dialog",
-        },
-    },
-    "app-modal": {
-        variants: {
-            solid: "m3-dialog",
-        },
-    },
-    "app-checkbox": {
-        variants: {
-            outlined: "m3-checkbox",
-        },
-    },
-    "app-radio": {
-        variants: {
-            outlined: "m3-radio",
-        },
-    },
-    "app-switch": {
-        variants: {
-            outlined: "m3-switch",
-        },
-    },
-    "app-slider": {
-        variants: {
-            outline: "m3-slider",
-        },
-    },
-    "app-progress-bar": {
-        variants: {
-            linear: "m3-progress-linear",
-        },
-    },
-    "app-tabs": {
-        variants: {
-            standard: "m3-tabs",
-        },
-    },
-    "app-snackbar": {
-        variants: {
-            standard: "m3-snackbar",
-        },
-    },
-    "app-avatar": {
-        variants: {
-            image: "m3-avatar-image",
-            initials: "m3-avatar-initials",
-            icon: "m3-avatar-icon",
-        },
-    },
-    "app-chip": {
-        variants: {
-            assist: "m3-chip-assist",
-            filter: "m3-chip-filter",
-            input: "m3-chip-input",
-            suggestion: "m3-chip-suggestion",
-        },
-    },
-    "app-tooltip": {
-        variants: {
-            default: "m3-tooltip",
-        },
-    },
-    "app-pagination": {
-        variants: {
-            default: "m3-pagination",
-        },
-    },
-};
-
-/**
- * Brutalism CSS - inline for reliable loading
- */
-const BRUTALISM_CSS = `
-/* Shared animations */
-@keyframes theme-spin { to { transform: rotate(360deg); } }
-
-/* Brutalism Design Tokens - Light mode */
-:root {
-  --color-brut-base: #f5f5f0;
-  --color-brut-ink: #0a0a0a;
-  --color-brut-accent: #d63000;
-  --color-brut-accent-2: #ffd60a;
-  --color-brut-success: #00c853;
-  --color-brut-border: var(--color-brut-ink);
-
-  /* Shadow presets — key for brutalism */
-  --shadow-brut-sm: 4px 4px 0 0 var(--color-brut-ink);
-  --shadow-brut-md: 6px 6px 0 0 var(--color-brut-ink);
-  --shadow-brut-lg: 8px 8px 0 0 var(--color-brut-ink);
-
-  /* Font families */
-  --font-brut-mono: "JetBrains Mono", "Courier New", monospace;
-  --font-brut-sans: "Inter", "Arial Black", sans-serif;
-
-  /* Semantic tokens */
-  --accent: var(--color-brut-accent);
-  --accent-hover: #d62b22;
-  --text-on-accent: #ffffff;
-  --text-primary: var(--color-brut-ink);
-  --text-secondary: #3d3d3d;
-  --text-muted: #595959;
-  --text-on-error: #ffffff;
-  --text-on-warning: #0a0a0a;
-  --text-on-success: var(--color-brut-ink);
-  --bg-primary: var(--color-brut-base);
-  --bg-elevated: #ffffff;
-  --bg-hover: #e8e8e3;
-  --bg-secondary: #ecece7;
-  --bg-tertiary: #d4d4cf;
-  --border-color: var(--color-brut-ink);
-  --border-subtle: var(--color-brut-ink);
-  --error: var(--color-brut-accent);
-  --warning: var(--color-brut-accent-2);
-  --success: var(--color-brut-success);
-  --info: #0066ff;
-}
-
-/* Brutalist component classes */
-.brut-card {
-  background: var(--bg-elevated);
-  border: 4px solid var(--color-brut-border);
-  border-radius: 0;
-  padding: 1.25rem;
-  box-shadow: var(--shadow-brut-md);
-  font-family: var(--font-brut-sans);
-}
-.brut-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 0.625rem 1.25rem; font-family: var(--font-brut-sans);
-  font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;
-  border: 4px solid var(--color-brut-border);
-  border-radius: 0; background: var(--bg-elevated);
-  color: var(--text-primary);
-  box-shadow: var(--shadow-brut-sm);
-  transition: transform 0.05s, box-shadow 0.05s;
-  cursor: pointer; user-select: none;
-}
-.brut-btn:hover { background: var(--color-brut-accent-2); }
-.brut-btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 0 var(--color-brut-ink); }
-.brut-btn-primary { background: var(--accent); color: var(--text-on-accent); }
-.brut-btn-sm {
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 0.375rem 0.75rem; font-family: var(--font-brut-sans);
-  font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;
-  border: 3px solid var(--color-brut-border);
-  border-radius: 0; background: var(--bg-elevated);
-  color: var(--text-primary);
-  box-shadow: var(--shadow-brut-sm);
-  transition: transform 0.05s, box-shadow 0.05s;
-  cursor: pointer; user-select: none;
-}
-.brut-btn-lg {
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 0.875rem 1.75rem; font-family: var(--font-brut-sans);
-  font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;
-  border: 4px solid var(--color-brut-border);
-  border-radius: 0; background: var(--bg-elevated);
-  color: var(--text-primary);
-  box-shadow: var(--shadow-brut-lg);
-  transition: transform 0.05s, box-shadow 0.05s;
-  cursor: pointer; user-select: none;
-}
-.brut-input {
-  width: 100%; padding: 0.625rem 0.875rem;
-  font-family: var(--font-brut-mono); font-size: 0.9375rem;
-  border: 4px solid var(--color-brut-border); border-radius: 0;
-  background: var(--bg-elevated); color: var(--text-primary);
-  box-sizing: border-box;
-}
-.brut-input:focus { outline: none; background: var(--color-brut-accent-2); }
-.brut-modal {
-  background: var(--bg-elevated);
-  border: 4px solid var(--color-brut-border);
-  border-radius: 0; padding: 1.5rem;
-  box-shadow: var(--shadow-brut-lg);
-  font-family: var(--font-brut-sans);
-}
-.brut-chip {
-  display: inline-flex; align-items: center;
-  padding: 0.25rem 0.625rem;
-  border: 3px solid var(--color-brut-border); border-radius: 0;
-  background: var(--color-brut-accent-2); color: var(--text-primary);
-  font-family: var(--font-brut-mono); font-weight: 700;
-  text-transform: uppercase; font-size: 0.75rem;
-}
-.brut-badge {
-  display: inline-flex; align-items: center;
-  padding: 0.125rem 0.5rem; border: 3px solid var(--color-brut-border);
-  border-radius: 0; background: var(--accent); color: var(--text-on-accent);
-  font-family: var(--font-brut-mono); font-weight: 700; font-size: 0.75rem;
-}
-.brut-tabs {
-  display: flex; gap: 0;
-  border-bottom: 4px solid var(--color-brut-border);
-  font-family: var(--font-brut-sans);
-}
-.brut-tab {
-  padding: 0.75rem 1.25rem; font-weight: 900; text-transform: uppercase;
-  border: 4px solid var(--color-brut-border); border-bottom: none;
-  background: var(--bg-elevated); color: var(--text-primary);
-  cursor: pointer; margin-right: 4px;
-}
-.brut-tab.active { background: var(--accent); color: var(--text-on-accent); }
-.brut-divider {
-  height: 4px; background: var(--color-brut-border); width: 100%;
-  margin: 1rem 0;
-}
-.brut-spinner {
-  width: 32px; height: 32px;
-  border: 4px solid var(--color-brut-border);
-  border-top-color: var(--accent);
-  border-radius: 0;   animation: theme-spin 0.5s linear infinite;
-}
-
-/* Brutalist layout components with CSS variable shadows */
-.brut-data-table { border: 4px solid var(--color-brut-border); box-shadow: var(--shadow-brut-md); }
-.brut-sidebar { border-right: 4px solid var(--color-brut-border); }
-.brut-header, .brut-footer { border-bottom: 4px solid var(--color-brut-border); background: var(--bg-elevated); }
-.brut-page-container { background: var(--bg-primary); }
-.brut-panel { border: 4px solid var(--color-brut-border); box-shadow: var(--shadow-brut-md); border-radius: 0; padding: 16px; }
-.brut-segment-selector { border: 3px solid var(--color-brut-border); border-radius: 0; background: var(--bg-elevated); }
-.brut-split-view { background: var(--bg-primary); }
-.brut-stats-card { border: 4px solid var(--color-brut-border); box-shadow: var(--shadow-brut-lg); padding: 24px; background: var(--bg-elevated); }
-.brut-table { border: 4px solid var(--color-brut-border); }
-.brut-tree { background: var(--bg-elevated); }
-.brut-canvas { background: var(--color-brut-base); border: 4px solid var(--color-brut-border); }
-.brut-main-editor { background: var(--color-brut-base); }
-.brut-canvas-toolbar, .brut-page-toolbar { border-bottom: 4px solid var(--color-brut-border); background: var(--bg-elevated); }
-.brut-command-palette { border: 4px solid var(--color-brut-border); box-shadow: var(--shadow-brut-lg); border-radius: 0; background: var(--bg-elevated); }
-.brut-component-palette { border: 4px solid var(--color-brut-border); box-shadow: var(--shadow-brut-md); background: var(--bg-elevated); }
-.brut-locale-switcher { border: 3px solid var(--color-brut-border); background: var(--bg-elevated); }
-.brut-json-view { border: 3px solid var(--color-brut-border); background: var(--bg-elevated); font-family: monospace; }
-.brut-form { border: 4px solid var(--color-brut-border); padding: 16px; background: var(--bg-elevated); }
-.brut-properties-panel { border: 4px solid var(--color-brut-border); box-shadow: var(--shadow-brut-md); }
-.brut-bottom-panel { border-top: 4px solid var(--color-brut-border); }
-.brut-designer-tree { background: var(--bg-elevated); border: 3px solid var(--color-brut-border); }
-.brut-designer-sidebar { border-right: 4px solid var(--color-brut-border); }
-.brut-block { border: 4px solid var(--color-brut-border); box-shadow: var(--shadow-brut-md); background: var(--bg-elevated); }
-
-/* Dark mode overrides for layout components */
-body[data-style="brutalism"][data-theme="dark"] {
-  --color-brut-base: #1a1a1a;
-  --color-brut-ink: #f5f5f0;
-  --color-brut-accent: #ff453a;
-  --color-brut-accent-2: #ffd60a;
-  --color-brut-success: #00e676;
-  --text-primary: #f5f5f0;
-  --text-secondary: #c0c0c0;
-  --text-muted: #909090;
-  --bg-primary: #1a1a1a;
-  --bg-elevated: #2a2a2a;
-  --bg-hover: #3a3a3a;
-  --bg-secondary: #252525;
-  --bg-tertiary: #404040;
-  --border-color: #f5f5f0;
-  --border-subtle: #c0c0c0;
-  --error: #ff453a;
-}
-
-body[data-style="brutalism"][data-theme="dark"] .brut-data-table,
-body[data-style="brutalism"][data-theme="dark"] .brut-sidebar,
-body[data-style="brutalism"][data-theme="dark"] .brut-header,
-body[data-style="brutalism"][data-theme="dark"] .brut-footer,
-body[data-style="brutalism"][data-theme="dark"] .brut-page-container,
-body[data-style="brutalism"][data-theme="dark"] .brut-panel,
-body[data-style="brutalism"][data-theme="dark"] .brut-segment-selector,
-body[data-style="brutalism"][data-theme="dark"] .brut-split-view,
-body[data-style="brutalism"][data-theme="dark"] .brut-stats-card,
-body[data-style="brutalism"][data-theme="dark"] .brut-table,
-body[data-style="brutalism"][data-theme="dark"] .brut-tree,
-body[data-style="brutalism"][data-theme="dark"] .brut-canvas,
-body[data-style="brutalism"][data-theme="dark"] .brut-main-editor,
-body[data-style="brutalism"][data-theme="dark"] .brut-canvas-toolbar,
-body[data-style="brutalism"][data-theme="dark"] .brut-page-toolbar,
-body[data-style="brutalism"][data-theme="dark"] .brut-command-palette,
-body[data-style="brutalism"][data-theme="dark"] .brut-component-palette,
-body[data-style="brutalism"][data-theme="dark"] .brut-locale-switcher,
-body[data-style="brutalism"][data-theme="dark"] .brut-json-view,
-body[data-style="brutalism"][data-theme="dark"] .brut-form,
-body[data-style="brutalism"][data-theme="dark"] .brut-properties-panel,
-body[data-style="brutalism"][data-theme="dark"] .brut-bottom-panel,
-body[data-style="brutalism"][data-theme="dark"] .brut-designer-tree,
-body[data-style="brutalism"][data-theme="dark"] .brut-designer-sidebar,
-body[data-style="brutalism"][data-theme="dark"] .brut-block {
-  background: var(--bg-elevated);
-  box-shadow: var(--shadow-brut-md);
-}
-
-/* Brut card dark mode - uses var(--bg-elevated) which is overridden in body[data-style="brutalism"][data-theme="dark"] */
-body[data-style="brutalism"][data-theme="dark"] .brut-card {
-  background: var(--bg-elevated);
-  border-color: var(--border-color);
-  color: var(--text-primary);
-}
-
-/* Brut button dark mode */
-body[data-style="brutalism"][data-theme="dark"] .brut-btn {
-  background: var(--bg-elevated);
-  border-color: var(--border-color);
-  color: var(--text-primary);
-}
-
-/* Brut input dark mode */
-body[data-style="brutalism"][data-theme="dark"] .brut-input {
-  background: var(--bg-elevated);
-  border-color: var(--border-color);
-  color: var(--text-primary);
-}
-
-/* Brut modal dark mode */
-body[data-style="brutalism"][data-theme="dark"] .brut-modal {
-  background: var(--bg-elevated);
-  border-color: var(--border-color);
-  color: var(--text-primary);
-}
-
-/* Brut chip dark mode */
-body[data-style="brutalism"][data-theme="dark"] .brut-chip {
-  background: var(--accent);
-  color: var(--text-on-accent);
-}
-
-/* Brut badge dark mode */
-body[data-style="brutalism"][data-theme="dark"] .brut-badge {
-  background: var(--accent);
-  color: var(--text-on-accent);
-}
-
-/* Brut tab dark mode */
-body[data-style="brutalism"][data-theme="dark"] .brut-tab {
-  background: var(--bg-elevated);
-  border-color: var(--border-color);
-  color: var(--text-primary);
-}
-
-body[data-style="brutalism"][data-theme="dark"] .brut-tab.active {
-  background: var(--accent);
-  color: var(--text-on-accent);
-}
-
-/* Brut divider dark mode */
-body[data-style="brutalism"][data-theme="dark"] .brut-divider {
-  background: var(--border-color);
-}
-
-/* Brut spinner dark mode */
-body[data-style="brutalism"][data-theme="dark"] .brut-spinner {
-  border-color: var(--border-color);
-  border-top-color: var(--accent);
-}
-`;
-const brutalismComponentStyles = {
-    "app-button": {
-        variants: { default: "brut-btn" },
-        sizes: { sm: "brut-btn-sm", md: "", lg: "brut-btn-lg" },
-    },
-    "app-card": { variants: { default: "brut-card" } },
-    "app-input": { variants: { default: "brut-input" } },
-    "app-textarea": { variants: { default: "brut-input" } },
-    "app-modal": { variants: { default: "brut-modal" } },
-    "app-dialog": { variants: { default: "brut-modal" } },
-    "app-confirm-dialog": { variants: { default: "brut-modal" } },
-    "app-chip": { variants: { default: "brut-chip" } },
-    "app-badge": { variants: { default: "brut-badge" } },
-    "app-tabs": { variants: { default: "brut-tabs" } },
-    "app-divider": { variants: { default: "brut-divider" } },
-    "app-spinner": { variants: { default: "brut-spinner" } },
-    "app-loading": { variants: { default: "brut-spinner" } },
-    "app-checkbox": {
-        variants: {
-            outlined: "brut-checkbox",
-        },
-    },
-    "app-radio": {
-        variants: {
-            outlined: "brut-radio",
-        },
-    },
-    "app-slider": {
-        variants: {
-            outline: "brut-slider",
-        },
-    },
-    "app-snackbar": {
-        variants: {
-            standard: "brut-snackbar",
-        },
-    },
-    "app-tooltip": {
-        variants: {
-            default: "brut-tooltip",
-        },
-    },
-    "app-pagination": {
-        variants: {
-            default: "brut-pagination",
-        },
-    },
-};
-
-const SKEUOMORPHISM_TOKENS_CSS = `
-/* Shared animations */
-@keyframes theme-spin { to { transform: rotate(360deg); } }
-
-/**
- * Skeuomorphism Design Tokens
- * Light mode + Dark mode
- */
-
-:root {
-  /* Base colors */
-  --color-skeu-base: #e8dcc4;
-  --color-skeu-leather: #6b4423;
-  --color-skeu-leather-dark: #4a2e18;
-  --color-skeu-paper: #f5e6c8;
-  --color-skeu-ink: #2b1810;
-  --color-skeu-accent: #7a5200;
-  --color-skeu-accent-dark: #5c3d00;
-  --color-skeu-cream: #faf3e0;
-  --color-skeu-glass: rgba(255,255,255,0.2);
-
-  /* CONSOLIDATED gradient vars */
-  --gradient-leather: linear-gradient(180deg, var(--color-skeu-leather) 0%, var(--color-skeu-leather-dark) 100%);
-  --gradient-paper: linear-gradient(180deg, var(--color-skeu-paper) 0%, #e8d9b3 100%);
-  --gradient-paper-light: linear-gradient(180deg, #f5e6c8 0%, #e8d9b3 100%);
-  --gradient-input: linear-gradient(180deg, #dcc99e 0%, #c4b58a 100%);
-  --gradient-tab: linear-gradient(180deg, #d4b890 0%, #b89968 100%);
-  --gradient-accent: linear-gradient(180deg, #d4a017 0%, var(--color-skeu-accent-dark) 100%);
-  --gradient-divider: linear-gradient(90deg, transparent 0%, var(--color-skeu-leather-dark) 50%, transparent 100%);
-
-  /* Shadow tokens */
-  --shadow-skeu-outset:
-    0 1px 0 rgba(255,255,255,0.4) inset,
-    0 2px 4px rgba(0,0,0,0.2),
-    0 4px 8px rgba(0,0,0,0.15),
-    0 8px 16px rgba(0,0,0,0.1);
-  --shadow-skeu-inset:
-    inset 0 2px 4px rgba(0,0,0,0.3),
-    inset 0 4px 8px rgba(0,0,0,0.2);
-  --shadow-skeu-glossy:
-    inset 0 1px 0 rgba(255,255,255,0.5) inset,
-    inset 0 -10px 20px rgba(255,255,255,0.1),
-    0 2px 4px rgba(0,0,0,0.2);
-
-  /* Radius tokens */
-  --radius-skeu-sm: 6px;
-  --radius-skeu-md: 12px;
-  --radius-skeu-lg: 18px;
-  --radius-skeu-xl: 24px;
-
-  /* Semantic tokens */
-  --accent: var(--color-skeu-accent);
-  --accent-hover: var(--color-skeu-accent-dark);
-  --text-on-accent: var(--color-skeu-cream);
-  --text-primary: var(--color-skeu-ink);
-  --text-secondary: #5c3d20;
-  --text-muted: #3d2817;
-  --bg-primary: var(--color-skeu-base);
-  --bg-elevated: var(--color-skeu-paper);
-  --bg-hover: #dcc99e;
-  --bg-secondary: #d4c99e;
-  --bg-tertiary: #c4b58a;
-  --border-color: var(--color-skeu-leather-dark);
-  --border-subtle: #a8916b;
-  --error: #8b0000;
-  --warning: #c47700;
-  --success: #2d5016;
-  --info: #1e4d6b;
-  --text-on-error: #fff5e6;
-  --text-on-warning: var(--color-skeu-ink);
-  --text-on-success: var(--color-skeu-paper);
-}
-
-/* Dark mode */
-body[data-style="skeuomorphism"][data-theme="dark"] {
-  --color-skeu-base: #2b1810;
-  --color-skeu-leather: #8b6508;
-  --color-skeu-leather-dark: #5a3d1a;
-  --color-skeu-paper: #3d2b1f;
-  --color-skeu-ink: #f5e6c8;
-  --color-skeu-accent: #d4a017;
-  --color-skeu-accent-dark: #8b6508;
-  --color-skeu-cream: #faf3e0;
-  --gradient-leather: linear-gradient(180deg, var(--color-skeu-leather) 0%, var(--color-skeu-leather-dark) 100%);
-  --gradient-paper: linear-gradient(180deg, var(--color-skeu-paper) 0%, #2d2015 100%);
-  --gradient-paper-light: linear-gradient(180deg, #3d2b1f 0%, #2d2015 100%);
-  --gradient-input: linear-gradient(180deg, #5a4030 0%, #3d2b1f 100%);
-  --text-primary: #f5e6c8;
-  --text-secondary: #dcc99e;
-  --text-muted: #9f9f9f;
-  --bg-primary: #2b1810;
-  --bg-elevated: #3d2b1f;
-  --bg-hover: #4a3025;
-  --bg-secondary: #352a20;
-  --bg-tertiary: #1f140f;
-  --border-color: #8b6508;
-  --border-subtle: #5a3d1a;
-  --error: #ff6b6b;
-  --warning: #ffd60a;
-  --success: #4ade80;
-  --info: #60a5fa;
-}
-`;
-const SKEUOMORPHISM_COMPONENTS_CSS = `
-/* Skeuomorphic component classes */
-.skeu-card {
-  background: var(--gradient-leather);
-  color: var(--color-skeu-cream);
-  border: 1px solid var(--color-skeu-leather-dark);
-  border-radius: var(--radius-skeu-lg);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-skeu-outset);
-  font-family: Georgia, "Times New Roman", serif;
-}
-.skeu-card.paper {
-  background: var(--gradient-paper);
-  color: var(--color-skeu-ink);
-  border-color: #c4b58a;
-}
-.skeu-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 0.625rem 1.25rem; font-family: Georgia, serif;
-  font-weight: 600; font-size: 0.9375rem;
-  border: 1px solid var(--color-skeu-leather-dark);
-  border-radius: var(--radius-skeu-md);
-  background: var(--gradient-leather);
-  color: var(--color-skeu-cream);
-  box-shadow: var(--shadow-skeu-outset);
-  cursor: pointer; text-shadow: 0 1px 0 rgba(0,0,0,0.4);
-  transition: filter 0.1s;
-}
-.skeu-btn:hover { filter: brightness(1.1); }
-.skeu-btn:active { box-shadow: var(--shadow-skeu-inset); }
-.skeu-btn-sm {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.8125rem;
-  border-radius: var(--radius-skeu-sm);
-}
-.skeu-btn-lg {
-  padding: 0.875rem 1.75rem;
-  font-size: 1.0625rem;
-  border-radius: var(--radius-skeu-lg);
-}
-.skeu-btn-primary {
-  background: var(--gradient-accent);
-  color: var(--color-skeu-cream);
-  border-color: #5a4406;
-}
-.skeu-input {
-  width: 100%; padding: 0.625rem 0.875rem;
-  font-family: Georgia, serif; font-size: 0.9375rem;
-  background: var(--gradient-input);
-  color: var(--color-skeu-ink);
-  border: 1px solid var(--color-skeu-leather-dark);
-  border-radius: var(--radius-skeu-md);
-  box-shadow: var(--shadow-skeu-inset);
-  box-sizing: border-box;
-}
-.skeu-input:focus { outline: 2px solid var(--accent); }
-.skeu-modal {
-  background: var(--gradient-paper);
-  color: var(--color-skeu-ink);
-  border: 1px solid var(--color-skeu-leather-dark);
-  border-radius: var(--radius-skeu-xl);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-skeu-outset);
-  font-family: Georgia, serif;
-}
-.skeu-chip {
-  display: inline-flex; align-items: center;
-  padding: 0.25rem 0.75rem; border-radius: var(--radius-skeu-lg);
-  background: var(--gradient-leather);
-  color: var(--color-skeu-cream);
-  font-family: Georgia, serif; font-size: 0.875rem; font-weight: 500;
-  box-shadow: var(--shadow-skeu-outset);
-  border: 1px solid var(--color-skeu-leather-dark);
-}
-.skeu-badge {
-  display: inline-flex; align-items: center;
-  padding: 0.125rem 0.5rem; border-radius: var(--radius-skeu-md);
-  background: var(--gradient-accent);
-  color: var(--color-skeu-cream);
-  font-family: Georgia, serif; font-weight: 600; font-size: 0.75rem;
-  box-shadow: var(--shadow-skeu-outset);
-  border: 1px solid #5a4406;
-}
-.skeu-tabs {
-  display: flex; gap: 0.25rem;
-  border-bottom: 1px solid var(--color-skeu-leather-dark);
-  font-family: Georgia, serif;
-}
-.skeu-tab {
-  padding: 0.625rem 1rem; font-weight: 500;
-  background: var(--gradient-tab);
-  color: var(--color-skeu-ink);
-  border: 1px solid var(--color-skeu-leather-dark);
-  border-bottom: none;
-  border-radius: var(--radius-skeu-md) var(--radius-skeu-md) 0 0;
-  cursor: pointer; margin-bottom: -1px;
-}
-.skeu-tab.active {
-  background: var(--gradient-paper);
-  font-weight: 700;
-}
-.skeu-divider {
-  height: 1px; background: var(--gradient-divider);
-  margin: 1rem 0;
-}
-.skeu-spinner {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: conic-gradient(from 0deg, transparent 0deg, var(--accent) 360deg);
-  -webkit-mask: radial-gradient(circle, transparent 50%, #000 51%);
-          mask: radial-gradient(circle, transparent 50%, #000 51%);
-  animation: theme-spin 1s linear infinite;
-}
-
-/* Skeuomorphic additional components */
-.skeu-data-table { background: var(--gradient-leather); border: 1px solid var(--color-skeu-leather-dark); border-radius: 12px; box-shadow: var(--shadow-skeu-outset); }
-.skeu-sidebar { background: var(--gradient-leather); border-right: 1px solid var(--color-skeu-leather-dark); }
-.skeu-header, .skeu-footer { background: var(--gradient-paper); border-bottom: 1px solid var(--color-skeu-leather-dark); }
-.skeu-page-container { background: var(--color-skeu-base); }
-.skeu-panel { background: var(--gradient-paper); border: 1px solid var(--color-skeu-leather-dark); border-radius: 12px; box-shadow: var(--shadow-skeu-outset); padding: 16px; }
-.skeu-segment-selector { background: var(--gradient-leather); border: 1px solid var(--color-skeu-leather-dark); border-radius: 8px; }
-.skeu-split-view { background: var(--color-skeu-base); }
-.skeu-stats-card { background: var(--gradient-paper); border: 1px solid var(--color-skeu-leather-dark); border-radius: 12px; box-shadow: var(--shadow-skeu-outset); padding: 24px; }
-.skeu-table { background: var(--gradient-paper); border: 1px solid var(--color-skeu-leather-dark); border-radius: 8px; }
-.skeu-tree { background: var(--color-skeu-paper); }
-.skeu-canvas { background: var(--color-skeu-base); border: 1px solid var(--color-skeu-leather-dark); }
-.skeu-main-editor { background: var(--color-skeu-base); }
-.skeu-canvas-toolbar, .skeu-page-toolbar { background: var(--gradient-leather); border-bottom: 1px solid var(--color-skeu-leather-dark); }
-.skeu-command-palette { background: var(--gradient-paper); border: 1px solid var(--color-skeu-leather-dark); border-radius: 16px; box-shadow: var(--shadow-skeu-outset); }
-.skeu-component-palette { background: var(--gradient-leather); border: 1px solid var(--color-skeu-leather-dark); border-radius: 8px; box-shadow: var(--shadow-skeu-outset); }
-.skeu-locale-switcher { background: var(--gradient-leather); border: 1px solid var(--color-skeu-leather-dark); border-radius: 6px; }
-.skeu-json-view { background: var(--gradient-input); border: 1px solid var(--color-skeu-leather-dark); border-radius: 6px; font-family: monospace; box-shadow: var(--shadow-skeu-inset); }
-.skeu-form { background: var(--color-skeu-paper); padding: 16px; border-radius: 8px; }
-.skeu-properties-panel { background: var(--gradient-leather); border: 1px solid var(--color-skeu-leather-dark); border-radius: 12px; box-shadow: var(--shadow-skeu-outset); }
-.skeu-bottom-panel { background: var(--color-skeu-base); border-top: 1px solid var(--color-skeu-leather-dark); }
-.skeu-designer-tree { background: var(--color-skeu-paper); border: 1px solid var(--color-skeu-leather-dark); border-radius: 8px; }
-.skeu-designer-sidebar { background: var(--gradient-leather); border-right: 1px solid var(--color-skeu-leather-dark); }
-.skeu-block { background: var(--gradient-paper); border: 1px solid var(--color-skeu-leather-dark); border-radius: 8px; box-shadow: var(--shadow-skeu-outset); }
-
-/* Skeuomorphism Dark Mode Overrides */
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-card {
-  background: var(--gradient-leather);
-  border-color: var(--color-skeu-leather-dark);
-  color: var(--color-skeu-cream);
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-card.paper {
-  background: var(--gradient-paper);
-  border-color: #5a3d1a;
-  color: var(--text-primary);
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-btn {
-  background: var(--gradient-leather);
-  border-color: var(--color-skeu-leather-dark);
-  color: var(--color-skeu-cream);
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-btn-primary {
-  background: var(--gradient-accent);
-  color: var(--color-skeu-cream);
-  border-color: #5a4406;
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-input {
-  background: var(--gradient-input);
-  border-color: var(--color-skeu-leather-dark);
-  color: var(--text-primary);
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-modal {
-  background: var(--gradient-paper);
-  border-color: var(--color-skeu-leather-dark);
-  color: var(--text-primary);
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-chip {
-  background: var(--gradient-leather);
-  color: var(--color-skeu-cream);
-  border-color: var(--color-skeu-leather-dark);
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-badge {
-  background: var(--gradient-accent);
-  color: var(--color-skeu-cream);
-  border-color: #5a4406;
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-tab {
-  background: var(--gradient-tab);
-  color: var(--text-primary);
-  border-color: var(--color-skeu-leather-dark);
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-tab.active {
-  background: var(--gradient-paper);
-  color: var(--text-primary);
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-divider {
-  background: var(--gradient-divider);
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-spinner {
-  background: conic-gradient(from 0deg, transparent 0deg, var(--accent) 360deg);
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-sidebar,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-header,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-footer,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-canvas-toolbar,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-page-toolbar,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-component-palette,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-locale-switcher,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-properties-panel,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-designer-sidebar {
-  background: var(--gradient-leather);
-  border-color: var(--color-skeu-leather-dark);
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-page-container,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-split-view,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-canvas,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-main-editor,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-bottom-panel {
-  background: var(--bg-primary);
-}
-
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-panel,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-form,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-designer-tree,
-body[data-style="skeuomorphism"][data-theme="dark"] .skeu-block {
-  background: var(--gradient-paper);
-  border-color: var(--color-skeu-leather-dark);
-}
-`;
-const SKEUOMORPHISM_CSS = `/* Skeuomorphism Style System */\n${SKEUOMORPHISM_TOKENS_CSS}\n${SKEUOMORPHISM_COMPONENTS_CSS}`;
-const skeuomorphismComponentStyles = {
-    "app-button": {
-        variants: { default: "skeu-btn" },
-        sizes: { sm: "skeu-btn-sm", md: "", lg: "skeu-btn-lg" },
-    },
-    "app-card": {
-        variants: { default: "skeu-card", paper: "skeu-card paper" },
-    },
-    "app-input": { variants: { default: "skeu-input" } },
-    "app-textarea": { variants: { default: "skeu-input" } },
-    "app-modal": { variants: { default: "skeu-modal" } },
-    "app-dialog": { variants: { default: "skeu-modal" } },
-    "app-confirm-dialog": { variants: { default: "skeu-modal" } },
-    "app-chip": { variants: { default: "skeu-chip" } },
-    "app-badge": { variants: { default: "skeu-badge" } },
-    "app-tabs": { variants: { default: "skeu-tabs" } },
-    "app-divider": { variants: { default: "skeu-divider" } },
-    "app-spinner": { variants: { default: "skeu-spinner" } },
-    "app-loading": { variants: { default: "skeu-spinner" } },
-    "app-checkbox": {
-        variants: {
-            outlined: "skeu-checkbox",
-        },
-    },
-    "app-radio": {
-        variants: {
-            outlined: "skeu-radio",
-        },
-    },
-    "app-slider": {
-        variants: {
-            outline: "skeu-slider",
-        },
-    },
-    "app-snackbar": {
-        variants: {
-            standard: "skeu-snackbar",
-        },
-    },
-    "app-tooltip": {
-        variants: {
-            default: "skeu-tooltip",
-        },
-    },
-    "app-pagination": {
-        variants: {
-            default: "skeu-pagination",
-        },
-    },
-};
-
 const STYLE_VARIANTS = {
     claymorphism: {
         id: "claymorphism",
         name: "Claymorphism",
-        cssString: CLAYMORPHISM_CSS,
         classPrefix: "clay-",
         description: "Soft raised shadows with clay-like appearance",
-        componentStyles: claymorphismComponentStyles,
     },
     glassmorphism: {
         id: "glassmorphism",
         name: "Glassmorphism",
-        cssString: GLASSMORPHISM_CSS,
         classPrefix: "glass-",
         description: "Frosted glass effect with backdrop blur",
-        componentStyles: glassmorphismComponentStyles,
     },
     neumorphism: {
         id: "neumorphism",
         name: "Neumorphism",
-        cssString: NEUMORPHISM_CSS,
         classPrefix: "neu-",
         description: "Soft inset and outset shadows",
-        componentStyles: neumorphismComponentStyles,
     },
     "material-design-v3": {
         id: "material-design-v3",
         name: "Material Design 3",
-        cssString: MATERIAL_DESIGN_V3_CSS,
         classPrefix: "m3-",
         description: "Google Material Design 3 with elevation system",
-        componentStyles: materialDesignV3ComponentStyles,
     },
     brutalism: {
         id: "brutalism",
         name: "Brutalism",
-        cssString: BRUTALISM_CSS,
         classPrefix: "brut-",
         description: "Sharp edges, hard shadows, high-contrast typography",
-        componentStyles: brutalismComponentStyles,
     },
     skeuomorphism: {
         id: "skeuomorphism",
         name: "Skeuomorphism",
-        cssString: SKEUOMORPHISM_CSS,
         classPrefix: "skeu-",
         description: "Realistic textures with leather, paper, and glossy highlights",
-        componentStyles: skeuomorphismComponentStyles,
     },
 };
 const LOADED_STYLES = new Set();
 let CURRENT_STYLE = "material-design-v3";
-const STYLE_ELEMENTS = new Map();
 async function loadStyleVariant(variant) {
     setTheme(variant);
+    // CSS is loaded statically via @import in app's styles.css
+    // loadStyleVariant() only sets data-theme attributes for CSS selectors
 }
 /**
  * SCSS-only fallback — sets body[data-style] without injecting runtime CSS.
- * Apps using static SCSS themes (tokens.css loaded via angular.json) call this
- * instead of loadStyleVariant to avoid double-injection of theme styles.
+ * Kept for compatibility with apps using static SCSS themes.
  */
 async function loadStyleVariantNoop(variant = "material-design-v3") {
     setTheme(variant);
@@ -4817,74 +885,19 @@ function unloadStyleVariant(variant) {
     if (!LOADED_STYLES.has(variant)) {
         return;
     }
-    const style = STYLE_ELEMENTS.get(variant);
-    if (style && style.parentNode) {
-        style.parentNode.removeChild(style);
-    }
     LOADED_STYLES.delete(variant);
-    STYLE_ELEMENTS.delete(variant);
-}
-function setCurrentStyle(variant) {
-    if (variant === CURRENT_STYLE) {
-        return;
-    }
-    CURRENT_STYLE = variant;
-    // Inject the combined theme CSS and set body[data-style]
-    loadStyleVariant(variant);
-    if (typeof window !== "undefined" && window.localStorage) {
-        window.localStorage.setItem("tauri-front-style", variant);
-    }
-    document.dispatchEvent(new CustomEvent("style-changed", {
-        detail: { variant, prefix: STYLE_VARIANTS[variant].classPrefix },
-    }));
-}
-function enableStyle(variant) {
-    const style = STYLE_ELEMENTS.get(variant);
-    if (style) {
-        style.disabled = false;
-    }
-}
-function disableStyle(variant) {
-    const style = STYLE_ELEMENTS.get(variant);
-    if (style) {
-        style.disabled = true;
-    }
 }
 function getCurrentStyle() {
     return CURRENT_STYLE;
+}
+function setCurrentStyle(variant) {
+    setTheme(variant);
 }
 function getStyleConfig(variant) {
     return STYLE_VARIANTS[variant] || STYLE_VARIANTS["material-design-v3"];
 }
 function getStyleClassPrefix(variant) {
     return STYLE_VARIANTS[variant]?.classPrefix || "m3-";
-}
-function getComponentStyleClasses(theme, componentId, explicitVariant, explicitSize, globalContext) {
-    const config = STYLE_VARIANTS[theme];
-    if (!config)
-        return "";
-    const componentMap = config.componentStyles?.[componentId];
-    if (!componentMap)
-        return "";
-    const resolvedVariant = explicitVariant || globalContext?.variant;
-    const resolvedSize = explicitSize || globalContext?.size;
-    const classes = [];
-    if (resolvedVariant) {
-        const variantClass = componentMap.variants?.[resolvedVariant];
-        if (variantClass) {
-            classes.push(variantClass);
-        }
-    }
-    if (resolvedSize && componentMap.sizes) {
-        const sizeClass = componentMap.sizes[resolvedSize];
-        if (sizeClass) {
-            classes.push(sizeClass);
-        }
-    }
-    if (classes.length === 0) {
-        return componentMap.default || componentMap.variants?.default || "";
-    }
-    return classes.join(" ");
 }
 function getAllStyleVariants() {
     return Object.values(STYLE_VARIANTS);
@@ -4900,20 +913,17 @@ function initializeStyles() {
 }
 function getStyleClass(variant, baseClass) {
     const prefix = getStyleClassPrefix(variant);
-    const baseName = baseClass.replace(/^clay-|^glass-|^neu-|^m3-/, "");
+    const baseName = baseClass.replace(/^clay-|^glass-|^neu-|^m3-|^brut-|^skeu-/, "");
     return `${prefix}${baseName}`;
 }
-function applyStyleToElement(element, variant) {
-    const prefix = getStyleClassPrefix(variant);
-    element.classList.forEach((cls) => {
-        if (cls.startsWith("clay-") ||
-            cls.startsWith("glass-") ||
-            cls.startsWith("neu-") ||
-            cls.startsWith("m3-")) {
-            element.classList.remove(cls);
-        }
-    });
-    element.classList.add(`${prefix}${element.dataset["baseClass"] || ""}`);
+/**
+ * @deprecated - Use direct TailwindCSS utility classes in schema instead
+ * Component style mapping - returns empty string in TailwindCSS v4-only approach
+ */
+function getComponentStyleClasses(theme, componentId, explicitVariant, explicitSize, globalContext) {
+    // TailwindCSS v4 approach: use utility classes directly in schema
+    // e.g., schema classes: "bg-primary text-on-primary rounded-lg"
+    return "";
 }
 
 // Maps semantic props to theme CSS classes using global style registry
@@ -6253,7 +2263,7 @@ class StyleThemeService {
             return "";
         const vars = {
             "material-design-v3": `
-:root {
+[data-theme="material-design-v3"][data-theme-mode="dark"] {
   --accent: #d0bcff;
   --accent-hover: #b69df8;
   --text-on-accent: #381e72;
@@ -6277,7 +2287,7 @@ class StyleThemeService {
   --bg-header: #1c1b1f;
 }`,
             neumorphism: `
-:root {
+[data-theme="neumorphism"][data-theme-mode="dark"] {
   --accent: #a78bfa;
   --accent-hover: #8b7cf7;
   --text-on-accent: #1e1b2e;
@@ -6301,7 +2311,7 @@ class StyleThemeService {
   --bg-header: #2d3748;
 }`,
             claymorphism: `
-:root {
+[data-theme="claymorphism"][data-theme-mode="dark"] {
   --accent: #a78bfa;
   --accent-hover: #8b7cf7;
   --text-on-accent: #1e1b2e;
@@ -6325,7 +2335,7 @@ class StyleThemeService {
   --bg-header: #2d3748;
 }`,
             glassmorphism: `
-:root {
+[data-theme="glassmorphism"][data-theme-mode="dark"] {
   --accent: rgba(167, 139, 250, 0.8);
   --accent-hover: rgba(187, 159, 250, 0.9);
   --text-on-accent: #1e1b2e;
@@ -6349,7 +2359,7 @@ class StyleThemeService {
   --bg-header: rgba(20, 20, 40, 0.8);
 }`,
             brutalism: `
-:root {
+[data-theme="brutalism"][data-theme-mode="dark"] {
   --color-brut-base: #1a1a1a;
   --color-brut-ink: #f5f5f0;
   --color-brut-accent: #ff3b30;
@@ -6374,7 +2384,7 @@ class StyleThemeService {
   --success: var(--color-brut-success);
 }`,
             skeuomorphism: `
-:root {
+[data-theme="skeuomorphism"][data-theme-mode="dark"] {
   --color-skeu-base: #2b1f14;
   --color-skeu-leather: #3a2a18;
   --color-skeu-leather-dark: #1a1009;
@@ -6423,37 +2433,6 @@ class StyleThemeService {
     }
     brutalismDarkCSS() {
         return `
-:root {
-  --color-brut-base: #1a1a1a;
-  --color-brut-ink: #f5f5f0;
-  --color-brut-accent: #ff3b30;
-  --color-brut-accent-2: #ffd60a;
-  --color-brut-success: #00e676;
-  --color-brut-border: #f5f5f0;
-  --shadow-brut-sm: 4px 4px 0 0 #f5f5f0;
-  --shadow-brut-md: 6px 6px 0 0 #f5f5f0;
-  --shadow-brut-lg: 8px 8px 0 0 #f5f5f0;
-  --bg-primary: #1a1a1a;
-  --bg-elevated: #2a2a2a;
-  --bg-hover: #3a3a3a;
-  --bg-tertiary: #404040;
-  --text-primary: #f5f5f0;
-  --text-secondary: #c0c0c0;
-  --text-muted: #909090;
-  --text-on-accent: #ffffff;
-  --text-on-error: #ffffff;
-  --text-on-warning: #0a0a0a;
-  --text-on-success: #ffffff;
-  --border-color: #f5f5f0;
-  --border-subtle: #c0c0c0;
-  --accent: #ff3b30;
-  --accent-hover: #d62b22;
-  --error: #ff3b30;
-  --warning: #ffd60a;
-  --success: #00e676;
-  --info: #60a5fa;
-}
-
 .dark .brut-card {
   background: #2a2a2a;
   border-color: #f5f5f0;
@@ -6523,51 +2502,6 @@ class StyleThemeService {
     }
     skeuomorphismDarkCSS() {
         return `
-:root {
-  --color-skeu-base: #2b1f14;
-  --color-skeu-leather: #3a2a18;
-  --color-skeu-leather-dark: #1a1009;
-  --color-skeu-paper: #3a2e1f;
-  --color-skeu-ink: #f5e6c8;
-  --color-skeu-accent: #d4a017;
-  --color-skeu-accent-dark: #b8860b;
-  --color-skeu-cream: #faf3e0;
-  --gradient-leather: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%);
-  --gradient-paper: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%);
-  --gradient-paper-light: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%);
-  --gradient-input: linear-gradient(180deg, #4a3e2f 0%, #3a3025 100%);
-  --gradient-tab: linear-gradient(180deg, #4a3a28 0%, #2d2015 100%);
-  --gradient-accent: linear-gradient(180deg, #d4a017 0%, #8b6508 100%);
-  --gradient-divider: linear-gradient(90deg, transparent 0%, #1a1009 50%, transparent 100%);
-  --shadow-skeu-outset:
-    0 1px 0 rgba(255,255,255,0.1) inset,
-    0 2px 4px rgba(0,0,0,0.4),
-    0 4px 8px rgba(0,0,0,0.3),
-    0 8px 16px rgba(0,0,0,0.2);
-  --shadow-skeu-inset:
-    inset 0 2px 4px rgba(0,0,0,0.5),
-    inset 0 4px 8px rgba(0,0,0,0.4);
-  --bg-primary: #2b1f14;
-  --bg-elevated: #3a2e1f;
-  --bg-hover: #4a3e2f;
-  --bg-tertiary: #5a4e3f;
-  --text-primary: #f5e6c8;
-  --text-secondary: #d4b890;
-  --text-muted: #a8916b;
-  --text-on-accent: #faf3e0;
-  --text-on-error: #fff5e6;
-  --text-on-warning: #2b1810;
-  --text-on-success: #f5e6c8;
-  --border-color: #1a1009;
-  --border-subtle: #4a2e18;
-  --accent: #d4a017;
-  --accent-hover: #8b6508;
-  --error: #ff6b6b;
-  --warning: #ffd60a;
-  --success: #4ade80;
-  --info: #60a5fa;
-}
-
 .dark .skeu-card {
   background: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%);
   border-color: #1a1009;
@@ -7478,6 +3412,94 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             args: [{ providedIn: "root" }]
         }] });
 
+// Flat key-value translation maps for i18n
+// All schema text should use i18nKey referencing these keys
+const EN = {
+    // App-level
+    "app.title": "Translator",
+    "app.subtitle": "Translate text between 15 languages instantly",
+    // Header
+    "header.shortcuts": "Shortcuts",
+    "header.theme": "Theme",
+    // Labels
+    "label.from": "From",
+    "label.to": "To",
+    // Buttons
+    "button.translate": "Translate",
+    "button.clear": "Clear",
+    // Footer
+    "footer.text": "Translator - Translate text between 15 languages instantly",
+    // Shortcuts overlay
+    "shortcuts.title": "Keyboard Shortcuts",
+    "shortcuts.description": "Press the following keys to trigger actions",
+    // App language selector
+    "lang.selector.label": "Language",
+    // Input placeholders
+    "input.placeholder": "Enter text to translate...",
+    "output.placeholder": "Translation will appear here as you type...",
+};
+const RU = {
+    // App-level
+    "app.title": "Переводчик",
+    "app.subtitle": "Переводите текст между 15 языками мгновенно",
+    // Header
+    "header.shortcuts": "Ярлыки",
+    "header.theme": "Тема",
+    // Labels
+    "label.from": "С",
+    "label.to": "На",
+    // Buttons
+    "button.translate": "Перевести",
+    "button.clear": "Очистить",
+    // Footer
+    "footer.text": "Переводчик — переводите текст между 15 языками мгновенно",
+    // Shortcuts overlay
+    "shortcuts.title": "Горячие клавиши",
+    "shortcuts.description": "Нажмите следующие клавиши для выполнения действий",
+    // App language selector
+    "lang.selector.label": "Язык",
+    // Input placeholders
+    "input.placeholder": "Введите текст для перевода...",
+    "output.placeholder": "Перевод появится здесь по мере ввода...",
+};
+
+const TRANSLATIONS = {
+    en: EN,
+    ru: RU,
+};
+class I18nService {
+    _locale = signal("en", /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "_locale" }] : /* istanbul ignore next */ []));
+    get locale() {
+        return this._locale.asReadonly();
+    }
+    get translations() {
+        return TRANSLATIONS[this._locale()];
+    }
+    setLocale(locale) {
+        this._locale.set(locale);
+    }
+    /**
+     * Translate a key. Falls back to English, then to the key itself.
+     */
+    t(key) {
+        const locale = this._locale();
+        return TRANSLATIONS[locale]?.[key] ?? TRANSLATIONS["en"]?.[key] ?? key;
+    }
+    /**
+     * Get all available locales.
+     */
+    getAvailableLocales() {
+        return ["en", "ru"];
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: I18nService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: I18nService, providedIn: "root" });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: I18nService, decorators: [{
+            type: Injectable,
+            args: [{ providedIn: "root" }]
+        }] });
+
 class SchemaRendererService {
     dataStore;
     eventBus;
@@ -8126,7 +4148,6 @@ class SchemaElementComponent {
         this.createDynamicComponent();
     }
     ngOnChanges(changes) {
-        console.log(`[SchemaElement] ngOnChanges for "${this.element?.id}":`, Object.keys(changes));
         if (changes["element"] && this.dynamicHost) {
             this.createDynamicComponent();
         }
@@ -8229,17 +4250,89 @@ class CardComponent {
     title = "";
     subtitle = "";
     content = "";
-    elevated = false;
-    borderRadius = 8;
-    padding = 16;
+    elevated = 1;
+    borderRadius = 'lg';
+    padding = 'md';
     children = [];
     classes = "";
+    getCardClasses() {
+        const radiusMap = {
+            sm: 'rounded-sm',
+            md: 'rounded-md',
+            lg: 'rounded-lg',
+            xl: 'rounded-xl',
+        };
+        const shadows = [
+            'shadow-none',
+            'shadow-1',
+            'shadow-2',
+            'shadow-3',
+        ];
+        const base = 'bg-surface-container border border-outline-variant overflow-hidden';
+        const radius = radiusMap[this.borderRadius];
+        const shadow = shadows[this.elevated];
+        return [base, radius, shadow, this.classes].filter(Boolean).join(' ');
+    }
+    getContentClasses() {
+        const paddingMap = {
+            sm: 'p-4',
+            md: 'p-6',
+            lg: 'p-8',
+        };
+        return paddingMap[this.padding];
+    }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CardComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CardComponent, isStandalone: true, selector: "app-card", inputs: { title: "title", subtitle: "subtitle", content: "content", elevated: "elevated", borderRadius: "borderRadius", padding: "padding", children: "children", classes: "classes" }, ngImport: i0, template: "<div\n  class=\"ui-card\"\n  [class.ui-card-elevated]=\"elevated\"\n  [style.borderRadius.px]=\"borderRadius\"\n>\n  @if (title) {\n    <div class=\"ui-card-header\">\n      <h3>{{ title }}</h3>\n      @if (subtitle) {\n        <p>{{ subtitle }}</p>\n      }\n    </div>\n  }\n  <div [style.padding.px]=\"padding\">\n    @if (content) {\n      {{ content }}\n    }\n    @for (child of children; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"children\"\n      ></app-schema-element>\n    }\n  </div>\n</div>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CardComponent, isStandalone: true, selector: "app-card", inputs: { title: "title", subtitle: "subtitle", content: "content", elevated: "elevated", borderRadius: "borderRadius", padding: "padding", children: "children", classes: "classes" }, ngImport: i0, template: `
+    <div [class]="getCardClasses()">
+      @if (title) {
+        <div class="px-6 py-4 border-b border-outline-variant">
+          <h3 class="text-lg font-medium text-on-surface">{{ title }}</h3>
+          @if (subtitle) {
+            <p class="text-sm text-on-surface-variant">{{ subtitle }}</p>
+          }
+        </div>
+      }
+      <div [class]="getContentClasses()">
+        @if (content) {
+          <p class="text-on-surface">{{ content }}</p>
+        }
+        @for (child of children; track child.id) {
+          <app-schema-element
+            [element]="child"
+            [elements]="children"
+          ></app-schema-element>
+        }
+        <ng-content></ng-content>
+      </div>
+    </div>
+  `, isInline: true, styles: [":host{display:block}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CardComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-card", standalone: true, imports: [CommonModule, SchemaElementComponent], template: "<div\n  class=\"ui-card\"\n  [class.ui-card-elevated]=\"elevated\"\n  [style.borderRadius.px]=\"borderRadius\"\n>\n  @if (title) {\n    <div class=\"ui-card-header\">\n      <h3>{{ title }}</h3>\n      @if (subtitle) {\n        <p>{{ subtitle }}</p>\n      }\n    </div>\n  }\n  <div [style.padding.px]=\"padding\">\n    @if (content) {\n      {{ content }}\n    }\n    @for (child of children; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"children\"\n      ></app-schema-element>\n    }\n  </div>\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-card", standalone: true, imports: [CommonModule, SchemaElementComponent], changeDetection: ChangeDetectionStrategy.OnPush, template: `
+    <div [class]="getCardClasses()">
+      @if (title) {
+        <div class="px-6 py-4 border-b border-outline-variant">
+          <h3 class="text-lg font-medium text-on-surface">{{ title }}</h3>
+          @if (subtitle) {
+            <p class="text-sm text-on-surface-variant">{{ subtitle }}</p>
+          }
+        </div>
+      }
+      <div [class]="getContentClasses()">
+        @if (content) {
+          <p class="text-on-surface">{{ content }}</p>
+        }
+        @for (child of children; track child.id) {
+          <app-schema-element
+            [element]="child"
+            [elements]="children"
+          ></app-schema-element>
+        }
+        <ng-content></ng-content>
+      </div>
+    </div>
+  `, styles: [":host{display:block}\n"] }]
         }], propDecorators: { title: [{
                 type: Input
             }], subtitle: [{
@@ -8989,6 +5082,7 @@ class HeaderComponent {
     title = "";
     subtitle = "";
     icon = "";
+    classes = '';
     showBack = false;
     breadcrumbs = "[]";
     navigateBack = new EventEmitter();
@@ -8996,16 +5090,94 @@ class HeaderComponent {
         return parseJsonOrDefault(this.breadcrumbs);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: HeaderComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: HeaderComponent, isStandalone: true, selector: "app-header", inputs: { title: "title", subtitle: "subtitle", icon: "icon", showBack: "showBack", breadcrumbs: "breadcrumbs" }, outputs: { navigateBack: "navigateBack" }, ngImport: i0, template: "<header class=\"ui-header\">\n  @if (showBack) {\n    <button\n      class=\"ui-btn ui-btn-icon\"\n      (click)=\"navigateBack.emit()\"\n      aria-label=\"Back\"\n    >\n      &larr;\n    </button>\n  }\n  <div class=\"ui-header-content\">\n    <h1>{{ title }}</h1>\n    @if (parsedBreadcrumbs.length) {\n      <div class=\"ui-header-breadcrumbs\">\n        @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {\n          @if (!last && crumb.href) {\n            <a [href]=\"crumb.href\">{{ crumb.label }}</a>\n          } @else {\n            <span>{{ crumb.label }}</span>\n          }\n          @if (!last) {\n            <span>/</span>\n          }\n        }\n      </div>\n    }\n  </div>\n  <ng-content></ng-content>\n</header>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: HeaderComponent, isStandalone: true, selector: "app-header", inputs: { title: "title", subtitle: "subtitle", icon: "icon", classes: "classes", showBack: "showBack", breadcrumbs: "breadcrumbs" }, outputs: { navigateBack: "navigateBack" }, ngImport: i0, template: `
+    <header [class]="'flex items-center gap-3 ' + classes">
+      @if (showBack) {
+        <button
+          class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[--state-hover] active:bg-[--state-pressed] transition-colors"
+          (click)="navigateBack.emit()"
+          aria-label="Back"
+        >
+          <span class="text-xl">&#8592;</span>
+        </button>
+      }
+      <div class="flex flex-col">
+        <div class="flex items-center gap-3">
+          @if (icon) {
+            <app-icon [icon]="icon" class="w-6 h-6 text-primary" />
+          }
+          <h1 class="text-xl font-medium text-on-surface leading-tight">{{ title }}</h1>
+        </div>
+        @if (subtitle) {
+          <p class="text-sm text-on-surface-variant">{{ subtitle }}</p>
+        }
+        @if (parsedBreadcrumbs.length) {
+          <div class="flex items-center gap-2 text-sm text-on-surface-variant mt-1">
+            @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {
+              @if (!last && crumb.href) {
+                <a [href]="crumb.href" class="hover:underline">{{ crumb.label }}</a>
+              } @else {
+                <span>{{ crumb.label }}</span>
+              }
+              @if (!last) {
+                <span class="text-on-surface-variant/50">/</span>
+              }
+            }
+          </div>
+        }
+      </div>
+      <ng-content></ng-content>
+    </header>
+  `, isInline: true, styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: HeaderComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-header", standalone: true, imports: [], template: "<header class=\"ui-header\">\n  @if (showBack) {\n    <button\n      class=\"ui-btn ui-btn-icon\"\n      (click)=\"navigateBack.emit()\"\n      aria-label=\"Back\"\n    >\n      &larr;\n    </button>\n  }\n  <div class=\"ui-header-content\">\n    <h1>{{ title }}</h1>\n    @if (parsedBreadcrumbs.length) {\n      <div class=\"ui-header-breadcrumbs\">\n        @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {\n          @if (!last && crumb.href) {\n            <a [href]=\"crumb.href\">{{ crumb.label }}</a>\n          } @else {\n            <span>{{ crumb.label }}</span>\n          }\n          @if (!last) {\n            <span>/</span>\n          }\n        }\n      </div>\n    }\n  </div>\n  <ng-content></ng-content>\n</header>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-header", standalone: true, imports: [IconComponent], changeDetection: ChangeDetectionStrategy.OnPush, template: `
+    <header [class]="'flex items-center gap-3 ' + classes">
+      @if (showBack) {
+        <button
+          class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[--state-hover] active:bg-[--state-pressed] transition-colors"
+          (click)="navigateBack.emit()"
+          aria-label="Back"
+        >
+          <span class="text-xl">&#8592;</span>
+        </button>
+      }
+      <div class="flex flex-col">
+        <div class="flex items-center gap-3">
+          @if (icon) {
+            <app-icon [icon]="icon" class="w-6 h-6 text-primary" />
+          }
+          <h1 class="text-xl font-medium text-on-surface leading-tight">{{ title }}</h1>
+        </div>
+        @if (subtitle) {
+          <p class="text-sm text-on-surface-variant">{{ subtitle }}</p>
+        }
+        @if (parsedBreadcrumbs.length) {
+          <div class="flex items-center gap-2 text-sm text-on-surface-variant mt-1">
+            @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {
+              @if (!last && crumb.href) {
+                <a [href]="crumb.href" class="hover:underline">{{ crumb.label }}</a>
+              } @else {
+                <span>{{ crumb.label }}</span>
+              }
+              @if (!last) {
+                <span class="text-on-surface-variant/50">/</span>
+              }
+            }
+          </div>
+        }
+      </div>
+      <ng-content></ng-content>
+    </header>
+  `, styles: [":host{display:block}\n"] }]
         }], propDecorators: { title: [{
                 type: Input
             }], subtitle: [{
                 type: Input
             }], icon: [{
+                type: Input
+            }], classes: [{
                 type: Input
             }], showBack: [{
                 type: Input
@@ -9073,11 +5245,11 @@ class PageContainerComponent {
     maxWidth = 0;
     width = "";
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PageContainerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PageContainerComponent, isStandalone: true, selector: "app-page-container", inputs: { title: "title", padding: "padding", maxWidth: "maxWidth", width: "width" }, ngImport: i0, template: "@if (title) {\n  <div class=\"ui-page-header\">\n    <h1>{{ title }}</h1>\n    <ng-content select=\"[slot=header-actions]\"></ng-content>\n  </div>\n}\n<div\n  class=\"ui-page-container\"\n  [style.padding.px]=\"padding\"\n  [style.maxWidth]=\"maxWidth ? maxWidth + 'px' : null\"\n>\n  <ng-content></ng-content>\n</div>\n", styles: [":host{display:flex;flex-direction:column;height:100%}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PageContainerComponent, isStandalone: true, selector: "app-page-container", inputs: { title: "title", padding: "padding", maxWidth: "maxWidth", width: "width" }, ngImport: i0, template: "@if (title) {\n  <div class=\"ui-page-header\">\n    <h1>{{ title }}</h1>\n    <ng-content select=\"[slot=header-actions]\"></ng-content>\n  </div>\n}\n<div\n  class=\"ui-page-container\"\n  [style.maxWidth]=\"maxWidth ? maxWidth + 'px' : null\"\n>\n  <ng-content></ng-content>\n</div>\n", styles: [":host{display:flex;flex-direction:column;height:100%}\n"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PageContainerComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-page-container", standalone: true, imports: [], template: "@if (title) {\n  <div class=\"ui-page-header\">\n    <h1>{{ title }}</h1>\n    <ng-content select=\"[slot=header-actions]\"></ng-content>\n  </div>\n}\n<div\n  class=\"ui-page-container\"\n  [style.padding.px]=\"padding\"\n  [style.maxWidth]=\"maxWidth ? maxWidth + 'px' : null\"\n>\n  <ng-content></ng-content>\n</div>\n", styles: [":host{display:flex;flex-direction:column;height:100%}\n"] }]
+            args: [{ selector: "app-page-container", standalone: true, imports: [], template: "@if (title) {\n  <div class=\"ui-page-header\">\n    <h1>{{ title }}</h1>\n    <ng-content select=\"[slot=header-actions]\"></ng-content>\n  </div>\n}\n<div\n  class=\"ui-page-container\"\n  [style.maxWidth]=\"maxWidth ? maxWidth + 'px' : null\"\n>\n  <ng-content></ng-content>\n</div>\n", styles: [":host{display:flex;flex-direction:column;height:100%}\n"] }]
         }], propDecorators: { title: [{
                 type: Input
             }], padding: [{
@@ -9100,7 +5272,7 @@ class PageToolbarComponent {
         this.actionClicked.emit(action.action || action.label);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PageToolbarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PageToolbarComponent, isStandalone: true, selector: "app-page-toolbar", inputs: { title: "title", actions: "actions" }, outputs: { actionClicked: "actionClicked" }, ngImport: i0, template: "<div class=\"ui-page-toolbar\">\n  <div class=\"ui-page-toolbar-title\">\n    <h2>{{ title }}</h2>\n    <ng-content select=\"[slot=subtitle]\"></ng-content>\n  </div>\n  <div class=\"ui-page-toolbar-actions\">\n    @for (action of parsedActions; track action.label) {\n      <button\n        class=\"ui-btn\"\n        [class.ui-btn-primary]=\"action.variant === 'primary'\"\n        [class.ui-btn-danger]=\"action.variant === 'danger'\"\n        [class.ui-btn-ghost]=\"action.variant === 'ghost'\"\n        (click)=\"handleAction(action)\"\n      >\n        @if (action.icon) {\n          <app-icon [icon]=\"action.icon\" [size]=\"18\" />\n        }\n        {{ action.label }}\n      </button>\n    }\n  </div>\n</div>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PageToolbarComponent, isStandalone: true, selector: "app-page-toolbar", inputs: { title: "title", actions: "actions" }, outputs: { actionClicked: "actionClicked" }, ngImport: i0, template: "<div class=\"ui-page-toolbar\">\n  <div class=\"ui-page-toolbar-title\">\n    <h2>{{ title }}</h2>\n    <ng-content select=\"[slot=subtitle]\"></ng-content>\n  </div>\n  <div class=\"ui-page-toolbar-actions\">\n    @for (action of parsedActions; track action.label) {\n      <button\n        class=\"ui-btn\"\n        [class.ui-btn-primary]=\"action.variant === 'primary'\"\n        [class.ui-btn-danger]=\"action.variant === 'danger'\"\n        [class.ui-btn-ghost]=\"action.variant === 'ghost'\"\n        (click)=\"handleAction(action)\"\n      >\n        @if (action.icon) {\n          <app-icon [icon]=\"action.icon\" [size]=\"18\" />\n        }\n        {{ action.label }}\n      </button>\n    }\n  </div>\n</div>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PageToolbarComponent, decorators: [{
             type: Component,
@@ -9221,7 +5393,7 @@ class ChipComponent {
         this.removed.emit();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ChipComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ChipComponent, isStandalone: true, selector: "app-chip", inputs: { label: "label", icon: "icon", removable: "removable", closeable: "closeable" }, outputs: { removed: "removed" }, ngImport: i0, template: "<span class=\"ui-badge\">\n  @if (icon) {\n    <app-icon [icon]=\"icon\" [size]=\"16\" />\n  }\n  <span>{{ label }}</span>\n  @if (removable || closeable) {\n    <button\n      class=\"ui-chip-remove\"\n      (click)=\"handleRemove($event)\"\n      aria-label=\"Remove\"\n    >\n      &times;\n    </button>\n  }\n</span>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ChipComponent, isStandalone: true, selector: "app-chip", inputs: { label: "label", icon: "icon", removable: "removable", closeable: "closeable" }, outputs: { removed: "removed" }, ngImport: i0, template: "<span class=\"ui-badge\">\n  @if (icon) {\n    <app-icon [icon]=\"icon\" [size]=\"16\" />\n  }\n  <span>{{ label }}</span>\n  @if (removable || closeable) {\n    <button\n      class=\"ui-chip-remove\"\n      (click)=\"handleRemove($event)\"\n      aria-label=\"Remove\"\n    >\n      &times;\n    </button>\n  }\n</span>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ChipComponent, decorators: [{
             type: Component,
@@ -9959,7 +6131,7 @@ class MainEditorComponent {
         this.designer.selectElement(null);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: MainEditorComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: MainEditorComponent, isStandalone: true, selector: "app-main-editor", ngImport: i0, template: "<div class=\"ui-main-editor\">\n  <div class=\"ui-main-editor-toolbar\">\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!designer.canUndo()\"\n      (click)=\"designer.undo()\"\n      title=\"Undo\"\n    >\n      <app-icon icon=\"undo\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!designer.canRedo()\"\n      (click)=\"designer.redo()\"\n      title=\"Redo\"\n    >\n      <app-icon icon=\"redo\" [size]=\"18\" />\n    </button>\n    <div class=\"ui-toolbar-divider\"></div>\n    <button\n      class=\"ui-icon-btn\"\n      [class.ui-icon-btn-active]=\"designer.showGrid()\"\n      (click)=\"designer.toggleGrid()\"\n      title=\"Toggle grid\"\n    >\n      <app-icon icon=\"grid\" [size]=\"18\" />\n    </button>\n    <div class=\"ui-toolbar-divider\"></div>\n    <button class=\"ui-icon-btn\" (click)=\"zoomOut()\" title=\"Zoom out\">\n      <app-icon icon=\"zoom_out\" [size]=\"18\" />\n    </button>\n    <span class=\"ui-zoom-label\">{{ designer.zoom() }}%</span>\n    <button class=\"ui-icon-btn\" (click)=\"zoomIn()\" title=\"Zoom in\">\n      <app-icon icon=\"zoom_in\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"designer.setZoom(100)\"\n      title=\"Reset zoom\"\n    >\n      <app-icon icon=\"fit_screen\" [size]=\"18\" />\n    </button>\n    <div class=\"ui-toolbar-spacer\"></div>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!designer.selectedId()\"\n      (click)=\"deleteSelected()\"\n      title=\"Delete selected\"\n    >\n      <app-icon icon=\"delete\" [size]=\"18\" />\n    </button>\n  </div>\n  <div class=\"ui-main-editor-canvas\" (click)=\"onCanvasClick($event)\">\n    <app-canvas></app-canvas>\n  </div>\n</div>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: CanvasComponent, selector: "app-canvas" }, { kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: MainEditorComponent, isStandalone: true, selector: "app-main-editor", ngImport: i0, template: "<div class=\"ui-main-editor\">\n  <div class=\"ui-main-editor-toolbar\">\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!designer.canUndo()\"\n      (click)=\"designer.undo()\"\n      title=\"Undo\"\n    >\n      <app-icon icon=\"undo\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!designer.canRedo()\"\n      (click)=\"designer.redo()\"\n      title=\"Redo\"\n    >\n      <app-icon icon=\"redo\" [size]=\"18\" />\n    </button>\n    <div class=\"ui-toolbar-divider\"></div>\n    <button\n      class=\"ui-icon-btn\"\n      [class.ui-icon-btn-active]=\"designer.showGrid()\"\n      (click)=\"designer.toggleGrid()\"\n      title=\"Toggle grid\"\n    >\n      <app-icon icon=\"grid\" [size]=\"18\" />\n    </button>\n    <div class=\"ui-toolbar-divider\"></div>\n    <button class=\"ui-icon-btn\" (click)=\"zoomOut()\" title=\"Zoom out\">\n      <app-icon icon=\"zoom_out\" [size]=\"18\" />\n    </button>\n    <span class=\"ui-zoom-label\">{{ designer.zoom() }}%</span>\n    <button class=\"ui-icon-btn\" (click)=\"zoomIn()\" title=\"Zoom in\">\n      <app-icon icon=\"zoom_in\" [size]=\"18\" />\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      (click)=\"designer.setZoom(100)\"\n      title=\"Reset zoom\"\n    >\n      <app-icon icon=\"fit_screen\" [size]=\"18\" />\n    </button>\n    <div class=\"ui-toolbar-spacer\"></div>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!designer.selectedId()\"\n      (click)=\"deleteSelected()\"\n      title=\"Delete selected\"\n    >\n      <app-icon icon=\"delete\" [size]=\"18\" />\n    </button>\n  </div>\n  <div class=\"ui-main-editor-canvas\" (click)=\"onCanvasClick($event)\">\n    <app-canvas></app-canvas>\n  </div>\n</div>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: CanvasComponent, selector: "app-canvas" }, { kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: MainEditorComponent, decorators: [{
             type: Component,
@@ -10077,7 +6249,7 @@ class CommandPaletteComponent {
         return [...map.entries()].map(([key, value]) => ({ key, value }));
     };
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CommandPaletteComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CommandPaletteComponent, isStandalone: true, selector: "app-command-palette", inputs: { commands: "commands", placeholder: "placeholder", triggerShortcut: "triggerShortcut" }, outputs: { commandSelected: "commandSelected", closed: "closed" }, host: { listeners: { "document:keydown": "onKeyDown($event)" } }, ngImport: i0, template: "@if (isOpen()) {\n  <div class=\"ui-command-palette-overlay\" (click)=\"close()\">\n    <div class=\"ui-command-palette\" (click)=\"$event.stopPropagation()\">\n      <div class=\"ui-command-palette-search\">\n        <app-icon icon=\"search\" [size]=\"20\" />\n        <input\n          type=\"text\"\n          [placeholder]=\"placeholder\"\n          [value]=\"searchQuery()\"\n          (input)=\"onSearchChange($any($event.target).value)\"\n          autofocus\n        />\n        <kbd>Esc</kbd>\n      </div>\n      <div class=\"ui-command-palette-results\">\n        @if (filteredCommands().length === 0) {\n          <div class=\"ui-command-palette-empty\">\n            <app-icon icon=\"search\" [size]=\"40\" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class=\"ui-command-palette-group\">\n              <div class=\"ui-command-palette-group-label\">\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type=\"button\"\n                  class=\"ui-command-palette-item\"\n                  [class.ui-command-palette-item-selected]=\"isSelected(command)\"\n                  [class.ui-command-palette-item-disabled]=\"command.disabled\"\n                  [disabled]=\"command.disabled\"\n                  (click)=\"selectCommand(command)\"\n                >\n                  @if (command.icon) {\n                    <app-icon [icon]=\"command.icon\" [size]=\"20\" />\n                  }\n                  <span>{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd>{{ command.shortcut }}</kbd>\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div class=\"ui-command-palette-footer\">\n        <span><kbd>\u2191\u2193</kbd> Navigate</span>\n        <span><kbd>\u21B5</kbd> Select</span>\n        <span><kbd>Esc</kbd> Close</span>\n      </div>\n    </div>\n  </div>\n}\n", styles: ["@keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes slideDown{0%{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}.animate-fade-in{animation:fadeIn .15s ease-out}.animate-slide-down{animation:slideDown .15s ease-out}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CommandPaletteComponent, isStandalone: true, selector: "app-command-palette", inputs: { commands: "commands", placeholder: "placeholder", triggerShortcut: "triggerShortcut" }, outputs: { commandSelected: "commandSelected", closed: "closed" }, host: { listeners: { "document:keydown": "onKeyDown($event)" } }, ngImport: i0, template: "@if (isOpen()) {\n  <div class=\"ui-command-palette-overlay\" (click)=\"close()\">\n    <div class=\"ui-command-palette\" (click)=\"$event.stopPropagation()\">\n      <div class=\"ui-command-palette-search\">\n        <app-icon icon=\"search\" [size]=\"20\" />\n        <input\n          type=\"text\"\n          [placeholder]=\"placeholder\"\n          [value]=\"searchQuery()\"\n          (input)=\"onSearchChange($any($event.target).value)\"\n          autofocus\n        />\n        <kbd>Esc</kbd>\n      </div>\n      <div class=\"ui-command-palette-results\">\n        @if (filteredCommands().length === 0) {\n          <div class=\"ui-command-palette-empty\">\n            <app-icon icon=\"search\" [size]=\"40\" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class=\"ui-command-palette-group\">\n              <div class=\"ui-command-palette-group-label\">\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type=\"button\"\n                  class=\"ui-command-palette-item\"\n                  [class.ui-command-palette-item-selected]=\"isSelected(command)\"\n                  [class.ui-command-palette-item-disabled]=\"command.disabled\"\n                  [disabled]=\"command.disabled\"\n                  (click)=\"selectCommand(command)\"\n                >\n                  @if (command.icon) {\n                    <app-icon [icon]=\"command.icon\" [size]=\"20\" />\n                  }\n                  <span>{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd>{{ command.shortcut }}</kbd>\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div class=\"ui-command-palette-footer\">\n        <span><kbd>\u2191\u2193</kbd> Navigate</span>\n        <span><kbd>\u21B5</kbd> Select</span>\n        <span><kbd>Esc</kbd> Close</span>\n      </div>\n    </div>\n  </div>\n}\n", styles: ["@keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes slideDown{0%{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}.animate-fade-in{animation:fadeIn .15s ease-out}.animate-slide-down{animation:slideDown .15s ease-out}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CommandPaletteComponent, decorators: [{
             type: Component,
@@ -10168,10 +6340,14 @@ class LanguageSelectorComponent {
     languages = [];
     placeholder = "";
     width = "";
+    disabled = false;
+    error = "";
     classes = "";
     sourceLang = ""; // for source selector
     targetLang = ""; // for target selector
     changed = new EventEmitter();
+    focused = signal(false, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "focused" }] : /* istanbul ignore next */ []));
     get parsedLanguages() {
         const arr = parseJsonOrDefault(this.languages);
         // Handle string arrays (e.g., ["en", "es", "fr"])
@@ -10191,11 +6367,79 @@ class LanguageSelectorComponent {
         this.changed.emit(this.value);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LanguageSelectorComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: LanguageSelectorComponent, isStandalone: true, selector: "app-language-selector", inputs: { label: "label", labelId: "labelId", value: "value", languages: "languages", placeholder: "placeholder", width: "width", classes: "classes", sourceLang: "sourceLang", targetLang: "targetLang" }, outputs: { changed: "changed" }, ngImport: i0, template: "<div class=\"ui-language-selector\">\n  @if (label) {\n    <label [attr.id]=\"labelId\">{{ label }}</label>\n  }\n  <select\n    [value]=\"value\"\n    (change)=\"handleChange($event)\"\n    [attr.aria-labelledby]=\"labelId || null\"\n  >\n    @for (lang of parsedLanguages; track lang.value) {\n      <option [value]=\"lang.value\" [selected]=\"lang.value === value\">\n        {{ lang.label }}\n      </option>\n    }\n  </select>\n  <app-icon class=\"ui-language-selector-icon\" icon=\"chevron-down\" [size]=\"16\" />\n</div>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: LanguageSelectorComponent, isStandalone: true, selector: "app-language-selector", inputs: { label: "label", labelId: "labelId", value: "value", languages: "languages", placeholder: "placeholder", width: "width", disabled: "disabled", error: "error", classes: "classes", sourceLang: "sourceLang", targetLang: "targetLang" }, outputs: { changed: "changed" }, ngImport: i0, template: `
+    <div class="flex flex-col gap-1.5">
+      @if (label) {
+        <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+      }
+      <div class="relative">
+        <select
+          [value]="value"
+          (change)="handleChange($event)"
+          [disabled]="disabled"
+          [attr.aria-labelledby]="labelId || null"
+          class="w-full h-10 pl-4 pr-10 appearance-none rounded-md bg-surface-container-low border border-outline text-on-surface cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          [class.border-error]="!!error"
+          [class.ring-error]="focused() && error"
+          (focus)="focused.set(true)"
+          (blur)="focused.set(false)"
+        >
+          @if (placeholder && !value) {
+            <option value="" disabled selected>{{ placeholder }}</option>
+          }
+          @for (lang of parsedLanguages; track lang.value) {
+            <option [value]="lang.value" [selected]="lang.value === value">
+              {{ lang.label }}
+            </option>
+          }
+        </select>
+        <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">
+          <app-icon icon="chevron-down" [size]="18" />
+        </div>
+      </div>
+      @if (error) {
+        <span class="text-sm text-error">{{ error }}</span>
+      }
+    </div>
+  `, isInline: true, styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LanguageSelectorComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-language-selector", standalone: true, imports: [IconComponent], template: "<div class=\"ui-language-selector\">\n  @if (label) {\n    <label [attr.id]=\"labelId\">{{ label }}</label>\n  }\n  <select\n    [value]=\"value\"\n    (change)=\"handleChange($event)\"\n    [attr.aria-labelledby]=\"labelId || null\"\n  >\n    @for (lang of parsedLanguages; track lang.value) {\n      <option [value]=\"lang.value\" [selected]=\"lang.value === value\">\n        {{ lang.label }}\n      </option>\n    }\n  </select>\n  <app-icon class=\"ui-language-selector-icon\" icon=\"chevron-down\" [size]=\"16\" />\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-language-selector", standalone: true, imports: [IconComponent], template: `
+    <div class="flex flex-col gap-1.5">
+      @if (label) {
+        <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+      }
+      <div class="relative">
+        <select
+          [value]="value"
+          (change)="handleChange($event)"
+          [disabled]="disabled"
+          [attr.aria-labelledby]="labelId || null"
+          class="w-full h-10 pl-4 pr-10 appearance-none rounded-md bg-surface-container-low border border-outline text-on-surface cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          [class.border-error]="!!error"
+          [class.ring-error]="focused() && error"
+          (focus)="focused.set(true)"
+          (blur)="focused.set(false)"
+        >
+          @if (placeholder && !value) {
+            <option value="" disabled selected>{{ placeholder }}</option>
+          }
+          @for (lang of parsedLanguages; track lang.value) {
+            <option [value]="lang.value" [selected]="lang.value === value">
+              {{ lang.label }}
+            </option>
+          }
+        </select>
+        <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">
+          <app-icon icon="chevron-down" [size]="18" />
+        </div>
+      </div>
+      @if (error) {
+        <span class="text-sm text-error">{{ error }}</span>
+      }
+    </div>
+  `, styles: [":host{display:block}\n"] }]
         }], propDecorators: { label: [{
                 type: Input
             }], labelId: [{
@@ -10207,6 +6451,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             }], placeholder: [{
                 type: Input
             }], width: [{
+                type: Input
+            }], disabled: [{
+                type: Input
+            }], error: [{
                 type: Input
             }], classes: [{
                 type: Input
@@ -10221,6 +6469,7 @@ registerSchemaComponent("app-language-selector", LanguageSelectorComponent);
 
 class SwapButtonComponent {
     ariaLabel = "";
+    disabled = false;
     align = "";
     direction = "";
     height = "";
@@ -10229,14 +6478,35 @@ class SwapButtonComponent {
     width = "";
     classes = "";
     clicked = new EventEmitter();
-    hovered = false;
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SwapButtonComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SwapButtonComponent, isStandalone: true, selector: "app-swap-button", inputs: { ariaLabel: "ariaLabel", align: "align", direction: "direction", height: "height", justify: "justify", layout: "layout", width: "width", classes: "classes" }, outputs: { clicked: "clicked" }, ngImport: i0, template: "<button class=\"ui-swap-button\" (click)=\"clicked.emit($event)\" aria-label=\"Swap\">\n  <app-icon icon=\"chevron-down\" [size]=\"20\" style=\"transform: rotate(90deg)\" />\n</button>\n", dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SwapButtonComponent, isStandalone: true, selector: "app-swap-button", inputs: { ariaLabel: "ariaLabel", disabled: "disabled", align: "align", direction: "direction", height: "height", justify: "justify", layout: "layout", width: "width", classes: "classes" }, outputs: { clicked: "clicked" }, ngImport: i0, template: `
+    <button
+      type="button"
+      [disabled]="disabled"
+      [attr.aria-label]="ariaLabel || 'Swap'"
+      (click)="clicked.emit($event)"
+      class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-low border border-outline text-on-surface transition-all duration-200 hover:bg-surface-container hover:shadow-1 active:bg-surface-container-high disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      <app-icon icon="chevron-down" [size]="20" class="rotate-90" />
+    </button>
+  `, isInline: true, styles: [":host{display:inline-flex}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SwapButtonComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-swap-button", standalone: true, imports: [IconComponent], template: "<button class=\"ui-swap-button\" (click)=\"clicked.emit($event)\" aria-label=\"Swap\">\n  <app-icon icon=\"chevron-down\" [size]=\"20\" style=\"transform: rotate(90deg)\" />\n</button>\n" }]
+            args: [{ selector: "app-swap-button", standalone: true, imports: [IconComponent], template: `
+    <button
+      type="button"
+      [disabled]="disabled"
+      [attr.aria-label]="ariaLabel || 'Swap'"
+      (click)="clicked.emit($event)"
+      class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-low border border-outline text-on-surface transition-all duration-200 hover:bg-surface-container hover:shadow-1 active:bg-surface-container-high disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      <app-icon icon="chevron-down" [size]="20" class="rotate-90" />
+    </button>
+  `, styles: [":host{display:inline-flex}\n"] }]
         }], propDecorators: { ariaLabel: [{
+                type: Input
+            }], disabled: [{
                 type: Input
             }], align: [{
                 type: Input
@@ -10269,10 +6539,12 @@ class TextInputComponent {
     multiline = true;
     rows = 3;
     width = "";
+    disabled = false;
+    error = "";
     classes = "";
     input = new EventEmitter();
-    focused = false;
-    hovered = false;
+    focused = signal(false, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "focused" }] : /* istanbul ignore next */ []));
     ngAfterViewInit() {
         if (this.autofocus) {
             setTimeout(() => this.textareaEl.nativeElement.focus());
@@ -10298,11 +6570,103 @@ class TextInputComponent {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextInputComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TextInputComponent, isStandalone: true, selector: "app-text-input", inputs: { value: "value", placeholder: "placeholder", clearable: "clearable", maxChars: "maxChars", autofocus: "autofocus", height: "height", label: "label", multiline: "multiline", rows: "rows", width: "width", classes: "classes" }, outputs: { input: "input" }, viewQueries: [{ propertyName: "textareaEl", first: true, predicate: ["textareaEl"], descendants: true }], ngImport: i0, template: "<div class=\"ui-text-input\">\n  <textarea\n    #textareaEl\n    class=\"ui-textarea\"\n    [placeholder]=\"placeholder\"\n    [value]=\"value\"\n    [attr.maxlength]=\"maxChars || null\"\n    (input)=\"handleInput($event)\"\n    (focus)=\"focused = true\"\n    (blur)=\"focused = false\"\n  ></textarea>\n  @if (clearable && value) {\n    <button class=\"ui-text-input-clear\" (click)=\"clear()\" aria-label=\"Clear\">\n      &times;\n    </button>\n  }\n  @if (maxChars) {\n    <span class=\"ui-text-input-counter\">{{ value.length }}/{{ maxChars }}</span>\n  }\n</div>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TextInputComponent, isStandalone: true, selector: "app-text-input", inputs: { value: "value", placeholder: "placeholder", clearable: "clearable", maxChars: "maxChars", autofocus: "autofocus", height: "height", label: "label", multiline: "multiline", rows: "rows", width: "width", disabled: "disabled", error: "error", classes: "classes" }, outputs: { input: "input" }, viewQueries: [{ propertyName: "textareaEl", first: true, predicate: ["textareaEl"], descendants: true }], ngImport: i0, template: `
+    <div class="flex flex-col gap-1.5">
+      @if (label) {
+        <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+      }
+      <div
+        class="relative flex items-start rounded-md bg-surface-container-low border transition-colors duration-200"
+        [class.border-outline]="!focused() && !error"
+        [class.border-primary]="focused() && !error"
+        [class.border-error]="!!error"
+        [class.ring-1]="focused()"
+        [class.ring-primary]="focused() && !error"
+        [class.ring-error]="focused() && error"
+      >
+        <textarea
+          #textareaEl
+          [placeholder]="placeholder"
+          [value]="value"
+          [attr.maxlength]="maxChars || null"
+          [rows]="rows"
+          [disabled]="disabled"
+          (input)="handleInput($event)"
+          (focus)="focused.set(true)"
+          (blur)="focused.set(false)"
+          class="flex-1 px-4 py-3 bg-transparent text-on-surface placeholder:text-on-surface-variant outline-none resize-none disabled:opacity-50 disabled:cursor-not-allowed rounded-md"
+        ></textarea>
+        @if (clearable && value) {
+          <button
+            type="button"
+            class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-[--state-hover] active:bg-[--state-pressed] transition-colors"
+            (click)="clear()"
+            aria-label="Clear"
+          >
+            <span class="text-lg">&times;</span>
+          </button>
+        }
+      </div>
+      <div class="flex justify-between items-center">
+        @if (error) {
+          <span class="text-sm text-error">{{ error }}</span>
+        }
+        @if (maxChars) {
+          <span class="text-sm text-on-surface-variant ml-auto">{{ value.length }}/{{ maxChars }}</span>
+        }
+      </div>
+    </div>
+  `, isInline: true, styles: [":host{display:block}\n"] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextInputComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-text-input", standalone: true, imports: [], template: "<div class=\"ui-text-input\">\n  <textarea\n    #textareaEl\n    class=\"ui-textarea\"\n    [placeholder]=\"placeholder\"\n    [value]=\"value\"\n    [attr.maxlength]=\"maxChars || null\"\n    (input)=\"handleInput($event)\"\n    (focus)=\"focused = true\"\n    (blur)=\"focused = false\"\n  ></textarea>\n  @if (clearable && value) {\n    <button class=\"ui-text-input-clear\" (click)=\"clear()\" aria-label=\"Clear\">\n      &times;\n    </button>\n  }\n  @if (maxChars) {\n    <span class=\"ui-text-input-counter\">{{ value.length }}/{{ maxChars }}</span>\n  }\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-text-input", standalone: true, template: `
+    <div class="flex flex-col gap-1.5">
+      @if (label) {
+        <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+      }
+      <div
+        class="relative flex items-start rounded-md bg-surface-container-low border transition-colors duration-200"
+        [class.border-outline]="!focused() && !error"
+        [class.border-primary]="focused() && !error"
+        [class.border-error]="!!error"
+        [class.ring-1]="focused()"
+        [class.ring-primary]="focused() && !error"
+        [class.ring-error]="focused() && error"
+      >
+        <textarea
+          #textareaEl
+          [placeholder]="placeholder"
+          [value]="value"
+          [attr.maxlength]="maxChars || null"
+          [rows]="rows"
+          [disabled]="disabled"
+          (input)="handleInput($event)"
+          (focus)="focused.set(true)"
+          (blur)="focused.set(false)"
+          class="flex-1 px-4 py-3 bg-transparent text-on-surface placeholder:text-on-surface-variant outline-none resize-none disabled:opacity-50 disabled:cursor-not-allowed rounded-md"
+        ></textarea>
+        @if (clearable && value) {
+          <button
+            type="button"
+            class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-[--state-hover] active:bg-[--state-pressed] transition-colors"
+            (click)="clear()"
+            aria-label="Clear"
+          >
+            <span class="text-lg">&times;</span>
+          </button>
+        }
+      </div>
+      <div class="flex justify-between items-center">
+        @if (error) {
+          <span class="text-sm text-error">{{ error }}</span>
+        }
+        @if (maxChars) {
+          <span class="text-sm text-on-surface-variant ml-auto">{{ value.length }}/{{ maxChars }}</span>
+        }
+      </div>
+    </div>
+  `, styles: [":host{display:block}\n"] }]
         }], propDecorators: { textareaEl: [{
                 type: ViewChild,
                 args: ["textareaEl"]
@@ -10326,6 +6690,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
                 type: Input
             }], width: [{
                 type: Input
+            }], disabled: [{
+                type: Input
+            }], error: [{
+                type: Input
             }], classes: [{
                 type: Input
             }], input: [{
@@ -10342,10 +6710,13 @@ class TranslationOutputComponent {
     confidence = 0;
     height = "";
     width = "";
+    error = "";
+    rows = 4;
     classes = "";
     copied = new EventEmitter();
+    focused = signal(false, /* @ts-ignore */
+    ...(ngDevMode ? [{ debugName: "focused" }] : /* istanbul ignore next */ []));
     isCopied = false;
-    hovered = false;
     async copyToClipboard() {
         try {
             await navigator.clipboard.writeText(this.value);
@@ -10358,11 +6729,107 @@ class TranslationOutputComponent {
         }
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TranslationOutputComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TranslationOutputComponent, isStandalone: true, selector: "app-translation-output", inputs: { value: "value", placeholder: "placeholder", loading: "loading", showConfidence: "showConfidence", showCopyButton: "showCopyButton", confidence: "confidence", height: "height", width: "width", classes: "classes" }, outputs: { copied: "copied" }, ngImport: i0, template: "<div class=\"ui-translation-output\">\n  <textarea\n    #outputEl\n    class=\"ui-textarea\"\n    [value]=\"value\"\n    [placeholder]=\"placeholder || 'Translation will appear here...'\"\n    readonly\n  ></textarea>\n  @if (showCopyButton && value) {\n    <button\n      class=\"ui-translation-output-copy\"\n      (click)=\"copyToClipboard()\"\n      aria-label=\"Copy\"\n    >\n      @if (isCopied) {\n        <span>Copied!</span>\n      } @else {\n        <app-icon icon=\"copy\" [size]=\"14\" />\n      }\n    </button>\n  }\n</div>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TranslationOutputComponent, isStandalone: true, selector: "app-translation-output", inputs: { value: "value", placeholder: "placeholder", loading: "loading", showConfidence: "showConfidence", showCopyButton: "showCopyButton", confidence: "confidence", height: "height", width: "width", error: "error", rows: "rows", classes: "classes" }, outputs: { copied: "copied" }, ngImport: i0, template: `
+    <div class="flex flex-col gap-1.5">
+      <div
+        class="relative flex items-start rounded-md bg-surface-container-low border border-outline transition-colors duration-200"
+        [class.ring-1]="focused()"
+        [class.ring-primary]="focused()"
+      >
+        <textarea
+          #outputEl
+          [value]="value"
+          [placeholder]="placeholder || 'Translation will appear here...'"
+          [disabled]="true"
+          [rows]="rows"
+          (focus)="focused.set(true)"
+          (blur)="focused.set(false)"
+          class="flex-1 px-4 py-3 bg-transparent text-on-surface placeholder:text-on-surface-variant outline-none resize-none rounded-md cursor-default"
+        ></textarea>
+        @if (loading) {
+          <div class="absolute right-3 top-1/2 -translate-y-1/2">
+            <div class="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        }
+        @if (showCopyButton && value && !loading) {
+          <button
+            type="button"
+            class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-[--state-hover] active:bg-[--state-pressed] transition-colors"
+            (click)="copyToClipboard()"
+            aria-label="Copy"
+          >
+            @if (isCopied) {
+              <span class="text-sm text-success font-medium">Copied!</span>
+            } @else {
+              <app-icon icon="copy" [size]="16" />
+            }
+          </button>
+        }
+      </div>
+      <div class="flex justify-between items-center">
+        @if (showConfidence && confidence) {
+          <span class="text-xs text-on-surface-variant">
+            Confidence: {{ (confidence * 100).toFixed(0) }}%
+          </span>
+        }
+        @if (error) {
+          <span class="text-sm text-error">{{ error }}</span>
+        }
+      </div>
+    </div>
+  `, isInline: true, styles: [":host{display:block}textarea:disabled{cursor:default}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TranslationOutputComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-translation-output", standalone: true, imports: [IconComponent], template: "<div class=\"ui-translation-output\">\n  <textarea\n    #outputEl\n    class=\"ui-textarea\"\n    [value]=\"value\"\n    [placeholder]=\"placeholder || 'Translation will appear here...'\"\n    readonly\n  ></textarea>\n  @if (showCopyButton && value) {\n    <button\n      class=\"ui-translation-output-copy\"\n      (click)=\"copyToClipboard()\"\n      aria-label=\"Copy\"\n    >\n      @if (isCopied) {\n        <span>Copied!</span>\n      } @else {\n        <app-icon icon=\"copy\" [size]=\"14\" />\n      }\n    </button>\n  }\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-translation-output", standalone: true, imports: [IconComponent], template: `
+    <div class="flex flex-col gap-1.5">
+      <div
+        class="relative flex items-start rounded-md bg-surface-container-low border border-outline transition-colors duration-200"
+        [class.ring-1]="focused()"
+        [class.ring-primary]="focused()"
+      >
+        <textarea
+          #outputEl
+          [value]="value"
+          [placeholder]="placeholder || 'Translation will appear here...'"
+          [disabled]="true"
+          [rows]="rows"
+          (focus)="focused.set(true)"
+          (blur)="focused.set(false)"
+          class="flex-1 px-4 py-3 bg-transparent text-on-surface placeholder:text-on-surface-variant outline-none resize-none rounded-md cursor-default"
+        ></textarea>
+        @if (loading) {
+          <div class="absolute right-3 top-1/2 -translate-y-1/2">
+            <div class="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        }
+        @if (showCopyButton && value && !loading) {
+          <button
+            type="button"
+            class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-[--state-hover] active:bg-[--state-pressed] transition-colors"
+            (click)="copyToClipboard()"
+            aria-label="Copy"
+          >
+            @if (isCopied) {
+              <span class="text-sm text-success font-medium">Copied!</span>
+            } @else {
+              <app-icon icon="copy" [size]="16" />
+            }
+          </button>
+        }
+      </div>
+      <div class="flex justify-between items-center">
+        @if (showConfidence && confidence) {
+          <span class="text-xs text-on-surface-variant">
+            Confidence: {{ (confidence * 100).toFixed(0) }}%
+          </span>
+        }
+        @if (error) {
+          <span class="text-sm text-error">{{ error }}</span>
+        }
+      </div>
+    </div>
+  `, styles: [":host{display:block}textarea:disabled{cursor:default}\n"] }]
         }], propDecorators: { value: [{
                 type: Input
             }], placeholder: [{
@@ -10378,6 +6845,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             }], height: [{
                 type: Input
             }], width: [{
+                type: Input
+            }], error: [{
+                type: Input
+            }], rows: [{
                 type: Input
             }], classes: [{
                 type: Input
@@ -10620,7 +7091,6 @@ class ThemeToggleComponent {
     subscription;
     classes = "";
     isDark = false;
-    hovered = false;
     ngOnInit() {
         this.isDark = this.themeService.isDarkMode();
         this.subscription = this.themeService.themeChanged$.subscribe((state) => {
@@ -10633,12 +7103,41 @@ class ThemeToggleComponent {
     toggle() {
         this.themeService.toggleDarkMode();
     }
+    getButtonClasses() {
+        const base = 'w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200';
+        const hover = 'hover:bg-[--state-hover] active:bg-[--state-pressed]';
+        return `${base} ${hover} ${this.classes}`.trim();
+    }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ThemeToggleComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ThemeToggleComponent, isStandalone: true, selector: "app-theme-toggle", inputs: { classes: "classes" }, ngImport: i0, template: "<button class=\"ui-theme-toggle\" (click)=\"toggle()\" aria-label=\"Toggle theme\">\n  @if (isDark) {\n    <app-icon icon=\"moon\" [size]=\"20\" />\n  } @else {\n    <app-icon icon=\"sun\" [size]=\"20\" />\n  }\n</button>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ThemeToggleComponent, isStandalone: true, selector: "app-theme-toggle", inputs: { classes: "classes" }, ngImport: i0, template: `
+    <button
+      (click)="toggle()"
+      [class]="getButtonClasses()"
+      aria-label="Toggle theme"
+    >
+      @if (isDark) {
+        <app-icon icon="sun" [size]="20" />
+      } @else {
+        <app-icon icon="moon" [size]="20" />
+      }
+    </button>
+  `, isInline: true, styles: [":host{display:inline-flex}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ThemeToggleComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-theme-toggle", standalone: true, imports: [IconComponent], template: "<button class=\"ui-theme-toggle\" (click)=\"toggle()\" aria-label=\"Toggle theme\">\n  @if (isDark) {\n    <app-icon icon=\"moon\" [size]=\"20\" />\n  } @else {\n    <app-icon icon=\"sun\" [size]=\"20\" />\n  }\n</button>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-theme-toggle", standalone: true, imports: [IconComponent], changeDetection: ChangeDetectionStrategy.OnPush, template: `
+    <button
+      (click)="toggle()"
+      [class]="getButtonClasses()"
+      aria-label="Toggle theme"
+    >
+      @if (isDark) {
+        <app-icon icon="sun" [size]="20" />
+      } @else {
+        <app-icon icon="moon" [size]="20" />
+      }
+    </button>
+  `, styles: [":host{display:inline-flex}\n"] }]
         }], propDecorators: { classes: [{
                 type: Input
             }] } });
@@ -10702,11 +7201,11 @@ class LocaleSwitcherComponent {
         this.i18n.setLocale(locale);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LocaleSwitcherComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: LocaleSwitcherComponent, isStandalone: true, selector: "app-locale-switcher", inputs: { size: "size", variant: "variant", classes: "classes" }, ngImport: i0, template: "<div\n  class=\"ui-locale-switcher ui-locale-switcher-{{ size }} ui-locale-switcher-{{\n    variant\n  }}\"\n>\n  <select\n    [value]=\"currentLocale\"\n    (change)=\"setLocale($any($event.target).value)\"\n  >\n    @for (locale of availableLocales; track locale) {\n      <option [value]=\"locale\">{{ locale.toUpperCase() }}</option>\n    }\n  </select>\n  <span class=\"ui-locale-icon\">\n    <app-icon icon=\"globe\" [size]=\"16\" />\n  </span>\n</div>\n", styles: [".locale-switcher{display:inline-flex;align-items:center;position:relative;border-radius:var(--radius-sm, 4px)}.locale-select{appearance:none;background:transparent;border:none;cursor:pointer;padding:.5rem 1.5rem .5rem .5rem;font-size:inherit;color:inherit;width:100%}.locale-select:focus{outline:none}.locale-icon{position:absolute;right:.25rem;pointer-events:none;display:flex;align-items:center}.locale-switcher-sm .locale-select{padding:.25rem 1.25rem .25rem .25rem;font-size:.875rem}.locale-switcher-md .locale-select{padding:.375rem 1.375rem .375rem .375rem;font-size:1rem}.locale-switcher-lg .locale-select{padding:.5rem 1.5rem .5rem .5rem;font-size:1.125rem}.locale-switcher-ghost .locale-select{background:transparent}.locale-switcher-solid .locale-select{background:var(--bg-elevated);border-radius:var(--radius-md)}.locale-switcher-outline .locale-select{background:transparent;border:1px solid var(--border-color);border-radius:var(--radius-sm)}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: LocaleSwitcherComponent, isStandalone: true, selector: "app-locale-switcher", inputs: { size: "size", variant: "variant", classes: "classes" }, ngImport: i0, template: "<div\n  class=\"ui-locale-switcher ui-locale-switcher-{{ size }} ui-locale-switcher-{{\n    variant\n  }}\"\n>\n  <select\n    class=\"ui-locale-select\"\n    [value]=\"currentLocale\"\n    (change)=\"setLocale($any($event.target).value)\"\n  >\n    @for (locale of availableLocales; track locale) {\n      <option [value]=\"locale\">{{ locale.toUpperCase() }}</option>\n    }\n  </select>\n  <span class=\"ui-locale-icon\">\n    <app-icon icon=\"globe\" [size]=\"16\" />\n  </span>\n</div>\n", styles: [":host{display:inline-flex}.ui-locale-switcher{display:inline-flex;align-items:center;position:relative;border-radius:var(--radius-sm, 4px)}.ui-locale-select{appearance:none;background:transparent;border:none;cursor:pointer;padding:.5rem 1.5rem .5rem .5rem;font-size:inherit;color:inherit;width:100%}.ui-locale-select:focus{outline:none}.ui-locale-icon{position:absolute;right:.25rem;pointer-events:none;display:flex;align-items:center}.ui-locale-switcher-sm .ui-locale-select{padding:.25rem 1.25rem .25rem .25rem;font-size:.875rem}.ui-locale-switcher-md .ui-locale-select{padding:.375rem 1.375rem .375rem .375rem;font-size:1rem}.ui-locale-switcher-lg .ui-locale-select{padding:.5rem 1.5rem .5rem .5rem;font-size:1.125rem}.ui-locale-switcher-ghost .ui-locale-select{background:transparent}.ui-locale-switcher-solid .ui-locale-select{background:var(--bg-elevated);border-radius:var(--radius-md)}.ui-locale-switcher-outline .ui-locale-select{background:transparent;border:1px solid var(--border-color);border-radius:var(--radius-sm)}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LocaleSwitcherComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-locale-switcher", standalone: true, imports: [IconComponent], template: "<div\n  class=\"ui-locale-switcher ui-locale-switcher-{{ size }} ui-locale-switcher-{{\n    variant\n  }}\"\n>\n  <select\n    [value]=\"currentLocale\"\n    (change)=\"setLocale($any($event.target).value)\"\n  >\n    @for (locale of availableLocales; track locale) {\n      <option [value]=\"locale\">{{ locale.toUpperCase() }}</option>\n    }\n  </select>\n  <span class=\"ui-locale-icon\">\n    <app-icon icon=\"globe\" [size]=\"16\" />\n  </span>\n</div>\n", styles: [".locale-switcher{display:inline-flex;align-items:center;position:relative;border-radius:var(--radius-sm, 4px)}.locale-select{appearance:none;background:transparent;border:none;cursor:pointer;padding:.5rem 1.5rem .5rem .5rem;font-size:inherit;color:inherit;width:100%}.locale-select:focus{outline:none}.locale-icon{position:absolute;right:.25rem;pointer-events:none;display:flex;align-items:center}.locale-switcher-sm .locale-select{padding:.25rem 1.25rem .25rem .25rem;font-size:.875rem}.locale-switcher-md .locale-select{padding:.375rem 1.375rem .375rem .375rem;font-size:1rem}.locale-switcher-lg .locale-select{padding:.5rem 1.5rem .5rem .5rem;font-size:1.125rem}.locale-switcher-ghost .locale-select{background:transparent}.locale-switcher-solid .locale-select{background:var(--bg-elevated);border-radius:var(--radius-md)}.locale-switcher-outline .locale-select{background:transparent;border:1px solid var(--border-color);border-radius:var(--radius-sm)}\n"] }]
+            args: [{ selector: "app-locale-switcher", standalone: true, imports: [IconComponent], template: "<div\n  class=\"ui-locale-switcher ui-locale-switcher-{{ size }} ui-locale-switcher-{{\n    variant\n  }}\"\n>\n  <select\n    class=\"ui-locale-select\"\n    [value]=\"currentLocale\"\n    (change)=\"setLocale($any($event.target).value)\"\n  >\n    @for (locale of availableLocales; track locale) {\n      <option [value]=\"locale\">{{ locale.toUpperCase() }}</option>\n    }\n  </select>\n  <span class=\"ui-locale-icon\">\n    <app-icon icon=\"globe\" [size]=\"16\" />\n  </span>\n</div>\n", styles: [":host{display:inline-flex}.ui-locale-switcher{display:inline-flex;align-items:center;position:relative;border-radius:var(--radius-sm, 4px)}.ui-locale-select{appearance:none;background:transparent;border:none;cursor:pointer;padding:.5rem 1.5rem .5rem .5rem;font-size:inherit;color:inherit;width:100%}.ui-locale-select:focus{outline:none}.ui-locale-icon{position:absolute;right:.25rem;pointer-events:none;display:flex;align-items:center}.ui-locale-switcher-sm .ui-locale-select{padding:.25rem 1.25rem .25rem .25rem;font-size:.875rem}.ui-locale-switcher-md .ui-locale-select{padding:.375rem 1.375rem .375rem .375rem;font-size:1rem}.ui-locale-switcher-lg .ui-locale-select{padding:.5rem 1.5rem .5rem .5rem;font-size:1.125rem}.ui-locale-switcher-ghost .ui-locale-select{background:transparent}.ui-locale-switcher-solid .ui-locale-select{background:var(--bg-elevated);border-radius:var(--radius-md)}.ui-locale-switcher-outline .ui-locale-select{background:transparent;border:1px solid var(--border-color);border-radius:var(--radius-sm)}\n"] }]
         }], propDecorators: { size: [{
                 type: Input
             }], variant: [{
@@ -12749,38 +9248,6 @@ class SchemaShellComponent {
         return this.rawRegions().filter((r) => this.isRegionVisible(r) && this.getRegionType(r) === "other");
     }, /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "otherRegions" }] : /* istanbul ignore next */ []));
-    /** CSS grid-template-columns — always 3 columns, hidden sidebars get 0px */
-    gridColumns = computed(() => {
-        const leftWidth = this.sidebarLeftRegion() ? "auto" : "0px";
-        const rightWidth = this.sidebarRightRegion() ? "auto" : "0px";
-        return `${leftWidth} 1fr ${rightWidth}`;
-    }, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "gridColumns" }] : /* istanbul ignore next */ []));
-    /** CSS grid-template-rows — hidden regions get 0px */
-    gridRows = computed(() => {
-        const headerH = this.headerRegion() ? "auto" : "0px";
-        const footerH = this.footerRegion() ? "auto" : "0px";
-        const bottomH = this.bottomNavRegion() ? "auto" : "0px";
-        const otherH = this.otherRegions().length ? "auto" : "0px";
-        return `${headerH} 1fr ${footerH} ${bottomH} ${otherH}`;
-    }, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "gridRows" }] : /* istanbul ignore next */ []));
-    /** CSS grid-template-areas — always 5 rows with 3 columns */
-    gridAreas = computed(() => {
-        const header = this.headerRegion() ? '"header header header"' : '". . ."';
-        const left = this.sidebarLeftRegion() ? "sidebar-left" : ".";
-        const right = this.sidebarRightRegion() ? "sidebar-right" : ".";
-        const middle = `"${left} content ${right}"`;
-        const footer = this.footerRegion() ? '"footer footer footer"' : '". . ."';
-        const bottom = this.bottomNavRegion()
-            ? '"bottom-nav bottom-nav bottom-nav"'
-            : '". . ."';
-        const other = this.otherRegions().length
-            ? '"other other other"'
-            : '". . ."';
-        return `${header} ${middle} ${footer} ${bottom} ${other}`;
-    }, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "gridAreas" }] : /* istanbul ignore next */ []));
     constructor(invokeWrapper, schemaRouter, renderer, themeService, themeToggle, fallbackService, handlerExecutor, signalStore) {
         this.invokeWrapper = invokeWrapper;
         this.schemaRouter = schemaRouter;
@@ -12922,7 +9389,7 @@ class SchemaShellComponent {
             .join(" ");
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaShellComponent, deps: [{ token: InvokeWrapperService }, { token: SchemaRouterService }, { token: SchemaRendererService }, { token: StyleThemeService }, { token: ThemeToggleService }, { token: FallbackService }, { token: HandlerExecutorService }, { token: SignalStoreService }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaShellComponent, isStandalone: true, selector: "lib-schema-shell", inputs: { appId: "appId", commandName: "commandName", defaultTheme: "defaultTheme", initialRoute: "initialRoute", errorFallbackCommandName: "errorFallbackCommandName", includeOverlays: "includeOverlays" }, host: { listeners: { "window:toggle-dark": "onWindowToggleDark($event)" } }, ngImport: i0, template: "@if (loading()) {\n  <div\n    class=\"ui-flex ui-flex-col ui-items-center ui-justify-center ui-gap-4 ui-min-h-screen\"\n  >\n    <div\n      class=\"ui-w-10 ui-h-10 ui-border-4 ui-border-primary ui-border-t-transparent ui-rounded-full ui-animate-spin\"\n    ></div>\n    <p class=\"ui-text-base-content ui-text-muted-70 ui-text-lg\">\n      Loading application...\n    </p>\n  </div>\n} @else if (error(); as err) {\n  <div\n    class=\"ui-flex ui-flex-col ui-items-center ui-justify-center ui-min-h-screen ui-p-8\"\n  >\n    <div\n      class=\"ui-w-20 ui-h-20 ui-flex ui-items-center ui-justify-center ui-rounded-full ui-bg-warning-10 ui-text-warning ui-text-4xl ui-mb-4\"\n    >\n      &#9888;\n    </div>\n    <h2 class=\"ui-text-2xl ui-font-bold ui-text-base-content ui-mb-2\">\n      Application Not Available\n    </h2>\n    <p\n      class=\"ui-text-base-content ui-text-muted-70 ui-text-center ui-max-w-md ui-mb-6\"\n    >\n      {{ err }}\n    </p>\n    <button class=\"ui-btn ui-btn-primary\" (click)=\"retry()\">Retry</button>\n  </div>\n} @else {\n  <div class=\"ui-min-h-screen ui-p-4 ui-md-p-8 ui-bg-base-content\">\n    <div class=\"ui-mx-auto ui-max-w-6xl\">\n      <div\n        class=\"app-layout\"\n        [style.grid-template-columns]=\"gridColumns()\"\n        [style.grid-template-rows]=\"gridRows()\"\n        [style.grid-template-areas]=\"gridAreas()\"\n      >\n        @if (headerRegion(); as region) {\n          <div\n            data-region=\"header\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: header\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (sidebarLeftRegion(); as region) {\n          <div\n            data-region=\"sidebar-left\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: sidebar-left\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        <div data-region=\"content\" style=\"grid-area: content\">\n          <main\n            class=\"ui-m3-surface-container-high ui-rounded-lg ui-p-6 ui-md-p-8\"\n          >\n            <lib-schema-route-viewer />\n          </main>\n        </div>\n\n        @if (sidebarRightRegion(); as region) {\n          <div\n            data-region=\"sidebar-right\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: sidebar-right\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (footerRegion(); as region) {\n          <div\n            data-region=\"footer\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: footer\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (bottomNavRegion(); as region) {\n          <div\n            data-region=\"bottom-nav\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: bottom-nav\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @for (region of otherRegions(); track region.id) {\n          <div\n            data-region=\"other\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: other\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n      </div>\n\n      @for (region of overlayRegions(); track region.id) {\n        <div class=\"layout-overlay\" data-region=\"overlay\">\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </div>\n      }\n    </div>\n  </div>\n}\n\n@if (includeOverlays) {\n  <app-toast-container position=\"top-right\" />\n}\n", styles: [":host{display:block;height:100%}.app-layout{display:grid;min-height:100vh}[data-region=content],[data-region=sidebar-left],[data-region=sidebar-right]{overflow:auto}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaRouteViewerComponent, selector: "lib-schema-route-viewer", inputs: ["route", "showLayoutRegions"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "component", type: ToastContainerComponent, selector: "app-toast-container", inputs: ["position"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaShellComponent, isStandalone: true, selector: "lib-schema-shell", inputs: { appId: "appId", commandName: "commandName", defaultTheme: "defaultTheme", initialRoute: "initialRoute", errorFallbackCommandName: "errorFallbackCommandName", includeOverlays: "includeOverlays" }, host: { listeners: { "window:toggle-dark": "onWindowToggleDark($event)" } }, ngImport: i0, template: "@if (loading()) {\n  <div class=\"min-h-screen flex flex-col items-center justify-center gap-4 bg-surface text-on-surface\">\n    <div class=\"w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin\"></div>\n    <p class=\"text-lg text-on-surface-variant\">Loading application...</p>\n  </div>\n} @else if (error(); as err) {\n  <div class=\"min-h-screen flex flex-col items-center justify-center p-8 bg-surface text-on-surface\">\n    <div class=\"w-20 h-20 flex items-center justify-center rounded-full bg-error-container text-error text-4xl mb-4\">\n      &#9888;\n    </div>\n    <h2 class=\"text-2xl font-bold text-on-surface mb-2\">\n      Application Not Available\n    </h2>\n    <p class=\"text-center text-on-surface-variant max-w-md mb-6\">\n      {{ err }}\n    </p>\n    <button\n      class=\"inline-flex items-center justify-center gap-2 h-10 px-4 rounded-md bg-primary text-on-primary shadow-1 hover:shadow-2 transition-shadow\"\n      (click)=\"retry()\"\n    >\n      Retry\n    </button>\n  </div>\n} @else {\n  <!-- Main scaffold: flex column, full viewport height -->\n  <div class=\"min-h-screen flex flex-col bg-surface text-on-surface\">\n\n    <!-- Header region - fixed height, flex row -->\n    @if (headerRegion(); as region) {\n      <header\n        data-region=\"header\"\n        class=\"flex-shrink-0 h-16 px-6 flex items-center justify-between border-b border-outline-variant bg-surface-container\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </header>\n    }\n\n    <!-- Main content area - flex row that fills remaining space -->\n    <div class=\"flex-1 flex flex-row min-h-0\">\n\n      <!-- Sidebar left -->\n      @if (sidebarLeftRegion(); as region) {\n        <aside\n          data-region=\"sidebar-left\"\n          class=\"hidden lg:flex w-64 flex-shrink-0 flex-col border-r border-outline-variant bg-surface-container-low p-4\"\n        >\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </aside>\n      }\n\n      <!-- Content area with M3 surface container -->\n      <main\n        data-region=\"content\"\n        class=\"flex-1 p-4 md:p-6 min-w-0\"\n      >\n        <!-- M3 surface container for content -->\n        <div class=\"h-full rounded-xl bg-surface-container-lowest border border-outline-variant p-6 md:p-8 shadow-1\">\n          <lib-schema-route-viewer />\n        </div>\n      </main>\n\n      <!-- Sidebar right -->\n      @if (sidebarRightRegion(); as region) {\n        <aside\n          data-region=\"sidebar-right\"\n          class=\"hidden lg:flex w-64 flex-shrink-0 flex-col border-l border-outline-variant bg-surface-container-low p-4\"\n        >\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </aside>\n      }\n    </div>\n\n    <!-- Footer region -->\n    @if (footerRegion(); as region) {\n      <footer\n        data-region=\"footer\"\n        class=\"flex-shrink-0 h-12 px-6 flex items-center border-t border-outline-variant bg-surface-container text-on-surface-variant text-sm\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </footer>\n    }\n\n    <!-- Bottom nav region -->\n    @if (bottomNavRegion(); as region) {\n      <nav\n        data-region=\"bottom-nav\"\n        class=\"flex-shrink-0 h-16 px-4 flex items-center justify-around border-t border-outline-variant bg-surface-container\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </nav>\n    }\n\n    <!-- Other regions (rendered below main layout) -->\n    @for (region of otherRegions(); track region.id) {\n      <div\n        data-region=\"other\"\n        class=\"flex-shrink-0 px-6 py-4\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </div>\n    }\n\n    <!-- Overlay regions (fixed positioning) -->\n    @for (region of overlayRegions(); track region.id) {\n      <div class=\"layout-overlay\" data-region=\"overlay\">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </div>\n    }\n  </div>\n}\n\n@if (includeOverlays) {\n  <app-toast-container position=\"top-right\" />\n}\n", styles: [":host{display:block;height:100%}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaRouteViewerComponent, selector: "lib-schema-route-viewer", inputs: ["route", "showLayoutRegions"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "component", type: ToastContainerComponent, selector: "app-toast-container", inputs: ["position"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaShellComponent, decorators: [{
             type: Component,
@@ -12931,7 +9398,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
                         SchemaRouteViewerComponent,
                         SchemaElementComponent,
                         ToastContainerComponent,
-                    ], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (loading()) {\n  <div\n    class=\"ui-flex ui-flex-col ui-items-center ui-justify-center ui-gap-4 ui-min-h-screen\"\n  >\n    <div\n      class=\"ui-w-10 ui-h-10 ui-border-4 ui-border-primary ui-border-t-transparent ui-rounded-full ui-animate-spin\"\n    ></div>\n    <p class=\"ui-text-base-content ui-text-muted-70 ui-text-lg\">\n      Loading application...\n    </p>\n  </div>\n} @else if (error(); as err) {\n  <div\n    class=\"ui-flex ui-flex-col ui-items-center ui-justify-center ui-min-h-screen ui-p-8\"\n  >\n    <div\n      class=\"ui-w-20 ui-h-20 ui-flex ui-items-center ui-justify-center ui-rounded-full ui-bg-warning-10 ui-text-warning ui-text-4xl ui-mb-4\"\n    >\n      &#9888;\n    </div>\n    <h2 class=\"ui-text-2xl ui-font-bold ui-text-base-content ui-mb-2\">\n      Application Not Available\n    </h2>\n    <p\n      class=\"ui-text-base-content ui-text-muted-70 ui-text-center ui-max-w-md ui-mb-6\"\n    >\n      {{ err }}\n    </p>\n    <button class=\"ui-btn ui-btn-primary\" (click)=\"retry()\">Retry</button>\n  </div>\n} @else {\n  <div class=\"ui-min-h-screen ui-p-4 ui-md-p-8 ui-bg-base-content\">\n    <div class=\"ui-mx-auto ui-max-w-6xl\">\n      <div\n        class=\"app-layout\"\n        [style.grid-template-columns]=\"gridColumns()\"\n        [style.grid-template-rows]=\"gridRows()\"\n        [style.grid-template-areas]=\"gridAreas()\"\n      >\n        @if (headerRegion(); as region) {\n          <div\n            data-region=\"header\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: header\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (sidebarLeftRegion(); as region) {\n          <div\n            data-region=\"sidebar-left\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: sidebar-left\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        <div data-region=\"content\" style=\"grid-area: content\">\n          <main\n            class=\"ui-m3-surface-container-high ui-rounded-lg ui-p-6 ui-md-p-8\"\n          >\n            <lib-schema-route-viewer />\n          </main>\n        </div>\n\n        @if (sidebarRightRegion(); as region) {\n          <div\n            data-region=\"sidebar-right\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: sidebar-right\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (footerRegion(); as region) {\n          <div\n            data-region=\"footer\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: footer\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @if (bottomNavRegion(); as region) {\n          <div\n            data-region=\"bottom-nav\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: bottom-nav\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n\n        @for (region of otherRegions(); track region.id) {\n          <div\n            data-region=\"other\"\n            [class]=\"getRegionClasses(region)\"\n            style=\"grid-area: other\"\n          >\n            @for (child of region.children || []; track child.id) {\n              <app-schema-element\n                [element]=\"child\"\n                [elements]=\"region.children || []\"\n              />\n            }\n          </div>\n        }\n      </div>\n\n      @for (region of overlayRegions(); track region.id) {\n        <div class=\"layout-overlay\" data-region=\"overlay\">\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </div>\n      }\n    </div>\n  </div>\n}\n\n@if (includeOverlays) {\n  <app-toast-container position=\"top-right\" />\n}\n", styles: [":host{display:block;height:100%}.app-layout{display:grid;min-height:100vh}[data-region=content],[data-region=sidebar-left],[data-region=sidebar-right]{overflow:auto}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n"] }]
+                    ], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (loading()) {\n  <div class=\"min-h-screen flex flex-col items-center justify-center gap-4 bg-surface text-on-surface\">\n    <div class=\"w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin\"></div>\n    <p class=\"text-lg text-on-surface-variant\">Loading application...</p>\n  </div>\n} @else if (error(); as err) {\n  <div class=\"min-h-screen flex flex-col items-center justify-center p-8 bg-surface text-on-surface\">\n    <div class=\"w-20 h-20 flex items-center justify-center rounded-full bg-error-container text-error text-4xl mb-4\">\n      &#9888;\n    </div>\n    <h2 class=\"text-2xl font-bold text-on-surface mb-2\">\n      Application Not Available\n    </h2>\n    <p class=\"text-center text-on-surface-variant max-w-md mb-6\">\n      {{ err }}\n    </p>\n    <button\n      class=\"inline-flex items-center justify-center gap-2 h-10 px-4 rounded-md bg-primary text-on-primary shadow-1 hover:shadow-2 transition-shadow\"\n      (click)=\"retry()\"\n    >\n      Retry\n    </button>\n  </div>\n} @else {\n  <!-- Main scaffold: flex column, full viewport height -->\n  <div class=\"min-h-screen flex flex-col bg-surface text-on-surface\">\n\n    <!-- Header region - fixed height, flex row -->\n    @if (headerRegion(); as region) {\n      <header\n        data-region=\"header\"\n        class=\"flex-shrink-0 h-16 px-6 flex items-center justify-between border-b border-outline-variant bg-surface-container\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </header>\n    }\n\n    <!-- Main content area - flex row that fills remaining space -->\n    <div class=\"flex-1 flex flex-row min-h-0\">\n\n      <!-- Sidebar left -->\n      @if (sidebarLeftRegion(); as region) {\n        <aside\n          data-region=\"sidebar-left\"\n          class=\"hidden lg:flex w-64 flex-shrink-0 flex-col border-r border-outline-variant bg-surface-container-low p-4\"\n        >\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </aside>\n      }\n\n      <!-- Content area with M3 surface container -->\n      <main\n        data-region=\"content\"\n        class=\"flex-1 p-4 md:p-6 min-w-0\"\n      >\n        <!-- M3 surface container for content -->\n        <div class=\"h-full rounded-xl bg-surface-container-lowest border border-outline-variant p-6 md:p-8 shadow-1\">\n          <lib-schema-route-viewer />\n        </div>\n      </main>\n\n      <!-- Sidebar right -->\n      @if (sidebarRightRegion(); as region) {\n        <aside\n          data-region=\"sidebar-right\"\n          class=\"hidden lg:flex w-64 flex-shrink-0 flex-col border-l border-outline-variant bg-surface-container-low p-4\"\n        >\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </aside>\n      }\n    </div>\n\n    <!-- Footer region -->\n    @if (footerRegion(); as region) {\n      <footer\n        data-region=\"footer\"\n        class=\"flex-shrink-0 h-12 px-6 flex items-center border-t border-outline-variant bg-surface-container text-on-surface-variant text-sm\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </footer>\n    }\n\n    <!-- Bottom nav region -->\n    @if (bottomNavRegion(); as region) {\n      <nav\n        data-region=\"bottom-nav\"\n        class=\"flex-shrink-0 h-16 px-4 flex items-center justify-around border-t border-outline-variant bg-surface-container\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </nav>\n    }\n\n    <!-- Other regions (rendered below main layout) -->\n    @for (region of otherRegions(); track region.id) {\n      <div\n        data-region=\"other\"\n        class=\"flex-shrink-0 px-6 py-4\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </div>\n    }\n\n    <!-- Overlay regions (fixed positioning) -->\n    @for (region of overlayRegions(); track region.id) {\n      <div class=\"layout-overlay\" data-region=\"overlay\">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </div>\n    }\n  </div>\n}\n\n@if (includeOverlays) {\n  <app-toast-container position=\"top-right\" />\n}\n", styles: [":host{display:block;height:100%}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n"] }]
         }], ctorParameters: () => [{ type: InvokeWrapperService }, { type: SchemaRouterService }, { type: SchemaRendererService }, { type: StyleThemeService }, { type: ThemeToggleService }, { type: FallbackService }, { type: HandlerExecutorService }, { type: SignalStoreService }], propDecorators: { appId: [{
                 type: Input
             }], commandName: [{

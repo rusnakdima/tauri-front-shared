@@ -519,18 +519,13 @@ declare class LayoutEngineService {
     static ɵprov: i0.ɵɵInjectableDeclaration<LayoutEngineService>;
 }
 
+/**
+ * Style Registry - TailwindCSS v4 Theme System
+ *
+ * Themes are loaded dynamically at runtime via CSS <link> injection.
+ * Each theme has a theme.css file with @theme directive.
+ */
 type StyleVariant = "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3" | "brutalism" | "skeuomorphism";
-interface ComponentStyleMap {
-    [componentId: string]: {
-        variants: {
-            [variant: string]: string;
-        };
-        sizes?: {
-            [size: string]: string;
-        };
-        default?: string;
-    };
-}
 interface GlobalStyleContext {
     variant?: string;
     size?: string;
@@ -538,24 +533,31 @@ interface GlobalStyleContext {
 interface StyleVariantConfig {
     id: StyleVariant;
     name: string;
-    cssString: string;
     classPrefix: string;
     description: string;
-    componentStyles: ComponentStyleMap;
+}
+/**
+ * @deprecated - Component style mapping is no longer used in TailwindCSS v4 approach
+ */
+interface ComponentStyleMap {
+    [key: string]: string;
 }
 declare function loadStyleVariant(variant: StyleVariant): Promise<void>;
 /**
  * SCSS-only fallback — sets body[data-style] without injecting runtime CSS.
- * Apps using static SCSS themes (tokens.css loaded via angular.json) call this
- * instead of loadStyleVariant to avoid double-injection of theme styles.
+ * Kept for compatibility with apps using static SCSS themes.
  */
 declare function loadStyleVariantNoop(variant?: StyleVariant): Promise<void>;
 declare function setTheme(variant: StyleVariant): void;
-declare function setCurrentStyle(variant: StyleVariant): void;
 declare function getCurrentStyle(): StyleVariant;
+declare function setCurrentStyle(variant: StyleVariant): void;
 declare function getStyleClassPrefix(variant: StyleVariant): string;
-declare function getComponentStyleClasses(theme: StyleVariant, componentId: string, explicitVariant?: string, explicitSize?: string, globalContext?: GlobalStyleContext): string;
 declare function getAllStyleVariants(): StyleVariantConfig[];
+/**
+ * @deprecated - Use direct TailwindCSS utility classes in schema instead
+ * Component style mapping - returns empty string in TailwindCSS v4-only approach
+ */
+declare function getComponentStyleClasses(theme: StyleVariant, componentId: string, explicitVariant?: string, explicitSize?: string, globalContext?: GlobalStyleContext): string;
 
 interface PageSchema {
     id: string;
@@ -1058,12 +1060,6 @@ declare class SchemaShellComponent implements OnInit, OnDestroy {
     readonly overlayRegions: i0.Signal<LayoutElement[]>;
     /** Unrecognized regions rendered in an extra row below the main layout */
     readonly otherRegions: i0.Signal<LayoutElement[]>;
-    /** CSS grid-template-columns — always 3 columns, hidden sidebars get 0px */
-    readonly gridColumns: i0.Signal<string>;
-    /** CSS grid-template-rows — hidden regions get 0px */
-    readonly gridRows: i0.Signal<string>;
-    /** CSS grid-template-areas — always 5 rows with 3 columns */
-    readonly gridAreas: i0.Signal<string>;
     constructor(invokeWrapper: InvokeWrapperService, schemaRouter: SchemaRouterService, renderer: SchemaRendererService, themeService: StyleThemeService, themeToggle: ThemeToggleService, fallbackService: FallbackService, handlerExecutor: HandlerExecutorService, signalStore: SignalStoreService);
     ngOnInit(): Promise<void>;
     private setupThemeStoreSync;

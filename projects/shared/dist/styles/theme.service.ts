@@ -158,7 +158,7 @@ export class StyleThemeService {
 
     const vars: Record<StyleVariant, string> = {
       "material-design-v3": `
-:root {
+[data-theme="material-design-v3"][data-theme-mode="dark"] {
   --accent: #d0bcff;
   --accent-hover: #b69df8;
   --text-on-accent: #381e72;
@@ -182,7 +182,7 @@ export class StyleThemeService {
   --bg-header: #1c1b1f;
 }`,
       neumorphism: `
-:root {
+[data-theme="neumorphism"][data-theme-mode="dark"] {
   --accent: #a78bfa;
   --accent-hover: #8b7cf7;
   --text-on-accent: #1e1b2e;
@@ -206,7 +206,7 @@ export class StyleThemeService {
   --bg-header: #2d3748;
 }`,
       claymorphism: `
-:root {
+[data-theme="claymorphism"][data-theme-mode="dark"] {
   --accent: #a78bfa;
   --accent-hover: #8b7cf7;
   --text-on-accent: #1e1b2e;
@@ -230,7 +230,7 @@ export class StyleThemeService {
   --bg-header: #2d3748;
 }`,
       glassmorphism: `
-:root {
+[data-theme="glassmorphism"][data-theme-mode="dark"] {
   --accent: rgba(167, 139, 250, 0.8);
   --accent-hover: rgba(187, 159, 250, 0.9);
   --text-on-accent: #1e1b2e;
@@ -254,7 +254,7 @@ export class StyleThemeService {
   --bg-header: rgba(20, 20, 40, 0.8);
 }`,
       brutalism: `
-:root {
+[data-theme="brutalism"][data-theme-mode="dark"] {
   --color-brut-base: #1a1a1a;
   --color-brut-ink: #f5f5f0;
   --color-brut-accent: #ff3b30;
@@ -279,7 +279,7 @@ export class StyleThemeService {
   --success: var(--color-brut-success);
 }`,
       skeuomorphism: `
-:root {
+[data-theme="skeuomorphism"][data-theme-mode="dark"] {
   --color-skeu-base: #2b1f14;
   --color-skeu-leather: #3a2a18;
   --color-skeu-leather-dark: #1a1009;
@@ -330,37 +330,6 @@ export class StyleThemeService {
 
   private brutalismDarkCSS(): string {
     return `
-:root {
-  --color-brut-base: #1a1a1a;
-  --color-brut-ink: #f5f5f0;
-  --color-brut-accent: #ff3b30;
-  --color-brut-accent-2: #ffd60a;
-  --color-brut-success: #00e676;
-  --color-brut-border: #f5f5f0;
-  --shadow-brut-sm: 4px 4px 0 0 #f5f5f0;
-  --shadow-brut-md: 6px 6px 0 0 #f5f5f0;
-  --shadow-brut-lg: 8px 8px 0 0 #f5f5f0;
-  --bg-primary: #1a1a1a;
-  --bg-elevated: #2a2a2a;
-  --bg-hover: #3a3a3a;
-  --bg-tertiary: #404040;
-  --text-primary: #f5f5f0;
-  --text-secondary: #c0c0c0;
-  --text-muted: #909090;
-  --text-on-accent: #ffffff;
-  --text-on-error: #ffffff;
-  --text-on-warning: #0a0a0a;
-  --text-on-success: #ffffff;
-  --border-color: #f5f5f0;
-  --border-subtle: #c0c0c0;
-  --accent: #ff3b30;
-  --accent-hover: #d62b22;
-  --error: #ff3b30;
-  --warning: #ffd60a;
-  --success: #00e676;
-  --info: #60a5fa;
-}
-
 .dark .brut-card {
   background: #2a2a2a;
   border-color: #f5f5f0;
@@ -431,51 +400,6 @@ export class StyleThemeService {
 
   private skeuomorphismDarkCSS(): string {
     return `
-:root {
-  --color-skeu-base: #2b1f14;
-  --color-skeu-leather: #3a2a18;
-  --color-skeu-leather-dark: #1a1009;
-  --color-skeu-paper: #3a2e1f;
-  --color-skeu-ink: #f5e6c8;
-  --color-skeu-accent: #d4a017;
-  --color-skeu-accent-dark: #b8860b;
-  --color-skeu-cream: #faf3e0;
-  --gradient-leather: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%);
-  --gradient-paper: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%);
-  --gradient-paper-light: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%);
-  --gradient-input: linear-gradient(180deg, #4a3e2f 0%, #3a3025 100%);
-  --gradient-tab: linear-gradient(180deg, #4a3a28 0%, #2d2015 100%);
-  --gradient-accent: linear-gradient(180deg, #d4a017 0%, #8b6508 100%);
-  --gradient-divider: linear-gradient(90deg, transparent 0%, #1a1009 50%, transparent 100%);
-  --shadow-skeu-outset:
-    0 1px 0 rgba(255,255,255,0.1) inset,
-    0 2px 4px rgba(0,0,0,0.4),
-    0 4px 8px rgba(0,0,0,0.3),
-    0 8px 16px rgba(0,0,0,0.2);
-  --shadow-skeu-inset:
-    inset 0 2px 4px rgba(0,0,0,0.5),
-    inset 0 4px 8px rgba(0,0,0,0.4);
-  --bg-primary: #2b1f14;
-  --bg-elevated: #3a2e1f;
-  --bg-hover: #4a3e2f;
-  --bg-tertiary: #5a4e3f;
-  --text-primary: #f5e6c8;
-  --text-secondary: #d4b890;
-  --text-muted: #a8916b;
-  --text-on-accent: #faf3e0;
-  --text-on-error: #fff5e6;
-  --text-on-warning: #2b1810;
-  --text-on-success: #f5e6c8;
-  --border-color: #1a1009;
-  --border-subtle: #4a2e18;
-  --accent: #d4a017;
-  --accent-hover: #8b6508;
-  --error: #ff6b6b;
-  --warning: #ffd60a;
-  --success: #4ade80;
-  --info: #60a5fa;
-}
-
 .dark .skeu-card {
   background: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%);
   border-color: #1a1009;

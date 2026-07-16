@@ -1,3 +1,10 @@
+/**
+ * Style Registry - TailwindCSS v4 Theme System
+ *
+ * Themes are loaded dynamically at runtime via CSS <link> injection.
+ * Each theme has a theme.css file with @theme directive.
+ */
+
 export type StyleVariant =
   | "claymorphism"
   | "glassmorphism"
@@ -5,18 +12,6 @@ export type StyleVariant =
   | "material-design-v3"
   | "brutalism"
   | "skeuomorphism";
-
-export interface ComponentStyleMap {
-  [componentId: string]: {
-    variants: {
-      [variant: string]: string;
-    };
-    sizes?: {
-      [size: string]: string;
-    };
-    default?: string;
-  };
-}
 
 export interface GlobalStyleContext {
   variant?: string;
@@ -26,91 +21,71 @@ export interface GlobalStyleContext {
 export interface StyleVariantConfig {
   id: StyleVariant;
   name: string;
-  cssString: string;
   classPrefix: string;
   description: string;
-  componentStyles: ComponentStyleMap;
 }
 
-import {
-  CLAYMORPHISM_CSS,
-  claymorphismComponentStyles,
-  GLASSMORPHISM_CSS,
-  glassmorphismComponentStyles,
-  NEUMORPHISM_CSS,
-  neumorphismComponentStyles,
-  MATERIAL_DESIGN_V3_CSS,
-  materialDesignV3ComponentStyles,
-  BRUTALISM_CSS,
-  brutalismComponentStyles,
-  SKEUOMORPHISM_CSS,
-  skeuomorphismComponentStyles,
-} from "./themes/index";
+/**
+ * @deprecated - Component style mapping is no longer used in TailwindCSS v4 approach
+ */
+export interface ComponentStyleMap {
+  [key: string]: string;
+}
 
+/**
+ * Theme configuration - no cssString, themes are loaded via <link>
+ */
 export const STYLE_VARIANTS: Record<StyleVariant, StyleVariantConfig> = {
   claymorphism: {
     id: "claymorphism",
     name: "Claymorphism",
-    cssString: CLAYMORPHISM_CSS,
     classPrefix: "clay-",
     description: "Soft raised shadows with clay-like appearance",
-    componentStyles: claymorphismComponentStyles,
   },
   glassmorphism: {
     id: "glassmorphism",
     name: "Glassmorphism",
-    cssString: GLASSMORPHISM_CSS,
     classPrefix: "glass-",
     description: "Frosted glass effect with backdrop blur",
-    componentStyles: glassmorphismComponentStyles,
   },
   neumorphism: {
     id: "neumorphism",
     name: "Neumorphism",
-    cssString: NEUMORPHISM_CSS,
     classPrefix: "neu-",
     description: "Soft inset and outset shadows",
-    componentStyles: neumorphismComponentStyles,
   },
   "material-design-v3": {
     id: "material-design-v3",
     name: "Material Design 3",
-    cssString: MATERIAL_DESIGN_V3_CSS,
     classPrefix: "m3-",
     description: "Google Material Design 3 with elevation system",
-    componentStyles: materialDesignV3ComponentStyles,
   },
   brutalism: {
     id: "brutalism",
     name: "Brutalism",
-    cssString: BRUTALISM_CSS,
     classPrefix: "brut-",
     description: "Sharp edges, hard shadows, high-contrast typography",
-    componentStyles: brutalismComponentStyles,
   },
   skeuomorphism: {
     id: "skeuomorphism",
     name: "Skeuomorphism",
-    cssString: SKEUOMORPHISM_CSS,
     classPrefix: "skeu-",
-    description:
-      "Realistic textures with leather, paper, and glossy highlights",
-    componentStyles: skeuomorphismComponentStyles,
+    description: "Realistic textures with leather, paper, and glossy highlights",
   },
 };
 
 const LOADED_STYLES: Set<StyleVariant> = new Set();
 let CURRENT_STYLE: StyleVariant = "material-design-v3";
-const STYLE_ELEMENTS: Map<StyleVariant, HTMLStyleElement> = new Map();
 
 export async function loadStyleVariant(variant: StyleVariant): Promise<void> {
   setTheme(variant);
+  // CSS is loaded statically via @import in app's styles.css
+  // loadStyleVariant() only sets data-theme attributes for CSS selectors
 }
 
 /**
  * SCSS-only fallback — sets body[data-style] without injecting runtime CSS.
- * Apps using static SCSS themes (tokens.css loaded via angular.json) call this
- * instead of loadStyleVariant to avoid double-injection of theme styles.
+ * Kept for compatibility with apps using static SCSS themes.
  */
 export async function loadStyleVariantNoop(variant: StyleVariant = "material-design-v3"): Promise<void> {
   setTheme(variant);
@@ -138,53 +113,15 @@ export function unloadStyleVariant(variant: StyleVariant): void {
   if (!LOADED_STYLES.has(variant)) {
     return;
   }
-
-  const style = STYLE_ELEMENTS.get(variant);
-  if (style && style.parentNode) {
-    style.parentNode.removeChild(style);
-  }
-
   LOADED_STYLES.delete(variant);
-  STYLE_ELEMENTS.delete(variant);
-}
-
-export function setCurrentStyle(variant: StyleVariant): void {
-  if (variant === CURRENT_STYLE) {
-    return;
-  }
-
-  CURRENT_STYLE = variant;
-
-  // Inject the combined theme CSS and set body[data-style]
-  loadStyleVariant(variant);
-
-  if (typeof window !== "undefined" && window.localStorage) {
-    window.localStorage.setItem("tauri-front-style", variant);
-  }
-
-  document.dispatchEvent(
-    new CustomEvent("style-changed", {
-      detail: { variant, prefix: STYLE_VARIANTS[variant].classPrefix },
-    }),
-  );
-}
-
-function enableStyle(variant: StyleVariant): void {
-  const style = STYLE_ELEMENTS.get(variant);
-  if (style) {
-    style.disabled = false;
-  }
-}
-
-function disableStyle(variant: StyleVariant): void {
-  const style = STYLE_ELEMENTS.get(variant);
-  if (style) {
-    style.disabled = true;
-  }
 }
 
 export function getCurrentStyle(): StyleVariant {
   return CURRENT_STYLE;
+}
+
+export function setCurrentStyle(variant: StyleVariant): void {
+  setTheme(variant);
 }
 
 export function getStyleConfig(variant: StyleVariant): StyleVariantConfig {
@@ -193,45 +130,6 @@ export function getStyleConfig(variant: StyleVariant): StyleVariantConfig {
 
 export function getStyleClassPrefix(variant: StyleVariant): string {
   return STYLE_VARIANTS[variant]?.classPrefix || "m3-";
-}
-
-export function getComponentStyleClasses(
-  theme: StyleVariant,
-  componentId: string,
-  explicitVariant?: string,
-  explicitSize?: string,
-  globalContext?: GlobalStyleContext,
-): string {
-  const config = STYLE_VARIANTS[theme];
-  if (!config) return "";
-
-  const componentMap = config.componentStyles?.[componentId];
-  if (!componentMap) return "";
-
-  const resolvedVariant = explicitVariant || globalContext?.variant;
-  const resolvedSize = explicitSize || globalContext?.size;
-
-  const classes: string[] = [];
-
-  if (resolvedVariant) {
-    const variantClass = componentMap.variants?.[resolvedVariant];
-    if (variantClass) {
-      classes.push(variantClass);
-    }
-  }
-
-  if (resolvedSize && componentMap.sizes) {
-    const sizeClass = componentMap.sizes[resolvedSize];
-    if (sizeClass) {
-      classes.push(sizeClass);
-    }
-  }
-
-  if (classes.length === 0) {
-    return componentMap.default || componentMap.variants?.default || "";
-  }
-
-  return classes.join(" ");
 }
 
 export function getAllStyleVariants(): StyleVariantConfig[] {
@@ -256,24 +154,22 @@ export function getStyleClass(
   baseClass: string,
 ): string {
   const prefix = getStyleClassPrefix(variant);
-  const baseName = baseClass.replace(/^clay-|^glass-|^neu-|^m3-/, "");
+  const baseName = baseClass.replace(/^clay-|^glass-|^neu-|^m3-|^brut-|^skeu-/, "");
   return `${prefix}${baseName}`;
 }
 
-export function applyStyleToElement(
-  element: HTMLElement,
-  variant: StyleVariant,
-): void {
-  const prefix = getStyleClassPrefix(variant);
-  element.classList.forEach((cls) => {
-    if (
-      cls.startsWith("clay-") ||
-      cls.startsWith("glass-") ||
-      cls.startsWith("neu-") ||
-      cls.startsWith("m3-")
-    ) {
-      element.classList.remove(cls);
-    }
-  });
-  element.classList.add(`${prefix}${element.dataset["baseClass"] || ""}`);
+/**
+ * @deprecated - Use direct TailwindCSS utility classes in schema instead
+ * Component style mapping - returns empty string in TailwindCSS v4-only approach
+ */
+export function getComponentStyleClasses(
+  theme: StyleVariant,
+  componentId: string,
+  explicitVariant?: string,
+  explicitSize?: string,
+  globalContext?: GlobalStyleContext,
+): string {
+  // TailwindCSS v4 approach: use utility classes directly in schema
+  // e.g., schema classes: "bg-primary text-on-primary rounded-lg"
+  return "";
 }

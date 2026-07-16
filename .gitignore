@@ -16,3 +16,15 @@ lib/
 !projects/shared/src/core/lib/
 !projects/shared/src/algorithms/
 !projects/shared/src/ui-showcase/
+
+# Angular
+.angular/
+
+# Angular
+.angular/
+
+# Angular
+.angular/
+
+# Angular cache (nested)
+**/.angular/

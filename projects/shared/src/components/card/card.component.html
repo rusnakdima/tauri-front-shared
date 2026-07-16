@@ -1,7 +1,6 @@
 <div
   class="ui-card"
   [class.ui-card-elevated]="elevated"
-  [style.borderRadius.px]="borderRadius"
 >
   @if (title) {
     <div class="ui-card-header">
@@ -11,7 +10,7 @@
       }
     </div>
   }
-  <div [style.padding.px]="padding">
+  <div>
     @if (content) {
       {{ content }}
     }

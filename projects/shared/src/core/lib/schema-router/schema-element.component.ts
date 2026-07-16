@@ -105,10 +105,6 @@ export class SchemaElementComponent implements AfterViewInit, OnChanges, OnInit 
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(
-      `[SchemaElement] ngOnChanges for "${this.element?.id}":`,
-      Object.keys(changes),
-    );
     if (changes["element"] && this.dynamicHost) {
       this.createDynamicComponent();
     }

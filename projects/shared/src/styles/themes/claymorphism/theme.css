@@ -1,0 +1,152 @@
+/**
+ * Claymorphism Theme for TailwindCSS v4
+ * Soft raised shadows with clay-like appearance
+ *
+ * IMPORTANT: This file should be imported AFTER @import "tailwindcss" in your app's styles.css
+ */
+
+@theme {
+  /* Claymorphism Color tokens - Light mode */
+  --color-primary: #8b5cf6;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #f3e8ff;
+  --color-on-primary-container: #3b2d6b;
+  --color-primary-hover: #7c3aed;
+
+  --color-secondary: #c084fc;
+  --color-on-secondary: #3b2d6b;
+  --color-secondary-container: #e9d5ff;
+  --color-on-secondary-container: #4c1d95;
+
+  --color-tertiary: #f472b6;
+  --color-on-tertiary: #831843;
+  --color-tertiary-container: #fce7f3;
+  --color-on-tertiary-container: #9d174d;
+
+  --color-error: #f87171;
+  --color-on-error: #ffffff;
+  --color-error-container: #fee2e2;
+  --color-on-error-container: #991b1b;
+
+  --color-surface: #faf5ff;
+  --color-on-surface: #1f1a2e;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #faf5ff;
+  --color-surface-container: #f5f0fc;
+  --color-surface-container-high: #efe9f8;
+  --color-surface-container-highest: #e9e2f5;
+
+  --color-outline: #a78bfa;
+  --color-outline-variant: #ddd6fe;
+
+  /* Semantic aliases */
+  --accent: #8b5cf6;
+  --accent-hover: #7c3aed;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --info: #60a5fa;
+  --text-primary: #1f1a2e;
+  --text-secondary: #6b5f7a;
+  --text-muted: #a78bfa;
+  --text-on-accent: #ffffff;
+  --text-on-error: #ffffff;
+  --text-on-warning: #3b2d6b;
+  --text-on-success: #ffffff;
+  --bg-primary: #faf5ff;
+  --bg-secondary: #f5f0fc;
+  --bg-tertiary: #efe9f8;
+  --bg-elevated: #ffffff;
+  --bg-hover: rgba(139, 92, 246, 0.08);
+  --bg-header: #f5f0fc;
+  --border: #a78bfa;
+  --border-subtle: #ddd6fe;
+
+  /* Shadows (claymorphism uses soft raised shadows) */
+  --shadow-1: 6px 6px 12px rgba(139, 92, 246, 0.15), -6px -6px 12px rgba(255, 255, 255, 0.9);
+  --shadow-2: 8px 8px 16px rgba(139, 92, 246, 0.18), -8px -8px 16px rgba(255, 255, 255, 0.9);
+  --shadow-3: 12px 12px 24px rgba(139, 92, 246, 0.2), -12px -12px 24px rgba(255, 255, 255, 0.9);
+  --shadow-4: 16px 16px 32px rgba(139, 92, 246, 0.22), -16px -16px 32px rgba(255, 255, 255, 0.9);
+  --shadow-5: 20px 20px 40px rgba(139, 92, 246, 0.25), -20px -20px 40px rgba(255, 255, 255, 0.9);
+  --shadow-sm: 4px 4px 8px rgba(139, 92, 246, 0.12), -4px -4px 8px rgba(255, 255, 255, 0.9);
+  --shadow-md: 6px 6px 12px rgba(139, 92, 246, 0.15), -6px -6px 12px rgba(255, 255, 255, 0.9);
+  --shadow-lg: 10px 10px 20px rgba(139, 92, 246, 0.18), -10px -10px 20px rgba(255, 255, 255, 0.9);
+  --shadow-focus: 0 0 0 3px rgba(139, 92, 246, 0.3);
+  --shadow-inset: inset 4px 4px 8px rgba(139, 92, 246, 0.1), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+
+  /* State layers */
+  --state-hover: rgba(139, 92, 246, 0.06);
+  --state-pressed: rgba(139, 92, 246, 0.1);
+  --state-focused: rgba(139, 92, 246, 0.1);
+  --state-dragged: rgba(139, 92, 246, 0.14);
+
+  /* Border radius (claymorphism uses rounder corners) */
+  --radius-xs: 12px;
+  --radius-sm: 16px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-xl: 36px;
+  --radius-full: 9999px;
+}
+
+/* Dark mode */
+.dark {
+  --color-primary: #c4b5fd;
+  --color-on-primary: #3b2d6b;
+  --color-primary-container: #6d28d9;
+  --color-on-primary-container: #f3e8ff;
+
+  --color-secondary: #ddd6fe;
+  --color-on-secondary: #4c1d95;
+  --color-secondary-container: #8b5cf6;
+  --color-on-secondary-container: #e9d5ff;
+
+  --color-tertiary: #f9a8d4;
+  --color-on-tertiary: #9d174d;
+  --color-tertiary-container: #db2777;
+  --color-on-tertiary-container: #fce7f3;
+
+  --color-error: #fca5a5;
+  --color-on-error: #991b1b;
+  --color-error-container: #b91c1c;
+  --color-on-error-container: #fee2e2;
+
+  --color-surface: #1f1a2e;
+  --color-on-surface: #f3e8ff;
+  --color-surface-container-lowest: #161220;
+  --color-surface-container-low: #1f1a2e;
+  --color-surface-container: #2a243d;
+  --color-surface-container-high: #352d4a;
+  --color-surface-container-highest: #403657;
+
+  --color-outline: #a78bfa;
+  --color-outline-variant: #6d28d9;
+
+  /* Semantic aliases - dark mode */
+  --accent: #c4b5fd;
+  --accent-hover: #a78bfa;
+  --text-primary: #f3e8ff;
+  --text-secondary: #c4b5fd;
+  --text-muted: #a78bfa;
+  --text-on-accent: #3b2d6b;
+  --bg-primary: #1f1a2e;
+  --bg-secondary: #2a243d;
+  --bg-tertiary: #352d4a;
+  --bg-elevated: #2a243d;
+  --bg-header: #1f1a2e;
+  --border: #a78bfa;
+  --border-subtle: #6d28d9;
+
+  /* Shadows - darker and more saturated for dark mode */
+  --shadow-1: 6px 6px 12px rgba(0, 0, 0, 0.5), -6px -6px 12px rgba(109, 77, 180, 0.2);
+  --shadow-2: 8px 8px 16px rgba(0, 0, 0, 0.5), -8px -8px 16px rgba(109, 77, 180, 0.25);
+  --shadow-3: 12px 12px 24px rgba(0, 0, 0, 0.5), -12px -12px 24px rgba(109, 77, 180, 0.3);
+  --shadow-4: 16px 16px 32px rgba(0, 0, 0, 0.5), -16px -16px 32px rgba(109, 77, 180, 0.35);
+  --shadow-5: 20px 20px 40px rgba(0, 0, 0, 0.5), -20px -20px 40px rgba(109, 77, 180, 0.4);
+  --shadow-focus: 0 0 0 3px rgba(196, 181, 253, 0.4);
+
+  /* State layers */
+  --state-hover: rgba(196, 181, 253, 0.06);
+  --state-pressed: rgba(196, 181, 253, 0.1);
+  --state-focused: rgba(196, 181, 253, 0.1);
+  --state-dragged: rgba(196, 181, 253, 0.14);
+}

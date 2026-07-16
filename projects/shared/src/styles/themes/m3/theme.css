@@ -1,8 +1,8 @@
-@import "tailwindcss";
-
 /**
  * M3 Material Design 3 Theme for TailwindCSS v4
  * Light mode + Dark mode via .dark class
+ *
+ * IMPORTANT: This file should be imported AFTER @import "tailwindcss" in your app's styles.css
  */
 
 @theme {

@@ -6,10 +6,26 @@ import { IconComponent } from "../icons/icons.component";
   selector: "app-swap-button",
   standalone: true,
   imports: [IconComponent],
-  templateUrl: "./swap-button.component.html",
+  template: `
+    <button
+      type="button"
+      [disabled]="disabled"
+      [attr.aria-label]="ariaLabel || 'Swap'"
+      (click)="clicked.emit($event)"
+      class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-low border border-outline text-on-surface transition-all duration-200 hover:bg-surface-container hover:shadow-1 active:bg-surface-container-high disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      <app-icon icon="chevron-down" [size]="20" class="rotate-90" />
+    </button>
+  `,
+  styles: [`
+    :host {
+      display: inline-flex;
+    }
+  `],
 })
 export class SwapButtonComponent {
   @Input() ariaLabel = "";
+  @Input() disabled = false;
   @Input() align = "";
   @Input() direction = "";
   @Input() height = "";
@@ -18,7 +34,6 @@ export class SwapButtonComponent {
   @Input() width = "";
   @Input() classes = "";
   @Output() clicked = new EventEmitter<Event>();
-  hovered = false;
 }
 
 registerSchemaComponent("app-swap-button", SwapButtonComponent);

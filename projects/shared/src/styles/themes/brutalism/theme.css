@@ -1,0 +1,156 @@
+/**
+ * Brutalism Theme for TailwindCSS v4
+ * Sharp edges, hard shadows, high-contrast typography
+ *
+ * IMPORTANT: This file should be imported AFTER @import "tailwindcss" in your app's styles.css
+ */
+
+@theme {
+  /* Brutalism Color tokens - Light mode */
+  --color-primary: #000000;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #e5e5e5;
+  --color-on-primary-container: #000000;
+  --color-primary-hover: #1a1a1a;
+
+  --color-secondary: #333333;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #cccccc;
+  --color-on-secondary-container: #000000;
+
+  --color-tertiary: #666666;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #b3b3b3;
+  --color-on-tertiary-container: #000000;
+
+  --color-error: #ff0000;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffcccc;
+  --color-on-error-container: #cc0000;
+
+  --color-surface: #ffffff;
+  --color-on-surface: #000000;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f5f5f5;
+  --color-surface-container: #eeeeee;
+  --color-surface-container-high: #e0e0e0;
+  --color-surface-container-highest: #d4d4d4;
+
+  --color-outline: #000000;
+  --color-outline-variant: #666666;
+
+  /* Semantic aliases */
+  --accent: #000000;
+  --accent-hover: #1a1a1a;
+  --success: #00aa00;
+  --warning: #ff8800;
+  --info: #0066ff;
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --text-muted: #666666;
+  --text-on-accent: #ffffff;
+  --text-on-error: #ffffff;
+  --text-on-warning: #000000;
+  --text-on-success: #ffffff;
+  --bg-primary: #ffffff;
+  --bg-secondary: #eeeeee;
+  --bg-tertiary: #d4d4d4;
+  --bg-elevated: #ffffff;
+  --bg-hover: #000000;
+  --bg-header: #ffffff;
+  --border: #000000;
+  --border-subtle: #666666;
+
+  /* Shadows (brutalism uses hard offset shadows, no blur) */
+  --shadow-1: 4px 4px 0px #000000;
+  --shadow-2: 6px 6px 0px #000000;
+  --shadow-3: 8px 8px 0px #000000;
+  --shadow-4: 12px 12px 0px #000000;
+  --shadow-5: 16px 16px 0px #000000;
+  --shadow-sm: 2px 2px 0px #000000;
+  --shadow-md: 4px 4px 0px #000000;
+  --shadow-lg: 8px 8px 0px #000000;
+  --shadow-focus: 0 0 0 3px #000000;
+  --shadow-inset: inset 4px 4px 0px #000000;
+
+  /* State layers */
+  --state-hover: rgba(0, 0, 0, 0.05);
+  --state-pressed: rgba(0, 0, 0, 0.1);
+  --state-focused: rgba(0, 0, 0, 0.1);
+  --state-dragged: rgba(0, 0, 0, 0.15);
+
+  /* Border radius (brutalism uses sharp corners, minimal rounding) */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-full: 0px;
+}
+
+/* Dark mode */
+.dark {
+  --color-primary: #ffffff;
+  --color-on-primary: #000000;
+  --color-primary-container: #333333;
+  --color-on-primary-container: #ffffff;
+  --color-primary-hover: #e5e5e5;
+
+  --color-secondary: #b3b3b3;
+  --color-on-secondary: #000000;
+  --color-secondary-container: #4d4d4d;
+  --color-on-secondary-container: #ffffff;
+
+  --color-tertiary: #808080;
+  --color-on-tertiary: #000000;
+  --color-tertiary-container: #666666;
+  --color-on-tertiary-container: #ffffff;
+
+  --color-error: #ff3333;
+  --color-on-error: #000000;
+  --color-error-container: #cc0000;
+  --color-on-error-container: #ffffff;
+
+  --color-surface: #111111;
+  --color-on-surface: #ffffff;
+  --color-surface-container-lowest: #000000;
+  --color-surface-container-low: #111111;
+  --color-surface-container: #1a1a1a;
+  --color-surface-container-high: #262626;
+  --color-surface-container-highest: #333333;
+
+  --color-outline: #ffffff;
+  --color-outline-variant: #b3b3b3;
+
+  /* Semantic aliases - dark mode */
+  --accent: #ffffff;
+  --accent-hover: #e5e5e5;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --text-muted: #808080;
+  --text-on-accent: #000000;
+  --bg-primary: #111111;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #262626;
+  --bg-elevated: #1a1a1a;
+  --bg-header: #111111;
+  --border: #ffffff;
+  --border-subtle: #666666;
+
+  /* Shadows - white offset in dark mode */
+  --shadow-1: 4px 4px 0px #ffffff;
+  --shadow-2: 6px 6px 0px #ffffff;
+  --shadow-3: 8px 8px 0px #ffffff;
+  --shadow-4: 12px 12px 0px #ffffff;
+  --shadow-5: 16px 16px 0px #ffffff;
+  --shadow-sm: 2px 2px 0px #ffffff;
+  --shadow-md: 4px 4px 0px #ffffff;
+  --shadow-lg: 8px 8px 0px #ffffff;
+  --shadow-focus: 0 0 0 3px #ffffff;
+
+  /* State layers */
+  --state-hover: rgba(255, 255, 255, 0.05);
+  --state-pressed: rgba(255, 255, 255, 0.1);
+  --state-focused: rgba(255, 255, 255, 0.1);
+  --state-dragged: rgba(255, 255, 255, 0.15);
+}

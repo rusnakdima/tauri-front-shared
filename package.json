@@ -28,7 +28,7 @@
     "typescript": "6"
   },
   "dependencies": {
-    "@angular/animations": "^20.3.26",
+    "@angular/animations": "^22.0.0",
     "@angular/compiler": "22.0.6",
     "@angular/compiler-cli": "22.0.6",
     "@angular/elements": "22.0.6",

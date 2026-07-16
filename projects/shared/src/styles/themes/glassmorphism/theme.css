@@ -1,0 +1,152 @@
+/**
+ * Glassmorphism Theme for TailwindCSS v4
+ * Frosted glass effect with backdrop blur
+ *
+ * IMPORTANT: This file should be imported AFTER @import "tailwindcss" in your app's styles.css
+ */
+
+@theme {
+  /* Glassmorphism Color tokens - Light mode */
+  --color-primary: #6d5dfc;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #e8e0ff;
+  --color-on-primary-container: #1b1345;
+  --color-primary-hover: #5c4be7;
+
+  --color-secondary: #a5a0b8;
+  --color-on-secondary: #2b2838;
+  --color-secondary-container: #d4d0e4;
+  --color-on-secondary-container: #1d1a2e;
+
+  --color-tertiary: #d0a8ff;
+  --color-on-tertiary: #3b1f5e;
+  --color-tertiary-container: #e8d4ff;
+  --color-on-tertiary-container: #2d1547;
+
+  --color-error: #ff6b6b;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffe0e0;
+  --color-on-error-container: #5c0f0f;
+
+  --color-surface: #e8e4f0;
+  --color-on-surface: #1c1b22;
+  --color-surface-container-lowest: rgba(255, 255, 255, 0.8);
+  --color-surface-container-low: rgba(232, 228, 240, 0.7);
+  --color-surface-container: rgba(220, 215, 235, 0.6);
+  --color-surface-container-high: rgba(200, 195, 220, 0.5);
+  --color-surface-container-highest: rgba(180, 175, 205, 0.4);
+
+  --color-outline: #7a7590;
+  --color-outline-variant: #c4bfd1;
+
+  /* Semantic aliases */
+  --accent: #6d5dfc;
+  --accent-hover: #5c4be7;
+  --success: #50c878;
+  --warning: #ffb347;
+  --info: #64b5f6;
+  --text-primary: #1c1b22;
+  --text-secondary: #4a4658;
+  --text-muted: #7a7590;
+  --text-on-accent: #ffffff;
+  --text-on-error: #ffffff;
+  --text-on-warning: #3e2723;
+  --text-on-success: #ffffff;
+  --bg-primary: #e8e4f0;
+  --bg-secondary: #d4d0e4;
+  --bg-tertiary: #c4bfd1;
+  --bg-elevated: rgba(255, 255, 255, 0.7);
+  --bg-hover: rgba(109, 93, 252, 0.08);
+  --bg-header: rgba(232, 228, 240, 0.85);
+  --border: #7a7590;
+  --border-subtle: #c4bfd1;
+
+  /* Shadows (glassmorphism uses backdrop blur, lighter shadows) */
+  --shadow-1: 0 2px 8px rgba(109, 93, 252, 0.15);
+  --shadow-2: 0 4px 16px rgba(109, 93, 252, 0.2);
+  --shadow-3: 0 8px 24px rgba(109, 93, 252, 0.25);
+  --shadow-4: 0 12px 32px rgba(109, 93, 252, 0.3);
+  --shadow-5: 0 16px 48px rgba(109, 93, 252, 0.35);
+  --shadow-sm: 0 1px 4px rgba(109, 93, 252, 0.1);
+  --shadow-md: 0 4px 12px rgba(109, 93, 252, 0.15);
+  --shadow-lg: 0 8px 24px rgba(109, 93, 252, 0.2);
+  --shadow-focus: 0 0 0 3px rgba(109, 93, 252, 0.3);
+  --shadow-inset: inset 0 2px 4px rgba(109, 93, 252, 0.1);
+
+  /* State layers */
+  --state-hover: rgba(109, 93, 252, 0.08);
+  --state-pressed: rgba(109, 93, 252, 0.12);
+  --state-focused: rgba(109, 93, 252, 0.12);
+  --state-dragged: rgba(109, 93, 252, 0.16);
+
+  /* Border radius */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+}
+
+/* Dark mode */
+.dark {
+  --color-primary: #a78bff;
+  --color-on-primary: #1b1345;
+  --color-primary-container: #4a3b8c;
+  --color-on-primary-container: #e8e0ff;
+
+  --color-secondary: #c9c4dc;
+  --color-on-secondary: #1d1a2e;
+  --color-secondary-container: #3d3854;
+  --color-on-secondary-container: #d4d0e4;
+
+  --color-tertiary: #e0b8ff;
+  --color-on-tertiary: #2d1547;
+  --color-tertiary-container: #5c3d77;
+  --color-on-tertiary-container: #e8d4ff;
+
+  --color-error: #ff8a8a;
+  --color-on-error: #5c0f0f;
+  --color-error-container: #7d2828;
+  --color-on-error-container: #ffe0e0;
+
+  --color-surface: #1a1820;
+  --color-on-surface: #e8e4f0;
+  --color-surface-container-lowest: rgba(26, 24, 32, 0.9);
+  --color-surface-container-low: rgba(35, 32, 45, 0.8);
+  --color-surface-container: rgba(45, 42, 58, 0.7);
+  --color-surface-container-high: rgba(58, 54, 74, 0.6);
+  --color-surface-container-highest: rgba(72, 68, 92, 0.5);
+
+  --color-outline: #9a95ab;
+  --color-outline-variant: #4a4658;
+
+  /* Semantic aliases - dark mode */
+  --accent: #a78bff;
+  --accent-hover: #8b6fef;
+  --text-primary: #e8e4f0;
+  --text-secondary: #c9c4dc;
+  --text-muted: #9a95ab;
+  --text-on-accent: #1b1345;
+  --bg-primary: #1a1820;
+  --bg-secondary: #2a2735;
+  --bg-tertiary: #3d3854;
+  --bg-elevated: rgba(58, 54, 74, 0.8);
+  --bg-header: rgba(35, 32, 45, 0.9);
+  --border: #9a95ab;
+  --border-subtle: #4a4658;
+
+  /* Shadows - darker for dark mode */
+  --shadow-1: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-3: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-4: 0 12px 32px rgba(0, 0, 0, 0.7);
+  --shadow-5: 0 16px 48px rgba(0, 0, 0, 0.8);
+  --shadow-focus: 0 0 0 3px rgba(167, 139, 255, 0.3);
+
+  /* State layers - lighter for dark mode */
+  --state-hover: rgba(167, 139, 255, 0.08);
+  --state-pressed: rgba(167, 139, 255, 0.12);
+  --state-focused: rgba(167, 139, 255, 0.12);
+  --state-dragged: rgba(167, 139, 255, 0.16);
+}

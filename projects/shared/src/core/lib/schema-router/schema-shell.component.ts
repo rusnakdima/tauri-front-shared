@@ -117,38 +117,6 @@ export class SchemaShellComponent implements OnInit, OnDestroy {
     );
   });
 
-  /** CSS grid-template-columns — always 3 columns, hidden sidebars get 0px */
-  readonly gridColumns = computed(() => {
-    const leftWidth = this.sidebarLeftRegion() ? "auto" : "0px";
-    const rightWidth = this.sidebarRightRegion() ? "auto" : "0px";
-    return `${leftWidth} 1fr ${rightWidth}`;
-  });
-
-  /** CSS grid-template-rows — hidden regions get 0px */
-  readonly gridRows = computed(() => {
-    const headerH = this.headerRegion() ? "auto" : "0px";
-    const footerH = this.footerRegion() ? "auto" : "0px";
-    const bottomH = this.bottomNavRegion() ? "auto" : "0px";
-    const otherH = this.otherRegions().length ? "auto" : "0px";
-    return `${headerH} 1fr ${footerH} ${bottomH} ${otherH}`;
-  });
-
-  /** CSS grid-template-areas — always 5 rows with 3 columns */
-  readonly gridAreas = computed(() => {
-    const header = this.headerRegion() ? '"header header header"' : '". . ."';
-    const left = this.sidebarLeftRegion() ? "sidebar-left" : ".";
-    const right = this.sidebarRightRegion() ? "sidebar-right" : ".";
-    const middle = `"${left} content ${right}"`;
-    const footer = this.footerRegion() ? '"footer footer footer"' : '". . ."';
-    const bottom = this.bottomNavRegion()
-      ? '"bottom-nav bottom-nav bottom-nav"'
-      : '". . ."';
-    const other = this.otherRegions().length
-      ? '"other other other"'
-      : '". . ."';
-    return `${header} ${middle} ${footer} ${bottom} ${other}`;
-  });
-
   constructor(
     private invokeWrapper: InvokeWrapperService,
     private schemaRouter: SchemaRouterService,

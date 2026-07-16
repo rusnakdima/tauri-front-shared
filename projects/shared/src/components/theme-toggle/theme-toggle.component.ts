@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, OnDestroy } from "@angular/core";
+import { Component, inject, Input, OnInit, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
 import { Subscription } from "rxjs";
 import { StyleThemeService } from "../../styles/theme.service";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
@@ -8,8 +8,25 @@ import { IconComponent } from "../icons/icons.component";
   selector: "app-theme-toggle",
   standalone: true,
   imports: [IconComponent],
-  templateUrl: "./theme-toggle.component.html",
-  styleUrls: ["./theme-toggle.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <button
+      (click)="toggle()"
+      [class]="getButtonClasses()"
+      aria-label="Toggle theme"
+    >
+      @if (isDark) {
+        <app-icon icon="sun" [size]="20" />
+      } @else {
+        <app-icon icon="moon" [size]="20" />
+      }
+    </button>
+  `,
+  styles: [`
+    :host {
+      display: inline-flex;
+    }
+  `],
 })
 export class ThemeToggleComponent implements OnInit, OnDestroy {
   private themeService = inject(StyleThemeService);
@@ -17,7 +34,6 @@ export class ThemeToggleComponent implements OnInit, OnDestroy {
 
   @Input() classes = "";
   isDark = false;
-  hovered = false;
 
   ngOnInit() {
     this.isDark = this.themeService.isDarkMode();
@@ -32,6 +48,12 @@ export class ThemeToggleComponent implements OnInit, OnDestroy {
 
   toggle() {
     this.themeService.toggleDarkMode();
+  }
+
+  getButtonClasses(): string {
+    const base = 'w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200';
+    const hover = 'hover:bg-[--state-hover] active:bg-[--state-pressed]';
+    return `${base} ${hover} ${this.classes}`.trim();
   }
 }
 

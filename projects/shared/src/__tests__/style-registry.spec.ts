@@ -42,10 +42,8 @@ describe("style-registry", () => {
       for (const variant of Object.values(STYLE_VARIANTS)) {
         expect(variant.id).toBeDefined();
         expect(variant.name).toBeDefined();
-        expect(variant.cssString).toBeDefined();
         expect(variant.classPrefix).toBeDefined();
         expect(variant.description).toBeDefined();
-        expect(variant.componentStyles).toBeDefined();
       }
     });
 

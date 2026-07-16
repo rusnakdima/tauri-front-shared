@@ -1,69 +1,72 @@
 import { Component, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 
-// Material Icons mapping - using Google Material Icons names
+// MDI Font icon mapping - using @mdi/font icon names (kebab-case)
 const MI_ICONS: Record<string, string> = {
   // Navigation
   home: "home",
   menu: "menu",
   close: "close",
   check: "check",
-  "chevron-down": "expand_more",
-  "chevron-right": "chevron_right",
+  "chevron-down": "chevron-down",
+  "chevron-right": "chevron-right",
   // Actions
-  edit: "edit",
+  edit: "pencil",
   delete: "delete",
-  add: "add",
-  search: "search",
+  add: "plus",
+  search: "magnify",
   undo: "undo",
   redo: "redo",
-  remove: "remove",
+  remove: "minus",
   fit_screen: "fullscreen",
-  grid: "grid_view",
-  grid_on: "grid_view",
-  zoom_in: "zoom_in",
-  zoom_out: "zoom_out",
+  grid: "view-grid",
+  grid_on: "view-grid",
+  zoom_in: "magnify-plus",
+  zoom_out: "magnify-minus",
   // Status
-  info: "info",
-  warning: "warning",
-  error: "error",
-  success: "check_circle",
+  info: "information",
+  warning: "alert",
+  error: "alert-circle",
+  success: "check-circle",
   // Content
-  user: "person",
-  settings: "settings",
+  user: "account",
+  settings: "cog",
   star: "star",
-  heart: "favorite",
+  heart: "heart",
   // Media
   image: "image",
-  camera: "camera_alt",
+  camera: "camera",
   // Files
-  file: "description",
+  file: "file-document",
   folder: "folder",
   // Misc
-  sun: "light_mode",
-  moon: "dark_mode",
+  sun: "white-balance-sunny",
+  moon: "moon-waning-crescent",
   download: "download",
   upload: "upload",
-  copy: "content_copy",
+  copy: "content-copy",
   // Translation & Input
   translate: "translate",
   keyboard: "keyboard",
   // Additional
-  search_off: "search_off",
-  swap_vert: "swap_vert",
-  expand_more: "expand_more",
-  dark_mode: "dark_mode",
-  light_mode: "light_mode",
-  arrow_back: "arrow_back",
-  arrow_forward: "arrow_forward",
-  first_page: "first_page",
-  last_page: "last_page",
-  chevron_left: "chevron_left",
-  chevron_right: "chevron_right",
-  content_copy: "content_copy",
+  search_off: "magnify-close",
+  swap_vert: "swap-vertical",
+  expand_more: "chevron-down",
+  dark_mode: "weather-night",
+  light_mode: "white-balance-sunny",
+  arrow_back: "arrow-left",
+  arrow_forward: "arrow-right",
+  first_page: "page-first",
+  last_page: "page-last",
+  chevron_left: "chevron-left",
+  chevron_right: "chevron-right",
+  content_copy: "content-copy",
   clear: "close",
-  language: "translate",
+  language: "web",
   xmark: "close",
+  // Schema icons
+  "alert-triangle": "alert",
+  globe: "web",
 };
 
 @Component({
@@ -77,8 +80,19 @@ export class IconComponent {
   @Input() icon = "";
   @Input() size = 24;
   @Input() classes = "";
+  @Input() spin = false;
 
-  get materialIcon(): string {
-    return MI_ICONS[this.icon] || MI_ICONS["info"] || "help";
+  get iconName(): string {
+    return MI_ICONS[this.icon] || MI_ICONS["info"] || "information";
+  }
+
+  get sizeClass(): string {
+    if (this.size === 16) return "text-[16px]";
+    if (this.size === 18) return "text-[18px]";
+    if (this.size === 20) return "text-[20px]";
+    if (this.size === 24) return "text-[24px]";
+    if (this.size === 32) return "text-[32px]";
+    if (this.size === 48) return "text-[48px]";
+    return `text-[${this.size}px]`;
   }
 }

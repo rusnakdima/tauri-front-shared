@@ -3,17 +3,7 @@
   height: 100%;
 }
 
-.app-layout {
-  display: grid;
-  min-height: 100vh;
-}
-
-[data-region="content"],
-[data-region="sidebar-left"],
-[data-region="sidebar-right"] {
-  overflow: auto;
-}
-
+/* Overlay regions need fixed positioning */
 .layout-overlay {
   position: fixed;
   inset: 0;

@@ -1,6 +1,7 @@
-// Auto-generated SCSS stub for icons
-// Components use global .ui-* classes from ui-system.scss.
-// This file provides component-scoped host styles when needed.
+// Icons use @mdi/font classes via TailwindCSS
+// This file is kept for component-scoped styles
 :host {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }

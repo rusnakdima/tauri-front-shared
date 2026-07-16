@@ -1,152 +1,146 @@
 @if (loading()) {
-  <div
-    class="ui-flex ui-flex-col ui-items-center ui-justify-center ui-gap-4 ui-min-h-screen"
-  >
-    <div
-      class="ui-w-10 ui-h-10 ui-border-4 ui-border-primary ui-border-t-transparent ui-rounded-full ui-animate-spin"
-    ></div>
-    <p class="ui-text-base-content ui-text-muted-70 ui-text-lg">
-      Loading application...
-    </p>
+  <div class="min-h-screen flex flex-col items-center justify-center gap-4 bg-surface text-on-surface">
+    <div class="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-lg text-on-surface-variant">Loading application...</p>
   </div>
 } @else if (error(); as err) {
-  <div
-    class="ui-flex ui-flex-col ui-items-center ui-justify-center ui-min-h-screen ui-p-8"
-  >
-    <div
-      class="ui-w-20 ui-h-20 ui-flex ui-items-center ui-justify-center ui-rounded-full ui-bg-warning-10 ui-text-warning ui-text-4xl ui-mb-4"
-    >
+  <div class="min-h-screen flex flex-col items-center justify-center p-8 bg-surface text-on-surface">
+    <div class="w-20 h-20 flex items-center justify-center rounded-full bg-error-container text-error text-4xl mb-4">
       &#9888;
     </div>
-    <h2 class="ui-text-2xl ui-font-bold ui-text-base-content ui-mb-2">
+    <h2 class="text-2xl font-bold text-on-surface mb-2">
       Application Not Available
     </h2>
-    <p
-      class="ui-text-base-content ui-text-muted-70 ui-text-center ui-max-w-md ui-mb-6"
-    >
+    <p class="text-center text-on-surface-variant max-w-md mb-6">
       {{ err }}
     </p>
-    <button class="ui-btn ui-btn-primary" (click)="retry()">Retry</button>
+    <button
+      class="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-md bg-primary text-on-primary shadow-1 hover:shadow-2 transition-shadow"
+      (click)="retry()"
+    >
+      Retry
+    </button>
   </div>
 } @else {
-  <div class="ui-min-h-screen ui-p-4 ui-md-p-8 ui-bg-base-content">
-    <div class="ui-mx-auto ui-max-w-6xl">
-      <div
-        class="app-layout"
-        [style.grid-template-columns]="gridColumns()"
-        [style.grid-template-rows]="gridRows()"
-        [style.grid-template-areas]="gridAreas()"
+  <!-- Main scaffold: flex column, full viewport height -->
+  <div class="min-h-screen flex flex-col bg-surface text-on-surface">
+
+    <!-- Header region - fixed height, flex row -->
+    @if (headerRegion(); as region) {
+      <header
+        data-region="header"
+        class="flex-shrink-0 h-16 px-6 flex items-center justify-between border-b border-outline-variant bg-surface-container"
       >
-        @if (headerRegion(); as region) {
-          <div
-            data-region="header"
-            [class]="getRegionClasses(region)"
-            style="grid-area: header"
-          >
-            @for (child of region.children || []; track child.id) {
-              <app-schema-element
-                [element]="child"
-                [elements]="region.children || []"
-              />
-            }
-          </div>
+        @for (child of region.children || []; track child.id) {
+          <app-schema-element
+            [element]="child"
+            [elements]="region.children || []"
+          />
         }
+      </header>
+    }
 
-        @if (sidebarLeftRegion(); as region) {
-          <div
-            data-region="sidebar-left"
-            [class]="getRegionClasses(region)"
-            style="grid-area: sidebar-left"
-          >
-            @for (child of region.children || []; track child.id) {
-              <app-schema-element
-                [element]="child"
-                [elements]="region.children || []"
-              />
-            }
-          </div>
-        }
+    <!-- Main content area - flex row that fills remaining space -->
+    <div class="flex-1 flex flex-row min-h-0">
 
-        <div data-region="content" style="grid-area: content">
-          <main
-            class="ui-m3-surface-container-high ui-rounded-lg ui-p-6 ui-md-p-8"
-          >
-            <lib-schema-route-viewer />
-          </main>
-        </div>
-
-        @if (sidebarRightRegion(); as region) {
-          <div
-            data-region="sidebar-right"
-            [class]="getRegionClasses(region)"
-            style="grid-area: sidebar-right"
-          >
-            @for (child of region.children || []; track child.id) {
-              <app-schema-element
-                [element]="child"
-                [elements]="region.children || []"
-              />
-            }
-          </div>
-        }
-
-        @if (footerRegion(); as region) {
-          <div
-            data-region="footer"
-            [class]="getRegionClasses(region)"
-            style="grid-area: footer"
-          >
-            @for (child of region.children || []; track child.id) {
-              <app-schema-element
-                [element]="child"
-                [elements]="region.children || []"
-              />
-            }
-          </div>
-        }
-
-        @if (bottomNavRegion(); as region) {
-          <div
-            data-region="bottom-nav"
-            [class]="getRegionClasses(region)"
-            style="grid-area: bottom-nav"
-          >
-            @for (child of region.children || []; track child.id) {
-              <app-schema-element
-                [element]="child"
-                [elements]="region.children || []"
-              />
-            }
-          </div>
-        }
-
-        @for (region of otherRegions(); track region.id) {
-          <div
-            data-region="other"
-            [class]="getRegionClasses(region)"
-            style="grid-area: other"
-          >
-            @for (child of region.children || []; track child.id) {
-              <app-schema-element
-                [element]="child"
-                [elements]="region.children || []"
-              />
-            }
-          </div>
-        }
-      </div>
-
-      @for (region of overlayRegions(); track region.id) {
-        <div class="layout-overlay" data-region="overlay">
+      <!-- Sidebar left -->
+      @if (sidebarLeftRegion(); as region) {
+        <aside
+          data-region="sidebar-left"
+          class="hidden lg:flex w-64 flex-shrink-0 flex-col border-r border-outline-variant bg-surface-container-low p-4"
+        >
           @for (child of region.children || []; track child.id) {
             <app-schema-element
               [element]="child"
               [elements]="region.children || []"
             />
           }
+        </aside>
+      }
+
+      <!-- Content area with M3 surface container -->
+      <main
+        data-region="content"
+        class="flex-1 p-4 md:p-6 min-w-0"
+      >
+        <!-- M3 surface container for content -->
+        <div class="h-full rounded-xl bg-surface-container-lowest border border-outline-variant p-6 md:p-8 shadow-1">
+          <lib-schema-route-viewer />
         </div>
+      </main>
+
+      <!-- Sidebar right -->
+      @if (sidebarRightRegion(); as region) {
+        <aside
+          data-region="sidebar-right"
+          class="hidden lg:flex w-64 flex-shrink-0 flex-col border-l border-outline-variant bg-surface-container-low p-4"
+        >
+          @for (child of region.children || []; track child.id) {
+            <app-schema-element
+              [element]="child"
+              [elements]="region.children || []"
+            />
+          }
+        </aside>
       }
     </div>
+
+    <!-- Footer region -->
+    @if (footerRegion(); as region) {
+      <footer
+        data-region="footer"
+        class="flex-shrink-0 h-12 px-6 flex items-center border-t border-outline-variant bg-surface-container text-on-surface-variant text-sm"
+      >
+        @for (child of region.children || []; track child.id) {
+          <app-schema-element
+            [element]="child"
+            [elements]="region.children || []"
+          />
+        }
+      </footer>
+    }
+
+    <!-- Bottom nav region -->
+    @if (bottomNavRegion(); as region) {
+      <nav
+        data-region="bottom-nav"
+        class="flex-shrink-0 h-16 px-4 flex items-center justify-around border-t border-outline-variant bg-surface-container"
+      >
+        @for (child of region.children || []; track child.id) {
+          <app-schema-element
+            [element]="child"
+            [elements]="region.children || []"
+          />
+        }
+      </nav>
+    }
+
+    <!-- Other regions (rendered below main layout) -->
+    @for (region of otherRegions(); track region.id) {
+      <div
+        data-region="other"
+        class="flex-shrink-0 px-6 py-4"
+      >
+        @for (child of region.children || []; track child.id) {
+          <app-schema-element
+            [element]="child"
+            [elements]="region.children || []"
+          />
+        }
+      </div>
+    }
+
+    <!-- Overlay regions (fixed positioning) -->
+    @for (region of overlayRegions(); track region.id) {
+      <div class="layout-overlay" data-region="overlay">
+        @for (child of region.children || []; track child.id) {
+          <app-schema-element
+            [element]="child"
+            [elements]="region.children || []"
+          />
+        }
+      </div>
+    }
   </div>
 }
 

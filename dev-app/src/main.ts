@@ -5,8 +5,12 @@ import { AppComponent } from "./app/app.component";
 import { appConfig } from "./app/app.config";
 
 loadStyleVariant("material-design-v3").then(() => {
-  bootstrapApplication(AppComponent, appConfig).catch((err) => {
-    const error = err instanceof Error ? err : new Error(String(err));
-    console.error(err);
-  });
+  bootstrapApplication(AppComponent, appConfig)
+    .then(() => {
+      // Initialize Flowbite JS for dropdowns/modals/FAB
+      import("flowbite").then((m) => m.initFlowbite());
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 });

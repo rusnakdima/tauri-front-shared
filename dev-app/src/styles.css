@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@import "@tauri-front/shared/styles/themes/m3/theme.css";
+@import "@tauri-front/shared/styles/themes/glassmorphism/theme.css";
+@import "@tauri-front/shared/styles/themes/claymorphism/theme.css";
+@import "@tauri-front/shared/styles/themes/skeuomorphism/theme.css";
+@import "@tauri-front/shared/styles/themes/neo-brutalism/theme.css";
+@import "@tauri-front/shared/styles/themes/brutalism/theme.css";
+@import "@tauri-front/shared/styles/themes/neumorphism/theme.css";

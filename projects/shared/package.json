@@ -39,6 +39,12 @@
     "./styles/themes/glassmorphism/theme.css": {
       "default": "./styles/themes/glassmorphism/theme.css"
     },
+    "./styles/themes/neumorphism/tokens.css": {
+      "default": "./styles/themes/neumorphism/tokens.css"
+    },
+    "./styles/themes/neumorphism/components.css": {
+      "default": "./styles/themes/neumorphism/components.css"
+    },
     "./styles/themes/neumorphism/theme": {
       "default": "./styles/themes/neumorphism/theme.css"
     },
@@ -57,17 +63,35 @@
     "./styles/themes/claymorphism/theme.css": {
       "default": "./styles/themes/claymorphism/theme.css"
     },
+    "./styles/themes/brutalism/tokens.css": {
+      "default": "./styles/themes/brutalism/tokens.css"
+    },
+    "./styles/themes/brutalism/components.css": {
+      "default": "./styles/themes/brutalism/components.css"
+    },
     "./styles/themes/brutalism/theme": {
       "default": "./styles/themes/brutalism/theme.css"
     },
     "./styles/themes/brutalism/theme.css": {
       "default": "./styles/themes/brutalism/theme.css"
     },
+    "./styles/themes/skeuomorphism/tokens.css": {
+      "default": "./styles/themes/skeuomorphism/tokens.css"
+    },
+    "./styles/themes/skeuomorphism/components.css": {
+      "default": "./styles/themes/skeuomorphism/components.css"
+    },
     "./styles/themes/skeuomorphism/theme": {
       "default": "./styles/themes/skeuomorphism/theme.css"
     },
     "./styles/themes/skeuomorphism/theme.css": {
       "default": "./styles/themes/skeuomorphism/theme.css"
+    },
+    "./styles/themes/neo-brutalism/tokens.css": {
+      "default": "./styles/themes/neo-brutalism/tokens.css"
+    },
+    "./styles/themes/neo-brutalism/components.css": {
+      "default": "./styles/themes/neo-brutalism/components.css"
     },
     "./styles/themes/neo-brutalism/theme": {
       "default": "./styles/themes/neo-brutalism/theme.css"

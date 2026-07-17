@@ -20,6 +20,7 @@ export class EmptyStateComponent {
   @Input() icon = "";
   @Input() variant: "default" | "danger" | "success" = "default";
   @Input() action = "";
+  @Input() actionLabel = "";
   @Input() classes = "";
   @Output() actionClicked = new EventEmitter<Event>();
 }

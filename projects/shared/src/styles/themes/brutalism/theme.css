@@ -27,11 +27,6 @@ body[data-theme="brutalism"] {
     --color-tertiary-container: #b3b3b3;
     --color-on-tertiary-container: #000000;
 
-    --color-error: #ff0000;
-    --color-on-error: #ffffff;
-    --color-error-container: #ffcccc;
-    --color-on-error-container: #cc0000;
-
     --color-surface: #ffffff;
     --color-on-surface: #000000;
     --color-surface-container-lowest: #ffffff;
@@ -48,14 +43,10 @@ body[data-theme="brutalism"] {
     --accent-hover: #1a1a1a;
     --success: #00aa00;
     --warning: #ff8800;
-    --info: #0066ff;
     --text-primary: #000000;
     --text-secondary: #333333;
     --text-muted: #666666;
     --text-on-accent: #ffffff;
-    --text-on-error: #ffffff;
-    --text-on-warning: #000000;
-    --text-on-success: #ffffff;
     --bg-primary: #ffffff;
     --bg-secondary: #eeeeee;
     --bg-tertiary: #d4d4d4;
@@ -71,25 +62,6 @@ body[data-theme="brutalism"] {
     --shadow-3: 8px 8px 0px #000000;
     --shadow-4: 12px 12px 0px #000000;
     --shadow-5: 16px 16px 0px #000000;
-    --shadow-sm: 2px 2px 0px #000000;
-    --shadow-md: 4px 4px 0px #000000;
-    --shadow-lg: 8px 8px 0px #000000;
-    --shadow-focus: 0 0 0 3px #000000;
-    --shadow-inset: inset 4px 4px 0px #000000;
-
-    /* State layers */
-    --state-hover: rgba(0, 0, 0, 0.05);
-    --state-pressed: rgba(0, 0, 0, 0.1);
-    --state-focused: rgba(0, 0, 0, 0.1);
-    --state-dragged: rgba(0, 0, 0, 0.15);
-
-    /* Border radius (brutalism uses sharp corners, minimal rounding) */
-    --radius-xs: 0px;
-    --radius-sm: 0px;
-    --radius-md: 0px;
-    --radius-lg: 0px;
-    --radius-xl: 0px;
-    --radius-full: 0px;
   }
 }
 
@@ -111,11 +83,6 @@ body[data-theme="brutalism"][data-theme-mode="dark"] {
     --color-on-tertiary: #000000;
     --color-tertiary-container: #666666;
     --color-on-tertiary-container: #ffffff;
-
-    --color-error: #ff3333;
-    --color-on-error: #000000;
-    --color-error-container: #cc0000;
-    --color-on-error-container: #ffffff;
 
     --color-surface: #111111;
     --color-on-surface: #ffffff;
@@ -149,15 +116,5 @@ body[data-theme="brutalism"][data-theme-mode="dark"] {
     --shadow-3: 8px 8px 0px #ffffff;
     --shadow-4: 12px 12px 0px #ffffff;
     --shadow-5: 16px 16px 0px #ffffff;
-    --shadow-sm: 2px 2px 0px #ffffff;
-    --shadow-md: 4px 4px 0px #ffffff;
-    --shadow-lg: 8px 8px 0px #ffffff;
-    --shadow-focus: 0 0 0 3px #ffffff;
-
-    /* State layers */
-    --state-hover: rgba(255, 255, 255, 0.05);
-    --state-pressed: rgba(255, 255, 255, 0.1);
-    --state-focused: rgba(255, 255, 255, 0.1);
-    --state-dragged: rgba(255, 255, 255, 0.15);
   }
 }

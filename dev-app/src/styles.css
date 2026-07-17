@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@tauri-front/shared/styles/tokens-base.css";
 @import "@tauri-front/shared/styles/themes/m3/theme.css";
 @import "@tauri-front/shared/styles/themes/glassmorphism/theme.css";
 @import "@tauri-front/shared/styles/themes/claymorphism/theme.css";

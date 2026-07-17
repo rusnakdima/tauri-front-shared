@@ -1,32 +1,16 @@
 node_modules/
 package-lock.json
-.ng-cache/
+bun.lock
 *.tgz
 .DS_Store
 *.log
 
-# Allow built artifacts in projects/
+# Build artifacts — never commit
 dist/
 lib/
-!projects/*/dist/
-!projects/*/lib/
-
-# Allow shared library source
-!projects/shared/src/core/
-!projects/shared/src/core/lib/
-!projects/shared/src/algorithms/
-!projects/shared/src/ui-showcase/
 
 # Angular
 .angular/
-
-# Angular
-.angular/
-
-# Angular
-.angular/
-
-# Angular cache (nested)
 **/.angular/
 
 # Schemas (temporary dev files)

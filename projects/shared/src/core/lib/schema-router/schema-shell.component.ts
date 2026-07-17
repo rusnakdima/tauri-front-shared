@@ -41,7 +41,6 @@ import { logger } from "../../../utils/legacy/logger";
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: "./schema-shell.component.html",
-  styleUrl: "./schema-shell.component.css",
 })
 export class SchemaShellComponent implements OnInit, OnDestroy {
   @Input() appId = "";

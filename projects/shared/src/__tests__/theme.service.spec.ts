@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeEach, beforeAll, afterEach } from "vitest";
 import { TestBed, runInInjectionContext } from "@angular/core/testing";
-import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from "@angular/platform-browser-dynamic/testing";
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from "@angular/platform-browser-dynamic/testing";
 import { StyleThemeService } from "../styles/theme.service";
 import { setCurrentStyle } from "../styles/style-registry";
 
@@ -23,7 +26,10 @@ const localStorageMock = (() => {
 Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
 // Initialize Angular TestBed environment before any tests run
-TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+TestBed.initTestEnvironment(
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting(),
+);
 
 // Helper to create StyleThemeService within Angular injection context
 function createService(): StyleThemeService {

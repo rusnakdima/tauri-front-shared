@@ -15,7 +15,6 @@ interface DropIndicator {
   standalone: true,
   imports: [CommonModule],
   templateUrl: "./canvas.component.html",
-  styleUrls: ["./canvas.component.scss"],
 })
 export class CanvasComponent {
   protected designer = inject(DesignerCanvasService);

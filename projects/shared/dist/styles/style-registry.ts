@@ -1,8 +1,7 @@
 /**
  * Style Registry - TailwindCSS v4 Theme System
  *
- * Themes are loaded dynamically at runtime via CSS <link> injection.
- * Each theme has a theme.css file with @theme directive.
+ * Each theme is defined in its theme.css file and selected via data attributes.
  */
 
 export type StyleVariant =
@@ -11,7 +10,8 @@ export type StyleVariant =
   | "neumorphism"
   | "material-design-v3"
   | "brutalism"
-  | "skeuomorphism";
+  | "skeuomorphism"
+  | "neo-brutalism";
 
 export interface GlobalStyleContext {
   variant?: string;
@@ -23,6 +23,7 @@ export interface StyleVariantConfig {
   name: string;
   classPrefix: string;
   description: string;
+  redesigned: boolean;
 }
 
 /**
@@ -32,45 +33,56 @@ export interface ComponentStyleMap {
   [key: string]: string;
 }
 
-/**
- * Theme configuration - no cssString, themes are loaded via <link>
- */
 export const STYLE_VARIANTS: Record<StyleVariant, StyleVariantConfig> = {
   claymorphism: {
     id: "claymorphism",
     name: "Claymorphism",
     classPrefix: "clay-",
     description: "Soft raised shadows with clay-like appearance",
+    redesigned: true,
   },
   glassmorphism: {
     id: "glassmorphism",
     name: "Glassmorphism",
     classPrefix: "glass-",
     description: "Frosted glass effect with backdrop blur",
+    redesigned: true,
   },
   neumorphism: {
     id: "neumorphism",
     name: "Neumorphism",
     classPrefix: "neu-",
     description: "Soft inset and outset shadows",
+    redesigned: false,
   },
   "material-design-v3": {
     id: "material-design-v3",
     name: "Material Design 3",
     classPrefix: "m3-",
     description: "Google Material Design 3 with elevation system",
+    redesigned: true,
   },
   brutalism: {
     id: "brutalism",
     name: "Brutalism",
     classPrefix: "brut-",
     description: "Sharp edges, hard shadows, high-contrast typography",
+    redesigned: false,
   },
   skeuomorphism: {
     id: "skeuomorphism",
     name: "Skeuomorphism",
     classPrefix: "skeu-",
-    description: "Realistic textures with leather, paper, and glossy highlights",
+    description:
+      "Realistic textures with leather, paper, and glossy highlights",
+    redesigned: true,
+  },
+  "neo-brutalism": {
+    id: "neo-brutalism",
+    name: "Neo-Brutalism",
+    classPrefix: "neobrutal-",
+    description: "Hard black borders, bright yellow accents, zero rounding",
+    redesigned: true,
   },
 };
 
@@ -84,10 +96,11 @@ export async function loadStyleVariant(variant: StyleVariant): Promise<void> {
 }
 
 /**
- * SCSS-only fallback — sets body[data-style] without injecting runtime CSS.
- * Kept for compatibility with apps using static SCSS themes.
+ * SCSS-only fallback for apps using static SCSS themes.
  */
-export async function loadStyleVariantNoop(variant: StyleVariant = "material-design-v3"): Promise<void> {
+export async function loadStyleVariantNoop(
+  variant: StyleVariant = "material-design-v3",
+): Promise<void> {
   setTheme(variant);
 }
 
@@ -100,12 +113,17 @@ export function setTheme(variant: StyleVariant): void {
   document.documentElement.setAttribute("data-theme", variant);
   document.body.setAttribute("data-theme", variant);
   const isDark = document.body.getAttribute("data-theme-mode") === "dark";
-  document.documentElement.setAttribute("data-theme-mode", isDark ? "dark" : "light");
+  document.documentElement.setAttribute(
+    "data-theme-mode",
+    isDark ? "dark" : "light",
+  );
   document.body.setAttribute("data-theme-mode", isDark ? "dark" : "light");
   CURRENT_STYLE = variant;
   LOADED_STYLES.add(variant);
   document.dispatchEvent(
-    new CustomEvent("style-changed", { detail: { variant, prefix: config.classPrefix } }),
+    new CustomEvent("style-changed", {
+      detail: { variant, prefix: config.classPrefix },
+    }),
   );
 }
 
@@ -136,6 +154,14 @@ export function getAllStyleVariants(): StyleVariantConfig[] {
   return Object.values(STYLE_VARIANTS);
 }
 
+export function isRedesigned(variant: StyleVariant): boolean {
+  return STYLE_VARIANTS[variant].redesigned;
+}
+
+export function getRedesignedStyleVariants(): StyleVariantConfig[] {
+  return getAllStyleVariants().filter(({ redesigned }) => redesigned);
+}
+
 export function initializeStyles(): void {
   if (typeof window === "undefined" || !window.localStorage) {
     return;
@@ -154,7 +180,10 @@ export function getStyleClass(
   baseClass: string,
 ): string {
   const prefix = getStyleClassPrefix(variant);
-  const baseName = baseClass.replace(/^clay-|^glass-|^neu-|^m3-|^brut-|^skeu-/, "");
+  const baseName = baseClass.replace(
+    /^clay-|^glass-|^neu-|^m3-|^brut-|^skeu-|^neobrutal-/,
+    "",
+  );
   return `${prefix}${baseName}`;
 }
 

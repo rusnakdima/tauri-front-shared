@@ -6,7 +6,6 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./empty-state.component.html",
-  styleUrls: ["./empty-state.component.scss"],
 })
 export class EmptyStateComponent {
   @Input() title = "";

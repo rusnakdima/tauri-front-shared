@@ -10,22 +10,22 @@
     <div
       role="dialog"
       aria-modal="true"
-      [attr.aria-labelledby]="'modal-title-' + title()"
+      [attr.aria-labelledby]="'modal-title-' + title"
       class="sf-relative sf-w-full sf-rounded-2xl sf-border sf-shadow-2xl sf-backdrop-blur-md sf-transition-all sf-duration-200"
       style="border-color: var(--border-visible); background: var(--bg-modal)"
       [class.sf-scale-95]="isAnimating()"
       [class.sf-scale-100]="!isAnimating()"
       [class]="sizeClasses"
     >
-      @if (showHeader()) {
+      @if (showHeader) {
         <div
           class="sf-flex sf-items-center sf-justify-between sf-border-b"
           style="border-color: var(--border-subtle)"
         >
-          <h2 [id]="'modal-title-' + title()" style="color: var(--text-main)">
-            {{ title() }}
+          <h2 [id]="'modal-title-' + title" style="color: var(--text-main)">
+            {{ title }}
           </h2>
-          @if (showCloseButton()) {
+          @if (showCloseButton) {
             <button
               type="button"
               (click)="onClose()"
@@ -52,7 +52,7 @@
         <ng-content></ng-content>
       </div>
 
-      @if (showFooter()) {
+      @if (showFooter) {
         <div
           class="sf-flex sf-items-center sf-justify-end sf-gap-3 sf-border-t"
           style="border-color: var(--border-subtle)"

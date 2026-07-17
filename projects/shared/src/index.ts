@@ -204,6 +204,32 @@ export {
 // Components
 export { PaginationComponent } from "./core/lib/pagination/pagination.component";
 
+// Components added 2026-07 (named exports)
+export {
+  AlertComponent,
+  type AlertType,
+  type AlertAction,
+} from "./components/alert/alert.component";
+export { FabComponent, type FabItem } from "./components/fab/fab.component";
+
+export { RatingComponent } from "./components/rating/rating.component";
+export {
+  StepperComponent,
+  type StepperStep,
+} from "./components/stepper/stepper.component";
+export {
+  BreadcrumbComponent,
+  type BreadcrumbItem,
+} from "./components/breadcrumb/breadcrumb.component";
+export { ProgressRingComponent } from "./components/progress-ring/progress-ring";
+export { SkeletonComponent } from "./components/skeleton/skeleton.component";
+export { ListComponent, type ListItem } from "./components/list/list.component";
+export {
+  ButtonGroupComponent,
+  type ButtonGroupItem,
+} from "./components/button-group/button-group.component";
+export { FileInputComponent } from "./components/file-input/file-input.component";
+
 // Update services
 export {
   UpdateService,

@@ -1,4 +1,11 @@
-import { Component, inject, Input, OnInit, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
+import {
+  Component,
+  inject,
+  Input,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { Subscription } from "rxjs";
 import { StyleThemeService } from "../../styles/theme.service";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
@@ -11,22 +18,14 @@ import { IconComponent } from "../icons/icons.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <button
-      (click)="toggle()"
-      [class]="getButtonClasses()"
-      aria-label="Toggle theme"
+      class="p-2.5 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors"
+      title="Toggle Theme"
     >
-      @if (isDark) {
-        <app-icon icon="sun" [size]="20" />
-      } @else {
-        <app-icon icon="moon" [size]="20" />
-      }
+      <span class="material-symbols-rounded">{{
+        isDark ? "light_mode" : "dark_mode"
+      }}</span>
     </button>
   `,
-  styles: [`
-    :host {
-      display: inline-flex;
-    }
-  `],
 })
 export class ThemeToggleComponent implements OnInit, OnDestroy {
   private themeService = inject(StyleThemeService);
@@ -51,8 +50,9 @@ export class ThemeToggleComponent implements OnInit, OnDestroy {
   }
 
   getButtonClasses(): string {
-    const base = 'w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200';
-    const hover = 'hover:bg-[--state-hover] active:bg-[--state-pressed]';
+    const base =
+      "w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200";
+    const hover = "hover:bg-[--state-hover] active:bg-[--state-pressed]";
     return `${base} ${hover} ${this.classes}`.trim();
   }
 }

@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, signal } from "@angular/core";
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+  signal,
+} from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 
 @Component({
@@ -7,37 +14,20 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="flex flex-col gap-1.5">
+    <div>
       @if (label) {
-        <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+        <label
+          class="block mb-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+          >{{ label }}</label
+        >
       }
       <textarea
-        [placeholder]="placeholder"
-        [disabled]="disabled"
-        [value]="value"
+        class="block w-full p-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 rounded-2xl border border-neutral-300 dark:border-neutral-700 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
         [rows]="rows"
-        (input)="handleInput($event)"
-        (focus)="focused.set(true)"
-        (blur)="focused.set(false)"
-        class="px-4 py-3 rounded-md bg-surface-container border transition-colors duration-200 resize-none text-on-surface placeholder:text-on-surface-variant outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-        [class.border-outline]="!focused() && !error"
-        [class.border-primary]="focused() && !error"
-        [class.ring-primary]="focused() && !error"
-        [class.error]="!!error"
+        [placeholder]="placeholder"
       ></textarea>
-      @if (error) {
-        <span class="text-sm text-error">{{ error }}</span>
-      }
     </div>
   `,
-  styles: [`
-    :host {
-      display: block;
-    }
-    textarea {
-      min-height: 80px;
-    }
-  `],
 })
 export class TextareaComponent {
   @Input() label = "";

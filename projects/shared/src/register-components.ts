@@ -77,3 +77,16 @@ import "./components/locale-switcher/locale-switcher.component";
 import "./components/layout/row/row.component";
 import "./components/layout/column/column.component";
 import "./components/layout/stack/stack.component";
+
+// Newly added components (2026-07 batch)
+import "./components/alert/alert.component";
+import "./components/fab/fab.component";
+
+import "./components/rating/rating.component";
+import "./components/stepper/stepper.component";
+import "./components/breadcrumb/breadcrumb.component";
+import "./components/progress-ring/progress-ring";
+import "./components/skeleton/skeleton.component";
+import "./components/list/list.component";
+import "./components/button-group/button-group.component";
+import "./components/file-input/file-input.component";

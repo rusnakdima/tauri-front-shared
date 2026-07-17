@@ -182,9 +182,10 @@ export function contrastRatio(color1: string, color2: string): number | null {
 }
 
 /** WCAG AA/AAA result for a given ratio */
-export function wcagResult(
-  ratio: number,
-): { levelAA: boolean; levelAAA: boolean } {
+export function wcagResult(ratio: number): {
+  levelAA: boolean;
+  levelAAA: boolean;
+} {
   return {
     levelAA: ratio >= 4.5, // AA normal text
     // Note: ratio >= 3 is AA large text (not stored, caller checks ratio >= 3 directly)

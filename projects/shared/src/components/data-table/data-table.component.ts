@@ -13,7 +13,6 @@ type RowData = Record<string, unknown>;
   standalone: true,
   imports: [],
   templateUrl: "./data-table.component.html",
-  styleUrls: ["./data-table.component.scss"],
 })
 export class DataTableComponent {
   @Input() columns: string | ColumnDef[] = "[]";

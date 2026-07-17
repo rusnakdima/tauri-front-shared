@@ -38,7 +38,9 @@ export interface LanguageOption {
             </option>
           }
         </select>
-        <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">
+        <div
+          class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant"
+        >
           <app-icon icon="chevron-down" [size]="18" />
         </div>
       </div>
@@ -47,11 +49,13 @@ export interface LanguageOption {
       }
     </div>
   `,
-  styles: [`
-    :host {
-      display: block;
-    }
-  `],
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
 })
 export class LanguageSelectorComponent {
   @Input() label = "";

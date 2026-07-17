@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Input, Component, EventEmitter, Output, ChangeDetectionStrategy, signal, HostListener, computed, Injectable, effect, inject, Injector, ApplicationRef, ViewContainerRef, ViewChild, input, output, CUSTOM_ELEMENTS_SCHEMA, Optional, provideBrowserGlobalErrorListeners, provideZoneChangeDetection, Directive } from '@angular/core';
+import { Input, Component, EventEmitter, Output, ChangeDetectionStrategy, signal, HostListener, computed, Injectable, effect, inject, Injector, ApplicationRef, ViewContainerRef, ViewChild, output, input, CUSTOM_ELEMENTS_SCHEMA, ElementRef, Optional, provideBrowserGlobalErrorListeners, provideZoneChangeDetection, Directive } from '@angular/core';
 import * as i1 from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { BehaviorSubject, Subject, map, distinctUntilChanged } from 'rxjs';
@@ -106,11 +106,24 @@ class IconComponent {
         return `text-[${this.size}px]`;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: IconComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: IconComponent, isStandalone: true, selector: "app-icon", inputs: { icon: "icon", size: "size", classes: "classes", spin: "spin" }, ngImport: i0, template: "<i class=\"mdi mdi-{{ iconName }} {{ sizeClass }}\" [class.mdi-spin]=\"spin\"></i>\n", styles: [":host{display:inline-flex;align-items:center;justify-content:center}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: IconComponent, isStandalone: true, selector: "app-icon", inputs: { icon: "icon", size: "size", classes: "classes", spin: "spin" }, ngImport: i0, template: `
+    <span class="material-symbols-rounded" [style.font-size.px]="size">{{
+      icon
+    }}</span>
+  `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: IconComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-icon", standalone: true, imports: [], template: "<i class=\"mdi mdi-{{ iconName }} {{ sizeClass }}\" [class.mdi-spin]=\"spin\"></i>\n", styles: [":host{display:inline-flex;align-items:center;justify-content:center}\n"] }]
+            args: [{
+                    selector: "app-icon",
+                    standalone: true,
+                    imports: [],
+                    template: `
+    <span class="material-symbols-rounded" [style.font-size.px]="size">{{
+      icon
+    }}</span>
+  `,
+                }]
         }], propDecorators: { icon: [{
                 type: Input
             }], size: [{
@@ -123,8 +136,6 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
 
 class ButtonComponent {
     variant = "primary";
-    buttonStyle = "solid";
-    size = "md";
     disabled = false;
     loading = false;
     icon = null;
@@ -143,129 +154,53 @@ class ButtonComponent {
         }
         this.clicked.emit(e);
     }
-    getButtonClasses() {
-        const base = 'inline-flex items-center justify-center gap-2 font-medium rounded-md transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
-        // Size classes
-        const sizeClasses = {
-            sm: 'h-8 px-3 text-sm',
-            md: 'h-10 px-4 text-base',
-            lg: 'h-12 px-6 text-lg',
-        };
-        // Variant + style classes for solid style
-        const solidVariants = {
-            primary: 'bg-primary text-on-primary hover:brightness-110 active:brightness-90 shadow-1 hover:shadow-2',
-            danger: 'bg-error text-on-error hover:brightness-110 active:brightness-90 shadow-1 hover:shadow-2',
-            warning: 'bg-warning text-on-error hover:brightness-110 active:brightness-90 shadow-1 hover:shadow-2',
-            success: 'bg-success text-white hover:brightness-110 active:brightness-90 shadow-1 hover:shadow-2',
-            info: 'bg-info text-white hover:brightness-110 active:brightness-90 shadow-1 hover:shadow-2',
-        };
-        // Outline style
-        const outlineVariants = {
-            primary: 'border-2 border-primary text-primary bg-transparent hover:bg-primary/10 active:bg-primary/20',
-            danger: 'border-2 border-error text-error bg-transparent hover:bg-error/10 active:bg-error/20',
-            warning: 'border-2 border-warning text-warning bg-transparent hover:bg-warning/10 active:bg-warning/20',
-            success: 'border-2 border-success text-success bg-transparent hover:bg-success/10 active:bg-success/20',
-            info: 'border-2 border-info text-info bg-transparent hover:bg-info/10 active:bg-info/20',
-        };
-        // Soft style (filled background with muted text)
-        const softVariants = {
-            primary: 'bg-primary-container text-on-primary-container hover:bg-primary-container/80 active:bg-primary-container/60',
-            danger: 'bg-error-container text-on-error-container hover:bg-error-container/80 active:bg-error-container/60',
-            warning: 'bg-warning/20 text-warning hover:bg-warning/30 active:bg-warning/40',
-            success: 'bg-success/20 text-success hover:bg-success/30 active:bg-success/40',
-            info: 'bg-info/20 text-info hover:bg-info/30 active:bg-info/40',
-        };
-        // Ghost style (no background, just hover state)
-        const ghostVariants = {
-            primary: 'bg-transparent text-primary hover:bg-[--state-hover] active:bg-[--state-pressed]',
-            danger: 'bg-transparent text-error hover:bg-[--state-hover] active:bg-[--state-pressed]',
-            warning: 'bg-transparent text-warning hover:bg-[--state-hover] active:bg-[--state-pressed]',
-            success: 'bg-transparent text-success hover:bg-[--state-hover] active:bg-[--state-pressed]',
-            info: 'bg-transparent text-info hover:bg-[--state-hover] active:bg-[--state-pressed]',
-        };
-        // Text style (no background at all)
-        const textVariants = {
-            primary: 'bg-transparent text-primary hover:bg-[--state-hover] active:bg-[--state-pressed]',
-            danger: 'bg-transparent text-error hover:bg-[--state-hover] active:bg-[--state-pressed]',
-            warning: 'bg-transparent text-warning hover:bg-[--state-hover] active:bg-[--state-pressed]',
-            success: 'bg-transparent text-success hover:bg-[--state-hover] active:bg-[--state-pressed]',
-            info: 'bg-transparent text-info hover:bg-[--state-hover] active:bg-[--state-pressed]',
-        };
-        const styleMap = {
-            solid: solidVariants,
-            outline: outlineVariants,
-            soft: softVariants,
-            ghost: ghostVariants,
-        };
-        const variantClasses = styleMap[this.buttonStyle]?.[this.variant] || solidVariants[this.variant];
-        const sizeClass = sizeClasses[this.size];
-        return [
-            base,
-            variantClasses,
-            sizeClass,
-            this.fullWidth ? 'w-full' : '',
-            this.classes,
-        ].filter(Boolean).join(' ');
-    }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ButtonComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ButtonComponent, isStandalone: true, selector: "app-button", inputs: { variant: "variant", buttonStyle: "buttonStyle", size: "size", disabled: "disabled", loading: "loading", icon: "icon", iconPosition: "iconPosition", fullWidth: "fullWidth", type: "type", label: "label", classes: "classes", ariaLabel: "ariaLabel" }, outputs: { clicked: "clicked" }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: ButtonComponent, isStandalone: true, selector: "app-button", inputs: { variant: "variant", disabled: "disabled", loading: "loading", icon: "icon", iconPosition: "iconPosition", fullWidth: "fullWidth", type: "type", label: "label", classes: "classes", ariaLabel: "ariaLabel" }, outputs: { clicked: "clicked" }, ngImport: i0, template: `
     <button
-      [type]="type || 'button'"
-      [disabled]="disabled || loading"
-      [class]="getButtonClasses()"
-      (click)="handleClick($event)"
-      [attr.aria-label]="ariaLabel || null"
+      class="px-4 py-2 text-xs font-medium rounded-full transition-all"
+      [class.bg-indigo-600]="variant === 'primary'"
+      [class.text-white]="variant === 'primary'"
+      [class.hover:bg-indigo-700]="variant === 'primary'"
+      [class.bg-indigo-50]="variant === 'tonal'"
+      [class.text-indigo-700]="variant === 'tonal'"
+      [class.hover:bg-indigo-100]="variant === 'tonal'"
+      [class.border]="variant === 'outlined'"
+      [class.border-neutral-300]="variant === 'outlined'"
+      [class.text-neutral-700]="variant === 'outlined'"
+      [class.hover:bg-neutral-50]="variant === 'outlined'"
+      [disabled]="disabled"
     >
-      @if (loading) {
-        <span class="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full"></span>
-      } @else {
-        @if (icon && iconPosition === "left") {
-          <app-icon class="w-5 h-5 flex-shrink-0" [icon]="icon" [size]="20" />
-        }
-        @if (label) {
-          <span>{{ label }}</span>
-        } @else {
-          <ng-content></ng-content>
-        }
-        @if (icon && iconPosition === "right") {
-          <app-icon class="w-5 h-5 flex-shrink-0" [icon]="icon" [size]="20" />
-        }
-      }
+      {{ label }}
     </button>
-  `, isInline: true, styles: [":host{display:inline-flex}:host(.full-width){width:100%}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ButtonComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-button", standalone: true, imports: [IconComponent], changeDetection: ChangeDetectionStrategy.OnPush, template: `
+            args: [{
+                    selector: "app-button",
+                    standalone: true,
+                    imports: [IconComponent],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
     <button
-      [type]="type || 'button'"
-      [disabled]="disabled || loading"
-      [class]="getButtonClasses()"
-      (click)="handleClick($event)"
-      [attr.aria-label]="ariaLabel || null"
+      class="px-4 py-2 text-xs font-medium rounded-full transition-all"
+      [class.bg-indigo-600]="variant === 'primary'"
+      [class.text-white]="variant === 'primary'"
+      [class.hover:bg-indigo-700]="variant === 'primary'"
+      [class.bg-indigo-50]="variant === 'tonal'"
+      [class.text-indigo-700]="variant === 'tonal'"
+      [class.hover:bg-indigo-100]="variant === 'tonal'"
+      [class.border]="variant === 'outlined'"
+      [class.border-neutral-300]="variant === 'outlined'"
+      [class.text-neutral-700]="variant === 'outlined'"
+      [class.hover:bg-neutral-50]="variant === 'outlined'"
+      [disabled]="disabled"
     >
-      @if (loading) {
-        <span class="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full"></span>
-      } @else {
-        @if (icon && iconPosition === "left") {
-          <app-icon class="w-5 h-5 flex-shrink-0" [icon]="icon" [size]="20" />
-        }
-        @if (label) {
-          <span>{{ label }}</span>
-        } @else {
-          <ng-content></ng-content>
-        }
-        @if (icon && iconPosition === "right") {
-          <app-icon class="w-5 h-5 flex-shrink-0" [icon]="icon" [size]="20" />
-        }
-      }
+      {{ label }}
     </button>
-  `, styles: [":host{display:inline-flex}:host(.full-width){width:100%}\n"] }]
+  `,
+                }]
         }], propDecorators: { variant: [{
-                type: Input
-            }], buttonStyle: [{
-                type: Input
-            }], size: [{
                 type: Input
             }], disabled: [{
                 type: Input
@@ -291,7 +226,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
 registerSchemaComponent("app-button", ButtonComponent);
 
 class InputComponent {
-    type = 'text';
+    type = "text";
     placeholder = "";
     label = "";
     icon = "";
@@ -299,6 +234,7 @@ class InputComponent {
     value = "";
     error = "";
     input = new EventEmitter();
+    valueChange = new EventEmitter();
     blurred = new EventEmitter();
     focused = signal(false, /* @ts-ignore */
     ...(ngDevMode ? [{ debugName: "focused" }] : /* istanbul ignore next */ []));
@@ -307,75 +243,67 @@ class InputComponent {
         this.input.emit(this.value);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: InputComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: InputComponent, isStandalone: true, selector: "app-input", inputs: { type: "type", placeholder: "placeholder", label: "label", icon: "icon", disabled: "disabled", value: "value", error: "error" }, outputs: { input: "input", blurred: "blurred" }, ngImport: i0, template: `
-    <div class="flex flex-col gap-1.5">
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: InputComponent, isStandalone: true, selector: "app-input", inputs: { type: "type", placeholder: "placeholder", label: "label", icon: "icon", disabled: "disabled", value: "value", error: "error" }, outputs: { input: "input", valueChange: "valueChange", blurred: "blurred" }, ngImport: i0, template: `
+    <div class="relative">
       @if (label) {
-        <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+        <label
+          class="block text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-1"
+          >{{ label }}</label
+        >
       }
-      <div
-        class="flex items-center gap-2 h-10 px-4 rounded-md bg-surface-container border transition-colors duration-200"
-        [class.border-outline]="!focused() && !error"
-        [class.border-primary]="focused() && !error"
-        [class.border-error]="!!error"
-        [class.ring-2]="focused()"
-        [class.ring-primary]="focused() && !error"
-        [class.ring-error]="focused() && error"
-      >
-        @if (icon) {
-          <app-icon class="w-5 h-5 text-on-surface-variant flex-shrink-0" [icon]="icon" [size]="20" />
-        }
-        <input
-          [attr.type]="type"
-          [placeholder]="placeholder"
-          [disabled]="disabled"
-          [value]="value"
-          (input)="handleInput($event)"
-          (focus)="focused.set(true)"
-          (blur)="focused.set(false); blurred.emit()"
-          class="flex-1 bg-transparent text-on-surface placeholder:text-on-surface-variant outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-        />
-      </div>
+      <input
+        class="block w-full px-4 py-3 text-sm bg-transparent rounded-2xl border border-neutral-300 dark:border-neutral-600 text-neutral-900 dark:text-white appearance-none focus:outline-none focus:border-indigo-600 focus:ring-0 transition-colors"
+        [type]="type"
+        [placeholder]="placeholder"
+        [value]="value"
+        (input)="valueChange.emit($any($event.target).value)"
+        [disabled]="disabled"
+      />
       @if (error) {
-        <span class="text-sm text-error">{{ error }}</span>
+        <p
+          class="mt-1 text-xs text-rose-600 dark:text-rose-500 flex items-center gap-1"
+        >
+          <span class="material-symbols-rounded text-sm">error</span>
+          {{ error }}
+        </p>
       }
     </div>
-  `, isInline: true, styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: InputComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-input", standalone: true, imports: [IconComponent], changeDetection: ChangeDetectionStrategy.OnPush, template: `
-    <div class="flex flex-col gap-1.5">
+            args: [{
+                    selector: "app-input",
+                    standalone: true,
+                    imports: [IconComponent],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <div class="relative">
       @if (label) {
-        <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+        <label
+          class="block text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-1"
+          >{{ label }}</label
+        >
       }
-      <div
-        class="flex items-center gap-2 h-10 px-4 rounded-md bg-surface-container border transition-colors duration-200"
-        [class.border-outline]="!focused() && !error"
-        [class.border-primary]="focused() && !error"
-        [class.border-error]="!!error"
-        [class.ring-2]="focused()"
-        [class.ring-primary]="focused() && !error"
-        [class.ring-error]="focused() && error"
-      >
-        @if (icon) {
-          <app-icon class="w-5 h-5 text-on-surface-variant flex-shrink-0" [icon]="icon" [size]="20" />
-        }
-        <input
-          [attr.type]="type"
-          [placeholder]="placeholder"
-          [disabled]="disabled"
-          [value]="value"
-          (input)="handleInput($event)"
-          (focus)="focused.set(true)"
-          (blur)="focused.set(false); blurred.emit()"
-          class="flex-1 bg-transparent text-on-surface placeholder:text-on-surface-variant outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-        />
-      </div>
+      <input
+        class="block w-full px-4 py-3 text-sm bg-transparent rounded-2xl border border-neutral-300 dark:border-neutral-600 text-neutral-900 dark:text-white appearance-none focus:outline-none focus:border-indigo-600 focus:ring-0 transition-colors"
+        [type]="type"
+        [placeholder]="placeholder"
+        [value]="value"
+        (input)="valueChange.emit($any($event.target).value)"
+        [disabled]="disabled"
+      />
       @if (error) {
-        <span class="text-sm text-error">{{ error }}</span>
+        <p
+          class="mt-1 text-xs text-rose-600 dark:text-rose-500 flex items-center gap-1"
+        >
+          <span class="material-symbols-rounded text-sm">error</span>
+          {{ error }}
+        </p>
       }
     </div>
-  `, styles: [":host{display:block}\n"] }]
+  `,
+                }]
         }], propDecorators: { type: [{
                 type: Input
             }], placeholder: [{
@@ -392,6 +320,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
                 type: Input
             }], input: [{
                 type: Output
+            }], valueChange: [{
+                type: Output
             }], blurred: [{
                 type: Output
             }] } });
@@ -406,11 +336,11 @@ class EmptyStateComponent {
     classes = "";
     actionClicked = new EventEmitter();
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: EmptyStateComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: EmptyStateComponent, isStandalone: true, selector: "app-empty-state", inputs: { title: "title", message: "message", icon: "icon", variant: "variant", action: "action", classes: "classes" }, outputs: { actionClicked: "actionClicked" }, ngImport: i0, template: "<div\n  class=\"ui-empty-state-icon\"\n  [class.ui-empty-state-danger]=\"variant === 'danger'\"\n  [class.ui-empty-state-success]=\"variant === 'success'\"\n>\n  @if (icon) {\n    <span>{{ icon }}</span>\n  }\n</div>\n@if (title) {\n  <h3>{{ title }}</h3>\n}\n@if (message) {\n  <p>{{ message }}</p>\n}\n@if (action) {\n  <div>\n    <button class=\"ui-btn ui-btn-primary\" (click)=\"actionClicked.emit($event)\">\n      {{ action }}\n    </button>\n  </div>\n}\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: EmptyStateComponent, isStandalone: true, selector: "app-empty-state", inputs: { title: "title", message: "message", icon: "icon", variant: "variant", action: "action", classes: "classes" }, outputs: { actionClicked: "actionClicked" }, ngImport: i0, template: "<div\n  class=\"ui-empty-state-icon\"\n  [class.ui-empty-state-danger]=\"variant === 'danger'\"\n  [class.ui-empty-state-success]=\"variant === 'success'\"\n>\n  @if (icon) {\n    <span>{{ icon }}</span>\n  }\n</div>\n@if (title) {\n  <h3>{{ title }}</h3>\n}\n@if (message) {\n  <p>{{ message }}</p>\n}\n@if (action) {\n  <div>\n    <button class=\"ui-btn ui-btn-primary\" (click)=\"actionClicked.emit($event)\">\n      {{ action }}\n    </button>\n  </div>\n}\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: EmptyStateComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-empty-state", standalone: true, imports: [], template: "<div\n  class=\"ui-empty-state-icon\"\n  [class.ui-empty-state-danger]=\"variant === 'danger'\"\n  [class.ui-empty-state-success]=\"variant === 'success'\"\n>\n  @if (icon) {\n    <span>{{ icon }}</span>\n  }\n</div>\n@if (title) {\n  <h3>{{ title }}</h3>\n}\n@if (message) {\n  <p>{{ message }}</p>\n}\n@if (action) {\n  <div>\n    <button class=\"ui-btn ui-btn-primary\" (click)=\"actionClicked.emit($event)\">\n      {{ action }}\n    </button>\n  </div>\n}\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-empty-state", standalone: true, imports: [], template: "<div\n  class=\"ui-empty-state-icon\"\n  [class.ui-empty-state-danger]=\"variant === 'danger'\"\n  [class.ui-empty-state-success]=\"variant === 'success'\"\n>\n  @if (icon) {\n    <span>{{ icon }}</span>\n  }\n</div>\n@if (title) {\n  <h3>{{ title }}</h3>\n}\n@if (message) {\n  <p>{{ message }}</p>\n}\n@if (action) {\n  <div>\n    <button class=\"ui-btn ui-btn-primary\" (click)=\"actionClicked.emit($event)\">\n      {{ action }}\n    </button>\n  </div>\n}\n" }]
         }], propDecorators: { title: [{
                 type: Input
             }], message: [{
@@ -449,11 +379,11 @@ class DialogComponent {
             this.close();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DialogComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: DialogComponent, isStandalone: true, selector: "app-dialog", inputs: { open: "open", title: "title", size: "size", showHeader: "showHeader", showFooter: "showFooter" }, outputs: { closed: "closed" }, host: { listeners: { "window:keydown.escape": "onEscape()" } }, ngImport: i0, template: "@if (open) {\n  <div class=\"ui-modal-overlay\" (click)=\"handleOverlayClick($event)\">\n    <div class=\"ui-dialog ui-dialog-{{ size }}\">\n      <header class=\"ui-dialog-header\">\n        <h2>{{ title }}</h2>\n        <button class=\"ui-dialog-close\" (click)=\"close()\" aria-label=\"Close\">\n          &times;\n        </button>\n      </header>\n      <div class=\"ui-dialog-body\">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: DialogComponent, isStandalone: true, selector: "app-dialog", inputs: { open: "open", title: "title", size: "size", showHeader: "showHeader", showFooter: "showFooter" }, outputs: { closed: "closed" }, host: { listeners: { "window:keydown.escape": "onEscape()" } }, ngImport: i0, template: "@if (open) {\n  <div class=\"ui-modal-overlay\" (click)=\"handleOverlayClick($event)\">\n    <div class=\"ui-dialog ui-dialog-{{ size }}\">\n      <header class=\"ui-dialog-header\">\n        <h2>{{ title }}</h2>\n        <button class=\"ui-dialog-close\" (click)=\"close()\" aria-label=\"Close\">\n          &times;\n        </button>\n      </header>\n      <div class=\"ui-dialog-body\">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DialogComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-dialog", standalone: true, imports: [], template: "@if (open) {\n  <div class=\"ui-modal-overlay\" (click)=\"handleOverlayClick($event)\">\n    <div class=\"ui-dialog ui-dialog-{{ size }}\">\n      <header class=\"ui-dialog-header\">\n        <h2>{{ title }}</h2>\n        <button class=\"ui-dialog-close\" (click)=\"close()\" aria-label=\"Close\">\n          &times;\n        </button>\n      </header>\n      <div class=\"ui-dialog-body\">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-dialog", standalone: true, imports: [], template: "@if (open) {\n  <div class=\"ui-modal-overlay\" (click)=\"handleOverlayClick($event)\">\n    <div class=\"ui-dialog ui-dialog-{{ size }}\">\n      <header class=\"ui-dialog-header\">\n        <h2>{{ title }}</h2>\n        <button class=\"ui-dialog-close\" (click)=\"close()\" aria-label=\"Close\">\n          &times;\n        </button>\n      </header>\n      <div class=\"ui-dialog-body\">\n        <ng-content></ng-content>\n      </div>\n    </div>\n  </div>\n}\n" }]
         }], propDecorators: { open: [{
                 type: Input
             }], title: [{
@@ -476,11 +406,11 @@ class LoadingComponent {
     size = "md";
     color = "";
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LoadingComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: LoadingComponent, isStandalone: true, selector: "app-loading", inputs: { size: "size", color: "color" }, ngImport: i0, template: "<div class=\"ui-loading ui-loading-{{ size }}\"></div>\n", styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: LoadingComponent, isStandalone: true, selector: "app-loading", inputs: { size: "size", color: "color" }, ngImport: i0, template: "<div class=\"ui-loading ui-loading-{{ size }}\"></div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LoadingComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-loading", standalone: true, imports: [], template: "<div class=\"ui-loading ui-loading-{{ size }}\"></div>\n", styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"] }]
+            args: [{ selector: "app-loading", standalone: true, imports: [], template: "<div class=\"ui-loading ui-loading-{{ size }}\"></div>\n" }]
         }], propDecorators: { size: [{
                 type: Input
             }], color: [{
@@ -500,11 +430,38 @@ class RadioComponent {
         this.changed.emit(this.value);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: RadioComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: RadioComponent, isStandalone: true, selector: "app-radio", inputs: { name: "name", value: "value", checked: "checked", disabled: "disabled", label: "label" }, outputs: { changed: "changed" }, ngImport: i0, template: "<label class=\"ui-control-wrap\">\n  <input\n    type=\"radio\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [name]=\"name\"\n    [value]=\"value\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n  />\n  <span><ng-content></ng-content></span>\n</label>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: RadioComponent, isStandalone: true, selector: "app-radio", inputs: { name: "name", value: "value", checked: "checked", disabled: "disabled", label: "label" }, outputs: { changed: "changed" }, ngImport: i0, template: `
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input
+        type="radio"
+        [name]="name"
+        class="w-5 h-5 text-indigo-600 bg-neutral-100 border-neutral-300 focus:ring-indigo-500 dark:bg-neutral-700 dark:border-neutral-600"
+      />
+      <span class="text-sm text-neutral-700 dark:text-neutral-300">{{
+        label
+      }}</span>
+    </label>
+  `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: RadioComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-radio", standalone: true, imports: [], template: "<label class=\"ui-control-wrap\">\n  <input\n    type=\"radio\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [name]=\"name\"\n    [value]=\"value\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n  />\n  <span><ng-content></ng-content></span>\n</label>\n", styles: [":host{display:block}\n"] }]
+            args: [{
+                    selector: "app-radio",
+                    standalone: true,
+                    imports: [],
+                    template: `
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input
+        type="radio"
+        [name]="name"
+        class="w-5 h-5 text-indigo-600 bg-neutral-100 border-neutral-300 focus:ring-indigo-500 dark:bg-neutral-700 dark:border-neutral-600"
+      />
+      <span class="text-sm text-neutral-700 dark:text-neutral-300">{{
+        label
+      }}</span>
+    </label>
+  `,
+                }]
         }], propDecorators: { name: [{
                 type: Input
             }], value: [{
@@ -532,11 +489,11 @@ class SliderComponent {
         this.input.emit(this.value);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SliderComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SliderComponent, isStandalone: true, selector: "app-slider", inputs: { min: "min", max: "max", value: "value", step: "step", disabled: "disabled" }, outputs: { input: "input" }, ngImport: i0, template: "<div class=\"ui-slider\">\n  <input\n    type=\"range\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [value]=\"value\"\n    [min]=\"min\"\n    [max]=\"max\"\n    [step]=\"step\"\n    [disabled]=\"disabled\"\n    (input)=\"handleInput($event)\"\n  />\n</div>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SliderComponent, isStandalone: true, selector: "app-slider", inputs: { min: "min", max: "max", value: "value", step: "step", disabled: "disabled" }, outputs: { input: "input" }, ngImport: i0, template: "<div class=\"ui-slider\">\n  <input\n    type=\"range\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [value]=\"value\"\n    [min]=\"min\"\n    [max]=\"max\"\n    [step]=\"step\"\n    [disabled]=\"disabled\"\n    (input)=\"handleInput($event)\"\n  />\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SliderComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-slider", standalone: true, imports: [], template: "<div class=\"ui-slider\">\n  <input\n    type=\"range\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [value]=\"value\"\n    [min]=\"min\"\n    [max]=\"max\"\n    [step]=\"step\"\n    [disabled]=\"disabled\"\n    (input)=\"handleInput($event)\"\n  />\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-slider", standalone: true, imports: [], template: "<div class=\"ui-slider\">\n  <input\n    type=\"range\"\n    [style.accentColor]=\"'var(--accent)'\"\n    [value]=\"value\"\n    [min]=\"min\"\n    [max]=\"max\"\n    [step]=\"step\"\n    [disabled]=\"disabled\"\n    (input)=\"handleInput($event)\"\n  />\n</div>\n" }]
         }], propDecorators: { min: [{
                 type: Input
             }], max: [{
@@ -557,6 +514,7 @@ class SwitchComponent {
     label = "";
     disabled = false;
     changed = new EventEmitter();
+    checkedChange = new EventEmitter();
     toggle() {
         if (!this.disabled) {
             this.checked = !this.checked;
@@ -564,56 +522,58 @@ class SwitchComponent {
         }
     }
     getSwitchClasses() {
-        const base = 'w-11 h-6 rounded-full p-0.5 transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
-        const bg = this.checked ? 'bg-primary' : 'bg-outline';
+        const base = "w-11 h-6 rounded-full p-0.5 transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+        const bg = this.checked ? "bg-primary" : "bg-outline";
         return `${base} ${bg}`;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SwitchComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SwitchComponent, isStandalone: true, selector: "app-switch", inputs: { checked: "checked", label: "label", disabled: "disabled" }, outputs: { changed: "changed" }, ngImport: i0, template: `
-    <label class="inline-flex items-center gap-3 cursor-pointer" [class.opacity-50]="disabled" [class.cursor-not-allowed]="disabled">
-      <button
-        type="button"
-        role="switch"
-        [attr.aria-checked]="checked"
-        [disabled]="disabled"
-        (click)="toggle()"
-        [class]="getSwitchClasses()"
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SwitchComponent, isStandalone: true, selector: "app-switch", inputs: { checked: "checked", label: "label", disabled: "disabled" }, outputs: { changed: "changed", checkedChange: "checkedChange" }, ngImport: i0, template: `
+    <label
+      class="inline-flex items-center justify-between w-full cursor-pointer"
+    >
+      <span
+        class="text-sm font-medium text-neutral-700 dark:text-neutral-300"
+        >{{ label }}</span
       >
-        <span
-          class="inline-block w-5 h-5 rounded-full bg-on-primary shadow-1 transition-transform duration-200"
-          [class.translate-x-5]="checked"
-          [class.translate-x-0]="!checked"
-        ></span>
-      </button>
-      @if (label) {
-        <span class="text-on-surface">{{ label }}</span>
-      }
+      <input
+        type="checkbox"
+        class="sr-only peer"
+        [checked]="checked"
+        (change)="checkedChange.emit($any($event.target).checked)"
+      />
+      <div
+        class="relative w-11 h-6 bg-neutral-200 peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer dark:bg-neutral-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-neutral-600 peer-checked:bg-indigo-600"
+      ></div>
     </label>
-  `, isInline: true, styles: [":host{display:inline-flex}\n"], changeDetection: i0.ChangeDetectionStrategy.OnPush });
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SwitchComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-switch", standalone: true, imports: [], changeDetection: ChangeDetectionStrategy.OnPush, template: `
-    <label class="inline-flex items-center gap-3 cursor-pointer" [class.opacity-50]="disabled" [class.cursor-not-allowed]="disabled">
-      <button
-        type="button"
-        role="switch"
-        [attr.aria-checked]="checked"
-        [disabled]="disabled"
-        (click)="toggle()"
-        [class]="getSwitchClasses()"
+            args: [{
+                    selector: "app-switch",
+                    standalone: true,
+                    imports: [],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <label
+      class="inline-flex items-center justify-between w-full cursor-pointer"
+    >
+      <span
+        class="text-sm font-medium text-neutral-700 dark:text-neutral-300"
+        >{{ label }}</span
       >
-        <span
-          class="inline-block w-5 h-5 rounded-full bg-on-primary shadow-1 transition-transform duration-200"
-          [class.translate-x-5]="checked"
-          [class.translate-x-0]="!checked"
-        ></span>
-      </button>
-      @if (label) {
-        <span class="text-on-surface">{{ label }}</span>
-      }
+      <input
+        type="checkbox"
+        class="sr-only peer"
+        [checked]="checked"
+        (change)="checkedChange.emit($any($event.target).checked)"
+      />
+      <div
+        class="relative w-11 h-6 bg-neutral-200 peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 rounded-full peer dark:bg-neutral-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-neutral-600 peer-checked:bg-indigo-600"
+      ></div>
     </label>
-  `, styles: [":host{display:inline-flex}\n"] }]
+  `,
+                }]
         }], propDecorators: { checked: [{
                 type: Input
             }], label: [{
@@ -621,6 +581,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             }], disabled: [{
                 type: Input
             }], changed: [{
+                type: Output
+            }], checkedChange: [{
                 type: Output
             }] } });
 registerSchemaComponent("app-switch", SwitchComponent);
@@ -642,56 +604,44 @@ class TextareaComponent {
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextareaComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
     static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TextareaComponent, isStandalone: true, selector: "app-textarea", inputs: { label: "label", placeholder: "placeholder", disabled: "disabled", value: "value", rows: "rows", error: "error", flexGrow: "flexGrow" }, outputs: { input: "input" }, ngImport: i0, template: `
-    <div class="flex flex-col gap-1.5">
+    <div>
       @if (label) {
-        <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+        <label
+          class="block mb-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+          >{{ label }}</label
+        >
       }
       <textarea
-        [placeholder]="placeholder"
-        [disabled]="disabled"
-        [value]="value"
+        class="block w-full p-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 rounded-2xl border border-neutral-300 dark:border-neutral-700 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
         [rows]="rows"
-        (input)="handleInput($event)"
-        (focus)="focused.set(true)"
-        (blur)="focused.set(false)"
-        class="px-4 py-3 rounded-md bg-surface-container border transition-colors duration-200 resize-none text-on-surface placeholder:text-on-surface-variant outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-        [class.border-outline]="!focused() && !error"
-        [class.border-primary]="focused() && !error"
-        [class.ring-primary]="focused() && !error"
-        [class.error]="!!error"
+        [placeholder]="placeholder"
       ></textarea>
-      @if (error) {
-        <span class="text-sm text-error">{{ error }}</span>
-      }
     </div>
-  `, isInline: true, styles: [":host{display:block}textarea{min-height:80px}\n"], changeDetection: i0.ChangeDetectionStrategy.OnPush });
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TextareaComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-textarea", standalone: true, imports: [], changeDetection: ChangeDetectionStrategy.OnPush, template: `
-    <div class="flex flex-col gap-1.5">
+            args: [{
+                    selector: "app-textarea",
+                    standalone: true,
+                    imports: [],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <div>
       @if (label) {
-        <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+        <label
+          class="block mb-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+          >{{ label }}</label
+        >
       }
       <textarea
-        [placeholder]="placeholder"
-        [disabled]="disabled"
-        [value]="value"
+        class="block w-full p-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 rounded-2xl border border-neutral-300 dark:border-neutral-700 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
         [rows]="rows"
-        (input)="handleInput($event)"
-        (focus)="focused.set(true)"
-        (blur)="focused.set(false)"
-        class="px-4 py-3 rounded-md bg-surface-container border transition-colors duration-200 resize-none text-on-surface placeholder:text-on-surface-variant outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-        [class.border-outline]="!focused() && !error"
-        [class.border-primary]="focused() && !error"
-        [class.ring-primary]="focused() && !error"
-        [class.error]="!!error"
+        [placeholder]="placeholder"
       ></textarea>
-      @if (error) {
-        <span class="text-sm text-error">{{ error }}</span>
-      }
     </div>
-  `, styles: [":host{display:block}textarea{min-height:80px}\n"] }]
+  `,
+                }]
         }], propDecorators: { label: [{
                 type: Input
             }], placeholder: [{
@@ -734,11 +684,11 @@ class BadgeComponent {
         return variantClasses[this.variant] || variantClasses["default"];
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BadgeComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: BadgeComponent, isStandalone: true, selector: "app-badge", inputs: { variant: "variant", size: "size", label: "label" }, ngImport: i0, template: "<span class=\"ui-badge\">{{ label }}</span>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: BadgeComponent, isStandalone: true, selector: "app-badge", inputs: { variant: "variant", size: "size", label: "label" }, ngImport: i0, template: "<span class=\"ui-badge\">{{ label }}</span>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BadgeComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-badge", standalone: true, imports: [], template: "<span class=\"ui-badge\">{{ label }}</span>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-badge", standalone: true, imports: [], template: "<span class=\"ui-badge\">{{ label }}</span>\n" }]
         }], propDecorators: { variant: [{
                 type: Input
             }], size: [{
@@ -766,6 +716,7 @@ function parseJsonOrDefault(json, defaultValue = []) {
 class SelectComponent {
     options = "[]";
     value = "";
+    label = "";
     placeholder = "Select an option";
     disabled = false;
     changed = new EventEmitter();
@@ -777,14 +728,53 @@ class SelectComponent {
         this.changed.emit(this.value);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SelectComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SelectComponent, isStandalone: true, selector: "app-select", inputs: { options: "options", value: "value", placeholder: "placeholder", disabled: "disabled" }, outputs: { changed: "changed" }, ngImport: i0, template: "<select class=\"ui-select\" [disabled]=\"disabled\" (change)=\"handleChange($event)\">\n  <option value=\"\" disabled selected hidden>{{ placeholder }}</option>\n  @for (opt of parsedOptions; track opt) {\n    <option [value]=\"opt\" [selected]=\"opt === value\">{{ opt }}</option>\n  }\n</select>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SelectComponent, isStandalone: true, selector: "app-select", inputs: { options: "options", value: "value", label: "label", placeholder: "placeholder", disabled: "disabled" }, outputs: { changed: "changed" }, ngImport: i0, template: `
+    <div>
+      @if (label) {
+        <label
+          class="block mb-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+          >{{ label }}</label
+        >
+      }
+      <select
+        class="bg-neutral-50 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-white text-sm rounded-2xl focus:ring-indigo-500 focus:border-indigo-500 block w-full p-3.5"
+      >
+        @for (opt of parsedOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+        }
+      </select>
+    </div>
+  `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SelectComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-select", standalone: true, imports: [], template: "<select class=\"ui-select\" [disabled]=\"disabled\" (change)=\"handleChange($event)\">\n  <option value=\"\" disabled selected hidden>{{ placeholder }}</option>\n  @for (opt of parsedOptions; track opt) {\n    <option [value]=\"opt\" [selected]=\"opt === value\">{{ opt }}</option>\n  }\n</select>\n", styles: [":host{display:block}\n"] }]
+            args: [{
+                    selector: "app-select",
+                    standalone: true,
+                    imports: [],
+                    template: `
+    <div>
+      @if (label) {
+        <label
+          class="block mb-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+          >{{ label }}</label
+        >
+      }
+      <select
+        class="bg-neutral-50 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-white text-sm rounded-2xl focus:ring-indigo-500 focus:border-indigo-500 block w-full p-3.5"
+      >
+        @for (opt of parsedOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+        }
+      </select>
+    </div>
+  `,
+                }]
         }], propDecorators: { options: [{
                 type: Input
             }], value: [{
+                type: Input
+            }], label: [{
                 type: Input
             }], placeholder: [{
                 type: Input
@@ -808,11 +798,7 @@ const logger = {
 /**
  * Style Registry - TailwindCSS v4 Theme System
  *
- * Themes are loaded dynamically at runtime via CSS <link> injection.
- * Each theme has a theme.css file with @theme directive.
- */
-/**
- * Theme configuration - no cssString, themes are loaded via <link>
+ * Each theme is defined in its theme.css file and selected via data attributes.
  */
 const STYLE_VARIANTS = {
     claymorphism: {
@@ -820,36 +806,49 @@ const STYLE_VARIANTS = {
         name: "Claymorphism",
         classPrefix: "clay-",
         description: "Soft raised shadows with clay-like appearance",
+        redesigned: true,
     },
     glassmorphism: {
         id: "glassmorphism",
         name: "Glassmorphism",
         classPrefix: "glass-",
         description: "Frosted glass effect with backdrop blur",
+        redesigned: true,
     },
     neumorphism: {
         id: "neumorphism",
         name: "Neumorphism",
         classPrefix: "neu-",
         description: "Soft inset and outset shadows",
+        redesigned: false,
     },
     "material-design-v3": {
         id: "material-design-v3",
         name: "Material Design 3",
         classPrefix: "m3-",
         description: "Google Material Design 3 with elevation system",
+        redesigned: true,
     },
     brutalism: {
         id: "brutalism",
         name: "Brutalism",
         classPrefix: "brut-",
         description: "Sharp edges, hard shadows, high-contrast typography",
+        redesigned: false,
     },
     skeuomorphism: {
         id: "skeuomorphism",
         name: "Skeuomorphism",
         classPrefix: "skeu-",
         description: "Realistic textures with leather, paper, and glossy highlights",
+        redesigned: true,
+    },
+    "neo-brutalism": {
+        id: "neo-brutalism",
+        name: "Neo-Brutalism",
+        classPrefix: "neobrutal-",
+        description: "Hard black borders, bright yellow accents, zero rounding",
+        redesigned: true,
     },
 };
 const LOADED_STYLES = new Set();
@@ -860,8 +859,7 @@ async function loadStyleVariant(variant) {
     // loadStyleVariant() only sets data-theme attributes for CSS selectors
 }
 /**
- * SCSS-only fallback — sets body[data-style] without injecting runtime CSS.
- * Kept for compatibility with apps using static SCSS themes.
+ * SCSS-only fallback for apps using static SCSS themes.
  */
 async function loadStyleVariantNoop(variant = "material-design-v3") {
     setTheme(variant);
@@ -879,7 +877,9 @@ function setTheme(variant) {
     document.body.setAttribute("data-theme-mode", isDark ? "dark" : "light");
     CURRENT_STYLE = variant;
     LOADED_STYLES.add(variant);
-    document.dispatchEvent(new CustomEvent("style-changed", { detail: { variant, prefix: config.classPrefix } }));
+    document.dispatchEvent(new CustomEvent("style-changed", {
+        detail: { variant, prefix: config.classPrefix },
+    }));
 }
 function unloadStyleVariant(variant) {
     if (!LOADED_STYLES.has(variant)) {
@@ -902,6 +902,12 @@ function getStyleClassPrefix(variant) {
 function getAllStyleVariants() {
     return Object.values(STYLE_VARIANTS);
 }
+function isRedesigned(variant) {
+    return STYLE_VARIANTS[variant].redesigned;
+}
+function getRedesignedStyleVariants() {
+    return getAllStyleVariants().filter(({ redesigned }) => redesigned);
+}
 function initializeStyles() {
     if (typeof window === "undefined" || !window.localStorage) {
         return;
@@ -913,7 +919,7 @@ function initializeStyles() {
 }
 function getStyleClass(variant, baseClass) {
     const prefix = getStyleClassPrefix(variant);
-    const baseName = baseClass.replace(/^clay-|^glass-|^neu-|^m3-|^brut-|^skeu-/, "");
+    const baseName = baseClass.replace(/^clay-|^glass-|^neu-|^m3-|^brut-|^skeu-|^neobrutal-/, "");
     return `${prefix}${baseName}`;
 }
 /**
@@ -2146,11 +2152,6 @@ class StyleThemeService {
         effect(() => {
             document.documentElement.setAttribute("data-theme", this.theme());
         });
-        effect(() => {
-            const isDark = this.loadDarkModePreference();
-            document.documentElement.setAttribute("data-theme-mode", isDark ? "dark" : "light");
-            document.body.setAttribute("data-theme-mode", isDark ? "dark" : "light");
-        });
         this.initializeDarkMode();
     }
     /** No-op for API compatibility; initialization runs in the constructor. */
@@ -2159,9 +2160,6 @@ class StyleThemeService {
         this.theme.set(variant);
         setCurrentStyle(variant);
         this.persistDarkModePreference(variant);
-        if (this.isDarkMode()) {
-            this.injectDarkModeVariables(variant);
-        }
         this._themeChanged$.next({ variant, isDark: this.isDarkMode() });
     }
     persistDarkModePreference(_variant) {
@@ -2180,6 +2178,7 @@ class StyleThemeService {
             glassmorphism: "glassmorphism",
             brutalism: "brutalism",
             skeuomorphism: "skeuomorphism",
+            "neo-brutalism": "neo-brutalism",
         };
         if (map[theme])
             return map[theme];
@@ -2194,36 +2193,13 @@ class StyleThemeService {
         return this.isDarkMode() ? "dark" : "light";
     }
     toggleDarkMode() {
-        const isCurrentlyDark = document.body.getAttribute("data-theme-mode") === "dark";
-        if (isCurrentlyDark) {
-            document.body.setAttribute("data-theme-mode", "light");
-            document.documentElement.classList.remove("dark");
-            this.removeDarkModeVariables();
-        }
-        else {
-            document.body.setAttribute("data-theme-mode", "dark");
-            document.documentElement.classList.add("dark");
-            this.injectDarkModeVariables(this.theme());
-        }
-        this.saveDarkModePreference(!isCurrentlyDark);
-        this._themeChanged$.next({
-            variant: this.getCurrentTheme(),
-            isDark: !isCurrentlyDark,
-        });
+        this.setDarkMode(!this.isDarkMode());
     }
     isDarkMode() {
         return document.body.getAttribute("data-theme-mode") === "dark";
     }
     setDarkMode(enabled) {
         document.body.setAttribute("data-theme-mode", enabled ? "dark" : "light");
-        if (enabled) {
-            document.documentElement.classList.add("dark");
-            this.injectDarkModeVariables(this.theme());
-        }
-        else {
-            document.documentElement.classList.remove("dark");
-            this.removeDarkModeVariables();
-        }
         this.saveDarkModePreference(enabled);
         this._themeChanged$.next({
             variant: this.getCurrentTheme(),
@@ -2231,8 +2207,13 @@ class StyleThemeService {
         });
     }
     static THEMES = [
-        "material-design-v3", "glassmorphism", "neumorphism",
-        "claymorphism", "brutalism", "skeuomorphism",
+        "material-design-v3",
+        "glassmorphism",
+        "neumorphism",
+        "claymorphism",
+        "brutalism",
+        "skeuomorphism",
+        "neo-brutalism",
     ];
     cycle() {
         const idx = StyleThemeService.THEMES.indexOf(this.theme());
@@ -2241,852 +2222,6 @@ class StyleThemeService {
     }
     getCurrentTheme() {
         return getCurrentStyle();
-    }
-    injectDarkModeVariables(variant) {
-        this.removeDarkModeVariables();
-        const style = document.createElement("style");
-        style.id = "dark-mode-variables";
-        // Both mechanisms are needed: :root {} variables AND .dark .{prefix}* class selectors
-        style.textContent =
-            this.getDarkModeVariablesCSS(variant) +
-                this.getDarkModeCSSForVariant(variant);
-        document.head.appendChild(style);
-    }
-    removeDarkModeVariables() {
-        const existing = document.getElementById("dark-mode-variables");
-        if (existing)
-            existing.remove();
-    }
-    getDarkModeVariablesCSS(variant) {
-        const isDark = document.documentElement.classList.contains("dark");
-        if (!isDark)
-            return "";
-        const vars = {
-            "material-design-v3": `
-[data-theme="material-design-v3"][data-theme-mode="dark"] {
-  --accent: #d0bcff;
-  --accent-hover: #b69df8;
-  --text-on-accent: #381e72;
-  --text-primary: #e6e1e5;
-  --text-secondary: #cac4d0;
-  --text-muted: #938f99;
-  --text-on-error: #f2b8b5;
-  --text-on-warning: #3e2723;
-  --text-on-success: #1b4332;
-  --bg-elevated: #2b2930;
-  --border-color: #49454f;
-  --error: #f2b8b5;
-  --success: #6ee7b7;
-  --warning: #ffab40;
-  --bg-primary: #1c1b1f;
-  --bg-secondary: #2b2930;
-  --bg-tertiary: #49454f;
-  --border-subtle: #49454f;
-  --info: #82b1ff;
-  --bg-hover: rgba(187, 184, 201, 0.08);
-  --bg-header: #1c1b1f;
-}`,
-            neumorphism: `
-[data-theme="neumorphism"][data-theme-mode="dark"] {
-  --accent: #a78bfa;
-  --accent-hover: #8b7cf7;
-  --text-on-accent: #1e1b2e;
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-on-error: #1e1b2e;
-  --text-on-warning: #1a1a2e;
-  --text-on-success: #1a1a2e;
-  --bg-elevated: #2d3748;
-  --border-color: #4a5568;
-  --error: #fc8181;
-  --success: #68d391;
-  --warning: #ffb74d;
-  --bg-primary: #1a202c;
-  --bg-secondary: #1e2533;
-  --bg-tertiary: #171923;
-  --border-subtle: #4a5568;
-  --info: #4299e1;
-  --bg-hover: #3d4758;
-  --bg-header: #2d3748;
-}`,
-            claymorphism: `
-[data-theme="claymorphism"][data-theme-mode="dark"] {
-  --accent: #a78bfa;
-  --accent-hover: #8b7cf7;
-  --text-on-accent: #1e1b2e;
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-on-error: #1e1b2e;
-  --text-on-warning: #1a1a2e;
-  --text-on-success: #1a1a2e;
-  --bg-elevated: #2d3748;
-  --border-color: #4a5568;
-  --error: #fc8181;
-  --success: #68d391;
-  --warning: #ffb74d;
-  --bg-primary: #1a202c;
-  --bg-secondary: #1e2533;
-  --bg-tertiary: #171923;
-  --border-subtle: #4a5568;
-  --info: #4299e1;
-  --bg-hover: #3d4758;
-  --bg-header: #2d3748;
-}`,
-            glassmorphism: `
-[data-theme="glassmorphism"][data-theme-mode="dark"] {
-  --accent: rgba(167, 139, 250, 0.8);
-  --accent-hover: rgba(187, 159, 250, 0.9);
-  --text-on-accent: #1e1b2e;
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-on-error: #fce4ec;
-  --text-on-warning: #1a1a2e;
-  --text-on-success: #1a1a2e;
-  --bg-elevated: rgba(30, 30, 50, 0.7);
-  --border-color: rgba(255, 255, 255, 0.15);
-  --error: #ff6b6b;
-  --success: #51cf66;
-  --warning: #ffb74d;
-  --bg-primary: rgba(15, 15, 30, 0.9);
-  --bg-secondary: rgba(25, 25, 45, 0.75);
-  --bg-tertiary: rgba(10, 10, 20, 0.95);
-  --border-subtle: rgba(255, 255, 255, 0.15);
-  --info: #4299e1;
-  --bg-hover: rgba(50, 50, 80, 0.4);
-  --bg-header: rgba(20, 20, 40, 0.8);
-}`,
-            brutalism: `
-[data-theme="brutalism"][data-theme-mode="dark"] {
-  --color-brut-base: #1a1a1a;
-  --color-brut-ink: #f5f5f0;
-  --color-brut-accent: #ff3b30;
-  --color-brut-accent-2: #ffd60a;
-  --color-brut-success: #00c853;
-  --bg-primary: #1a1a1a;
-  --bg-elevated: #2a2a2a;
-  --bg-hover: #3a3a3a;
-  --bg-tertiary: #404040;
-  --text-primary: #f5f5f0;
-  --text-secondary: #c0c0c0;
-  --text-muted: #909090;
-  --border-color: #f5f5f0;
-  --accent: var(--color-brut-accent);
-  --accent-hover: #d62b22;
-  --text-on-accent: #ffffff;
-  --text-on-error: #ffffff;
-  --text-on-warning: #0a0a0a;
-  --text-on-success: #ffffff;
-  --error: var(--color-brut-accent);
-  --warning: var(--color-brut-accent-2);
-  --success: var(--color-brut-success);
-}`,
-            skeuomorphism: `
-[data-theme="skeuomorphism"][data-theme-mode="dark"] {
-  --color-skeu-base: #2b1f14;
-  --color-skeu-leather: #3a2a18;
-  --color-skeu-leather-dark: #1a1009;
-  --color-skeu-paper: #3a2e1f;
-  --color-skeu-ink: #f5e6c8;
-  --color-skeu-accent: #d4a017;
-  --color-skeu-accent-dark: #b8860b;
-  --bg-primary: #2b1f14;
-  --bg-elevated: #3a2e1f;
-  --bg-hover: #4a3e2f;
-  --bg-tertiary: #5a4e3f;
-  --text-primary: #f5e6c8;
-  --text-secondary: #d4b890;
-  --text-muted: #a8916b;
-  --border-color: #1a1009;
-  --accent: var(--color-skeu-accent);
-  --accent-hover: var(--color-skeu-accent-dark);
-  --text-on-accent: #faf3e0;
-  --text-on-error: #fff5e6;
-  --text-on-warning: #2b1810;
-  --text-on-success: #f5e6c8;
-  --error: #8b0000;
-  --warning: #c47700;
-  --success: #2d5016;
-}`,
-        };
-        return vars[variant] ?? "";
-    }
-    getDarkModeCSSForVariant(variant) {
-        switch (variant) {
-            case "material-design-v3":
-                return this.materialDesignV3DarkCSS();
-            case "neumorphism":
-                return this.neumorphismDarkCSS();
-            case "claymorphism":
-                return this.claymorphismDarkCSS();
-            case "glassmorphism":
-                return this.glassmorphismDarkCSS();
-            case "brutalism":
-                return this.brutalismDarkCSS();
-            case "skeuomorphism":
-                return this.skeuomorphismDarkCSS();
-            default:
-                return "";
-        }
-    }
-    brutalismDarkCSS() {
-        return `
-.dark .brut-card {
-  background: #2a2a2a;
-  border-color: #f5f5f0;
-  color: #f5f5f0;
-}
-.dark .brut-btn {
-  background: #2a2a2a;
-  border-color: #f5f5f0;
-  color: #f5f5f0;
-}
-.dark .brut-btn:hover { background: #3a3a3a; }
-.dark .brut-btn-primary { background: #ff3b30; color: #ffffff; border-color: #f5f5f0; }
-.dark .brut-btn-sm {
-  background: #2a2a2a;
-  border-color: #f5f5f0;
-  color: #f5f5f0;
-}
-.dark .brut-btn-lg {
-  background: #2a2a2a;
-  border-color: #f5f5f0;
-  color: #f5f5f0;
-}
-.dark .brut-input {
-  background: #2a2a2a;
-  border-color: #f5f5f0;
-  color: #f5f5f0;
-}
-.dark .brut-input:focus { background: #3a3a3a; outline: none; }
-.dark .brut-modal {
-  background: #2a2a2a;
-  border-color: #f5f5f0;
-  color: #f5f5f0;
-}
-.dark .brut-chip { background: #ffd60a; color: #0a0a0a; border-color: #f5f5f0; }
-.dark .brut-badge { background: #ff3b30; color: #ffffff; border-color: #f5f5f0; }
-.dark .brut-tabs { border-bottom-color: #f5f5f0; }
-.dark .brut-tab { background: #2a2a2a; border-color: #f5f5f0; color: #f5f5f0; }
-.dark .brut-tab.active { background: #ff3b30; color: #ffffff; }
-.dark .brut-divider { background: #f5f5f0; }
-.dark .brut-spinner { border-color: #f5f5f0; border-top-color: #ff3b30; }
-
-/* Layout components dark mode */
-.dark .brut-data-table { background: #2a2a2a; border-color: #f5f5f0; box-shadow: 6px 6px 0 0 #f5f5f0; }
-.dark .brut-sidebar { background: #2a2a2a; border-right-color: #f5f5f0; }
-.dark .brut-header, .dark .brut-footer { background: #2a2a2a; border-bottom-color: #f5f5f0; color: #f5f5f0; }
-.dark .brut-page-container { background: #1a1a1a; }
-.dark .brut-panel { background: #2a2a2a; border-color: #f5f5f0; box-shadow: 6px 6px 0 0 #f5f5f0; color: #f5f5f0; }
-.dark .brut-segment-selector { background: #2a2a2a; border-color: #f5f5f0; }
-.dark .brut-split-view { background: #1a1a1a; }
-.dark .brut-stats-card { background: #2a2a2a; border-color: #f5f5f0; box-shadow: 8px 8px 0 0 #f5f5f0; color: #f5f5f0; }
-.dark .brut-table { background: #2a2a2a; border-color: #f5f5f0; }
-.dark .brut-tree { background: #2a2a2a; color: #f5f5f0; }
-.dark .brut-canvas { background: #1a1a1a; border-color: #f5f5f0; color: #f5f5f0; }
-.dark .brut-main-editor { background: #1a1a1a; color: #f5f5f0; }
-.dark .brut-canvas-toolbar, .dark .brut-page-toolbar { background: #2a2a2a; border-bottom-color: #f5f5f0; color: #f5f5f0; }
-.dark .brut-command-palette { background: #2a2a2a; border-color: #f5f5f0; box-shadow: 8px 8px 0 0 #f5f5f0; color: #f5f5f0; }
-.dark .brut-component-palette { background: #2a2a2a; border-color: #f5f5f0; box-shadow: 6px 6px 0 0 #f5f5f0; }
-.dark .brut-locale-switcher { background: #2a2a2a; border-color: #f5f5f0; }
-.dark .brut-json-view { background: #2a2a2a; border-color: #f5f5f0; color: #f5f5f0; }
-.dark .brut-form { background: #2a2a2a; border-color: #f5f5f0; color: #f5f5f0; }
-.dark .brut-properties-panel { background: #2a2a2a; border-color: #f5f5f0; box-shadow: 6px 6px 0 0 #f5f5f0; }
-.dark .brut-bottom-panel { background: #2a2a2a; border-top-color: #f5f5f0; color: #f5f5f0; }
-.dark .brut-designer-tree { background: #2a2a2a; border-color: #f5f5f0; color: #f5f5f0; }
-.dark .brut-designer-sidebar { background: #2a2a2a; border-right-color: #f5f5f0; }
-.dark .brut-block { background: #2a2a2a; border-color: #f5f5f0; box-shadow: 6px 6px 0 0 #f5f5f0; color: #f5f5f0; }
-`;
-    }
-    skeuomorphismDarkCSS() {
-        return `
-.dark .skeu-card {
-  background: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%);
-  border-color: #1a1009;
-  color: #f5e6c8;
-}
-.dark .skeu-card.paper {
-  background: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%);
-  color: #f5e6c8;
-  border-color: #5a4e3f;
-}
-.dark .skeu-btn {
-  background: linear-gradient(180deg, #4a3a28 0%, #1a1009 100%);
-  border-color: #1a1009;
-  color: #f5e6c8;
-}
-.dark .skeu-btn:hover { filter: brightness(1.15); }
-.dark .skeu-btn-primary {
-  background: linear-gradient(180deg, #d4a017 0%, #8b6508 100%);
-  color: #f5e6c8;
-}
-.dark .skeu-input {
-  background: linear-gradient(180deg, #4a3e2f 0%, #3a3025 100%);
-  border-color: #1a1009;
-  color: #f5e6c8;
-}
-.dark .skeu-modal {
-  background: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%);
-  border-color: #1a1009;
-  color: #f5e6c8;
-}
-.dark .skeu-chip {
-  background: linear-gradient(180deg, #4a3a28 0%, #1a1009 100%);
-  border-color: #1a1009;
-  color: #f5e6c8;
-}
-.dark .skeu-badge {
-  background: linear-gradient(180deg, #d4a017 0%, #8b6508 100%);
-  color: #f5e6c8;
-}
-.dark .skeu-tab {
-  background: linear-gradient(180deg, #4a3a28 0%, #2d2015 100%);
-  color: #f5e6c8;
-  border-color: #1a1009;
-}
-.dark .skeu-tab.active {
-  background: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%);
-  color: #f5e6c8;
-}
-.dark .skeu-divider { background: linear-gradient(90deg, transparent 0%, #1a1009 50%, transparent 100%); }
-.dark .skeu-spinner { border-color: #1a1009; border-top-color: #d4a017; }
-
-/* Layout components dark mode */
-.dark .skeu-data-table { background: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%); border-color: #1a1009; }
-.dark .skeu-sidebar { background: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%); border-right-color: #1a1009; }
-.dark .skeu-header, .dark .skeu-footer { background: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%); border-bottom-color: #1a1009; color: #f5e6c8; }
-.dark .skeu-page-container { background: #2b1f14; }
-.dark .skeu-panel { background: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%); border-color: #1a1009; color: #f5e6c8; }
-.dark .skeu-segment-selector { background: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%); border-color: #1a1009; }
-.dark .skeu-split-view { background: #2b1f14; }
-.dark .skeu-stats-card { background: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%); border-color: #1a1009; color: #f5e6c8; }
-.dark .skeu-table { background: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%); border-color: #1a1009; }
-.dark .skeu-tree { background: #3a2e1f; color: #f5e6c8; }
-.dark .skeu-canvas { background: #2b1f14; border-color: #1a1009; color: #f5e6c8; }
-.dark .skeu-main-editor { background: #2b1f14; color: #f5e6c8; }
-.dark .skeu-canvas-toolbar, .dark .skeu-page-toolbar { background: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%); border-bottom-color: #1a1009; color: #f5e6c8; }
-.dark .skeu-command-palette { background: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%); border-color: #1a1009; color: #f5e6c8; }
-.dark .skeu-component-palette { background: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%); border-color: #1a1009; }
-.dark .skeu-locale-switcher { background: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%); border-color: #1a1009; color: #f5e6c8; }
-.dark .skeu-json-view { background: linear-gradient(180deg, #4a3e2f 0%, #3a3025 100%); border-color: #1a1009; color: #f5e6c8; }
-.dark .skeu-form { background: #3a2e1f; border-color: #1a1009; color: #f5e6c8; }
-.dark .skeu-properties-panel { background: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%); border-color: #1a1009; }
-.dark .skeu-bottom-panel { background: #2b1f14; border-top-color: #1a1009; color: #f5e6c8; }
-.dark .skeu-designer-tree { background: #3a2e1f; border-color: #1a1009; color: #f5e6c8; }
-.dark .skeu-designer-sidebar { background: linear-gradient(180deg, #3a2a18 0%, #1a1009 100%); border-right-color: #1a1009; }
-.dark .skeu-block { background: linear-gradient(180deg, #3a2e1f 0%, #2b2218 100%); border-color: #1a1009; color: #f5e6c8; }
-`;
-    }
-    materialDesignV3DarkCSS() {
-        return `
-.dark .m3 {
-  color: #e6e1e5;
-}
-
-.dark .m3-btn-filled {
-  background: #d0bcff;
-  color: #381e72;
-}
-
-.dark .m3-btn-outlined {
-  color: #d0bcff;
-  border-color: #938f99;
-}
-
-.dark .m3-btn-text {
-  color: #d0bcff;
-}
-
-.dark .m3-btn-tonal {
-  background: #4f378b;
-  color: #e8def8;
-}
-
-.dark .m3-input-outlined {
-  border-color: #938f99;
-  color: #e6e1e5;
-}
-
-.dark .m3-card-elevated {
-  background: #1c1b1f;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-}
-
-.dark .m3-card-filled {
-  background: #211f26;
-}
-
-.dark .m3-card-outlined {
-  background: #1c1b1f;
-  border-color: #938f99;
-}
-
-.dark .m3-surface-dim {
-  background: #141218;
-}
-
-.dark .m3-surface-container {
-  background: #211f26;
-}
-
-.dark .m3-surface-container-low {
-  background: #1d1b20;
-}
-
-.dark .m3-surface-container-high {
-  background: #2b2930;
-}
-
-.dark .m3-surface-container-highest {
-  background: #36343b;
-}
-
-.dark .m3-progress-linear {
-  background: #49454f;
-}
-
-.dark .m3-progress-circular-track {
-  border-color: #49454f;
-}
-
-.dark .m3-nav-rail {
-  background: #1c1b1f;
-}
-
-.dark .m3-nav-bar {
-  background: #1c1b1f;
-}
-
-.dark .m3-snackbar {
-  background: #d0bcff;
-  color: #381e72;
-}
-
-.dark .m3-tooltip {
-  background: #e6e1e5;
-  color: #1c1b1f;
-}
-
-.dark .m3-chip-assist {
-  background: #4f378b;
-  color: #e8def8;
-}
-
-.dark .m3-chip-filter {
-  border-color: #938f99;
-  color: #e6e1e5;
-}
-
-.dark .m3-chip-filter-selected {
-  background: #4f378b;
-  color: #e8def8;
-}
-
-.dark .m3-tabs {
-  background: #1c1b1f;
-}
-
-.dark .m3-tab {
-  color: #cac4d0;
-}
-
-.dark .m3-tab-selected {
-  color: #d0bcff;
-}
-
-.dark .m3-tab-indicator {
-  background: #d0bcff;
-}
-
-.dark .m3-switch {
-  background: #49454f;
-}
-
-.dark .m3-switch:checked {
-  background: #4f378b;
-}
-
-.dark .m3-checkbox {
-  border-color: #938f99;
-}
-
-.dark .m3-checkbox:checked {
-  background: #d0bcff;
-  border-color: #d0bcff;
-}
-
-.dark .m3-radio {
-  border-color: #938f99;
-}
-
-.dark .m3-radio:checked {
-  border-color: #d0bcff;
-}
-
-.dark .m3-slider-track {
-  background: #49454f;
-}
-
-.dark .m3-slider-thumb {
-  background: #d0bcff;
-}
-
-.dark .m3-divider,
-.dark .m3-divider-vertical {
-  background: #49454f;
-}
-`;
-    }
-    neumorphismDarkCSS() {
-        return `
-.dark .neu {
-  background: #2d3748;
-}
-
-.dark .neu-raised {
-  background: #2d3748;
-}
-
-.dark .neu-pressed {
-  background: #2d3748;
-}
-
-.dark .neu-btn {
-  background: #2d3748;
-  color: #e2e8f0;
-}
-
-.dark .neu-btn-primary {
-  background: linear-gradient(145deg, #3d4758, #1f2937);
-  color: #a78bfa;
-}
-
-.dark .neu-input {
-  background: #2d3748;
-  color: #e2e8f0;
-  box-shadow: inset 6px 6px 12px #1f2937, inset -6px -6px 12px #3d4758;
-}
-
-.dark .neu-card,
-.dark .neu-card-hoverable {
-  background: #2d3748;
-}
-
-.dark .neu-text {
-  color: #e2e8f0;
-}
-
-.dark .neu-text-primary {
-  color: #f8fafc;
-}
-
-.dark .neu-text-accent {
-  color: #a78bfa;
-}
-
-.dark .neu-tooltip {
-  background: #2d3748;
-  color: #e2e8f0;
-}
-
-.dark .neu-modal {
-  background: #2d3748;
-}
-
-.dark .neu-nav {
-  background: #2d3748;
-}
-
-.dark .neu-nav-item {
-  color: #e2e8f0;
-}
-
-.dark .neu-nav-item-active {
-  color: #a78bfa;
-}
-
-.dark .neu-tabs {
-  background: #2d3748;
-  box-shadow: inset 4px 4px 8px #1f2937, inset -4px -4px 8px #3d4758;
-}
-
-.dark .neu-tab {
-  color: #94a3b8;
-}
-
-.dark .neu-tab-active {
-  color: #a78bfa;
-}
-
-.dark .neu-icon-btn {
-  background: #2d3748;
-  color: #e2e8f0;
-}
-
-.dark .neu-toggle {
-  background: #2d3748;
-}
-
-.dark .neu-toggle-active .neu-toggle-knob {
-  background: #a78bfa;
-}
-
-.dark .neu-progress {
-  background: #2d3748;
-}
-
-.dark .neu-progress-bar {
-  background: linear-gradient(90deg, #a78bfa, #7c3aed);
-}
-
-.dark .neu-checkbox {
-  background: #2d3748;
-}
-
-.dark .neu-checkbox-check {
-  background: #a78bfa;
-}
-
-.dark .neu-radio-dot {
-  background: #a78bfa;
-}
-
-.dark .neu-slider {
-  background: #2d3748;
-}
-`;
-    }
-    claymorphismDarkCSS() {
-        return `
-.dark .clay {
-  background: #2d3748;
-}
-
-.dark .clay-raised {
-  background: linear-gradient(145deg, #3d4758, #1f2937);
-}
-
-.dark .clay-inset {
-  background: #1f2937;
-}
-
-.dark .clay-btn {
-  background: #2d3748;
-}
-
-.dark .clay-card {
-  background: #2d3748;
-}
-
-.dark .clay-input {
-  background: #1f2937;
-  color: #e2e8f0;
-}
-
-.dark .clay-text {
-  color: #e2e8f0;
-}
-
-.dark .clay-text-primary {
-  color: #f8fafc;
-}
-
-.dark .clay-text-accent {
-  color: #a78bfa;
-}
-
-.dark .clay-toggle {
-  background: #1f2937;
-}
-
-.dark .clay-toggle-active .clay-toggle-knob {
-  background: #a78bfa;
-}
-
-.dark .clay-progress {
-  background: #1f2937;
-}
-
-.dark .clay-progress-bar {
-  background: linear-gradient(90deg, #a78bfa, #7c3aed);
-}
-
-.dark .clay-checkbox {
-  background: #1f2937;
-}
-
-.dark .clay-checkbox:checked {
-  background: #a78bfa;
-}
-
-.dark .clay-modal {
-  background: #2d3748;
-}
-
-.dark .clay-tooltip {
-  background: #2d3748;
-  color: #e2e8f0;
-}
-
-.dark .clay-badge {
-  background: linear-gradient(145deg, #3d4758, #1f2937);
-  color: #e2e8f0;
-}
-
-.dark .clay-avatar {
-  background: #2d3748;
-}
-
-.dark .clay-divider {
-  background: linear-gradient(90deg, transparent, #49454f, transparent);
-}
-`;
-    }
-    glassmorphismDarkCSS() {
-        return `
-.dark .glass {
-  background: rgba(30, 30, 50, 0.6);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.dark .glass-surface {
-  background: linear-gradient(135deg, rgba(30, 30, 50, 0.7) 0%, rgba(20, 20, 40, 0.7) 100%);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.dark .glass-light {
-  background: rgba(50, 50, 80, 0.3);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.dark .glass-dark {
-  background: rgba(0, 0, 0, 0.5);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.dark .glass-btn {
-  background: rgba(30, 30, 50, 0.5);
-  border-color: rgba(255, 255, 255, 0.15);
-  color: #e2e8f0;
-}
-
-.dark .glass-btn:hover {
-  background: rgba(50, 50, 80, 0.6);
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
-.dark .glass-btn-primary {
-  background: linear-gradient(135deg, rgba(167, 139, 250, 0.8) 0%, rgba(124, 58, 237, 0.8) 100%);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.dark .glass-card {
-  background: linear-gradient(135deg, rgba(30, 30, 50, 0.6) 0%, rgba(20, 20, 40, 0.6) 100%);
-  border-color: rgba(255, 255, 255, 0.12);
-}
-
-.dark .glass-input {
-  background: rgba(20, 20, 40, 0.5);
-  border-color: rgba(255, 255, 255, 0.15);
-  color: #e2e8f0;
-}
-
-.dark .glass-input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.dark .glass-input:focus {
-  border-color: rgba(167, 139, 250, 0.6);
-}
-
-.dark .glass-badge {
-  background: rgba(30, 30, 50, 0.6);
-  border-color: rgba(255, 255, 255, 0.15);
-  color: #e2e8f0;
-}
-
-.dark .glass-avatar {
-  background: linear-gradient(135deg, rgba(50, 50, 80, 0.5) 0%, rgba(30, 30, 50, 0.5) 100%);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.dark .glass-checkbox {
-  background: rgba(20, 20, 40, 0.5);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.dark .glass-checkbox:checked {
-  background: rgba(167, 139, 250, 0.8);
-  border-color: rgba(167, 139, 250, 0.8);
-}
-
-.dark .glass-toggle {
-  background: rgba(30, 30, 50, 0.5);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.dark .glass-toggle-active {
-  background: rgba(167, 139, 250, 0.6);
-  border-color: rgba(167, 139, 250, 0.6);
-}
-
-.dark .glass-modal {
-  background: linear-gradient(135deg, rgba(30, 30, 50, 0.8) 0%, rgba(20, 20, 40, 0.8) 100%);
-  border-color: rgba(255, 255, 255, 0.12);
-}
-
-.dark .glass-tooltip {
-  background: linear-gradient(135deg, rgba(200, 200, 220, 0.9) 0%, rgba(180, 180, 200, 0.9) 100%);
-  color: #1c1b1f;
-}
-
-.dark .glass-progress {
-  background: rgba(30, 30, 50, 0.5);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.dark .glass-progress-bar {
-  background: linear-gradient(90deg, rgba(167, 139, 250, 0.8), rgba(124, 58, 237, 0.8), rgba(167, 139, 250, 0.8));
-}
-
-.dark .glass-nav {
-  background: linear-gradient(90deg, rgba(30, 30, 50, 0.6) 0%, rgba(20, 20, 40, 0.6) 100%);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.dark .glass-nav-item {
-  color: rgba(200, 200, 220, 0.7);
-}
-
-.dark .glass-nav-item:hover {
-  color: #e2e8f0;
-  background: rgba(50, 50, 80, 0.4);
-}
-
-.dark .glass-nav-item-active {
-  color: #e2e8f0;
-  background: rgba(50, 50, 80, 0.5);
-  border-color: rgba(167, 139, 250, 0.6);
-}
-
-.dark .glass-text {
-  color: rgba(200, 200, 220, 0.9);
-}
-
-.dark .glass-text-primary {
-  color: #e2e8f0;
-}
-
-.dark .glass-text-accent {
-  color: rgba(167, 139, 250, 0.9);
-}
-
-.dark .glass-divider {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-}
-`;
     }
     initializeDarkMode() {
         const savedDarkMode = this.loadDarkModePreference();
@@ -4230,11 +3365,11 @@ class SchemaElementComponent {
         ].includes(this.tag);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaElementComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaElementComponent, isStandalone: true, selector: "app-schema-element", inputs: { element: "element", elements: "elements" }, viewQueries: [{ propertyName: "dynamicHost", first: true, predicate: ["dynamicHost"], descendants: true, read: ViewContainerRef }], usesOnChanges: true, ngImport: i0, template: "<div\n  [id]=\"element.id\"\n  [class]=\"classes\"\n  [style]=\"gridStyle\"\n  [attr.data-element-id]=\"element.id\"\n  [ngStyle]=\"elementStyles\"\n>\n  @if (isNativeHtml && props[\"text\"]) {\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props[\"text\"] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props[\"text\"] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props[\"text\"] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props[\"text\"] }}</footer>\n      <span *ngSwitchDefault>{{ props[\"text\"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container #dynamicHost></ng-container>\n  } @else {\n    @for (child of childElements; track $index) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"elements\"\n      ></app-schema-element>\n    }\n  }\n</div>\n", styles: [":host{display:contents}\n"], dependencies: [{ kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "directive", type: i1.NgSwitch, selector: "[ngSwitch]", inputs: ["ngSwitch"] }, { kind: "directive", type: i1.NgSwitchCase, selector: "[ngSwitchCase]", inputs: ["ngSwitchCase"] }, { kind: "directive", type: i1.NgSwitchDefault, selector: "[ngSwitchDefault]" }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaElementComponent, isStandalone: true, selector: "app-schema-element", inputs: { element: "element", elements: "elements" }, viewQueries: [{ propertyName: "dynamicHost", first: true, predicate: ["dynamicHost"], descendants: true, read: ViewContainerRef }], usesOnChanges: true, ngImport: i0, template: "<div\n  [id]=\"element.id\"\n  [class]=\"classes\"\n  [style]=\"gridStyle\"\n  [attr.data-element-id]=\"element.id\"\n  [ngStyle]=\"elementStyles\"\n>\n  @if (isNativeHtml && props[\"text\"]) {\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props[\"text\"] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props[\"text\"] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props[\"text\"] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props[\"text\"] }}</footer>\n      <span *ngSwitchDefault>{{ props[\"text\"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container #dynamicHost></ng-container>\n  } @else {\n    @for (child of childElements; track $index) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"elements\"\n      ></app-schema-element>\n    }\n  }\n</div>\n", dependencies: [{ kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "directive", type: i1.NgSwitch, selector: "[ngSwitch]", inputs: ["ngSwitch"] }, { kind: "directive", type: i1.NgSwitchCase, selector: "[ngSwitchCase]", inputs: ["ngSwitchCase"] }, { kind: "directive", type: i1.NgSwitchDefault, selector: "[ngSwitchDefault]" }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaElementComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-schema-element", standalone: true, imports: [CommonModule], template: "<div\n  [id]=\"element.id\"\n  [class]=\"classes\"\n  [style]=\"gridStyle\"\n  [attr.data-element-id]=\"element.id\"\n  [ngStyle]=\"elementStyles\"\n>\n  @if (isNativeHtml && props[\"text\"]) {\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props[\"text\"] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props[\"text\"] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props[\"text\"] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props[\"text\"] }}</footer>\n      <span *ngSwitchDefault>{{ props[\"text\"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container #dynamicHost></ng-container>\n  } @else {\n    @for (child of childElements; track $index) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"elements\"\n      ></app-schema-element>\n    }\n  }\n</div>\n", styles: [":host{display:contents}\n"] }]
+            args: [{ selector: "app-schema-element", standalone: true, imports: [CommonModule], template: "<div\n  [id]=\"element.id\"\n  [class]=\"classes\"\n  [style]=\"gridStyle\"\n  [attr.data-element-id]=\"element.id\"\n  [ngStyle]=\"elementStyles\"\n>\n  @if (isNativeHtml && props[\"text\"]) {\n    <ng-container [ngSwitch]=\"tag\">\n      <h1 *ngSwitchCase=\"'h1'\">{{ props[\"text\"] }}</h1>\n      <h2 *ngSwitchCase=\"'h2'\">{{ props[\"text\"] }}</h2>\n      <p *ngSwitchCase=\"'p'\">{{ props[\"text\"] }}</p>\n      <footer *ngSwitchCase=\"'footer'\">{{ props[\"text\"] }}</footer>\n      <span *ngSwitchDefault>{{ props[\"text\"] }}</span>\n    </ng-container>\n  } @else if (componentType) {\n    <ng-container #dynamicHost></ng-container>\n  } @else {\n    @for (child of childElements; track $index) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"elements\"\n      ></app-schema-element>\n    }\n  }\n</div>\n" }]
         }], propDecorators: { element: [{
                 type: Input,
                 args: [{ required: true }]
@@ -4251,88 +3386,94 @@ class CardComponent {
     subtitle = "";
     content = "";
     elevated = 1;
-    borderRadius = 'lg';
-    padding = 'md';
+    borderRadius = "lg";
+    padding = "md";
     children = [];
     classes = "";
+    kind = "elevated";
+    sectionId = "";
     getCardClasses() {
         const radiusMap = {
-            sm: 'rounded-sm',
-            md: 'rounded-md',
-            lg: 'rounded-lg',
-            xl: 'rounded-xl',
+            sm: "rounded-sm",
+            md: "rounded-md",
+            lg: "rounded-lg",
+            xl: "rounded-xl",
         };
-        const shadows = [
-            'shadow-none',
-            'shadow-1',
-            'shadow-2',
-            'shadow-3',
-        ];
-        const base = 'bg-surface-container border border-outline-variant overflow-hidden';
+        const shadows = ["shadow-none", "shadow-1", "shadow-2", "shadow-3"];
+        const base = "bg-surface-container border border-outline-variant overflow-hidden";
         const radius = radiusMap[this.borderRadius];
         const shadow = shadows[this.elevated];
-        return [base, radius, shadow, this.classes].filter(Boolean).join(' ');
+        const kindClass = `app-card--${this.kind}`;
+        return [base, radius, shadow, kindClass, this.classes]
+            .filter(Boolean)
+            .join(" ");
     }
     getContentClasses() {
         const paddingMap = {
-            sm: 'p-4',
-            md: 'p-6',
-            lg: 'p-8',
+            sm: "p-4",
+            md: "p-6",
+            lg: "p-8",
         };
         return paddingMap[this.padding];
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CardComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CardComponent, isStandalone: true, selector: "app-card", inputs: { title: "title", subtitle: "subtitle", content: "content", elevated: "elevated", borderRadius: "borderRadius", padding: "padding", children: "children", classes: "classes" }, ngImport: i0, template: `
-    <div [class]="getCardClasses()">
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CardComponent, isStandalone: true, selector: "app-card", inputs: { title: "title", subtitle: "subtitle", content: "content", elevated: "elevated", borderRadius: "borderRadius", padding: "padding", children: "children", classes: "classes", kind: "kind", sectionId: "sectionId" }, ngImport: i0, template: `
+    <div
+      class="rounded-3xl p-6 border border-neutral-100 dark:border-neutral-800 shadow-sm transition-colors"
+      [class.bg-white]="kind === 'elevated'"
+      [class.bg-transparent]="kind === 'outlined'"
+      [class.bg-neutral-50]="kind === 'surface'"
+      [class.border-2]="kind === 'outlined'"
+      [class.shadow-md]="kind === 'elevated'"
+    >
       @if (title) {
-        <div class="px-6 py-4 border-b border-outline-variant">
-          <h3 class="text-lg font-medium text-on-surface">{{ title }}</h3>
-          @if (subtitle) {
-            <p class="text-sm text-on-surface-variant">{{ subtitle }}</p>
-          }
-        </div>
+        <h3
+          class="text-base font-semibold text-neutral-800 dark:text-neutral-200 mb-1"
+        >
+          {{ title }}
+        </h3>
       }
-      <div [class]="getContentClasses()">
-        @if (content) {
-          <p class="text-on-surface">{{ content }}</p>
-        }
-        @for (child of children; track child.id) {
-          <app-schema-element
-            [element]="child"
-            [elements]="children"
-          ></app-schema-element>
-        }
-        <ng-content></ng-content>
-      </div>
+      @if (subtitle) {
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          {{ subtitle }}
+        </p>
+      }
+      <ng-content />
     </div>
-  `, isInline: true, styles: [":host{display:block}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
+  `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CardComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-card", standalone: true, imports: [CommonModule, SchemaElementComponent], changeDetection: ChangeDetectionStrategy.OnPush, template: `
-    <div [class]="getCardClasses()">
+            args: [{
+                    selector: "app-card",
+                    standalone: true,
+                    imports: [CommonModule, SchemaElementComponent],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <div
+      class="rounded-3xl p-6 border border-neutral-100 dark:border-neutral-800 shadow-sm transition-colors"
+      [class.bg-white]="kind === 'elevated'"
+      [class.bg-transparent]="kind === 'outlined'"
+      [class.bg-neutral-50]="kind === 'surface'"
+      [class.border-2]="kind === 'outlined'"
+      [class.shadow-md]="kind === 'elevated'"
+    >
       @if (title) {
-        <div class="px-6 py-4 border-b border-outline-variant">
-          <h3 class="text-lg font-medium text-on-surface">{{ title }}</h3>
-          @if (subtitle) {
-            <p class="text-sm text-on-surface-variant">{{ subtitle }}</p>
-          }
-        </div>
+        <h3
+          class="text-base font-semibold text-neutral-800 dark:text-neutral-200 mb-1"
+        >
+          {{ title }}
+        </h3>
       }
-      <div [class]="getContentClasses()">
-        @if (content) {
-          <p class="text-on-surface">{{ content }}</p>
-        }
-        @for (child of children; track child.id) {
-          <app-schema-element
-            [element]="child"
-            [elements]="children"
-          ></app-schema-element>
-        }
-        <ng-content></ng-content>
-      </div>
+      @if (subtitle) {
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          {{ subtitle }}
+        </p>
+      }
+      <ng-content />
     </div>
-  `, styles: [":host{display:block}\n"] }]
+  `,
+                }]
         }], propDecorators: { title: [{
                 type: Input
             }], subtitle: [{
@@ -4349,6 +3490,10 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
                 type: Input
             }], classes: [{
                 type: Input
+            }], kind: [{
+                type: Input
+            }], sectionId: [{
+                type: Input
             }] } });
 registerSchemaComponent("app-card", CardComponent);
 
@@ -4358,11 +3503,11 @@ class StatsCardComponent {
     unit = "";
     icon = "";
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: StatsCardComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: StatsCardComponent, isStandalone: true, selector: "app-stats-card", inputs: { label: "label", value: "value", unit: "unit", icon: "icon" }, ngImport: i0, template: "<div class=\"ui-stats-card\">\n  @if (icon) {\n    <div class=\"ui-stats-card-icon\">{{ icon }}</div>\n  }\n  <div class=\"ui-stats-card-value\">{{ value }}{{ unit }}</div>\n  @if (label) {\n    <div class=\"ui-stats-card-label\">{{ label }}</div>\n  }\n</div>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: StatsCardComponent, isStandalone: true, selector: "app-stats-card", inputs: { label: "label", value: "value", unit: "unit", icon: "icon" }, ngImport: i0, template: "<div class=\"ui-stats-card\">\n  @if (icon) {\n    <div class=\"ui-stats-card-icon\">{{ icon }}</div>\n  }\n  <div class=\"ui-stats-card-value\">{{ value }}{{ unit }}</div>\n  @if (label) {\n    <div class=\"ui-stats-card-label\">{{ label }}</div>\n  }\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: StatsCardComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-stats-card", standalone: true, imports: [], template: "<div class=\"ui-stats-card\">\n  @if (icon) {\n    <div class=\"ui-stats-card-icon\">{{ icon }}</div>\n  }\n  <div class=\"ui-stats-card-value\">{{ value }}{{ unit }}</div>\n  @if (label) {\n    <div class=\"ui-stats-card-label\">{{ label }}</div>\n  }\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-stats-card", standalone: true, imports: [], template: "<div class=\"ui-stats-card\">\n  @if (icon) {\n    <div class=\"ui-stats-card-icon\">{{ icon }}</div>\n  }\n  <div class=\"ui-stats-card-value\">{{ value }}{{ unit }}</div>\n  @if (label) {\n    <div class=\"ui-stats-card-label\">{{ label }}</div>\n  }\n</div>\n" }]
         }], propDecorators: { label: [{
                 type: Input
             }], value: [{
@@ -4384,11 +3529,11 @@ class TableViewComponent {
         return parseJsonOrDefault(this.data);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TableViewComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TableViewComponent, isStandalone: true, selector: "app-table-view", inputs: { columns: "columns", data: "data" }, ngImport: i0, template: "<table class=\"ui-table\">\n  <thead>\n    <tr>\n      @for (col of parsedColumns; track col.key) {\n        <th>{{ col.name }}</th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row) {\n      <tr>\n        @for (col of parsedColumns; track col.key) {\n          <td>{{ row[col.key] }}</td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TableViewComponent, isStandalone: true, selector: "app-table-view", inputs: { columns: "columns", data: "data" }, ngImport: i0, template: "<table class=\"ui-table\">\n  <thead>\n    <tr>\n      @for (col of parsedColumns; track col.key) {\n        <th>{{ col.name }}</th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row) {\n      <tr>\n        @for (col of parsedColumns; track col.key) {\n          <td>{{ row[col.key] }}</td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TableViewComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-table-view", standalone: true, imports: [], template: "<table class=\"ui-table\">\n  <thead>\n    <tr>\n      @for (col of parsedColumns; track col.key) {\n        <th>{{ col.name }}</th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row) {\n      <tr>\n        @for (col of parsedColumns; track col.key) {\n          <td>{{ row[col.key] }}</td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-table-view", standalone: true, imports: [], template: "<table class=\"ui-table\">\n  <thead>\n    <tr>\n      @for (col of parsedColumns; track col.key) {\n        <th>{{ col.name }}</th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row) {\n      <tr>\n        @for (col of parsedColumns; track col.key) {\n          <td>{{ row[col.key] }}</td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n" }]
         }], propDecorators: { columns: [{
                 type: Input
             }], data: [{
@@ -4415,11 +3560,11 @@ class DataTableComponent {
         this.rowSelected.emit(index);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DataTableComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: DataTableComponent, isStandalone: true, selector: "app-data-table", inputs: { columns: "columns", data: "data", selectable: "selectable" }, outputs: { rowSelected: "rowSelected" }, ngImport: i0, template: "<table class=\"ui-data-table\">\n  <thead>\n    <tr>\n      @if (selectable) {\n        <th class=\"ui-data-table-checkbox\"></th>\n      }\n      @for (col of parsedColumns; track col.key) {\n        <th>{{ col.name }}</th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row; let idx = $index) {\n      <tr\n        class=\"ui-data-table-row\"\n        [class.ui-data-table-row-selected]=\"selectedIndex === idx\"\n        (click)=\"selectRow(idx)\"\n      >\n        @if (selectable) {\n          <td>\n            <span\n              class=\"ui-data-table-checkbox-dot\"\n              [class.ui-data-table-checkbox-dot-selected]=\"\n                selectedIndex === idx\n              \"\n            ></span>\n          </td>\n        }\n        @for (col of parsedColumns; track col.key) {\n          <td>{{ row[col.key] }}</td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: DataTableComponent, isStandalone: true, selector: "app-data-table", inputs: { columns: "columns", data: "data", selectable: "selectable" }, outputs: { rowSelected: "rowSelected" }, ngImport: i0, template: "<table class=\"ui-data-table\">\n  <thead>\n    <tr>\n      @if (selectable) {\n        <th class=\"ui-data-table-checkbox\"></th>\n      }\n      @for (col of parsedColumns; track col.key) {\n        <th>{{ col.name }}</th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row; let idx = $index) {\n      <tr\n        class=\"ui-data-table-row\"\n        [class.ui-data-table-row-selected]=\"selectedIndex === idx\"\n        (click)=\"selectRow(idx)\"\n      >\n        @if (selectable) {\n          <td>\n            <span\n              class=\"ui-data-table-checkbox-dot\"\n              [class.ui-data-table-checkbox-dot-selected]=\"\n                selectedIndex === idx\n              \"\n            ></span>\n          </td>\n        }\n        @for (col of parsedColumns; track col.key) {\n          <td>{{ row[col.key] }}</td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DataTableComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-data-table", standalone: true, imports: [], template: "<table class=\"ui-data-table\">\n  <thead>\n    <tr>\n      @if (selectable) {\n        <th class=\"ui-data-table-checkbox\"></th>\n      }\n      @for (col of parsedColumns; track col.key) {\n        <th>{{ col.name }}</th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row; let idx = $index) {\n      <tr\n        class=\"ui-data-table-row\"\n        [class.ui-data-table-row-selected]=\"selectedIndex === idx\"\n        (click)=\"selectRow(idx)\"\n      >\n        @if (selectable) {\n          <td>\n            <span\n              class=\"ui-data-table-checkbox-dot\"\n              [class.ui-data-table-checkbox-dot-selected]=\"\n                selectedIndex === idx\n              \"\n            ></span>\n          </td>\n        }\n        @for (col of parsedColumns; track col.key) {\n          <td>{{ row[col.key] }}</td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-data-table", standalone: true, imports: [], template: "<table class=\"ui-data-table\">\n  <thead>\n    <tr>\n      @if (selectable) {\n        <th class=\"ui-data-table-checkbox\"></th>\n      }\n      @for (col of parsedColumns; track col.key) {\n        <th>{{ col.name }}</th>\n      }\n    </tr>\n  </thead>\n  <tbody>\n    @for (row of parsedData; track row; let idx = $index) {\n      <tr\n        class=\"ui-data-table-row\"\n        [class.ui-data-table-row-selected]=\"selectedIndex === idx\"\n        (click)=\"selectRow(idx)\"\n      >\n        @if (selectable) {\n          <td>\n            <span\n              class=\"ui-data-table-checkbox-dot\"\n              [class.ui-data-table-checkbox-dot-selected]=\"\n                selectedIndex === idx\n              \"\n            ></span>\n          </td>\n        }\n        @for (col of parsedColumns; track col.key) {\n          <td>{{ row[col.key] }}</td>\n        }\n      </tr>\n    }\n  </tbody>\n</table>\n" }]
         }], propDecorators: { columns: [{
                 type: Input
             }], data: [{
@@ -4450,11 +3595,11 @@ class JsonViewComponent {
             .replace(/\bnull\b/g, '<span class="json-null">null</span>');
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: JsonViewComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: JsonViewComponent, isStandalone: true, selector: "app-json-view", inputs: { data: "data" }, ngImport: i0, template: "<div class=\"ui-json-view\" [innerHTML]=\"safeHtml\"></div>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: JsonViewComponent, isStandalone: true, selector: "app-json-view", inputs: { data: "data" }, ngImport: i0, template: "<div class=\"ui-json-view\" [innerHTML]=\"safeHtml\"></div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: JsonViewComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-json-view", standalone: true, imports: [], template: "<div class=\"ui-json-view\" [innerHTML]=\"safeHtml\"></div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-json-view", standalone: true, imports: [], template: "<div class=\"ui-json-view\" [innerHTML]=\"safeHtml\"></div>\n" }]
         }], propDecorators: { data: [{
                 type: Input
             }] } });
@@ -4498,11 +3643,11 @@ class ComponentPaletteComponent {
             e.dataTransfer.effectAllowed = "copy";
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ComponentPaletteComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ComponentPaletteComponent, isStandalone: true, selector: "app-component-palette", inputs: { categories: "categories", searchable: "searchable" }, ngImport: i0, template: "<div class=\"ui-component-palette\">\n  <div class=\"ui-component-palette-header\">\n    <div>Components</div>\n    @if (searchable) {\n      <input\n        type=\"text\"\n        placeholder=\"Search components...\"\n        [value]=\"searchQuery\"\n        (input)=\"onSearch($event)\"\n      />\n    }\n  </div>\n  <div class=\"ui-component-palette-list\">\n    @for (cat of filteredCategories; track cat.name) {\n      <div class=\"ui-component-palette-category\">\n        <div\n          class=\"ui-component-palette-category-header\"\n          (click)=\"toggleCategory(cat.name)\"\n        >\n          <span>{{ cat.name }}</span>\n          <span\n            class=\"ui-component-palette-chevron\"\n            [class.ui-component-palette-chevron-expanded]=\"\n              !isCollapsed(cat.name)\n            \"\n            >\u25BC</span\n          >\n        </div>\n        @if (!isCollapsed(cat.name)) {\n          <div class=\"ui-component-palette-items\">\n            @for (comp of cat.components; track comp) {\n              <div draggable=\"true\" (dragstart)=\"onDragStart($event, comp)\">\n                {{ comp }}\n              </div>\n            }\n          </div>\n        }\n      </div>\n    }\n  </div>\n</div>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ComponentPaletteComponent, isStandalone: true, selector: "app-component-palette", inputs: { categories: "categories", searchable: "searchable" }, ngImport: i0, template: "<div class=\"ui-component-palette\">\n  <div class=\"ui-component-palette-header\">\n    <div>Components</div>\n    @if (searchable) {\n      <input\n        type=\"text\"\n        placeholder=\"Search components...\"\n        [value]=\"searchQuery\"\n        (input)=\"onSearch($event)\"\n      />\n    }\n  </div>\n  <div class=\"ui-component-palette-list\">\n    @for (cat of filteredCategories; track cat.name) {\n      <div class=\"ui-component-palette-category\">\n        <div\n          class=\"ui-component-palette-category-header\"\n          (click)=\"toggleCategory(cat.name)\"\n        >\n          <span>{{ cat.name }}</span>\n          <span\n            class=\"ui-component-palette-chevron\"\n            [class.ui-component-palette-chevron-expanded]=\"\n              !isCollapsed(cat.name)\n            \"\n            >\u25BC</span\n          >\n        </div>\n        @if (!isCollapsed(cat.name)) {\n          <div class=\"ui-component-palette-items\">\n            @for (comp of cat.components; track comp) {\n              <div draggable=\"true\" (dragstart)=\"onDragStart($event, comp)\">\n                {{ comp }}\n              </div>\n            }\n          </div>\n        }\n      </div>\n    }\n  </div>\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ComponentPaletteComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-component-palette", standalone: true, imports: [], template: "<div class=\"ui-component-palette\">\n  <div class=\"ui-component-palette-header\">\n    <div>Components</div>\n    @if (searchable) {\n      <input\n        type=\"text\"\n        placeholder=\"Search components...\"\n        [value]=\"searchQuery\"\n        (input)=\"onSearch($event)\"\n      />\n    }\n  </div>\n  <div class=\"ui-component-palette-list\">\n    @for (cat of filteredCategories; track cat.name) {\n      <div class=\"ui-component-palette-category\">\n        <div\n          class=\"ui-component-palette-category-header\"\n          (click)=\"toggleCategory(cat.name)\"\n        >\n          <span>{{ cat.name }}</span>\n          <span\n            class=\"ui-component-palette-chevron\"\n            [class.ui-component-palette-chevron-expanded]=\"\n              !isCollapsed(cat.name)\n            \"\n            >\u25BC</span\n          >\n        </div>\n        @if (!isCollapsed(cat.name)) {\n          <div class=\"ui-component-palette-items\">\n            @for (comp of cat.components; track comp) {\n              <div draggable=\"true\" (dragstart)=\"onDragStart($event, comp)\">\n                {{ comp }}\n              </div>\n            }\n          </div>\n        }\n      </div>\n    }\n  </div>\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-component-palette", standalone: true, imports: [], template: "<div class=\"ui-component-palette\">\n  <div class=\"ui-component-palette-header\">\n    <div>Components</div>\n    @if (searchable) {\n      <input\n        type=\"text\"\n        placeholder=\"Search components...\"\n        [value]=\"searchQuery\"\n        (input)=\"onSearch($event)\"\n      />\n    }\n  </div>\n  <div class=\"ui-component-palette-list\">\n    @for (cat of filteredCategories; track cat.name) {\n      <div class=\"ui-component-palette-category\">\n        <div\n          class=\"ui-component-palette-category-header\"\n          (click)=\"toggleCategory(cat.name)\"\n        >\n          <span>{{ cat.name }}</span>\n          <span\n            class=\"ui-component-palette-chevron\"\n            [class.ui-component-palette-chevron-expanded]=\"\n              !isCollapsed(cat.name)\n            \"\n            >\u25BC</span\n          >\n        </div>\n        @if (!isCollapsed(cat.name)) {\n          <div class=\"ui-component-palette-items\">\n            @for (comp of cat.components; track comp) {\n              <div draggable=\"true\" (dragstart)=\"onDragStart($event, comp)\">\n                {{ comp }}\n              </div>\n            }\n          </div>\n        }\n      </div>\n    }\n  </div>\n</div>\n" }]
         }], propDecorators: { categories: [{
                 type: Input
             }], searchable: [{
@@ -4763,11 +3908,11 @@ class CanvasComponent {
         this.dropIndicator = null;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CanvasComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CanvasComponent, isStandalone: true, selector: "app-canvas", ngImport: i0, template: "<div\n  class=\"ui-canvas\"\n  [style.--grid-cols]=\"designer.gridColumns.toString()\"\n  [style.zoom]=\"designer.zoom() / 100\"\n  (dragover)=\"onDragOver($event)\"\n  (dragleave)=\"onDragLeave()\"\n  (drop)=\"onDrop($event)\"\n>\n  @if (designer.showGrid()) {\n    <div class=\"ui-canvas-grid\">\n      @for (cell of gridCells; track cell) {\n        <div></div>\n      }\n    </div>\n  }\n  @if (elements.length > 0) {\n    @for (el of elements; track el.id) {\n      <div\n        class=\"ui-canvas-element\"\n        [class.ui-canvas-element-selected]=\"designer.selectedId() === el.id\"\n        [class.ui-canvas-element-drop-target]=\"\n          dropIndicator?.parentId === el.id\n        \"\n        [style.gridColumn]=\"getGridColumn(el)\"\n        [style.gridRow]=\"getGridRow(el)\"\n        (click)=\"designer.selectElement(el.id)\"\n        (dblclick)=\"editElement(el)\"\n        draggable=\"true\"\n        (dragstart)=\"onElementDragStart($event, el)\"\n        (dragover)=\"onElementDragOver($event, el)\"\n        (dragleave)=\"onElementDragLeave(el)\"\n      >\n        <span>{{ getIcon(el) }}</span>\n        <span>{{ el.componentId }}</span>\n        <span class=\"ui-canvas-element-id\">{{ el.id }}</span>\n        <button\n          class=\"ui-canvas-element-delete\"\n          (click)=\"deleteElement($event, el.id)\"\n          title=\"Delete\"\n        >\n          \u00D7\n        </button>\n        @if (el.children?.length) {\n          <div class=\"ui-canvas-element-children\">\n            {{ el.children!.length }} children\n          </div>\n        }\n      </div>\n    }\n  } @else {\n    <div class=\"ui-canvas-empty\">\n      <div>Drag components here</div>\n    </div>\n  }\n  @if (dropIndicator && !dropIndicator.parentId) {\n    <div\n      class=\"ui-canvas-drop-indicator\"\n      [style.top.px]=\"dropIndicator.y\"\n    ></div>\n  }\n</div>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CanvasComponent, isStandalone: true, selector: "app-canvas", ngImport: i0, template: "<div\n  class=\"ui-canvas\"\n  [style.--grid-cols]=\"designer.gridColumns.toString()\"\n  [style.zoom]=\"designer.zoom() / 100\"\n  (dragover)=\"onDragOver($event)\"\n  (dragleave)=\"onDragLeave()\"\n  (drop)=\"onDrop($event)\"\n>\n  @if (designer.showGrid()) {\n    <div class=\"ui-canvas-grid\">\n      @for (cell of gridCells; track cell) {\n        <div></div>\n      }\n    </div>\n  }\n  @if (elements.length > 0) {\n    @for (el of elements; track el.id) {\n      <div\n        class=\"ui-canvas-element\"\n        [class.ui-canvas-element-selected]=\"designer.selectedId() === el.id\"\n        [class.ui-canvas-element-drop-target]=\"\n          dropIndicator?.parentId === el.id\n        \"\n        [style.gridColumn]=\"getGridColumn(el)\"\n        [style.gridRow]=\"getGridRow(el)\"\n        (click)=\"designer.selectElement(el.id)\"\n        (dblclick)=\"editElement(el)\"\n        draggable=\"true\"\n        (dragstart)=\"onElementDragStart($event, el)\"\n        (dragover)=\"onElementDragOver($event, el)\"\n        (dragleave)=\"onElementDragLeave(el)\"\n      >\n        <span>{{ getIcon(el) }}</span>\n        <span>{{ el.componentId }}</span>\n        <span class=\"ui-canvas-element-id\">{{ el.id }}</span>\n        <button\n          class=\"ui-canvas-element-delete\"\n          (click)=\"deleteElement($event, el.id)\"\n          title=\"Delete\"\n        >\n          \u00D7\n        </button>\n        @if (el.children?.length) {\n          <div class=\"ui-canvas-element-children\">\n            {{ el.children!.length }} children\n          </div>\n        }\n      </div>\n    }\n  } @else {\n    <div class=\"ui-canvas-empty\">\n      <div>Drag components here</div>\n    </div>\n  }\n  @if (dropIndicator && !dropIndicator.parentId) {\n    <div\n      class=\"ui-canvas-drop-indicator\"\n      [style.top.px]=\"dropIndicator.y\"\n    ></div>\n  }\n</div>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CanvasComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-canvas", standalone: true, imports: [CommonModule], template: "<div\n  class=\"ui-canvas\"\n  [style.--grid-cols]=\"designer.gridColumns.toString()\"\n  [style.zoom]=\"designer.zoom() / 100\"\n  (dragover)=\"onDragOver($event)\"\n  (dragleave)=\"onDragLeave()\"\n  (drop)=\"onDrop($event)\"\n>\n  @if (designer.showGrid()) {\n    <div class=\"ui-canvas-grid\">\n      @for (cell of gridCells; track cell) {\n        <div></div>\n      }\n    </div>\n  }\n  @if (elements.length > 0) {\n    @for (el of elements; track el.id) {\n      <div\n        class=\"ui-canvas-element\"\n        [class.ui-canvas-element-selected]=\"designer.selectedId() === el.id\"\n        [class.ui-canvas-element-drop-target]=\"\n          dropIndicator?.parentId === el.id\n        \"\n        [style.gridColumn]=\"getGridColumn(el)\"\n        [style.gridRow]=\"getGridRow(el)\"\n        (click)=\"designer.selectElement(el.id)\"\n        (dblclick)=\"editElement(el)\"\n        draggable=\"true\"\n        (dragstart)=\"onElementDragStart($event, el)\"\n        (dragover)=\"onElementDragOver($event, el)\"\n        (dragleave)=\"onElementDragLeave(el)\"\n      >\n        <span>{{ getIcon(el) }}</span>\n        <span>{{ el.componentId }}</span>\n        <span class=\"ui-canvas-element-id\">{{ el.id }}</span>\n        <button\n          class=\"ui-canvas-element-delete\"\n          (click)=\"deleteElement($event, el.id)\"\n          title=\"Delete\"\n        >\n          \u00D7\n        </button>\n        @if (el.children?.length) {\n          <div class=\"ui-canvas-element-children\">\n            {{ el.children!.length }} children\n          </div>\n        }\n      </div>\n    }\n  } @else {\n    <div class=\"ui-canvas-empty\">\n      <div>Drag components here</div>\n    </div>\n  }\n  @if (dropIndicator && !dropIndicator.parentId) {\n    <div\n      class=\"ui-canvas-drop-indicator\"\n      [style.top.px]=\"dropIndicator.y\"\n    ></div>\n  }\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-canvas", standalone: true, imports: [CommonModule], template: "<div\n  class=\"ui-canvas\"\n  [style.--grid-cols]=\"designer.gridColumns.toString()\"\n  [style.zoom]=\"designer.zoom() / 100\"\n  (dragover)=\"onDragOver($event)\"\n  (dragleave)=\"onDragLeave()\"\n  (drop)=\"onDrop($event)\"\n>\n  @if (designer.showGrid()) {\n    <div class=\"ui-canvas-grid\">\n      @for (cell of gridCells; track cell) {\n        <div></div>\n      }\n    </div>\n  }\n  @if (elements.length > 0) {\n    @for (el of elements; track el.id) {\n      <div\n        class=\"ui-canvas-element\"\n        [class.ui-canvas-element-selected]=\"designer.selectedId() === el.id\"\n        [class.ui-canvas-element-drop-target]=\"\n          dropIndicator?.parentId === el.id\n        \"\n        [style.gridColumn]=\"getGridColumn(el)\"\n        [style.gridRow]=\"getGridRow(el)\"\n        (click)=\"designer.selectElement(el.id)\"\n        (dblclick)=\"editElement(el)\"\n        draggable=\"true\"\n        (dragstart)=\"onElementDragStart($event, el)\"\n        (dragover)=\"onElementDragOver($event, el)\"\n        (dragleave)=\"onElementDragLeave(el)\"\n      >\n        <span>{{ getIcon(el) }}</span>\n        <span>{{ el.componentId }}</span>\n        <span class=\"ui-canvas-element-id\">{{ el.id }}</span>\n        <button\n          class=\"ui-canvas-element-delete\"\n          (click)=\"deleteElement($event, el.id)\"\n          title=\"Delete\"\n        >\n          \u00D7\n        </button>\n        @if (el.children?.length) {\n          <div class=\"ui-canvas-element-children\">\n            {{ el.children!.length }} children\n          </div>\n        }\n      </div>\n    }\n  } @else {\n    <div class=\"ui-canvas-empty\">\n      <div>Drag components here</div>\n    </div>\n  }\n  @if (dropIndicator && !dropIndicator.parentId) {\n    <div\n      class=\"ui-canvas-drop-indicator\"\n      [style.top.px]=\"dropIndicator.y\"\n    ></div>\n  }\n</div>\n" }]
         }] });
 registerSchemaComponent("app-canvas", CanvasComponent);
 
@@ -5032,11 +4177,11 @@ class PropertiesPanelComponent {
         this.designer.updateElement(id, { bind });
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PropertiesPanelComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PropertiesPanelComponent, isStandalone: true, selector: "app-properties-panel", ngImport: i0, template: "<div class=\"ui-properties-panel\">\n  <div class=\"ui-properties-panel-header\">\n    <div>Properties</div>\n    @if (el(); as el) {\n      <div class=\"ui-properties-panel-id\">{{ el.id }}</div>\n    }\n  </div>\n\n  <div class=\"ui-properties-panel-tabs\">\n    @for (tab of tabs; track tab) {\n      <button\n        class=\"ui-properties-tab\"\n        [class.ui-properties-tab-active]=\"activeTab === tab\"\n        (click)=\"activeTab = tab\"\n      >\n        {{ tabLabels[tab] }}\n      </button>\n    }\n  </div>\n\n  @if (el(); as el) {\n    <div class=\"ui-properties-panel-body\">\n      @switch (activeTab) {\n        @case (\"props\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Component</div>\n            <div class=\"ui-properties-field\">\n              <label>Type</label>\n              <input readonly [value]=\"el.componentId\" />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>ID</label>\n              <input\n                [value]=\"el.id\"\n                (input)=\"updateField('id', $any($event.target).value)\"\n              />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>Classes</label>\n              <input\n                [value]=\"el.classes || ''\"\n                (input)=\"updateField('classes', $any($event.target).value)\"\n              />\n            </div>\n            @for (prop of propEntries; track prop.key) {\n              <div class=\"ui-properties-field\">\n                <label>{{ prop.key }}</label>\n                <input\n                  [value]=\"prop.value ?? ''\"\n                  (input)=\"updateProp(prop.key, $any($event.target).value)\"\n                />\n              </div>\n            }\n          </div>\n        }\n        @case (\"style\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Inline Styles</div>\n            <div>CSS custom properties and inline styles</div>\n            @for (style of styleEntries; track $index) {\n              <div class=\"ui-properties-field-row\">\n                <input\n                  [value]=\"style.key\"\n                  placeholder=\"property\"\n                  (input)=\"updateStyleKey($index, $any($event.target).value)\"\n                />\n                <input\n                  [value]=\"style.value\"\n                  placeholder=\"value\"\n                  (input)=\"updateStyleVal($index, $any($event.target).value)\"\n                />\n                <button (click)=\"removeStyle($index)\">\u00D7</button>\n              </div>\n            }\n            <button class=\"ui-btn ui-btn-ghost\" (click)=\"addStyle()\">\n              + Add style\n            </button>\n          </div>\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">States</div>\n            @for (state of stateKeys; track state) {\n              <div class=\"ui-properties-state\">\n                <label>{{ state }}</label>\n                @for (rule of getStateRules(state); track $index) {\n                  <div class=\"ui-properties-field-row\">\n                    <input\n                      [value]=\"rule.key\"\n                      placeholder=\"property\"\n                      (input)=\"\n                        updateStateRule(\n                          state,\n                          $index,\n                          'key',\n                          $any($event.target).value\n                        )\n                      \"\n                    />\n                    <input\n                      [value]=\"rule.value\"\n                      placeholder=\"value\"\n                      (input)=\"\n                        updateStateRule(\n                          state,\n                          $index,\n                          'val',\n                          $any($event.target).value\n                        )\n                      \"\n                    />\n                    <button (click)=\"removeStateRule(state, $index)\">\u00D7</button>\n                  </div>\n                }\n                <button\n                  class=\"ui-btn ui-btn-ghost\"\n                  (click)=\"addStateRule(state)\"\n                >\n                  + Add rule\n                </button>\n              </div>\n            }\n            <div>\n              @for (s of availableStates; track s) {\n                @if (!stateKeys.includes(s)) {\n                  <button class=\"ui-btn ui-btn-ghost\" (click)=\"addState(s)\">\n                    + {{ s }}\n                  </button>\n                }\n              }\n            </div>\n          </div>\n        }\n        @case (\"events\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Event Handlers</div>\n            <div>Map component @Output() events to schema handlers</div>\n            @for (evt of eventEntries; track $index) {\n              <div class=\"ui-properties-field-row\">\n                <input\n                  [value]=\"evt.event\"\n                  placeholder=\"event name\"\n                  (input)=\"updateEventName($index, $any($event.target).value)\"\n                />\n                <input\n                  [value]=\"evt.handler\"\n                  placeholder=\"handler name\"\n                  (input)=\"\n                    updateEventHandler($index, $any($event.target).value)\n                  \"\n                />\n                <button (click)=\"removeEvent($index)\">\u00D7</button>\n              </div>\n            }\n            <button class=\"ui-btn ui-btn-ghost\" (click)=\"addEvent()\">\n              + Add handler\n            </button>\n          </div>\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Data Binding</div>\n            <div class=\"ui-properties-field\">\n              <label>Store</label>\n              <input\n                [value]=\"el.bind?.store || ''\"\n                (input)=\"updateBind('store', $any($event.target).value)\"\n              />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>Field</label>\n              <input\n                [value]=\"el.bind?.field || ''\"\n                (input)=\"updateBind('field', $any($event.target).value)\"\n              />\n            </div>\n          </div>\n        }\n      }\n    </div>\n  } @else {\n    <div class=\"ui-properties-panel-empty\">No element selected</div>\n  }\n</div>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PropertiesPanelComponent, isStandalone: true, selector: "app-properties-panel", ngImport: i0, template: "<div class=\"ui-properties-panel\">\n  <div class=\"ui-properties-panel-header\">\n    <div>Properties</div>\n    @if (el(); as el) {\n      <div class=\"ui-properties-panel-id\">{{ el.id }}</div>\n    }\n  </div>\n\n  <div class=\"ui-properties-panel-tabs\">\n    @for (tab of tabs; track tab) {\n      <button\n        class=\"ui-properties-tab\"\n        [class.ui-properties-tab-active]=\"activeTab === tab\"\n        (click)=\"activeTab = tab\"\n      >\n        {{ tabLabels[tab] }}\n      </button>\n    }\n  </div>\n\n  @if (el(); as el) {\n    <div class=\"ui-properties-panel-body\">\n      @switch (activeTab) {\n        @case (\"props\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Component</div>\n            <div class=\"ui-properties-field\">\n              <label>Type</label>\n              <input readonly [value]=\"el.componentId\" />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>ID</label>\n              <input\n                [value]=\"el.id\"\n                (input)=\"updateField('id', $any($event.target).value)\"\n              />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>Classes</label>\n              <input\n                [value]=\"el.classes || ''\"\n                (input)=\"updateField('classes', $any($event.target).value)\"\n              />\n            </div>\n            @for (prop of propEntries; track prop.key) {\n              <div class=\"ui-properties-field\">\n                <label>{{ prop.key }}</label>\n                <input\n                  [value]=\"prop.value ?? ''\"\n                  (input)=\"updateProp(prop.key, $any($event.target).value)\"\n                />\n              </div>\n            }\n          </div>\n        }\n        @case (\"style\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Inline Styles</div>\n            <div>CSS custom properties and inline styles</div>\n            @for (style of styleEntries; track $index) {\n              <div class=\"ui-properties-field-row\">\n                <input\n                  [value]=\"style.key\"\n                  placeholder=\"property\"\n                  (input)=\"updateStyleKey($index, $any($event.target).value)\"\n                />\n                <input\n                  [value]=\"style.value\"\n                  placeholder=\"value\"\n                  (input)=\"updateStyleVal($index, $any($event.target).value)\"\n                />\n                <button (click)=\"removeStyle($index)\">\u00D7</button>\n              </div>\n            }\n            <button class=\"ui-btn ui-btn-ghost\" (click)=\"addStyle()\">\n              + Add style\n            </button>\n          </div>\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">States</div>\n            @for (state of stateKeys; track state) {\n              <div class=\"ui-properties-state\">\n                <label>{{ state }}</label>\n                @for (rule of getStateRules(state); track $index) {\n                  <div class=\"ui-properties-field-row\">\n                    <input\n                      [value]=\"rule.key\"\n                      placeholder=\"property\"\n                      (input)=\"\n                        updateStateRule(\n                          state,\n                          $index,\n                          'key',\n                          $any($event.target).value\n                        )\n                      \"\n                    />\n                    <input\n                      [value]=\"rule.value\"\n                      placeholder=\"value\"\n                      (input)=\"\n                        updateStateRule(\n                          state,\n                          $index,\n                          'val',\n                          $any($event.target).value\n                        )\n                      \"\n                    />\n                    <button (click)=\"removeStateRule(state, $index)\">\u00D7</button>\n                  </div>\n                }\n                <button\n                  class=\"ui-btn ui-btn-ghost\"\n                  (click)=\"addStateRule(state)\"\n                >\n                  + Add rule\n                </button>\n              </div>\n            }\n            <div>\n              @for (s of availableStates; track s) {\n                @if (!stateKeys.includes(s)) {\n                  <button class=\"ui-btn ui-btn-ghost\" (click)=\"addState(s)\">\n                    + {{ s }}\n                  </button>\n                }\n              }\n            </div>\n          </div>\n        }\n        @case (\"events\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Event Handlers</div>\n            <div>Map component @Output() events to schema handlers</div>\n            @for (evt of eventEntries; track $index) {\n              <div class=\"ui-properties-field-row\">\n                <input\n                  [value]=\"evt.event\"\n                  placeholder=\"event name\"\n                  (input)=\"updateEventName($index, $any($event.target).value)\"\n                />\n                <input\n                  [value]=\"evt.handler\"\n                  placeholder=\"handler name\"\n                  (input)=\"\n                    updateEventHandler($index, $any($event.target).value)\n                  \"\n                />\n                <button (click)=\"removeEvent($index)\">\u00D7</button>\n              </div>\n            }\n            <button class=\"ui-btn ui-btn-ghost\" (click)=\"addEvent()\">\n              + Add handler\n            </button>\n          </div>\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Data Binding</div>\n            <div class=\"ui-properties-field\">\n              <label>Store</label>\n              <input\n                [value]=\"el.bind?.store || ''\"\n                (input)=\"updateBind('store', $any($event.target).value)\"\n              />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>Field</label>\n              <input\n                [value]=\"el.bind?.field || ''\"\n                (input)=\"updateBind('field', $any($event.target).value)\"\n              />\n            </div>\n          </div>\n        }\n      }\n    </div>\n  } @else {\n    <div class=\"ui-properties-panel-empty\">No element selected</div>\n  }\n</div>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PropertiesPanelComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-properties-panel", standalone: true, imports: [CommonModule], template: "<div class=\"ui-properties-panel\">\n  <div class=\"ui-properties-panel-header\">\n    <div>Properties</div>\n    @if (el(); as el) {\n      <div class=\"ui-properties-panel-id\">{{ el.id }}</div>\n    }\n  </div>\n\n  <div class=\"ui-properties-panel-tabs\">\n    @for (tab of tabs; track tab) {\n      <button\n        class=\"ui-properties-tab\"\n        [class.ui-properties-tab-active]=\"activeTab === tab\"\n        (click)=\"activeTab = tab\"\n      >\n        {{ tabLabels[tab] }}\n      </button>\n    }\n  </div>\n\n  @if (el(); as el) {\n    <div class=\"ui-properties-panel-body\">\n      @switch (activeTab) {\n        @case (\"props\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Component</div>\n            <div class=\"ui-properties-field\">\n              <label>Type</label>\n              <input readonly [value]=\"el.componentId\" />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>ID</label>\n              <input\n                [value]=\"el.id\"\n                (input)=\"updateField('id', $any($event.target).value)\"\n              />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>Classes</label>\n              <input\n                [value]=\"el.classes || ''\"\n                (input)=\"updateField('classes', $any($event.target).value)\"\n              />\n            </div>\n            @for (prop of propEntries; track prop.key) {\n              <div class=\"ui-properties-field\">\n                <label>{{ prop.key }}</label>\n                <input\n                  [value]=\"prop.value ?? ''\"\n                  (input)=\"updateProp(prop.key, $any($event.target).value)\"\n                />\n              </div>\n            }\n          </div>\n        }\n        @case (\"style\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Inline Styles</div>\n            <div>CSS custom properties and inline styles</div>\n            @for (style of styleEntries; track $index) {\n              <div class=\"ui-properties-field-row\">\n                <input\n                  [value]=\"style.key\"\n                  placeholder=\"property\"\n                  (input)=\"updateStyleKey($index, $any($event.target).value)\"\n                />\n                <input\n                  [value]=\"style.value\"\n                  placeholder=\"value\"\n                  (input)=\"updateStyleVal($index, $any($event.target).value)\"\n                />\n                <button (click)=\"removeStyle($index)\">\u00D7</button>\n              </div>\n            }\n            <button class=\"ui-btn ui-btn-ghost\" (click)=\"addStyle()\">\n              + Add style\n            </button>\n          </div>\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">States</div>\n            @for (state of stateKeys; track state) {\n              <div class=\"ui-properties-state\">\n                <label>{{ state }}</label>\n                @for (rule of getStateRules(state); track $index) {\n                  <div class=\"ui-properties-field-row\">\n                    <input\n                      [value]=\"rule.key\"\n                      placeholder=\"property\"\n                      (input)=\"\n                        updateStateRule(\n                          state,\n                          $index,\n                          'key',\n                          $any($event.target).value\n                        )\n                      \"\n                    />\n                    <input\n                      [value]=\"rule.value\"\n                      placeholder=\"value\"\n                      (input)=\"\n                        updateStateRule(\n                          state,\n                          $index,\n                          'val',\n                          $any($event.target).value\n                        )\n                      \"\n                    />\n                    <button (click)=\"removeStateRule(state, $index)\">\u00D7</button>\n                  </div>\n                }\n                <button\n                  class=\"ui-btn ui-btn-ghost\"\n                  (click)=\"addStateRule(state)\"\n                >\n                  + Add rule\n                </button>\n              </div>\n            }\n            <div>\n              @for (s of availableStates; track s) {\n                @if (!stateKeys.includes(s)) {\n                  <button class=\"ui-btn ui-btn-ghost\" (click)=\"addState(s)\">\n                    + {{ s }}\n                  </button>\n                }\n              }\n            </div>\n          </div>\n        }\n        @case (\"events\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Event Handlers</div>\n            <div>Map component @Output() events to schema handlers</div>\n            @for (evt of eventEntries; track $index) {\n              <div class=\"ui-properties-field-row\">\n                <input\n                  [value]=\"evt.event\"\n                  placeholder=\"event name\"\n                  (input)=\"updateEventName($index, $any($event.target).value)\"\n                />\n                <input\n                  [value]=\"evt.handler\"\n                  placeholder=\"handler name\"\n                  (input)=\"\n                    updateEventHandler($index, $any($event.target).value)\n                  \"\n                />\n                <button (click)=\"removeEvent($index)\">\u00D7</button>\n              </div>\n            }\n            <button class=\"ui-btn ui-btn-ghost\" (click)=\"addEvent()\">\n              + Add handler\n            </button>\n          </div>\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Data Binding</div>\n            <div class=\"ui-properties-field\">\n              <label>Store</label>\n              <input\n                [value]=\"el.bind?.store || ''\"\n                (input)=\"updateBind('store', $any($event.target).value)\"\n              />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>Field</label>\n              <input\n                [value]=\"el.bind?.field || ''\"\n                (input)=\"updateBind('field', $any($event.target).value)\"\n              />\n            </div>\n          </div>\n        }\n      }\n    </div>\n  } @else {\n    <div class=\"ui-properties-panel-empty\">No element selected</div>\n  }\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-properties-panel", standalone: true, imports: [CommonModule], template: "<div class=\"ui-properties-panel\">\n  <div class=\"ui-properties-panel-header\">\n    <div>Properties</div>\n    @if (el(); as el) {\n      <div class=\"ui-properties-panel-id\">{{ el.id }}</div>\n    }\n  </div>\n\n  <div class=\"ui-properties-panel-tabs\">\n    @for (tab of tabs; track tab) {\n      <button\n        class=\"ui-properties-tab\"\n        [class.ui-properties-tab-active]=\"activeTab === tab\"\n        (click)=\"activeTab = tab\"\n      >\n        {{ tabLabels[tab] }}\n      </button>\n    }\n  </div>\n\n  @if (el(); as el) {\n    <div class=\"ui-properties-panel-body\">\n      @switch (activeTab) {\n        @case (\"props\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Component</div>\n            <div class=\"ui-properties-field\">\n              <label>Type</label>\n              <input readonly [value]=\"el.componentId\" />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>ID</label>\n              <input\n                [value]=\"el.id\"\n                (input)=\"updateField('id', $any($event.target).value)\"\n              />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>Classes</label>\n              <input\n                [value]=\"el.classes || ''\"\n                (input)=\"updateField('classes', $any($event.target).value)\"\n              />\n            </div>\n            @for (prop of propEntries; track prop.key) {\n              <div class=\"ui-properties-field\">\n                <label>{{ prop.key }}</label>\n                <input\n                  [value]=\"prop.value ?? ''\"\n                  (input)=\"updateProp(prop.key, $any($event.target).value)\"\n                />\n              </div>\n            }\n          </div>\n        }\n        @case (\"style\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Inline Styles</div>\n            <div>CSS custom properties and inline styles</div>\n            @for (style of styleEntries; track $index) {\n              <div class=\"ui-properties-field-row\">\n                <input\n                  [value]=\"style.key\"\n                  placeholder=\"property\"\n                  (input)=\"updateStyleKey($index, $any($event.target).value)\"\n                />\n                <input\n                  [value]=\"style.value\"\n                  placeholder=\"value\"\n                  (input)=\"updateStyleVal($index, $any($event.target).value)\"\n                />\n                <button (click)=\"removeStyle($index)\">\u00D7</button>\n              </div>\n            }\n            <button class=\"ui-btn ui-btn-ghost\" (click)=\"addStyle()\">\n              + Add style\n            </button>\n          </div>\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">States</div>\n            @for (state of stateKeys; track state) {\n              <div class=\"ui-properties-state\">\n                <label>{{ state }}</label>\n                @for (rule of getStateRules(state); track $index) {\n                  <div class=\"ui-properties-field-row\">\n                    <input\n                      [value]=\"rule.key\"\n                      placeholder=\"property\"\n                      (input)=\"\n                        updateStateRule(\n                          state,\n                          $index,\n                          'key',\n                          $any($event.target).value\n                        )\n                      \"\n                    />\n                    <input\n                      [value]=\"rule.value\"\n                      placeholder=\"value\"\n                      (input)=\"\n                        updateStateRule(\n                          state,\n                          $index,\n                          'val',\n                          $any($event.target).value\n                        )\n                      \"\n                    />\n                    <button (click)=\"removeStateRule(state, $index)\">\u00D7</button>\n                  </div>\n                }\n                <button\n                  class=\"ui-btn ui-btn-ghost\"\n                  (click)=\"addStateRule(state)\"\n                >\n                  + Add rule\n                </button>\n              </div>\n            }\n            <div>\n              @for (s of availableStates; track s) {\n                @if (!stateKeys.includes(s)) {\n                  <button class=\"ui-btn ui-btn-ghost\" (click)=\"addState(s)\">\n                    + {{ s }}\n                  </button>\n                }\n              }\n            </div>\n          </div>\n        }\n        @case (\"events\") {\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Event Handlers</div>\n            <div>Map component @Output() events to schema handlers</div>\n            @for (evt of eventEntries; track $index) {\n              <div class=\"ui-properties-field-row\">\n                <input\n                  [value]=\"evt.event\"\n                  placeholder=\"event name\"\n                  (input)=\"updateEventName($index, $any($event.target).value)\"\n                />\n                <input\n                  [value]=\"evt.handler\"\n                  placeholder=\"handler name\"\n                  (input)=\"\n                    updateEventHandler($index, $any($event.target).value)\n                  \"\n                />\n                <button (click)=\"removeEvent($index)\">\u00D7</button>\n              </div>\n            }\n            <button class=\"ui-btn ui-btn-ghost\" (click)=\"addEvent()\">\n              + Add handler\n            </button>\n          </div>\n          <div class=\"ui-properties-section\">\n            <div class=\"ui-properties-section-title\">Data Binding</div>\n            <div class=\"ui-properties-field\">\n              <label>Store</label>\n              <input\n                [value]=\"el.bind?.store || ''\"\n                (input)=\"updateBind('store', $any($event.target).value)\"\n              />\n            </div>\n            <div class=\"ui-properties-field\">\n              <label>Field</label>\n              <input\n                [value]=\"el.bind?.field || ''\"\n                (input)=\"updateBind('field', $any($event.target).value)\"\n              />\n            </div>\n          </div>\n        }\n      }\n    </div>\n  } @else {\n    <div class=\"ui-properties-panel-empty\">No element selected</div>\n  }\n</div>\n" }]
         }] });
 registerSchemaComponent("app-properties-panel", PropertiesPanelComponent);
 
@@ -5056,11 +4201,11 @@ class BottomPanelComponent {
         this.tabChange.emit(tabId);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BottomPanelComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: BottomPanelComponent, isStandalone: true, selector: "app-bottom-panel", inputs: { tabs: "tabs", activeTab: "activeTab", position: "position", fullWidth: "fullWidth", floating: "floating", borderRadius: "borderRadius" }, outputs: { tabChange: "tabChange" }, ngImport: i0, template: "<div class=\"ui-bottom-panel\">\n  <div class=\"ui-bottom-panel-tabs\">\n    @for (tab of parsedTabs; track tab.id) {\n      <div\n        class=\"ui-bottom-panel-tab\"\n        [class.ui-bottom-panel-tab-active]=\"activeTab === tab.id\"\n        (click)=\"handleTabClick(tab.id)\"\n      >\n        {{ tab.label }}\n      </div>\n    }\n  </div>\n  <div class=\"ui-bottom-panel-body\">\n    <ng-content></ng-content>\n    @if (!parsedTabs.length) {\n      <div>No tabs available</div>\n    }\n  </div>\n</div>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: BottomPanelComponent, isStandalone: true, selector: "app-bottom-panel", inputs: { tabs: "tabs", activeTab: "activeTab", position: "position", fullWidth: "fullWidth", floating: "floating", borderRadius: "borderRadius" }, outputs: { tabChange: "tabChange" }, ngImport: i0, template: "<div class=\"ui-bottom-panel\">\n  <div class=\"ui-bottom-panel-tabs\">\n    @for (tab of parsedTabs; track tab.id) {\n      <div\n        class=\"ui-bottom-panel-tab\"\n        [class.ui-bottom-panel-tab-active]=\"activeTab === tab.id\"\n        (click)=\"handleTabClick(tab.id)\"\n      >\n        {{ tab.label }}\n      </div>\n    }\n  </div>\n  <div class=\"ui-bottom-panel-body\">\n    <ng-content></ng-content>\n    @if (!parsedTabs.length) {\n      <div>No tabs available</div>\n    }\n  </div>\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BottomPanelComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-bottom-panel", standalone: true, imports: [], template: "<div class=\"ui-bottom-panel\">\n  <div class=\"ui-bottom-panel-tabs\">\n    @for (tab of parsedTabs; track tab.id) {\n      <div\n        class=\"ui-bottom-panel-tab\"\n        [class.ui-bottom-panel-tab-active]=\"activeTab === tab.id\"\n        (click)=\"handleTabClick(tab.id)\"\n      >\n        {{ tab.label }}\n      </div>\n    }\n  </div>\n  <div class=\"ui-bottom-panel-body\">\n    <ng-content></ng-content>\n    @if (!parsedTabs.length) {\n      <div>No tabs available</div>\n    }\n  </div>\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-bottom-panel", standalone: true, imports: [], template: "<div class=\"ui-bottom-panel\">\n  <div class=\"ui-bottom-panel-tabs\">\n    @for (tab of parsedTabs; track tab.id) {\n      <div\n        class=\"ui-bottom-panel-tab\"\n        [class.ui-bottom-panel-tab-active]=\"activeTab === tab.id\"\n        (click)=\"handleTabClick(tab.id)\"\n      >\n        {{ tab.label }}\n      </div>\n    }\n  </div>\n  <div class=\"ui-bottom-panel-body\">\n    <ng-content></ng-content>\n    @if (!parsedTabs.length) {\n      <div>No tabs available</div>\n    }\n  </div>\n</div>\n" }]
         }], propDecorators: { tabs: [{
                 type: Input
             }], activeTab: [{
@@ -5082,95 +4227,40 @@ class HeaderComponent {
     title = "";
     subtitle = "";
     icon = "";
-    classes = '';
+    classes = "";
     showBack = false;
     breadcrumbs = "[]";
+    fixed = true;
     navigateBack = new EventEmitter();
     get parsedBreadcrumbs() {
         return parseJsonOrDefault(this.breadcrumbs);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: HeaderComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: HeaderComponent, isStandalone: true, selector: "app-header", inputs: { title: "title", subtitle: "subtitle", icon: "icon", classes: "classes", showBack: "showBack", breadcrumbs: "breadcrumbs" }, outputs: { navigateBack: "navigateBack" }, ngImport: i0, template: `
-    <header [class]="'flex items-center gap-3 ' + classes">
-      @if (showBack) {
-        <button
-          class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[--state-hover] active:bg-[--state-pressed] transition-colors"
-          (click)="navigateBack.emit()"
-          aria-label="Back"
-        >
-          <span class="text-xl">&#8592;</span>
-        </button>
-      }
-      <div class="flex flex-col">
-        <div class="flex items-center gap-3">
-          @if (icon) {
-            <app-icon [icon]="icon" class="w-6 h-6 text-primary" />
-          }
-          <h1 class="text-xl font-medium text-on-surface leading-tight">{{ title }}</h1>
-        </div>
-        @if (subtitle) {
-          <p class="text-sm text-on-surface-variant">{{ subtitle }}</p>
-        }
-        @if (parsedBreadcrumbs.length) {
-          <div class="flex items-center gap-2 text-sm text-on-surface-variant mt-1">
-            @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {
-              @if (!last && crumb.href) {
-                <a [href]="crumb.href" class="hover:underline">{{ crumb.label }}</a>
-              } @else {
-                <span>{{ crumb.label }}</span>
-              }
-              @if (!last) {
-                <span class="text-on-surface-variant/50">/</span>
-              }
-            }
-          </div>
-        }
-      </div>
-      <ng-content></ng-content>
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: HeaderComponent, isStandalone: true, selector: "app-header", inputs: { title: "title", subtitle: "subtitle", icon: "icon", classes: "classes", showBack: "showBack", breadcrumbs: "breadcrumbs", fixed: "fixed" }, outputs: { navigateBack: "navigateBack" }, ngImport: i0, template: `
+    <header
+      class="sticky top-0 z-40 w-full flex items-center justify-between px-4 py-3 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 shadow-sm transition-colors"
+    >
+      <ng-content select="[slot=brand]" />
+      <ng-content select="[slot=actions]" />
     </header>
-  `, isInline: true, styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: HeaderComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-header", standalone: true, imports: [IconComponent], changeDetection: ChangeDetectionStrategy.OnPush, template: `
-    <header [class]="'flex items-center gap-3 ' + classes">
-      @if (showBack) {
-        <button
-          class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[--state-hover] active:bg-[--state-pressed] transition-colors"
-          (click)="navigateBack.emit()"
-          aria-label="Back"
-        >
-          <span class="text-xl">&#8592;</span>
-        </button>
-      }
-      <div class="flex flex-col">
-        <div class="flex items-center gap-3">
-          @if (icon) {
-            <app-icon [icon]="icon" class="w-6 h-6 text-primary" />
-          }
-          <h1 class="text-xl font-medium text-on-surface leading-tight">{{ title }}</h1>
-        </div>
-        @if (subtitle) {
-          <p class="text-sm text-on-surface-variant">{{ subtitle }}</p>
-        }
-        @if (parsedBreadcrumbs.length) {
-          <div class="flex items-center gap-2 text-sm text-on-surface-variant mt-1">
-            @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {
-              @if (!last && crumb.href) {
-                <a [href]="crumb.href" class="hover:underline">{{ crumb.label }}</a>
-              } @else {
-                <span>{{ crumb.label }}</span>
-              }
-              @if (!last) {
-                <span class="text-on-surface-variant/50">/</span>
-              }
-            }
-          </div>
-        }
-      </div>
-      <ng-content></ng-content>
+            args: [{
+                    selector: "app-header",
+                    standalone: true,
+                    imports: [IconComponent],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <header
+      class="sticky top-0 z-40 w-full flex items-center justify-between px-4 py-3 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 shadow-sm transition-colors"
+    >
+      <ng-content select="[slot=brand]" />
+      <ng-content select="[slot=actions]" />
     </header>
-  `, styles: [":host{display:block}\n"] }]
+  `,
+                }]
         }], propDecorators: { title: [{
                 type: Input
             }], subtitle: [{
@@ -5183,6 +4273,8 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
                 type: Input
             }], breadcrumbs: [{
                 type: Input
+            }], fixed: [{
+                type: Input
             }], navigateBack: [{
                 type: Output
             }] } });
@@ -5193,10 +4285,19 @@ class SidebarComponent {
     items = "[]";
     width = 240;
     collapsedWidth = 64;
+    activeId = "";
+    groupedItems = "[]";
     collapseChanged = new EventEmitter();
     itemClicked = new EventEmitter();
+    sectionScroll = new EventEmitter();
     get parsedItems() {
         return parseJsonOrDefault(this.items);
+    }
+    get parsedGroups() {
+        return parseJsonOrDefault(this.groupedItems);
+    }
+    get hasGroups() {
+        return this.parsedGroups.length > 0;
     }
     toggleCollapse() {
         this.collapsed = !this.collapsed;
@@ -5204,13 +4305,36 @@ class SidebarComponent {
     }
     handleItemClick(item) {
         this.itemClicked.emit(item);
+        if (item.id) {
+            this.sectionScroll.emit(item.id);
+        }
+    }
+    isActive(item) {
+        return !!this.activeId && !!item.id && item.id === this.activeId;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SidebarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SidebarComponent, isStandalone: true, selector: "app-sidebar", inputs: { collapsed: "collapsed", items: "items", width: "width", collapsedWidth: "collapsedWidth" }, outputs: { collapseChanged: "collapseChanged", itemClicked: "itemClicked" }, ngImport: i0, template: "<aside\n  class=\"ui-sidebar\"\n  [class.ui-sidebar-collapsed]=\"collapsed\"\n  [style.width.px]=\"width\"\n  [style.min-width.px]=\"width\"\n>\n  <div class=\"ui-sidebar-header\">\n    <button\n      class=\"ui-sidebar-toggle\"\n      (click)=\"toggleCollapse()\"\n      aria-label=\"Toggle sidebar\"\n    >\n      {{ collapsed ? \"\u2192\" : \"\u2190\" }}\n    </button>\n  </div>\n  <nav class=\"ui-sidebar-nav\">\n    <ul>\n      @for (item of parsedItems; track item.label) {\n        <li>\n          <div class=\"ui-sidebar-item\" (click)=\"handleItemClick(item)\">\n            @if (item.icon) {\n              <span class=\"ui-sidebar-item-icon\">{{ item.icon }}</span>\n            }\n            <span class=\"ui-sidebar-item-label\">{{ item.label }}</span>\n          </div>\n          @if (item.children?.length) {\n            <ul class=\"ui-sidebar-submenu\">\n              @for (child of item.children; track child.label) {\n                <li>\n                  <div class=\"ui-sidebar-item\" (click)=\"handleItemClick(child)\">\n                    @if (child.icon) {\n                      <span class=\"ui-sidebar-item-icon\">{{ child.icon }}</span>\n                    }\n                    <span class=\"ui-sidebar-item-label\">{{ child.label }}</span>\n                  </div>\n                </li>\n              }\n            </ul>\n          }\n        </li>\n      }\n    </ul>\n  </nav>\n  <ng-content></ng-content>\n</aside>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SidebarComponent, isStandalone: true, selector: "app-sidebar", inputs: { collapsed: "collapsed", items: "items", width: "width", collapsedWidth: "collapsedWidth", activeId: "activeId", groupedItems: "groupedItems" }, outputs: { collapseChanged: "collapseChanged", itemClicked: "itemClicked", sectionScroll: "sectionScroll" }, ngImport: i0, template: `
+    <aside
+      class="h-full px-4 py-5 overflow-y-auto flex flex-col justify-between"
+    >
+      <ng-content />
+    </aside>
+  `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SidebarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-sidebar", standalone: true, imports: [], template: "<aside\n  class=\"ui-sidebar\"\n  [class.ui-sidebar-collapsed]=\"collapsed\"\n  [style.width.px]=\"width\"\n  [style.min-width.px]=\"width\"\n>\n  <div class=\"ui-sidebar-header\">\n    <button\n      class=\"ui-sidebar-toggle\"\n      (click)=\"toggleCollapse()\"\n      aria-label=\"Toggle sidebar\"\n    >\n      {{ collapsed ? \"\u2192\" : \"\u2190\" }}\n    </button>\n  </div>\n  <nav class=\"ui-sidebar-nav\">\n    <ul>\n      @for (item of parsedItems; track item.label) {\n        <li>\n          <div class=\"ui-sidebar-item\" (click)=\"handleItemClick(item)\">\n            @if (item.icon) {\n              <span class=\"ui-sidebar-item-icon\">{{ item.icon }}</span>\n            }\n            <span class=\"ui-sidebar-item-label\">{{ item.label }}</span>\n          </div>\n          @if (item.children?.length) {\n            <ul class=\"ui-sidebar-submenu\">\n              @for (child of item.children; track child.label) {\n                <li>\n                  <div class=\"ui-sidebar-item\" (click)=\"handleItemClick(child)\">\n                    @if (child.icon) {\n                      <span class=\"ui-sidebar-item-icon\">{{ child.icon }}</span>\n                    }\n                    <span class=\"ui-sidebar-item-label\">{{ child.label }}</span>\n                  </div>\n                </li>\n              }\n            </ul>\n          }\n        </li>\n      }\n    </ul>\n  </nav>\n  <ng-content></ng-content>\n</aside>\n", styles: [":host{display:block}\n"] }]
+            args: [{
+                    selector: "app-sidebar",
+                    standalone: true,
+                    imports: [],
+                    template: `
+    <aside
+      class="h-full px-4 py-5 overflow-y-auto flex flex-col justify-between"
+    >
+      <ng-content />
+    </aside>
+  `,
+                }]
         }], propDecorators: { collapsed: [{
                 type: Input
             }], items: [{
@@ -5219,22 +4343,61 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
                 type: Input
             }], collapsedWidth: [{
                 type: Input
+            }], activeId: [{
+                type: Input
+            }], groupedItems: [{
+                type: Input
             }], collapseChanged: [{
                 type: Output
             }], itemClicked: [{
+                type: Output
+            }], sectionScroll: [{
                 type: Output
             }] } });
 registerSchemaComponent("app-sidebar", SidebarComponent);
 
 class FooterComponent {
     text = "";
+    links = "[]";
+    get parsedLinks() {
+        return parseJsonOrDefault(this.links);
+    }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: FooterComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: FooterComponent, isStandalone: true, selector: "app-footer", inputs: { text: "text" }, ngImport: i0, template: "<footer class=\"ui-footer\">\n  @if (text) {\n    <p>{{ text }}</p>\n  }\n  <ng-content></ng-content>\n</footer>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: FooterComponent, isStandalone: true, selector: "app-footer", inputs: { text: "text", links: "links" }, ngImport: i0, template: `
+    <footer
+      class="mt-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-5 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 text-xs text-neutral-500 transition-colors"
+    >
+      <p>{{ text }}</p>
+      <div class="flex gap-4">
+        @for (link of parsedLinks; track link.label) {
+          <a [href]="link.href || '#'">{{ link.label }}</a>
+        }
+      </div>
+    </footer>
+  `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: FooterComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-footer", standalone: true, imports: [], template: "<footer class=\"ui-footer\">\n  @if (text) {\n    <p>{{ text }}</p>\n  }\n  <ng-content></ng-content>\n</footer>\n", styles: [":host{display:block}\n"] }]
+            args: [{
+                    selector: "app-footer",
+                    standalone: true,
+                    imports: [CommonModule],
+                    template: `
+    <footer
+      class="mt-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-5 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 text-xs text-neutral-500 transition-colors"
+    >
+      <p>{{ text }}</p>
+      <div class="flex gap-4">
+        @for (link of parsedLinks; track link.label) {
+          <a [href]="link.href || '#'">{{ link.label }}</a>
+        }
+      </div>
+    </footer>
+  `,
+                }]
         }], propDecorators: { text: [{
+                type: Input
+            }], links: [{
                 type: Input
             }] } });
 registerSchemaComponent("app-footer", FooterComponent);
@@ -5245,11 +4408,11 @@ class PageContainerComponent {
     maxWidth = 0;
     width = "";
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PageContainerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PageContainerComponent, isStandalone: true, selector: "app-page-container", inputs: { title: "title", padding: "padding", maxWidth: "maxWidth", width: "width" }, ngImport: i0, template: "@if (title) {\n  <div class=\"ui-page-header\">\n    <h1>{{ title }}</h1>\n    <ng-content select=\"[slot=header-actions]\"></ng-content>\n  </div>\n}\n<div\n  class=\"ui-page-container\"\n  [style.maxWidth]=\"maxWidth ? maxWidth + 'px' : null\"\n>\n  <ng-content></ng-content>\n</div>\n", styles: [":host{display:flex;flex-direction:column;height:100%}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PageContainerComponent, isStandalone: true, selector: "app-page-container", inputs: { title: "title", padding: "padding", maxWidth: "maxWidth", width: "width" }, ngImport: i0, template: "@if (title) {\n  <div class=\"ui-page-header\">\n    <h1>{{ title }}</h1>\n    <ng-content select=\"[slot=header-actions]\"></ng-content>\n  </div>\n}\n<div\n  class=\"ui-page-container\"\n  [style.maxWidth]=\"maxWidth ? maxWidth + 'px' : null\"\n>\n  <ng-content></ng-content>\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PageContainerComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-page-container", standalone: true, imports: [], template: "@if (title) {\n  <div class=\"ui-page-header\">\n    <h1>{{ title }}</h1>\n    <ng-content select=\"[slot=header-actions]\"></ng-content>\n  </div>\n}\n<div\n  class=\"ui-page-container\"\n  [style.maxWidth]=\"maxWidth ? maxWidth + 'px' : null\"\n>\n  <ng-content></ng-content>\n</div>\n", styles: [":host{display:flex;flex-direction:column;height:100%}\n"] }]
+            args: [{ selector: "app-page-container", standalone: true, imports: [], template: "@if (title) {\n  <div class=\"ui-page-header\">\n    <h1>{{ title }}</h1>\n    <ng-content select=\"[slot=header-actions]\"></ng-content>\n  </div>\n}\n<div\n  class=\"ui-page-container\"\n  [style.maxWidth]=\"maxWidth ? maxWidth + 'px' : null\"\n>\n  <ng-content></ng-content>\n</div>\n" }]
         }], propDecorators: { title: [{
                 type: Input
             }], padding: [{
@@ -5272,11 +4435,11 @@ class PageToolbarComponent {
         this.actionClicked.emit(action.action || action.label);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PageToolbarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PageToolbarComponent, isStandalone: true, selector: "app-page-toolbar", inputs: { title: "title", actions: "actions" }, outputs: { actionClicked: "actionClicked" }, ngImport: i0, template: "<div class=\"ui-page-toolbar\">\n  <div class=\"ui-page-toolbar-title\">\n    <h2>{{ title }}</h2>\n    <ng-content select=\"[slot=subtitle]\"></ng-content>\n  </div>\n  <div class=\"ui-page-toolbar-actions\">\n    @for (action of parsedActions; track action.label) {\n      <button\n        class=\"ui-btn\"\n        [class.ui-btn-primary]=\"action.variant === 'primary'\"\n        [class.ui-btn-danger]=\"action.variant === 'danger'\"\n        [class.ui-btn-ghost]=\"action.variant === 'ghost'\"\n        (click)=\"handleAction(action)\"\n      >\n        @if (action.icon) {\n          <app-icon [icon]=\"action.icon\" [size]=\"18\" />\n        }\n        {{ action.label }}\n      </button>\n    }\n  </div>\n</div>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: PageToolbarComponent, isStandalone: true, selector: "app-page-toolbar", inputs: { title: "title", actions: "actions" }, outputs: { actionClicked: "actionClicked" }, ngImport: i0, template: "<div class=\"ui-page-toolbar\">\n  <div class=\"ui-page-toolbar-title\">\n    <h2>{{ title }}</h2>\n    <ng-content select=\"[slot=subtitle]\"></ng-content>\n  </div>\n  <div class=\"ui-page-toolbar-actions\">\n    @for (action of parsedActions; track action.label) {\n      <button\n        class=\"ui-btn\"\n        [class.ui-btn-primary]=\"action.variant === 'primary'\"\n        [class.ui-btn-danger]=\"action.variant === 'danger'\"\n        [class.ui-btn-ghost]=\"action.variant === 'ghost'\"\n        (click)=\"handleAction(action)\"\n      >\n        @if (action.icon) {\n          <app-icon [icon]=\"action.icon\" [size]=\"18\" />\n        }\n        {{ action.label }}\n      </button>\n    }\n  </div>\n</div>\n", dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: PageToolbarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-page-toolbar", standalone: true, imports: [IconComponent], template: "<div class=\"ui-page-toolbar\">\n  <div class=\"ui-page-toolbar-title\">\n    <h2>{{ title }}</h2>\n    <ng-content select=\"[slot=subtitle]\"></ng-content>\n  </div>\n  <div class=\"ui-page-toolbar-actions\">\n    @for (action of parsedActions; track action.label) {\n      <button\n        class=\"ui-btn\"\n        [class.ui-btn-primary]=\"action.variant === 'primary'\"\n        [class.ui-btn-danger]=\"action.variant === 'danger'\"\n        [class.ui-btn-ghost]=\"action.variant === 'ghost'\"\n        (click)=\"handleAction(action)\"\n      >\n        @if (action.icon) {\n          <app-icon [icon]=\"action.icon\" [size]=\"18\" />\n        }\n        {{ action.label }}\n      </button>\n    }\n  </div>\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-page-toolbar", standalone: true, imports: [IconComponent], template: "<div class=\"ui-page-toolbar\">\n  <div class=\"ui-page-toolbar-title\">\n    <h2>{{ title }}</h2>\n    <ng-content select=\"[slot=subtitle]\"></ng-content>\n  </div>\n  <div class=\"ui-page-toolbar-actions\">\n    @for (action of parsedActions; track action.label) {\n      <button\n        class=\"ui-btn\"\n        [class.ui-btn-primary]=\"action.variant === 'primary'\"\n        [class.ui-btn-danger]=\"action.variant === 'danger'\"\n        [class.ui-btn-ghost]=\"action.variant === 'ghost'\"\n        (click)=\"handleAction(action)\"\n      >\n        @if (action.icon) {\n          <app-icon [icon]=\"action.icon\" [size]=\"18\" />\n        }\n        {{ action.label }}\n      </button>\n    }\n  </div>\n</div>\n" }]
         }], propDecorators: { title: [{
                 type: Input
             }], actions: [{
@@ -5333,11 +4496,11 @@ class SplitViewComponent {
             document.removeEventListener("mouseup", this.onMouseUp);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SplitViewComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SplitViewComponent, isStandalone: true, selector: "app-split-view", inputs: { direction: "direction", split: "split", minFirst: "minFirst", minSecond: "minSecond" }, outputs: { splitChanged: "splitChanged" }, viewQueries: [{ propertyName: "containerEl", first: true, predicate: ["container"], descendants: true }], ngImport: i0, template: "<div\n  class=\"ui-split-view\"\n  #container\n  [class.ui-split-view-vertical]=\"direction === 'vertical'\"\n>\n  <div\n    class=\"ui-split-pane-first\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'height: 100%; width: ' + split + '%; flex-grow: 0'\n        : 'width: 100%; height: ' + split + '%; flex-grow: 0'\n    \"\n  >\n    <ng-content select=\"[slot=first]\"></ng-content>\n  </div>\n  <div\n    class=\"ui-split-divider\"\n    [class.ui-split-divider-dragging]=\"isDragging\"\n    [class.ui-split-divider-horizontal]=\"direction === 'horizontal'\"\n    [class.ui-split-divider-vertical]=\"direction === 'vertical'\"\n    (mousedown)=\"onDividerMouseDown($event)\"\n  ></div>\n  <div\n    class=\"ui-split-pane-second\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'flex: 1; height: 100%'\n        : 'flex: 1; width: 100%'\n    \"\n  >\n    <ng-content select=\"[slot=second]\"></ng-content>\n  </div>\n</div>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: SplitViewComponent, isStandalone: true, selector: "app-split-view", inputs: { direction: "direction", split: "split", minFirst: "minFirst", minSecond: "minSecond" }, outputs: { splitChanged: "splitChanged" }, viewQueries: [{ propertyName: "containerEl", first: true, predicate: ["container"], descendants: true }], ngImport: i0, template: "<div\n  class=\"ui-split-view\"\n  #container\n  [class.ui-split-view-vertical]=\"direction === 'vertical'\"\n>\n  <div\n    class=\"ui-split-pane-first\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'height: 100%; width: ' + split + '%; flex-grow: 0'\n        : 'width: 100%; height: ' + split + '%; flex-grow: 0'\n    \"\n  >\n    <ng-content select=\"[slot=first]\"></ng-content>\n  </div>\n  <div\n    class=\"ui-split-divider\"\n    [class.ui-split-divider-dragging]=\"isDragging\"\n    [class.ui-split-divider-horizontal]=\"direction === 'horizontal'\"\n    [class.ui-split-divider-vertical]=\"direction === 'vertical'\"\n    (mousedown)=\"onDividerMouseDown($event)\"\n  ></div>\n  <div\n    class=\"ui-split-pane-second\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'flex: 1; height: 100%'\n        : 'flex: 1; width: 100%'\n    \"\n  >\n    <ng-content select=\"[slot=second]\"></ng-content>\n  </div>\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SplitViewComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-split-view", standalone: true, imports: [], template: "<div\n  class=\"ui-split-view\"\n  #container\n  [class.ui-split-view-vertical]=\"direction === 'vertical'\"\n>\n  <div\n    class=\"ui-split-pane-first\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'height: 100%; width: ' + split + '%; flex-grow: 0'\n        : 'width: 100%; height: ' + split + '%; flex-grow: 0'\n    \"\n  >\n    <ng-content select=\"[slot=first]\"></ng-content>\n  </div>\n  <div\n    class=\"ui-split-divider\"\n    [class.ui-split-divider-dragging]=\"isDragging\"\n    [class.ui-split-divider-horizontal]=\"direction === 'horizontal'\"\n    [class.ui-split-divider-vertical]=\"direction === 'vertical'\"\n    (mousedown)=\"onDividerMouseDown($event)\"\n  ></div>\n  <div\n    class=\"ui-split-pane-second\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'flex: 1; height: 100%'\n        : 'flex: 1; width: 100%'\n    \"\n  >\n    <ng-content select=\"[slot=second]\"></ng-content>\n  </div>\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-split-view", standalone: true, imports: [], template: "<div\n  class=\"ui-split-view\"\n  #container\n  [class.ui-split-view-vertical]=\"direction === 'vertical'\"\n>\n  <div\n    class=\"ui-split-pane-first\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'height: 100%; width: ' + split + '%; flex-grow: 0'\n        : 'width: 100%; height: ' + split + '%; flex-grow: 0'\n    \"\n  >\n    <ng-content select=\"[slot=first]\"></ng-content>\n  </div>\n  <div\n    class=\"ui-split-divider\"\n    [class.ui-split-divider-dragging]=\"isDragging\"\n    [class.ui-split-divider-horizontal]=\"direction === 'horizontal'\"\n    [class.ui-split-divider-vertical]=\"direction === 'vertical'\"\n    (mousedown)=\"onDividerMouseDown($event)\"\n  ></div>\n  <div\n    class=\"ui-split-pane-second\"\n    [style]=\"\n      direction === 'horizontal'\n        ? 'flex: 1; height: 100%'\n        : 'flex: 1; width: 100%'\n    \"\n  >\n    <ng-content select=\"[slot=second]\"></ng-content>\n  </div>\n</div>\n" }]
         }], propDecorators: { containerEl: [{
                 type: ViewChild,
                 args: ["container"]
@@ -5365,11 +4528,11 @@ class AvatarComponent {
         return (this.alt || this.name || "").substring(0, 2).toUpperCase();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: AvatarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: AvatarComponent, isStandalone: true, selector: "app-avatar", inputs: { src: "src", alt: "alt", name: "name", size: "size" }, ngImport: i0, template: "<div class=\"ui-avatar\">\n  @if (src && !imgError) {\n    <img [src]=\"src\" [alt]=\"alt\" (error)=\"imgError = true\" />\n  } @else {\n    <span class=\"ui-avatar-initials\">{{ initials }}</span>\n  }\n</div>\n", styles: [":host([size=sm]){width:2rem;height:2rem;font-size:.75rem}:host([size=md]){width:2.5rem;height:2.5rem;font-size:.875rem}:host([size=lg]){width:3.5rem;height:3.5rem;font-size:1.25rem}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: AvatarComponent, isStandalone: true, selector: "app-avatar", inputs: { src: "src", alt: "alt", name: "name", size: "size" }, ngImport: i0, template: "<div class=\"ui-avatar\">\n  @if (src && !imgError) {\n    <img [src]=\"src\" [alt]=\"alt\" (error)=\"imgError = true\" />\n  } @else {\n    <span class=\"ui-avatar-initials\">{{ initials }}</span>\n  }\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: AvatarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-avatar", standalone: true, imports: [], template: "<div class=\"ui-avatar\">\n  @if (src && !imgError) {\n    <img [src]=\"src\" [alt]=\"alt\" (error)=\"imgError = true\" />\n  } @else {\n    <span class=\"ui-avatar-initials\">{{ initials }}</span>\n  }\n</div>\n", styles: [":host([size=sm]){width:2rem;height:2rem;font-size:.75rem}:host([size=md]){width:2.5rem;height:2.5rem;font-size:.875rem}:host([size=lg]){width:3.5rem;height:3.5rem;font-size:1.25rem}\n"] }]
+            args: [{ selector: "app-avatar", standalone: true, imports: [], template: "<div class=\"ui-avatar\">\n  @if (src && !imgError) {\n    <img [src]=\"src\" [alt]=\"alt\" (error)=\"imgError = true\" />\n  } @else {\n    <span class=\"ui-avatar-initials\">{{ initials }}</span>\n  }\n</div>\n" }]
         }], propDecorators: { src: [{
                 type: Input
             }], alt: [{
@@ -5393,11 +4556,11 @@ class ChipComponent {
         this.removed.emit();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ChipComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ChipComponent, isStandalone: true, selector: "app-chip", inputs: { label: "label", icon: "icon", removable: "removable", closeable: "closeable" }, outputs: { removed: "removed" }, ngImport: i0, template: "<span class=\"ui-badge\">\n  @if (icon) {\n    <app-icon [icon]=\"icon\" [size]=\"16\" />\n  }\n  <span>{{ label }}</span>\n  @if (removable || closeable) {\n    <button\n      class=\"ui-chip-remove\"\n      (click)=\"handleRemove($event)\"\n      aria-label=\"Remove\"\n    >\n      &times;\n    </button>\n  }\n</span>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ChipComponent, isStandalone: true, selector: "app-chip", inputs: { label: "label", icon: "icon", removable: "removable", closeable: "closeable" }, outputs: { removed: "removed" }, ngImport: i0, template: "<span class=\"ui-badge\">\n  @if (icon) {\n    <app-icon [icon]=\"icon\" [size]=\"16\" />\n  }\n  <span>{{ label }}</span>\n  @if (removable || closeable) {\n    <button\n      class=\"ui-chip-remove\"\n      (click)=\"handleRemove($event)\"\n      aria-label=\"Remove\"\n    >\n      &times;\n    </button>\n  }\n</span>\n", dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ChipComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-chip", standalone: true, imports: [IconComponent], template: "<span class=\"ui-badge\">\n  @if (icon) {\n    <app-icon [icon]=\"icon\" [size]=\"16\" />\n  }\n  <span>{{ label }}</span>\n  @if (removable || closeable) {\n    <button\n      class=\"ui-chip-remove\"\n      (click)=\"handleRemove($event)\"\n      aria-label=\"Remove\"\n    >\n      &times;\n    </button>\n  }\n</span>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-chip", standalone: true, imports: [IconComponent], template: "<span class=\"ui-badge\">\n  @if (icon) {\n    <app-icon [icon]=\"icon\" [size]=\"16\" />\n  }\n  <span>{{ label }}</span>\n  @if (removable || closeable) {\n    <button\n      class=\"ui-chip-remove\"\n      (click)=\"handleRemove($event)\"\n      aria-label=\"Remove\"\n    >\n      &times;\n    </button>\n  }\n</span>\n" }]
         }], propDecorators: { label: [{
                 type: Input
             }], icon: [{
@@ -5414,24 +4577,17 @@ registerSchemaComponent("app-chip", ChipComponent);
 class ModalComponent {
     elementRef;
     cdr;
-    open = input(false, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "open" }] : /* istanbul ignore next */ []));
-    title = input("", /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "title" }] : /* istanbul ignore next */ []));
-    size = input("md", /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "size" }] : /* istanbul ignore next */ []));
-    closeOnBackdrop = input(true, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "closeOnBackdrop" }] : /* istanbul ignore next */ []));
-    closeOnEscape = input(true, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "closeOnEscape" }] : /* istanbul ignore next */ []));
-    showCloseButton = input(true, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "showCloseButton" }] : /* istanbul ignore next */ []));
-    showHeader = input(true, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "showHeader" }] : /* istanbul ignore next */ []));
-    showFooter = input(true, /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "showFooter" }] : /* istanbul ignore next */ []));
-    contentPosition = input("center", /* @ts-ignore */
-    ...(ngDevMode ? [{ debugName: "contentPosition" }] : /* istanbul ignore next */ []));
+    // Legacy @Input — required so SchemaRendererService can do `modalElement['open'] = true`
+    // (signal-based inputs are not reactive to direct DOM property assignment).
+    open = false;
+    title = "";
+    size = "md";
+    closeOnBackdrop = true;
+    closeOnEscape = true;
+    showCloseButton = true;
+    showHeader = true;
+    showFooter = true;
+    contentPosition = "center";
     closed = output();
     opened = output();
     isVisible = signal(false, /* @ts-ignore */
@@ -5442,12 +4598,12 @@ class ModalComponent {
     openedTimeoutId = null;
     closedTimeoutId = null;
     escapeKeyHandler = (event) => {
-        if (event.key === "Escape" && this.closeOnEscape() && this.open()) {
+        if (event.key === "Escape" && this.closeOnEscape && this.open) {
             this.onClose();
         }
     };
     ngOnInit() {
-        if (this.open()) {
+        if (this.open) {
             this.openModal();
         }
     }
@@ -5458,8 +4614,8 @@ class ModalComponent {
             clearTimeout(this.closedTimeoutId);
         this.cleanup();
     }
-    ngOnChanges() {
-        if (this.open()) {
+    ngOnChanges(_changes) {
+        if (this.open) {
             this.openModal();
         }
         else {
@@ -5502,7 +4658,7 @@ class ModalComponent {
         }, 200);
     }
     onBackdropClick(event) {
-        if (this.closeOnBackdrop() &&
+        if (this.closeOnBackdrop &&
             event.target.classList.contains("modal-backdrop")) {
             this.onClose();
         }
@@ -5518,10 +4674,10 @@ class ModalComponent {
             xl: "max-w-[1000px]",
             full: "max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)]",
         };
-        return sizes[this.size()];
+        return sizes[this.size];
     }
     get contentPositionClasses() {
-        return this.contentPosition() === "top"
+        return this.contentPosition === "top"
             ? "items-start pt-[10vh]"
             : "items-center";
     }
@@ -5546,12 +4702,156 @@ class ModalComponent {
         this.cdr = cdr;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ModalComponent, deps: [{ token: i0.ElementRef }, { token: i0.ChangeDetectorRef }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ModalComponent, isStandalone: true, selector: "app-modal", inputs: { open: { classPropertyName: "open", publicName: "open", isSignal: true, isRequired: false, transformFunction: null }, title: { classPropertyName: "title", publicName: "title", isSignal: true, isRequired: false, transformFunction: null }, size: { classPropertyName: "size", publicName: "size", isSignal: true, isRequired: false, transformFunction: null }, closeOnBackdrop: { classPropertyName: "closeOnBackdrop", publicName: "closeOnBackdrop", isSignal: true, isRequired: false, transformFunction: null }, closeOnEscape: { classPropertyName: "closeOnEscape", publicName: "closeOnEscape", isSignal: true, isRequired: false, transformFunction: null }, showCloseButton: { classPropertyName: "showCloseButton", publicName: "showCloseButton", isSignal: true, isRequired: false, transformFunction: null }, showHeader: { classPropertyName: "showHeader", publicName: "showHeader", isSignal: true, isRequired: false, transformFunction: null }, showFooter: { classPropertyName: "showFooter", publicName: "showFooter", isSignal: true, isRequired: false, transformFunction: null }, contentPosition: { classPropertyName: "contentPosition", publicName: "contentPosition", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { closed: "closed", opened: "opened" }, usesOnChanges: true, ngImport: i0, template: "@if (isVisible()) {\n  <div\n    class=\"modal-backdrop sf-fixed sf-inset-0 sf-z-50 sf-flex sf-justify-center sf-backdrop-blur-sm sf-transition-opacity sf-duration-200\"\n    style=\"background: var(--bg-backdrop)\"\n    [class.sf-opacity-0]=\"isAnimating()\"\n    [class.sf-opacity-100]=\"!isAnimating()\"\n    [class]=\"contentPositionClasses\"\n    (click)=\"onBackdropClick($event)\"\n  >\n    <div\n      role=\"dialog\"\n      aria-modal=\"true\"\n      [attr.aria-labelledby]=\"'modal-title-' + title()\"\n      class=\"sf-relative sf-w-full sf-rounded-2xl sf-border sf-shadow-2xl sf-backdrop-blur-md sf-transition-all sf-duration-200\"\n      style=\"border-color: var(--border-visible); background: var(--bg-modal)\"\n      [class.sf-scale-95]=\"isAnimating()\"\n      [class.sf-scale-100]=\"!isAnimating()\"\n      [class]=\"sizeClasses\"\n    >\n      @if (showHeader()) {\n        <div\n          class=\"sf-flex sf-items-center sf-justify-between sf-border-b\"\n          style=\"border-color: var(--border-subtle)\"\n        >\n          <h2 [id]=\"'modal-title-' + title()\" style=\"color: var(--text-main)\">\n            {{ title() }}\n          </h2>\n          @if (showCloseButton()) {\n            <button\n              type=\"button\"\n              (click)=\"onClose()\"\n              class=\"sf-text-[var(--text-dim)] sf-transition-colors sf-hover-bg-accent-10 sf-hover-text-main\"\n              aria-label=\"Close modal\"\n            >\n              <svg\n                class=\"sf-h-5 sf-w-5\"\n                viewBox=\"0 0 20 20\"\n                fill=\"currentColor\"\n              >\n                <path\n                  fill-rule=\"evenodd\"\n                  d=\"M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z\"\n                  clip-rule=\"evenodd\"\n                />\n              </svg>\n            </button>\n          }\n        </div>\n      }\n\n      <div style=\"max-height: calc(100vh - 12rem)\" class=\"sf-overflow-y-auto\">\n        <ng-content></ng-content>\n      </div>\n\n      @if (showFooter()) {\n        <div\n          class=\"sf-flex sf-items-center sf-justify-end sf-gap-3 sf-border-t\"\n          style=\"border-color: var(--border-subtle)\"\n        >\n          <ng-content select=\"[modal-footer]\"></ng-content>\n        </div>\n      }\n    </div>\n  </div>\n}\n", dependencies: [{ kind: "ngmodule", type: CommonModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ModalComponent, isStandalone: true, selector: "app-modal", inputs: { open: "open", title: "title", size: "size", closeOnBackdrop: "closeOnBackdrop", closeOnEscape: "closeOnEscape", showCloseButton: "showCloseButton", showHeader: "showHeader", showFooter: "showFooter", contentPosition: "contentPosition" }, outputs: { closed: "closed", opened: "opened" }, usesOnChanges: true, ngImport: i0, template: `
+    @if (isVisible()) {
+      <div
+        class="modal-backdrop fixed inset-0 z-50 flex justify-center backdrop-blur-sm transition-opacity duration-200"
+        style="background: var(--bg-backdrop)"
+        [class.opacity-0]="isAnimating()"
+        [class.opacity-100]="!isAnimating()"
+        [class]="contentPositionClasses"
+        (click)="onBackdropClick($event)"
+      >
+        <div
+          role="dialog"
+          aria-modal="true"
+          [attr.aria-labelledby]="'modal-title-' + title"
+          class="relative w-full rounded-2xl border shadow-2xl backdrop-blur-md transition-all duration-200"
+          style="border-color: var(--border-visible); background: var(--bg-modal)"
+          [class.scale-95]="isAnimating()"
+          [class.scale-100]="!isAnimating()"
+          [class]="sizeClasses"
+        >
+          @if (showHeader) {
+            <div
+              class="flex items-center justify-between border-b"
+              style="border-color: var(--border-subtle)"
+            >
+              <h2 [id]="'modal-title-' + title" style="color: var(--text-main)">
+                {{ title }}
+              </h2>
+              @if (showCloseButton) {
+                <button
+                  type="button"
+                  (click)="onClose()"
+                  class="transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white"
+                  aria-label="Close modal"
+                >
+                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fill-rule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+              }
+            </div>
+          }
+          <div style="max-height: calc(100vh - 12rem)" class="overflow-y-auto">
+            <ng-content></ng-content>
+          </div>
+          @if (showFooter) {
+            <div
+              class="flex items-center justify-end gap-3 border-t"
+              style="border-color: var(--border-subtle)"
+            >
+              <ng-content select="[modal-footer]"></ng-content>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ModalComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-modal", standalone: true, changeDetection: ChangeDetectionStrategy.OnPush, imports: [CommonModule], template: "@if (isVisible()) {\n  <div\n    class=\"modal-backdrop sf-fixed sf-inset-0 sf-z-50 sf-flex sf-justify-center sf-backdrop-blur-sm sf-transition-opacity sf-duration-200\"\n    style=\"background: var(--bg-backdrop)\"\n    [class.sf-opacity-0]=\"isAnimating()\"\n    [class.sf-opacity-100]=\"!isAnimating()\"\n    [class]=\"contentPositionClasses\"\n    (click)=\"onBackdropClick($event)\"\n  >\n    <div\n      role=\"dialog\"\n      aria-modal=\"true\"\n      [attr.aria-labelledby]=\"'modal-title-' + title()\"\n      class=\"sf-relative sf-w-full sf-rounded-2xl sf-border sf-shadow-2xl sf-backdrop-blur-md sf-transition-all sf-duration-200\"\n      style=\"border-color: var(--border-visible); background: var(--bg-modal)\"\n      [class.sf-scale-95]=\"isAnimating()\"\n      [class.sf-scale-100]=\"!isAnimating()\"\n      [class]=\"sizeClasses\"\n    >\n      @if (showHeader()) {\n        <div\n          class=\"sf-flex sf-items-center sf-justify-between sf-border-b\"\n          style=\"border-color: var(--border-subtle)\"\n        >\n          <h2 [id]=\"'modal-title-' + title()\" style=\"color: var(--text-main)\">\n            {{ title() }}\n          </h2>\n          @if (showCloseButton()) {\n            <button\n              type=\"button\"\n              (click)=\"onClose()\"\n              class=\"sf-text-[var(--text-dim)] sf-transition-colors sf-hover-bg-accent-10 sf-hover-text-main\"\n              aria-label=\"Close modal\"\n            >\n              <svg\n                class=\"sf-h-5 sf-w-5\"\n                viewBox=\"0 0 20 20\"\n                fill=\"currentColor\"\n              >\n                <path\n                  fill-rule=\"evenodd\"\n                  d=\"M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z\"\n                  clip-rule=\"evenodd\"\n                />\n              </svg>\n            </button>\n          }\n        </div>\n      }\n\n      <div style=\"max-height: calc(100vh - 12rem)\" class=\"sf-overflow-y-auto\">\n        <ng-content></ng-content>\n      </div>\n\n      @if (showFooter()) {\n        <div\n          class=\"sf-flex sf-items-center sf-justify-end sf-gap-3 sf-border-t\"\n          style=\"border-color: var(--border-subtle)\"\n        >\n          <ng-content select=\"[modal-footer]\"></ng-content>\n        </div>\n      }\n    </div>\n  </div>\n}\n" }]
-        }], ctorParameters: () => [{ type: i0.ElementRef }, { type: i0.ChangeDetectorRef }], propDecorators: { open: [{ type: i0.Input, args: [{ isSignal: true, alias: "open", required: false }] }], title: [{ type: i0.Input, args: [{ isSignal: true, alias: "title", required: false }] }], size: [{ type: i0.Input, args: [{ isSignal: true, alias: "size", required: false }] }], closeOnBackdrop: [{ type: i0.Input, args: [{ isSignal: true, alias: "closeOnBackdrop", required: false }] }], closeOnEscape: [{ type: i0.Input, args: [{ isSignal: true, alias: "closeOnEscape", required: false }] }], showCloseButton: [{ type: i0.Input, args: [{ isSignal: true, alias: "showCloseButton", required: false }] }], showHeader: [{ type: i0.Input, args: [{ isSignal: true, alias: "showHeader", required: false }] }], showFooter: [{ type: i0.Input, args: [{ isSignal: true, alias: "showFooter", required: false }] }], contentPosition: [{ type: i0.Input, args: [{ isSignal: true, alias: "contentPosition", required: false }] }], closed: [{ type: i0.Output, args: ["closed"] }], opened: [{ type: i0.Output, args: ["opened"] }] } });
+            args: [{
+                    selector: "app-modal",
+                    standalone: true,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    imports: [CommonModule],
+                    template: `
+    @if (isVisible()) {
+      <div
+        class="modal-backdrop fixed inset-0 z-50 flex justify-center backdrop-blur-sm transition-opacity duration-200"
+        style="background: var(--bg-backdrop)"
+        [class.opacity-0]="isAnimating()"
+        [class.opacity-100]="!isAnimating()"
+        [class]="contentPositionClasses"
+        (click)="onBackdropClick($event)"
+      >
+        <div
+          role="dialog"
+          aria-modal="true"
+          [attr.aria-labelledby]="'modal-title-' + title"
+          class="relative w-full rounded-2xl border shadow-2xl backdrop-blur-md transition-all duration-200"
+          style="border-color: var(--border-visible); background: var(--bg-modal)"
+          [class.scale-95]="isAnimating()"
+          [class.scale-100]="!isAnimating()"
+          [class]="sizeClasses"
+        >
+          @if (showHeader) {
+            <div
+              class="flex items-center justify-between border-b"
+              style="border-color: var(--border-subtle)"
+            >
+              <h2 [id]="'modal-title-' + title" style="color: var(--text-main)">
+                {{ title }}
+              </h2>
+              @if (showCloseButton) {
+                <button
+                  type="button"
+                  (click)="onClose()"
+                  class="transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white"
+                  aria-label="Close modal"
+                >
+                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fill-rule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+              }
+            </div>
+          }
+          <div style="max-height: calc(100vh - 12rem)" class="overflow-y-auto">
+            <ng-content></ng-content>
+          </div>
+          @if (showFooter) {
+            <div
+              class="flex items-center justify-end gap-3 border-t"
+              style="border-color: var(--border-subtle)"
+            >
+              <ng-content select="[modal-footer]"></ng-content>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  `,
+                }]
+        }], ctorParameters: () => [{ type: i0.ElementRef }, { type: i0.ChangeDetectorRef }], propDecorators: { open: [{
+                type: Input
+            }], title: [{
+                type: Input
+            }], size: [{
+                type: Input
+            }], closeOnBackdrop: [{
+                type: Input
+            }], closeOnEscape: [{
+                type: Input
+            }], showCloseButton: [{
+                type: Input
+            }], showHeader: [{
+                type: Input
+            }], showFooter: [{
+                type: Input
+            }], contentPosition: [{
+                type: Input
+            }], closed: [{ type: i0.Output, args: ["closed"] }], opened: [{ type: i0.Output, args: ["opened"] }] } });
 
 class ConfirmService {
     resolvePromise = null;
@@ -5688,11 +4988,48 @@ class TabsComponent {
         this.tabChanged.emit(tab);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TabsComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TabsComponent, isStandalone: true, selector: "app-tabs", inputs: { tabs: "tabs", activeTab: "activeTab" }, outputs: { tabChanged: "tabChanged" }, ngImport: i0, template: "<div class=\"ui-tabs\">\n  @for (tab of parsedTabs; track tab) {\n    <div\n      class=\"ui-tab\"\n      [class.ui-tab-active]=\"tab === activeTab\"\n      (click)=\"selectTab(tab)\"\n    >\n      {{ tab }}\n    </div>\n  }\n</div>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TabsComponent, isStandalone: true, selector: "app-tabs", inputs: { tabs: "tabs", activeTab: "activeTab" }, outputs: { tabChanged: "tabChanged" }, ngImport: i0, template: `
+    <div class="flex gap-1 border-b border-neutral-200 dark:border-neutral-700">
+      @for (tab of parsedTabs; track tab) {
+        <button
+          class="px-4 py-2 text-sm font-medium transition-colors rounded-t-lg"
+          [class.text-indigo-600]="tab === activeTab"
+          [class.border-b-2]="tab === activeTab"
+          [class.border-indigo-600]="tab === activeTab"
+          [class.text-neutral-500]="tab !== activeTab"
+          [class.hover:text-neutral-700]="tab !== activeTab"
+          (click)="selectTab(tab)"
+        >
+          {{ tab }}
+        </button>
+      }
+    </div>
+  `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TabsComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-tabs", standalone: true, imports: [], template: "<div class=\"ui-tabs\">\n  @for (tab of parsedTabs; track tab) {\n    <div\n      class=\"ui-tab\"\n      [class.ui-tab-active]=\"tab === activeTab\"\n      (click)=\"selectTab(tab)\"\n    >\n      {{ tab }}\n    </div>\n  }\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{
+                    selector: "app-tabs",
+                    standalone: true,
+                    imports: [],
+                    template: `
+    <div class="flex gap-1 border-b border-neutral-200 dark:border-neutral-700">
+      @for (tab of parsedTabs; track tab) {
+        <button
+          class="px-4 py-2 text-sm font-medium transition-colors rounded-t-lg"
+          [class.text-indigo-600]="tab === activeTab"
+          [class.border-b-2]="tab === activeTab"
+          [class.border-indigo-600]="tab === activeTab"
+          [class.text-neutral-500]="tab !== activeTab"
+          [class.hover:text-neutral-700]="tab !== activeTab"
+          (click)="selectTab(tab)"
+        >
+          {{ tab }}
+        </button>
+      }
+    </div>
+  `,
+                }]
         }], propDecorators: { tabs: [{
                 type: Input
             }], activeTab: [{
@@ -5717,11 +5054,11 @@ class ProgressBarComponent {
         return "high";
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ProgressBarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: ProgressBarComponent, isStandalone: true, selector: "app-progress-bar", inputs: { value: "value", max: "max" }, ngImport: i0, template: "<div class=\"ui-progress\">\n  <div\n    class=\"ui-progress-fill\"\n    [class.ui-progress-low]=\"fillClass === 'low'\"\n    [class.ui-progress-medium]=\"fillClass === 'medium'\"\n    [class.ui-progress-high]=\"fillClass === 'high'\"\n    [style.width.%]=\"percentage\"\n  ></div>\n</div>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: ProgressBarComponent, isStandalone: true, selector: "app-progress-bar", inputs: { value: "value", max: "max" }, ngImport: i0, template: "<div class=\"ui-progress\">\n  <div\n    class=\"ui-progress-fill\"\n    [class.ui-progress-low]=\"fillClass === 'low'\"\n    [class.ui-progress-medium]=\"fillClass === 'medium'\"\n    [class.ui-progress-high]=\"fillClass === 'high'\"\n    [style.width.%]=\"percentage\"\n  ></div>\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ProgressBarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-progress-bar", standalone: true, imports: [], template: "<div class=\"ui-progress\">\n  <div\n    class=\"ui-progress-fill\"\n    [class.ui-progress-low]=\"fillClass === 'low'\"\n    [class.ui-progress-medium]=\"fillClass === 'medium'\"\n    [class.ui-progress-high]=\"fillClass === 'high'\"\n    [style.width.%]=\"percentage\"\n  ></div>\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-progress-bar", standalone: true, imports: [], template: "<div class=\"ui-progress\">\n  <div\n    class=\"ui-progress-fill\"\n    [class.ui-progress-low]=\"fillClass === 'low'\"\n    [class.ui-progress-medium]=\"fillClass === 'medium'\"\n    [class.ui-progress-high]=\"fillClass === 'high'\"\n    [style.width.%]=\"percentage\"\n  ></div>\n</div>\n" }]
         }], propDecorators: { value: [{
                 type: Input
             }], max: [{
@@ -5741,11 +5078,11 @@ class SegmentSelectorComponent {
         this.changed.emit(opt);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SegmentSelectorComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SegmentSelectorComponent, isStandalone: true, selector: "app-segment-selector", inputs: { options: "options", selected: "selected" }, outputs: { changed: "changed" }, ngImport: i0, template: "<div class=\"ui-segment-selector\">\n  @for (opt of parsedOptions; track opt) {\n    <div\n      class=\"ui-segment-option\"\n      [class.ui-segment-option-active]=\"opt === selected\"\n      (click)=\"selectOption(opt)\"\n    >\n      {{ opt }}\n    </div>\n  }\n</div>\n", styles: [":host{display:inline-flex}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SegmentSelectorComponent, isStandalone: true, selector: "app-segment-selector", inputs: { options: "options", selected: "selected" }, outputs: { changed: "changed" }, ngImport: i0, template: "<div class=\"ui-segment-selector\">\n  @for (opt of parsedOptions; track opt) {\n    <div\n      class=\"ui-segment-option\"\n      [class.ui-segment-option-active]=\"opt === selected\"\n      (click)=\"selectOption(opt)\"\n    >\n      {{ opt }}\n    </div>\n  }\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SegmentSelectorComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-segment-selector", standalone: true, imports: [], template: "<div class=\"ui-segment-selector\">\n  @for (opt of parsedOptions; track opt) {\n    <div\n      class=\"ui-segment-option\"\n      [class.ui-segment-option-active]=\"opt === selected\"\n      (click)=\"selectOption(opt)\"\n    >\n      {{ opt }}\n    </div>\n  }\n</div>\n", styles: [":host{display:inline-flex}\n"] }]
+            args: [{ selector: "app-segment-selector", standalone: true, imports: [], template: "<div class=\"ui-segment-selector\">\n  @for (opt of parsedOptions; track opt) {\n    <div\n      class=\"ui-segment-option\"\n      [class.ui-segment-option-active]=\"opt === selected\"\n      (click)=\"selectOption(opt)\"\n    >\n      {{ opt }}\n    </div>\n  }\n</div>\n" }]
         }], propDecorators: { options: [{
                 type: Input
             }], selected: [{
@@ -5763,11 +5100,11 @@ class TooltipComponent {
     delay = 200;
     show = false;
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TooltipComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TooltipComponent, isStandalone: true, selector: "app-tooltip", inputs: { text: "text", content: "content", position: "position", delay: "delay" }, ngImport: i0, template: "<div\n  class=\"ui-tooltip\"\n  (mouseenter)=\"show = true\"\n  (mouseleave)=\"show = false\"\n  (focus)=\"show = true\"\n  (blur)=\"show = false\"\n  tabindex=\"0\"\n>\n  <ng-content></ng-content>\n  @if (show) {\n    <div\n      class=\"ui-tooltip-bubble\"\n      [class.ui-tooltip-top]=\"!position || position === 'top'\"\n      [class.ui-tooltip-bottom]=\"position === 'bottom'\"\n      [class.ui-tooltip-left]=\"position === 'left'\"\n      [class.ui-tooltip-right]=\"position === 'right'\"\n    >\n      {{ text || content }}\n    </div>\n  }\n</div>\n", styles: [":host{display:inline-flex;position:relative}.tooltip-bubble{position:absolute;z-index:50}.tooltip-bubble.top{bottom:100%;left:50%;transform:translate(-50%);margin-bottom:.5rem}.tooltip-bubble.bottom{top:100%;left:50%;transform:translate(-50%);margin-top:.5rem}.tooltip-bubble.left{right:100%;top:50%;transform:translateY(-50%);margin-right:.5rem}.tooltip-bubble.right{left:100%;top:50%;transform:translateY(-50%);margin-left:.5rem}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TooltipComponent, isStandalone: true, selector: "app-tooltip", inputs: { text: "text", content: "content", position: "position", delay: "delay" }, ngImport: i0, template: "<div\n  class=\"ui-tooltip\"\n  (mouseenter)=\"show = true\"\n  (mouseleave)=\"show = false\"\n  (focus)=\"show = true\"\n  (blur)=\"show = false\"\n  tabindex=\"0\"\n>\n  <ng-content></ng-content>\n  @if (show) {\n    <div\n      class=\"ui-tooltip-bubble\"\n      [class.ui-tooltip-top]=\"!position || position === 'top'\"\n      [class.ui-tooltip-bottom]=\"position === 'bottom'\"\n      [class.ui-tooltip-left]=\"position === 'left'\"\n      [class.ui-tooltip-right]=\"position === 'right'\"\n    >\n      {{ text || content }}\n    </div>\n  }\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TooltipComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-tooltip", standalone: true, imports: [], template: "<div\n  class=\"ui-tooltip\"\n  (mouseenter)=\"show = true\"\n  (mouseleave)=\"show = false\"\n  (focus)=\"show = true\"\n  (blur)=\"show = false\"\n  tabindex=\"0\"\n>\n  <ng-content></ng-content>\n  @if (show) {\n    <div\n      class=\"ui-tooltip-bubble\"\n      [class.ui-tooltip-top]=\"!position || position === 'top'\"\n      [class.ui-tooltip-bottom]=\"position === 'bottom'\"\n      [class.ui-tooltip-left]=\"position === 'left'\"\n      [class.ui-tooltip-right]=\"position === 'right'\"\n    >\n      {{ text || content }}\n    </div>\n  }\n</div>\n", styles: [":host{display:inline-flex;position:relative}.tooltip-bubble{position:absolute;z-index:50}.tooltip-bubble.top{bottom:100%;left:50%;transform:translate(-50%);margin-bottom:.5rem}.tooltip-bubble.bottom{top:100%;left:50%;transform:translate(-50%);margin-top:.5rem}.tooltip-bubble.left{right:100%;top:50%;transform:translateY(-50%);margin-right:.5rem}.tooltip-bubble.right{left:100%;top:50%;transform:translateY(-50%);margin-left:.5rem}\n"] }]
+            args: [{ selector: "app-tooltip", standalone: true, imports: [], template: "<div\n  class=\"ui-tooltip\"\n  (mouseenter)=\"show = true\"\n  (mouseleave)=\"show = false\"\n  (focus)=\"show = true\"\n  (blur)=\"show = false\"\n  tabindex=\"0\"\n>\n  <ng-content></ng-content>\n  @if (show) {\n    <div\n      class=\"ui-tooltip-bubble\"\n      [class.ui-tooltip-top]=\"!position || position === 'top'\"\n      [class.ui-tooltip-bottom]=\"position === 'bottom'\"\n      [class.ui-tooltip-left]=\"position === 'left'\"\n      [class.ui-tooltip-right]=\"position === 'right'\"\n    >\n      {{ text || content }}\n    </div>\n  }\n</div>\n" }]
         }], propDecorators: { text: [{
                 type: Input
             }], content: [{
@@ -5816,11 +5153,64 @@ class SnackbarComponent {
         this.dismiss();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SnackbarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SnackbarComponent, isStandalone: true, selector: "app-snackbar", inputs: { message: "message", action: "action", duration: "duration", type: "type", open: "open" }, outputs: { dismissed: "dismissed", actioned: "actioned" }, usesOnChanges: true, ngImport: i0, template: "@if (open) {\n  <div\n    class=\"ui-snackbar ui-snackbar-{{ type }}\"\n    [style.border-left-color]=\"'var(--' + type + '-color, var(--accent))'\"\n    role=\"status\"\n  >\n    <span class=\"ui-snackbar-message\">{{ message }}</span>\n    @if (action) {\n      <button class=\"ui-snackbar-action\" (click)=\"handleAction()\">\n        {{ action }}\n      </button>\n    }\n    <button class=\"ui-snackbar-close\" (click)=\"dismiss()\" aria-label=\"Dismiss\">\n      &times;\n    </button>\n  </div>\n}\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SnackbarComponent, isStandalone: true, selector: "app-snackbar", inputs: { message: "message", action: "action", duration: "duration", type: "type", open: "open" }, outputs: { dismissed: "dismissed", actioned: "actioned" }, usesOnChanges: true, ngImport: i0, template: `
+    @if (open) {
+      <div
+        class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-3 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm rounded-2xl shadow-xl transition-colors"
+        role="status"
+      >
+        <span class="font-medium">{{ message }}</span>
+        @if (action) {
+          <button
+            class="text-indigo-400 dark:text-indigo-600 font-semibold hover:underline"
+            (click)="handleAction()"
+          >
+            {{ action }}
+          </button>
+        }
+        <button
+          class="ml-2 p-1 hover:bg-white/10 dark:hover:bg-black/10 rounded-full"
+          (click)="dismiss()"
+          aria-label="Dismiss"
+        >
+          <span class="material-symbols-rounded text-sm">close</span>
+        </button>
+      </div>
+    }
+  `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SnackbarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-snackbar", standalone: true, imports: [], template: "@if (open) {\n  <div\n    class=\"ui-snackbar ui-snackbar-{{ type }}\"\n    [style.border-left-color]=\"'var(--' + type + '-color, var(--accent))'\"\n    role=\"status\"\n  >\n    <span class=\"ui-snackbar-message\">{{ message }}</span>\n    @if (action) {\n      <button class=\"ui-snackbar-action\" (click)=\"handleAction()\">\n        {{ action }}\n      </button>\n    }\n    <button class=\"ui-snackbar-close\" (click)=\"dismiss()\" aria-label=\"Dismiss\">\n      &times;\n    </button>\n  </div>\n}\n", styles: [":host{display:block}\n"] }]
+            args: [{
+                    selector: "app-snackbar",
+                    standalone: true,
+                    imports: [],
+                    template: `
+    @if (open) {
+      <div
+        class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-3 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm rounded-2xl shadow-xl transition-colors"
+        role="status"
+      >
+        <span class="font-medium">{{ message }}</span>
+        @if (action) {
+          <button
+            class="text-indigo-400 dark:text-indigo-600 font-semibold hover:underline"
+            (click)="handleAction()"
+          >
+            {{ action }}
+          </button>
+        }
+        <button
+          class="ml-2 p-1 hover:bg-white/10 dark:hover:bg-black/10 rounded-full"
+          (click)="dismiss()"
+          aria-label="Dismiss"
+        >
+          <span class="material-symbols-rounded text-sm">close</span>
+        </button>
+      </div>
+    }
+  `,
+                }]
         }], propDecorators: { message: [{
                 type: Input
             }], action: [{
@@ -5843,11 +5233,11 @@ class SpinnerComponent {
     color = "";
     label = "";
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SpinnerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SpinnerComponent, isStandalone: true, selector: "app-spinner", inputs: { size: "size", color: "color", label: "label" }, ngImport: i0, template: "<div class=\"ui-spinner\">\n  <div\n    class=\"ui-spinner-icon\"\n    [class.ui-spinner-sm]=\"size === 'sm'\"\n    [class.ui-spinner-md]=\"size === 'md'\"\n    [class.ui-spinner-lg]=\"size === 'lg'\"\n    [style.borderTopColor]=\"color || 'var(--accent)'\"\n  ></div>\n  @if (label) {\n    <span>{{ label }}</span>\n  }\n</div>\n", styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SpinnerComponent, isStandalone: true, selector: "app-spinner", inputs: { size: "size", color: "color", label: "label" }, ngImport: i0, template: "<div class=\"ui-spinner\">\n  <div\n    class=\"ui-spinner-icon\"\n    [class.ui-spinner-sm]=\"size === 'sm'\"\n    [class.ui-spinner-md]=\"size === 'md'\"\n    [class.ui-spinner-lg]=\"size === 'lg'\"\n    [style.borderTopColor]=\"color || 'var(--accent)'\"\n  ></div>\n  @if (label) {\n    <span>{{ label }}</span>\n  }\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SpinnerComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-spinner", standalone: true, imports: [], template: "<div class=\"ui-spinner\">\n  <div\n    class=\"ui-spinner-icon\"\n    [class.ui-spinner-sm]=\"size === 'sm'\"\n    [class.ui-spinner-md]=\"size === 'md'\"\n    [class.ui-spinner-lg]=\"size === 'lg'\"\n    [style.borderTopColor]=\"color || 'var(--accent)'\"\n  ></div>\n  @if (label) {\n    <span>{{ label }}</span>\n  }\n</div>\n", styles: ["@keyframes spin{to{transform:rotate(360deg)}}\n"] }]
+            args: [{ selector: "app-spinner", standalone: true, imports: [], template: "<div class=\"ui-spinner\">\n  <div\n    class=\"ui-spinner-icon\"\n    [class.ui-spinner-sm]=\"size === 'sm'\"\n    [class.ui-spinner-md]=\"size === 'md'\"\n    [class.ui-spinner-lg]=\"size === 'lg'\"\n    [style.borderTopColor]=\"color || 'var(--accent)'\"\n  ></div>\n  @if (label) {\n    <span>{{ label }}</span>\n  }\n</div>\n" }]
         }], propDecorators: { size: [{
                 type: Input
             }], color: [{
@@ -5862,11 +5252,11 @@ class DividerComponent {
     spacing = "md";
     color = "";
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DividerComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: DividerComponent, isStandalone: true, selector: "app-divider", inputs: { orientation: "orientation", spacing: "spacing", color: "color" }, ngImport: i0, template: "<div\n  class=\"ui-divider\"\n  [class.ui-divider-vertical]=\"orientation === 'vertical'\"\n  role=\"separator\"\n>\n  <div\n    class=\"ui-divider-line\"\n    [class.ui-divider-line-vertical]=\"orientation === 'vertical'\"\n    [style.background]=\"color || 'var(--divider-color, var(--border-color))'\"\n  ></div>\n</div>\n", styles: [":host{display:block}:host([orientation=vertical]){display:inline-flex;height:100%}:host([spacing=none]){margin:0}:host([spacing=sm]){margin:.5rem 0}:host([spacing=md]){margin:1rem 0}:host([spacing=lg]){margin:1.5rem 0}:host([spacing=xl]){margin:2.5rem 0}:host([orientation=vertical][spacing=none]){margin:0}:host([orientation=vertical][spacing=sm]){margin:0 .5rem}:host([orientation=vertical][spacing=md]){margin:0 1rem}:host([orientation=vertical][spacing=lg]){margin:0 1.5rem}:host([orientation=vertical][spacing=xl]){margin:0 2.5rem}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: DividerComponent, isStandalone: true, selector: "app-divider", inputs: { orientation: "orientation", spacing: "spacing", color: "color" }, ngImport: i0, template: "<div\n  class=\"ui-divider\"\n  [class.ui-divider-vertical]=\"orientation === 'vertical'\"\n  role=\"separator\"\n>\n  <div\n    class=\"ui-divider-line\"\n    [class.ui-divider-line-vertical]=\"orientation === 'vertical'\"\n    [style.background]=\"color || 'var(--divider-color, var(--border-color))'\"\n  ></div>\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DividerComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-divider", standalone: true, imports: [], template: "<div\n  class=\"ui-divider\"\n  [class.ui-divider-vertical]=\"orientation === 'vertical'\"\n  role=\"separator\"\n>\n  <div\n    class=\"ui-divider-line\"\n    [class.ui-divider-line-vertical]=\"orientation === 'vertical'\"\n    [style.background]=\"color || 'var(--divider-color, var(--border-color))'\"\n  ></div>\n</div>\n", styles: [":host{display:block}:host([orientation=vertical]){display:inline-flex;height:100%}:host([spacing=none]){margin:0}:host([spacing=sm]){margin:.5rem 0}:host([spacing=md]){margin:1rem 0}:host([spacing=lg]){margin:1.5rem 0}:host([spacing=xl]){margin:2.5rem 0}:host([orientation=vertical][spacing=none]){margin:0}:host([orientation=vertical][spacing=sm]){margin:0 .5rem}:host([orientation=vertical][spacing=md]){margin:0 1rem}:host([orientation=vertical][spacing=lg]){margin:0 1.5rem}:host([orientation=vertical][spacing=xl]){margin:0 2.5rem}\n"] }]
+            args: [{ selector: "app-divider", standalone: true, imports: [], template: "<div\n  class=\"ui-divider\"\n  [class.ui-divider-vertical]=\"orientation === 'vertical'\"\n  role=\"separator\"\n>\n  <div\n    class=\"ui-divider-line\"\n    [class.ui-divider-line-vertical]=\"orientation === 'vertical'\"\n    [style.background]=\"color || 'var(--divider-color, var(--border-color))'\"\n  ></div>\n</div>\n" }]
         }], propDecorators: { orientation: [{
                 type: Input
             }], spacing: [{
@@ -5894,11 +5284,11 @@ class TreeNodeComponent {
         this.selected.emit(node);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TreeNodeComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TreeNodeComponent, isStandalone: true, selector: "app-tree-node", inputs: { node: "node", depth: "depth" }, outputs: { selected: "selected" }, ngImport: i0, template: "<div\n  class=\"ui-tree-node\"\n  [style.paddingLeft.px]=\"depth * 20\"\n  [class.ui-tree-node-selected]=\"node.selected\"\n  (click)=\"handleClick()\"\n>\n  @if (node.children?.length) {\n    <span class=\"ui-tree-node-toggle\" (click)=\"toggleExpand($event)\">{{\n      node.expanded ? \"\u25BC\" : \"\u25B6\"\n    }}</span>\n  } @else {\n    <span class=\"ui-tree-node-toggle-placeholder\"></span>\n  }\n  @if (node.icon) {\n    <span class=\"ui-tree-node-icon\">{{ node.icon }}</span>\n  }\n  <span class=\"ui-tree-node-label\">{{ node.label }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-tree-node\n      [node]=\"child\"\n      [depth]=\"depth + 1\"\n      (selected)=\"onChildSelected($event)\"\n    ></app-tree-node>\n  }\n}\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "component", type: TreeNodeComponent, selector: "app-tree-node", inputs: ["node", "depth"], outputs: ["selected"] }, { kind: "ngmodule", type: CommonModule }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TreeNodeComponent, isStandalone: true, selector: "app-tree-node", inputs: { node: "node", depth: "depth" }, outputs: { selected: "selected" }, ngImport: i0, template: "<div\n  class=\"ui-tree-node\"\n  [style.paddingLeft.px]=\"depth * 20\"\n  [class.ui-tree-node-selected]=\"node.selected\"\n  (click)=\"handleClick()\"\n>\n  @if (node.children?.length) {\n    <span class=\"ui-tree-node-toggle\" (click)=\"toggleExpand($event)\">{{\n      node.expanded ? \"\u25BC\" : \"\u25B6\"\n    }}</span>\n  } @else {\n    <span class=\"ui-tree-node-toggle-placeholder\"></span>\n  }\n  @if (node.icon) {\n    <span class=\"ui-tree-node-icon\">{{ node.icon }}</span>\n  }\n  <span class=\"ui-tree-node-label\">{{ node.label }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-tree-node\n      [node]=\"child\"\n      [depth]=\"depth + 1\"\n      (selected)=\"onChildSelected($event)\"\n    ></app-tree-node>\n  }\n}\n", dependencies: [{ kind: "component", type: TreeNodeComponent, selector: "app-tree-node", inputs: ["node", "depth"], outputs: ["selected"] }, { kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TreeNodeComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-tree-node", standalone: true, imports: [CommonModule], template: "<div\n  class=\"ui-tree-node\"\n  [style.paddingLeft.px]=\"depth * 20\"\n  [class.ui-tree-node-selected]=\"node.selected\"\n  (click)=\"handleClick()\"\n>\n  @if (node.children?.length) {\n    <span class=\"ui-tree-node-toggle\" (click)=\"toggleExpand($event)\">{{\n      node.expanded ? \"\u25BC\" : \"\u25B6\"\n    }}</span>\n  } @else {\n    <span class=\"ui-tree-node-toggle-placeholder\"></span>\n  }\n  @if (node.icon) {\n    <span class=\"ui-tree-node-icon\">{{ node.icon }}</span>\n  }\n  <span class=\"ui-tree-node-label\">{{ node.label }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-tree-node\n      [node]=\"child\"\n      [depth]=\"depth + 1\"\n      (selected)=\"onChildSelected($event)\"\n    ></app-tree-node>\n  }\n}\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-tree-node", standalone: true, imports: [CommonModule], template: "<div\n  class=\"ui-tree-node\"\n  [style.paddingLeft.px]=\"depth * 20\"\n  [class.ui-tree-node-selected]=\"node.selected\"\n  (click)=\"handleClick()\"\n>\n  @if (node.children?.length) {\n    <span class=\"ui-tree-node-toggle\" (click)=\"toggleExpand($event)\">{{\n      node.expanded ? \"\u25BC\" : \"\u25B6\"\n    }}</span>\n  } @else {\n    <span class=\"ui-tree-node-toggle-placeholder\"></span>\n  }\n  @if (node.icon) {\n    <span class=\"ui-tree-node-icon\">{{ node.icon }}</span>\n  }\n  <span class=\"ui-tree-node-label\">{{ node.label }}</span>\n</div>\n@if (node.expanded && node.children?.length) {\n  @for (child of node.children; track child.id) {\n    <app-tree-node\n      [node]=\"child\"\n      [depth]=\"depth + 1\"\n      (selected)=\"onChildSelected($event)\"\n    ></app-tree-node>\n  }\n}\n" }]
         }], propDecorators: { node: [{
                 type: Input
             }], depth: [{
@@ -5917,11 +5307,11 @@ class TreeComponent {
         this.selected.emit(node);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TreeComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TreeComponent, isStandalone: true, selector: "app-tree", inputs: { nodes: "nodes", selectable: "selectable" }, outputs: { selected: "selected" }, ngImport: i0, template: "<div class=\"ui-tree\">\n  @for (node of parsedNodes; track node.id) {\n    <app-tree-node\n      [node]=\"node\"\n      [depth]=\"0\"\n      (selected)=\"onNodeSelected($event)\"\n    ></app-tree-node>\n  }\n</div>\n", styles: [":host{display:block}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: TreeNodeComponent, selector: "app-tree-node", inputs: ["node", "depth"], outputs: ["selected"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: TreeComponent, isStandalone: true, selector: "app-tree", inputs: { nodes: "nodes", selectable: "selectable" }, outputs: { selected: "selected" }, ngImport: i0, template: "<div class=\"ui-tree\">\n  @for (node of parsedNodes; track node.id) {\n    <app-tree-node\n      [node]=\"node\"\n      [depth]=\"0\"\n      (selected)=\"onNodeSelected($event)\"\n    ></app-tree-node>\n  }\n</div>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: TreeNodeComponent, selector: "app-tree-node", inputs: ["node", "depth"], outputs: ["selected"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: TreeComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-tree", standalone: true, imports: [CommonModule, TreeNodeComponent], template: "<div class=\"ui-tree\">\n  @for (node of parsedNodes; track node.id) {\n    <app-tree-node\n      [node]=\"node\"\n      [depth]=\"0\"\n      (selected)=\"onNodeSelected($event)\"\n    ></app-tree-node>\n  }\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-tree", standalone: true, imports: [CommonModule, TreeNodeComponent], template: "<div class=\"ui-tree\">\n  @for (node of parsedNodes; track node.id) {\n    <app-tree-node\n      [node]=\"node\"\n      [depth]=\"0\"\n      (selected)=\"onNodeSelected($event)\"\n    ></app-tree-node>\n  }\n</div>\n" }]
         }], propDecorators: { nodes: [{
                 type: Input
             }], selectable: [{
@@ -5946,11 +5336,11 @@ class FormComponent {
         this.cancelled.emit();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: FormComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: FormComponent, isStandalone: true, selector: "app-form", inputs: { heading: "heading", showActions: "showActions", submitText: "submitText", cancelText: "cancelText" }, outputs: { submitted: "submitted", cancelled: "cancelled" }, ngImport: i0, template: "<form (submit)=\"handleSubmit($event)\">\n  @if (heading) {\n    <h3>{{ heading }}</h3>\n  }\n  <ng-content></ng-content>\n  @if (showActions) {\n    <div class=\"ui-form-actions\">\n      <button type=\"submit\" class=\"ui-btn ui-btn-primary\">\n        {{ submitText }}\n      </button>\n      <button\n        type=\"button\"\n        class=\"ui-btn ui-btn-secondary\"\n        (click)=\"handleCancel()\"\n      >\n        {{ cancelText }}\n      </button>\n    </div>\n  }\n</form>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: FormComponent, isStandalone: true, selector: "app-form", inputs: { heading: "heading", showActions: "showActions", submitText: "submitText", cancelText: "cancelText" }, outputs: { submitted: "submitted", cancelled: "cancelled" }, ngImport: i0, template: "<form (submit)=\"handleSubmit($event)\">\n  @if (heading) {\n    <h3>{{ heading }}</h3>\n  }\n  <ng-content></ng-content>\n  @if (showActions) {\n    <div class=\"ui-form-actions\">\n      <button type=\"submit\" class=\"ui-btn ui-btn-primary\">\n        {{ submitText }}\n      </button>\n      <button\n        type=\"button\"\n        class=\"ui-btn ui-btn-secondary\"\n        (click)=\"handleCancel()\"\n      >\n        {{ cancelText }}\n      </button>\n    </div>\n  }\n</form>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: FormComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-form", standalone: true, imports: [], template: "<form (submit)=\"handleSubmit($event)\">\n  @if (heading) {\n    <h3>{{ heading }}</h3>\n  }\n  <ng-content></ng-content>\n  @if (showActions) {\n    <div class=\"ui-form-actions\">\n      <button type=\"submit\" class=\"ui-btn ui-btn-primary\">\n        {{ submitText }}\n      </button>\n      <button\n        type=\"button\"\n        class=\"ui-btn ui-btn-secondary\"\n        (click)=\"handleCancel()\"\n      >\n        {{ cancelText }}\n      </button>\n    </div>\n  }\n</form>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-form", standalone: true, imports: [], template: "<form (submit)=\"handleSubmit($event)\">\n  @if (heading) {\n    <h3>{{ heading }}</h3>\n  }\n  <ng-content></ng-content>\n  @if (showActions) {\n    <div class=\"ui-form-actions\">\n      <button type=\"submit\" class=\"ui-btn ui-btn-primary\">\n        {{ submitText }}\n      </button>\n      <button\n        type=\"button\"\n        class=\"ui-btn ui-btn-secondary\"\n        (click)=\"handleCancel()\"\n      >\n        {{ cancelText }}\n      </button>\n    </div>\n  }\n</form>\n" }]
         }], propDecorators: { heading: [{
                 type: Input
             }], showActions: [{
@@ -5975,11 +5365,36 @@ class CheckboxComponent {
         this.changed.emit(e.target.checked);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CheckboxComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CheckboxComponent, isStandalone: true, selector: "app-checkbox", inputs: { checked: "checked", label: "label", disabled: "disabled" }, outputs: { changed: "changed" }, ngImport: i0, template: "<label class=\"ui-control-wrap\">\n  <input\n    type=\"checkbox\"\n    [style.accent-color]=\"'var(--accent)'\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n  />\n  @if (label) {\n    <span>{{ label }}</span>\n  }\n</label>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: CheckboxComponent, isStandalone: true, selector: "app-checkbox", inputs: { checked: "checked", label: "label", disabled: "disabled" }, outputs: { changed: "changed" }, ngImport: i0, template: `
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input
+        type="checkbox"
+        class="w-5 h-5 text-indigo-600 bg-neutral-100 border-neutral-300 rounded focus:ring-indigo-500 dark:bg-neutral-700 dark:border-neutral-600"
+      />
+      <span class="text-sm text-neutral-700 dark:text-neutral-300">{{
+        label
+      }}</span>
+    </label>
+  `, isInline: true });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CheckboxComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-checkbox", standalone: true, imports: [], template: "<label class=\"ui-control-wrap\">\n  <input\n    type=\"checkbox\"\n    [style.accent-color]=\"'var(--accent)'\"\n    [checked]=\"checked\"\n    [disabled]=\"disabled\"\n    (change)=\"handleChange($event)\"\n  />\n  @if (label) {\n    <span>{{ label }}</span>\n  }\n</label>\n", styles: [":host{display:block}\n"] }]
+            args: [{
+                    selector: "app-checkbox",
+                    standalone: true,
+                    imports: [],
+                    template: `
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input
+        type="checkbox"
+        class="w-5 h-5 text-indigo-600 bg-neutral-100 border-neutral-300 rounded focus:ring-indigo-500 dark:bg-neutral-700 dark:border-neutral-600"
+      />
+      <span class="text-sm text-neutral-700 dark:text-neutral-300">{{
+        label
+      }}</span>
+    </label>
+  `,
+                }]
         }], propDecorators: { checked: [{
                 type: Input
             }], label: [{
@@ -6067,11 +5482,11 @@ class CanvasToolbarComponent {
         this.action.emit(name);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CanvasToolbarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: CanvasToolbarComponent, isStandalone: true, selector: "app-canvas-toolbar", inputs: { zoomLevel: "zoomLevel", showGrid: "showGrid", canUndo: "canUndo", canRedo: "canRedo" }, outputs: { action: "action" }, ngImport: i0, template: "<div class=\"ui-canvas-toolbar\">\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!canUndo\"\n      (click)=\"emit('undo')\"\n      title=\"Undo\"\n    >\n      <span>\u21A9</span>\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!canRedo\"\n      (click)=\"emit('redo')\"\n      title=\"Redo\"\n    >\n      <span>\u21AA</span>\n    </button>\n  </div>\n  <div class=\"ui-toolbar-group\">\n    <button class=\"ui-icon-btn\" (click)=\"emit('zoom-out')\" title=\"Zoom Out\">\n      <span>\u2212</span>\n    </button>\n    <span class=\"ui-zoom-label\">{{ zoomLevel }}%</span>\n    <button class=\"ui-icon-btn\" (click)=\"emit('zoom-in')\" title=\"Zoom In\">\n      <span>+</span>\n    </button>\n    <button class=\"ui-icon-btn\" (click)=\"emit('zoom-reset')\" title=\"Reset Zoom\">\n      <span>\u22A1</span>\n    </button>\n  </div>\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      [class.ui-icon-btn-active]=\"showGrid\"\n      (click)=\"emit('toggle-grid')\"\n      title=\"Toggle Grid\"\n    >\n      <span>\u25A6</span>\n    </button>\n  </div>\n</div>\n", styles: [":host{display:inline-flex;align-items:center;gap:4px}.toolbar-group:not(:last-child){border-right:1px solid var(--border-color)}.toolbar-btn[disabled]{opacity:.4;cursor:not-allowed}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: CanvasToolbarComponent, isStandalone: true, selector: "app-canvas-toolbar", inputs: { zoomLevel: "zoomLevel", showGrid: "showGrid", canUndo: "canUndo", canRedo: "canRedo" }, outputs: { action: "action" }, ngImport: i0, template: "<div class=\"ui-canvas-toolbar\">\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!canUndo\"\n      (click)=\"emit('undo')\"\n      title=\"Undo\"\n    >\n      <span>\u21A9</span>\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!canRedo\"\n      (click)=\"emit('redo')\"\n      title=\"Redo\"\n    >\n      <span>\u21AA</span>\n    </button>\n  </div>\n  <div class=\"ui-toolbar-group\">\n    <button class=\"ui-icon-btn\" (click)=\"emit('zoom-out')\" title=\"Zoom Out\">\n      <span>\u2212</span>\n    </button>\n    <span class=\"ui-zoom-label\">{{ zoomLevel }}%</span>\n    <button class=\"ui-icon-btn\" (click)=\"emit('zoom-in')\" title=\"Zoom In\">\n      <span>+</span>\n    </button>\n    <button class=\"ui-icon-btn\" (click)=\"emit('zoom-reset')\" title=\"Reset Zoom\">\n      <span>\u22A1</span>\n    </button>\n  </div>\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      [class.ui-icon-btn-active]=\"showGrid\"\n      (click)=\"emit('toggle-grid')\"\n      title=\"Toggle Grid\"\n    >\n      <span>\u25A6</span>\n    </button>\n  </div>\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CanvasToolbarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-canvas-toolbar", standalone: true, imports: [], template: "<div class=\"ui-canvas-toolbar\">\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!canUndo\"\n      (click)=\"emit('undo')\"\n      title=\"Undo\"\n    >\n      <span>\u21A9</span>\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!canRedo\"\n      (click)=\"emit('redo')\"\n      title=\"Redo\"\n    >\n      <span>\u21AA</span>\n    </button>\n  </div>\n  <div class=\"ui-toolbar-group\">\n    <button class=\"ui-icon-btn\" (click)=\"emit('zoom-out')\" title=\"Zoom Out\">\n      <span>\u2212</span>\n    </button>\n    <span class=\"ui-zoom-label\">{{ zoomLevel }}%</span>\n    <button class=\"ui-icon-btn\" (click)=\"emit('zoom-in')\" title=\"Zoom In\">\n      <span>+</span>\n    </button>\n    <button class=\"ui-icon-btn\" (click)=\"emit('zoom-reset')\" title=\"Reset Zoom\">\n      <span>\u22A1</span>\n    </button>\n  </div>\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      [class.ui-icon-btn-active]=\"showGrid\"\n      (click)=\"emit('toggle-grid')\"\n      title=\"Toggle Grid\"\n    >\n      <span>\u25A6</span>\n    </button>\n  </div>\n</div>\n", styles: [":host{display:inline-flex;align-items:center;gap:4px}.toolbar-group:not(:last-child){border-right:1px solid var(--border-color)}.toolbar-btn[disabled]{opacity:.4;cursor:not-allowed}\n"] }]
+            args: [{ selector: "app-canvas-toolbar", standalone: true, imports: [], template: "<div class=\"ui-canvas-toolbar\">\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!canUndo\"\n      (click)=\"emit('undo')\"\n      title=\"Undo\"\n    >\n      <span>\u21A9</span>\n    </button>\n    <button\n      class=\"ui-icon-btn\"\n      [disabled]=\"!canRedo\"\n      (click)=\"emit('redo')\"\n      title=\"Redo\"\n    >\n      <span>\u21AA</span>\n    </button>\n  </div>\n  <div class=\"ui-toolbar-group\">\n    <button class=\"ui-icon-btn\" (click)=\"emit('zoom-out')\" title=\"Zoom Out\">\n      <span>\u2212</span>\n    </button>\n    <span class=\"ui-zoom-label\">{{ zoomLevel }}%</span>\n    <button class=\"ui-icon-btn\" (click)=\"emit('zoom-in')\" title=\"Zoom In\">\n      <span>+</span>\n    </button>\n    <button class=\"ui-icon-btn\" (click)=\"emit('zoom-reset')\" title=\"Reset Zoom\">\n      <span>\u22A1</span>\n    </button>\n  </div>\n  <div class=\"ui-toolbar-group\">\n    <button\n      class=\"ui-icon-btn\"\n      [class.ui-icon-btn-active]=\"showGrid\"\n      (click)=\"emit('toggle-grid')\"\n      title=\"Toggle Grid\"\n    >\n      <span>\u25A6</span>\n    </button>\n  </div>\n</div>\n" }]
         }], propDecorators: { zoomLevel: [{
                 type: Input
             }], showGrid: [{
@@ -6095,11 +5510,11 @@ class DesignerSidebarComponent {
         this.collapsedChange.emit(this.collapsed);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DesignerSidebarComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: DesignerSidebarComponent, isStandalone: true, selector: "app-designer-sidebar", inputs: { position: "position", collapsed: "collapsed", header: "header" }, outputs: { collapsedChange: "collapsedChange" }, ngImport: i0, template: "<div class=\"ui-designer-sidebar\">\n  <aside\n    class=\"ui-designer-sidebar-panel\"\n    [class.ui-designer-sidebar-collapsed]=\"collapsed\"\n    [style.border-right]=\"\n      position === 'left' ? '1px solid var(--border-color)' : 'none'\n    \"\n    [style.border-left]=\"\n      position === 'right' ? '1px solid var(--border-color)' : 'none'\n    \"\n  >\n    <div\n      class=\"ui-designer-sidebar-header\"\n      [style.flex-direction]=\"position === 'right' ? 'row-reverse' : 'row'\"\n    >\n      <span>{{ header }}</span>\n    </div>\n    <div class=\"ui-designer-sidebar-content\">\n      <ng-content select=\"[slot=content]\"></ng-content>\n    </div>\n    <div class=\"ui-designer-sidebar-footer\">\n      <ng-content select=\"[slot=footer]\"></ng-content>\n    </div>\n  </aside>\n  <div\n    class=\"ui-designer-sidebar-toggle\"\n    [style.right]=\"position === 'left' ? '-12px' : 'auto'\"\n    [style.left]=\"position === 'right' ? '-12px' : 'auto'\"\n  >\n    <button (click)=\"toggleCollapse()\">\n      {{\n        collapsed\n          ? position === \"left\"\n            ? \"\u25B6\"\n            : \"\u25C0\"\n          : position === \"left\"\n            ? \"\u25C0\"\n            : \"\u25B6\"\n      }}\n    </button>\n  </div>\n</div>\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: DesignerSidebarComponent, isStandalone: true, selector: "app-designer-sidebar", inputs: { position: "position", collapsed: "collapsed", header: "header" }, outputs: { collapsedChange: "collapsedChange" }, ngImport: i0, template: "<div class=\"ui-designer-sidebar\">\n  <aside\n    class=\"ui-designer-sidebar-panel\"\n    [class.ui-designer-sidebar-collapsed]=\"collapsed\"\n    [style.border-right]=\"\n      position === 'left' ? '1px solid var(--border-color)' : 'none'\n    \"\n    [style.border-left]=\"\n      position === 'right' ? '1px solid var(--border-color)' : 'none'\n    \"\n  >\n    <div\n      class=\"ui-designer-sidebar-header\"\n      [style.flex-direction]=\"position === 'right' ? 'row-reverse' : 'row'\"\n    >\n      <span>{{ header }}</span>\n    </div>\n    <div class=\"ui-designer-sidebar-content\">\n      <ng-content select=\"[slot=content]\"></ng-content>\n    </div>\n    <div class=\"ui-designer-sidebar-footer\">\n      <ng-content select=\"[slot=footer]\"></ng-content>\n    </div>\n  </aside>\n  <div\n    class=\"ui-designer-sidebar-toggle\"\n    [style.right]=\"position === 'left' ? '-12px' : 'auto'\"\n    [style.left]=\"position === 'right' ? '-12px' : 'auto'\"\n  >\n    <button (click)=\"toggleCollapse()\">\n      {{\n        collapsed\n          ? position === \"left\"\n            ? \"\u25B6\"\n            : \"\u25C0\"\n          : position === \"left\"\n            ? \"\u25C0\"\n            : \"\u25B6\"\n      }}\n    </button>\n  </div>\n</div>\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: DesignerSidebarComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-designer-sidebar", standalone: true, imports: [], template: "<div class=\"ui-designer-sidebar\">\n  <aside\n    class=\"ui-designer-sidebar-panel\"\n    [class.ui-designer-sidebar-collapsed]=\"collapsed\"\n    [style.border-right]=\"\n      position === 'left' ? '1px solid var(--border-color)' : 'none'\n    \"\n    [style.border-left]=\"\n      position === 'right' ? '1px solid var(--border-color)' : 'none'\n    \"\n  >\n    <div\n      class=\"ui-designer-sidebar-header\"\n      [style.flex-direction]=\"position === 'right' ? 'row-reverse' : 'row'\"\n    >\n      <span>{{ header }}</span>\n    </div>\n    <div class=\"ui-designer-sidebar-content\">\n      <ng-content select=\"[slot=content]\"></ng-content>\n    </div>\n    <div class=\"ui-designer-sidebar-footer\">\n      <ng-content select=\"[slot=footer]\"></ng-content>\n    </div>\n  </aside>\n  <div\n    class=\"ui-designer-sidebar-toggle\"\n    [style.right]=\"position === 'left' ? '-12px' : 'auto'\"\n    [style.left]=\"position === 'right' ? '-12px' : 'auto'\"\n  >\n    <button (click)=\"toggleCollapse()\">\n      {{\n        collapsed\n          ? position === \"left\"\n            ? \"\u25B6\"\n            : \"\u25C0\"\n          : position === \"left\"\n            ? \"\u25C0\"\n            : \"\u25B6\"\n      }}\n    </button>\n  </div>\n</div>\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-designer-sidebar", standalone: true, imports: [], template: "<div class=\"ui-designer-sidebar\">\n  <aside\n    class=\"ui-designer-sidebar-panel\"\n    [class.ui-designer-sidebar-collapsed]=\"collapsed\"\n    [style.border-right]=\"\n      position === 'left' ? '1px solid var(--border-color)' : 'none'\n    \"\n    [style.border-left]=\"\n      position === 'right' ? '1px solid var(--border-color)' : 'none'\n    \"\n  >\n    <div\n      class=\"ui-designer-sidebar-header\"\n      [style.flex-direction]=\"position === 'right' ? 'row-reverse' : 'row'\"\n    >\n      <span>{{ header }}</span>\n    </div>\n    <div class=\"ui-designer-sidebar-content\">\n      <ng-content select=\"[slot=content]\"></ng-content>\n    </div>\n    <div class=\"ui-designer-sidebar-footer\">\n      <ng-content select=\"[slot=footer]\"></ng-content>\n    </div>\n  </aside>\n  <div\n    class=\"ui-designer-sidebar-toggle\"\n    [style.right]=\"position === 'left' ? '-12px' : 'auto'\"\n    [style.left]=\"position === 'right' ? '-12px' : 'auto'\"\n  >\n    <button (click)=\"toggleCollapse()\">\n      {{\n        collapsed\n          ? position === \"left\"\n            ? \"\u25B6\"\n            : \"\u25C0\"\n          : position === \"left\"\n            ? \"\u25C0\"\n            : \"\u25B6\"\n      }}\n    </button>\n  </div>\n</div>\n" }]
         }], propDecorators: { position: [{
                 type: Input
             }], collapsed: [{
@@ -6249,11 +5664,11 @@ class CommandPaletteComponent {
         return [...map.entries()].map(([key, value]) => ({ key, value }));
     };
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CommandPaletteComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CommandPaletteComponent, isStandalone: true, selector: "app-command-palette", inputs: { commands: "commands", placeholder: "placeholder", triggerShortcut: "triggerShortcut" }, outputs: { commandSelected: "commandSelected", closed: "closed" }, host: { listeners: { "document:keydown": "onKeyDown($event)" } }, ngImport: i0, template: "@if (isOpen()) {\n  <div class=\"ui-command-palette-overlay\" (click)=\"close()\">\n    <div class=\"ui-command-palette\" (click)=\"$event.stopPropagation()\">\n      <div class=\"ui-command-palette-search\">\n        <app-icon icon=\"search\" [size]=\"20\" />\n        <input\n          type=\"text\"\n          [placeholder]=\"placeholder\"\n          [value]=\"searchQuery()\"\n          (input)=\"onSearchChange($any($event.target).value)\"\n          autofocus\n        />\n        <kbd>Esc</kbd>\n      </div>\n      <div class=\"ui-command-palette-results\">\n        @if (filteredCommands().length === 0) {\n          <div class=\"ui-command-palette-empty\">\n            <app-icon icon=\"search\" [size]=\"40\" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class=\"ui-command-palette-group\">\n              <div class=\"ui-command-palette-group-label\">\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type=\"button\"\n                  class=\"ui-command-palette-item\"\n                  [class.ui-command-palette-item-selected]=\"isSelected(command)\"\n                  [class.ui-command-palette-item-disabled]=\"command.disabled\"\n                  [disabled]=\"command.disabled\"\n                  (click)=\"selectCommand(command)\"\n                >\n                  @if (command.icon) {\n                    <app-icon [icon]=\"command.icon\" [size]=\"20\" />\n                  }\n                  <span>{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd>{{ command.shortcut }}</kbd>\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div class=\"ui-command-palette-footer\">\n        <span><kbd>\u2191\u2193</kbd> Navigate</span>\n        <span><kbd>\u21B5</kbd> Select</span>\n        <span><kbd>Esc</kbd> Close</span>\n      </div>\n    </div>\n  </div>\n}\n", styles: ["@keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes slideDown{0%{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}.animate-fade-in{animation:fadeIn .15s ease-out}.animate-slide-down{animation:slideDown .15s ease-out}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: CommandPaletteComponent, isStandalone: true, selector: "app-command-palette", inputs: { commands: "commands", placeholder: "placeholder", triggerShortcut: "triggerShortcut" }, outputs: { commandSelected: "commandSelected", closed: "closed" }, host: { listeners: { "document:keydown": "onKeyDown($event)" } }, ngImport: i0, template: "@if (isOpen()) {\n  <div class=\"ui-command-palette-overlay\" (click)=\"close()\">\n    <div class=\"ui-command-palette\" (click)=\"$event.stopPropagation()\">\n      <div class=\"ui-command-palette-search\">\n        <app-icon icon=\"search\" [size]=\"20\" />\n        <input\n          type=\"text\"\n          [placeholder]=\"placeholder\"\n          [value]=\"searchQuery()\"\n          (input)=\"onSearchChange($any($event.target).value)\"\n          autofocus\n        />\n        <kbd>Esc</kbd>\n      </div>\n      <div class=\"ui-command-palette-results\">\n        @if (filteredCommands().length === 0) {\n          <div class=\"ui-command-palette-empty\">\n            <app-icon icon=\"search\" [size]=\"40\" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class=\"ui-command-palette-group\">\n              <div class=\"ui-command-palette-group-label\">\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type=\"button\"\n                  class=\"ui-command-palette-item\"\n                  [class.ui-command-palette-item-selected]=\"isSelected(command)\"\n                  [class.ui-command-palette-item-disabled]=\"command.disabled\"\n                  [disabled]=\"command.disabled\"\n                  (click)=\"selectCommand(command)\"\n                >\n                  @if (command.icon) {\n                    <app-icon [icon]=\"command.icon\" [size]=\"20\" />\n                  }\n                  <span>{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd>{{ command.shortcut }}</kbd>\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div class=\"ui-command-palette-footer\">\n        <span><kbd>\u2191\u2193</kbd> Navigate</span>\n        <span><kbd>\u21B5</kbd> Select</span>\n        <span><kbd>Esc</kbd> Close</span>\n      </div>\n    </div>\n  </div>\n}\n", dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: CommandPaletteComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-command-palette", standalone: true, imports: [IconComponent], template: "@if (isOpen()) {\n  <div class=\"ui-command-palette-overlay\" (click)=\"close()\">\n    <div class=\"ui-command-palette\" (click)=\"$event.stopPropagation()\">\n      <div class=\"ui-command-palette-search\">\n        <app-icon icon=\"search\" [size]=\"20\" />\n        <input\n          type=\"text\"\n          [placeholder]=\"placeholder\"\n          [value]=\"searchQuery()\"\n          (input)=\"onSearchChange($any($event.target).value)\"\n          autofocus\n        />\n        <kbd>Esc</kbd>\n      </div>\n      <div class=\"ui-command-palette-results\">\n        @if (filteredCommands().length === 0) {\n          <div class=\"ui-command-palette-empty\">\n            <app-icon icon=\"search\" [size]=\"40\" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class=\"ui-command-palette-group\">\n              <div class=\"ui-command-palette-group-label\">\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type=\"button\"\n                  class=\"ui-command-palette-item\"\n                  [class.ui-command-palette-item-selected]=\"isSelected(command)\"\n                  [class.ui-command-palette-item-disabled]=\"command.disabled\"\n                  [disabled]=\"command.disabled\"\n                  (click)=\"selectCommand(command)\"\n                >\n                  @if (command.icon) {\n                    <app-icon [icon]=\"command.icon\" [size]=\"20\" />\n                  }\n                  <span>{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd>{{ command.shortcut }}</kbd>\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div class=\"ui-command-palette-footer\">\n        <span><kbd>\u2191\u2193</kbd> Navigate</span>\n        <span><kbd>\u21B5</kbd> Select</span>\n        <span><kbd>Esc</kbd> Close</span>\n      </div>\n    </div>\n  </div>\n}\n", styles: ["@keyframes fadeIn{0%{opacity:0}to{opacity:1}}@keyframes slideDown{0%{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}.animate-fade-in{animation:fadeIn .15s ease-out}.animate-slide-down{animation:slideDown .15s ease-out}\n"] }]
+            args: [{ selector: "app-command-palette", standalone: true, imports: [IconComponent], template: "@if (isOpen()) {\n  <div class=\"ui-command-palette-overlay\" (click)=\"close()\">\n    <div class=\"ui-command-palette\" (click)=\"$event.stopPropagation()\">\n      <div class=\"ui-command-palette-search\">\n        <app-icon icon=\"search\" [size]=\"20\" />\n        <input\n          type=\"text\"\n          [placeholder]=\"placeholder\"\n          [value]=\"searchQuery()\"\n          (input)=\"onSearchChange($any($event.target).value)\"\n          autofocus\n        />\n        <kbd>Esc</kbd>\n      </div>\n      <div class=\"ui-command-palette-results\">\n        @if (filteredCommands().length === 0) {\n          <div class=\"ui-command-palette-empty\">\n            <app-icon icon=\"search\" [size]=\"40\" />\n            <span>No commands found</span>\n          </div>\n        } @else {\n          @for (group of groupedCommands(); track group.key) {\n            <div class=\"ui-command-palette-group\">\n              <div class=\"ui-command-palette-group-label\">\n                {{ group.key }}\n              </div>\n              @for (command of group.value; track command.id) {\n                <button\n                  type=\"button\"\n                  class=\"ui-command-palette-item\"\n                  [class.ui-command-palette-item-selected]=\"isSelected(command)\"\n                  [class.ui-command-palette-item-disabled]=\"command.disabled\"\n                  [disabled]=\"command.disabled\"\n                  (click)=\"selectCommand(command)\"\n                >\n                  @if (command.icon) {\n                    <app-icon [icon]=\"command.icon\" [size]=\"20\" />\n                  }\n                  <span>{{ command.label }}</span>\n                  @if (command.shortcut) {\n                    <kbd>{{ command.shortcut }}</kbd>\n                  }\n                </button>\n              }\n            </div>\n          }\n        }\n      </div>\n      <div class=\"ui-command-palette-footer\">\n        <span><kbd>\u2191\u2193</kbd> Navigate</span>\n        <span><kbd>\u21B5</kbd> Select</span>\n        <span><kbd>Esc</kbd> Close</span>\n      </div>\n    </div>\n  </div>\n}\n" }]
         }], propDecorators: { commands: [{
                 type: Input
             }], placeholder: [{
@@ -6393,7 +5808,9 @@ class LanguageSelectorComponent {
             </option>
           }
         </select>
-        <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">
+        <div
+          class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant"
+        >
           <app-icon icon="chevron-down" [size]="18" />
         </div>
       </div>
@@ -6431,7 +5848,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             </option>
           }
         </select>
-        <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">
+        <div
+          class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant"
+        >
           <app-icon icon="chevron-down" [size]="18" />
         </div>
       </div>
@@ -6612,7 +6031,9 @@ class TextInputComponent {
           <span class="text-sm text-error">{{ error }}</span>
         }
         @if (maxChars) {
-          <span class="text-sm text-on-surface-variant ml-auto">{{ value.length }}/{{ maxChars }}</span>
+          <span class="text-sm text-on-surface-variant ml-auto"
+            >{{ value.length }}/{{ maxChars }}</span
+          >
         }
       </div>
     </div>
@@ -6662,7 +6083,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
           <span class="text-sm text-error">{{ error }}</span>
         }
         @if (maxChars) {
-          <span class="text-sm text-on-surface-variant ml-auto">{{ value.length }}/{{ maxChars }}</span>
+          <span class="text-sm text-on-surface-variant ml-auto"
+            >{{ value.length }}/{{ maxChars }}</span
+          >
         }
       </div>
     </div>
@@ -6748,7 +6171,9 @@ class TranslationOutputComponent {
         ></textarea>
         @if (loading) {
           <div class="absolute right-3 top-1/2 -translate-y-1/2">
-            <div class="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <div
+              class="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"
+            ></div>
           </div>
         }
         @if (showCopyButton && value && !loading) {
@@ -6800,7 +6225,9 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
         ></textarea>
         @if (loading) {
           <div class="absolute right-3 top-1/2 -translate-y-1/2">
-            <div class="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <div
+              class="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"
+            ></div>
           </div>
         }
         @if (showCopyButton && value && !loading) {
@@ -6862,11 +6289,11 @@ class MenuButtonComponent {
     classes = "";
     toggle = new EventEmitter();
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: MenuButtonComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: MenuButtonComponent, isStandalone: true, selector: "app-menu-button", inputs: { isOpen: "isOpen", classes: "classes" }, outputs: { toggle: "toggle" }, ngImport: i0, template: "<button\n  type=\"button\"\n  class=\"ui-menu-button\"\n  (click)=\"toggle.emit()\"\n  [attr.aria-expanded]=\"isOpen\"\n  aria-label=\"Open menu\"\n>\n  <span class=\"ui-menu-icon\" [class.open]=\"isOpen\">\n    <span class=\"ui-menu-line\"></span>\n    <span class=\"ui-menu-line\"></span>\n    <span class=\"ui-menu-line\"></span>\n  </span>\n</button>\n", styles: [".menu-button{display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:8px;background:transparent;border:none;border-radius:8px;cursor:pointer;transition:background-color .2s}.menu-button:hover{background:var(--hover)}.menu-icon{display:flex;flex-direction:column;gap:5px;width:20px}.menu-line{display:block;height:2px;background:var(--text-primary);border-radius:2px;transition:transform .3s,opacity .3s}.menu-icon.open .menu-line:nth-child(1){transform:translateY(7px) rotate(45deg)}.menu-icon.open .menu-line:nth-child(2){opacity:0}.menu-icon.open .menu-line:nth-child(3){transform:translateY(-7px) rotate(-45deg)}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: MenuButtonComponent, isStandalone: true, selector: "app-menu-button", inputs: { isOpen: "isOpen", classes: "classes" }, outputs: { toggle: "toggle" }, ngImport: i0, template: "<button\n  type=\"button\"\n  class=\"ui-menu-button\"\n  (click)=\"toggle.emit()\"\n  [attr.aria-expanded]=\"isOpen\"\n  aria-label=\"Open menu\"\n>\n  <span class=\"ui-menu-icon\" [class.open]=\"isOpen\">\n    <span class=\"ui-menu-line\"></span>\n    <span class=\"ui-menu-line\"></span>\n    <span class=\"ui-menu-line\"></span>\n  </span>\n</button>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: MenuButtonComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-menu-button", standalone: true, imports: [CommonModule], template: "<button\n  type=\"button\"\n  class=\"ui-menu-button\"\n  (click)=\"toggle.emit()\"\n  [attr.aria-expanded]=\"isOpen\"\n  aria-label=\"Open menu\"\n>\n  <span class=\"ui-menu-icon\" [class.open]=\"isOpen\">\n    <span class=\"ui-menu-line\"></span>\n    <span class=\"ui-menu-line\"></span>\n    <span class=\"ui-menu-line\"></span>\n  </span>\n</button>\n", styles: [".menu-button{display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:8px;background:transparent;border:none;border-radius:8px;cursor:pointer;transition:background-color .2s}.menu-button:hover{background:var(--hover)}.menu-icon{display:flex;flex-direction:column;gap:5px;width:20px}.menu-line{display:block;height:2px;background:var(--text-primary);border-radius:2px;transition:transform .3s,opacity .3s}.menu-icon.open .menu-line:nth-child(1){transform:translateY(7px) rotate(45deg)}.menu-icon.open .menu-line:nth-child(2){opacity:0}.menu-icon.open .menu-line:nth-child(3){transform:translateY(-7px) rotate(-45deg)}\n"] }]
+            args: [{ selector: "app-menu-button", standalone: true, imports: [CommonModule], template: "<button\n  type=\"button\"\n  class=\"ui-menu-button\"\n  (click)=\"toggle.emit()\"\n  [attr.aria-expanded]=\"isOpen\"\n  aria-label=\"Open menu\"\n>\n  <span class=\"ui-menu-icon\" [class.open]=\"isOpen\">\n    <span class=\"ui-menu-line\"></span>\n    <span class=\"ui-menu-line\"></span>\n    <span class=\"ui-menu-line\"></span>\n  </span>\n</button>\n" }]
         }], propDecorators: { isOpen: [{
                 type: Input
             }], classes: [{
@@ -6949,11 +6376,11 @@ class BlockComponent {
         return this.height;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BlockComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: BlockComponent, isStandalone: true, selector: "app-block", inputs: { display: "display", direction: "direction", align: "align", justify: "justify", wrap: "wrap", gap: "gap", padding: "padding", width: "width", height: "height", flex: "flex", overflow: "overflow", inline: "inline", children: "children", classes: "classes" }, ngImport: i0, template: "<div\n  class=\"ui-block\"\n  [class]=\"classes\"\n  [style.flexDirection]=\"direction\"\n  [style.alignItems]=\"alignCss\"\n  [style.justifyContent]=\"justifyCss\"\n  [style.flexWrap]=\"wrap\"\n  [style.gap]=\"gapCss\"\n  [style.padding]=\"paddingCss\"\n  [style.width]=\"widthCss\"\n  [style.height]=\"heightCss\"\n  [style.flex]=\"flex\"\n  [style.overflow]=\"overflow\"\n>\n  @for (child of children; track child.id) {\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  }\n</div>\n", styles: [":host{display:contents}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: BlockComponent, isStandalone: true, selector: "app-block", inputs: { display: "display", direction: "direction", align: "align", justify: "justify", wrap: "wrap", gap: "gap", padding: "padding", width: "width", height: "height", flex: "flex", overflow: "overflow", inline: "inline", children: "children", classes: "classes" }, ngImport: i0, template: "<div\n  class=\"ui-block\"\n  [class]=\"classes\"\n  [style.flexDirection]=\"direction\"\n  [style.alignItems]=\"alignCss\"\n  [style.justifyContent]=\"justifyCss\"\n  [style.flexWrap]=\"wrap\"\n  [style.gap]=\"gapCss\"\n  [style.padding]=\"paddingCss\"\n  [style.width]=\"widthCss\"\n  [style.height]=\"heightCss\"\n  [style.flex]=\"flex\"\n  [style.overflow]=\"overflow\"\n>\n  @for (child of children; track child.id) {\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  }\n</div>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BlockComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-block", standalone: true, imports: [CommonModule, SchemaElementComponent], template: "<div\n  class=\"ui-block\"\n  [class]=\"classes\"\n  [style.flexDirection]=\"direction\"\n  [style.alignItems]=\"alignCss\"\n  [style.justifyContent]=\"justifyCss\"\n  [style.flexWrap]=\"wrap\"\n  [style.gap]=\"gapCss\"\n  [style.padding]=\"paddingCss\"\n  [style.width]=\"widthCss\"\n  [style.height]=\"heightCss\"\n  [style.flex]=\"flex\"\n  [style.overflow]=\"overflow\"\n>\n  @for (child of children; track child.id) {\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  }\n</div>\n", styles: [":host{display:contents}\n"] }]
+            args: [{ selector: "app-block", standalone: true, imports: [CommonModule, SchemaElementComponent], template: "<div\n  class=\"ui-block\"\n  [class]=\"classes\"\n  [style.flexDirection]=\"direction\"\n  [style.alignItems]=\"alignCss\"\n  [style.justifyContent]=\"justifyCss\"\n  [style.flexWrap]=\"wrap\"\n  [style.gap]=\"gapCss\"\n  [style.padding]=\"paddingCss\"\n  [style.width]=\"widthCss\"\n  [style.height]=\"heightCss\"\n  [style.flex]=\"flex\"\n  [style.overflow]=\"overflow\"\n>\n  @for (child of children; track child.id) {\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  }\n</div>\n" }]
         }], propDecorators: { display: [{
                 type: Input
             }], direction: [{
@@ -7104,40 +6531,40 @@ class ThemeToggleComponent {
         this.themeService.toggleDarkMode();
     }
     getButtonClasses() {
-        const base = 'w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200';
-        const hover = 'hover:bg-[--state-hover] active:bg-[--state-pressed]';
+        const base = "w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200";
+        const hover = "hover:bg-[--state-hover] active:bg-[--state-pressed]";
         return `${base} ${hover} ${this.classes}`.trim();
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ThemeToggleComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ThemeToggleComponent, isStandalone: true, selector: "app-theme-toggle", inputs: { classes: "classes" }, ngImport: i0, template: `
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: ThemeToggleComponent, isStandalone: true, selector: "app-theme-toggle", inputs: { classes: "classes" }, ngImport: i0, template: `
     <button
-      (click)="toggle()"
-      [class]="getButtonClasses()"
-      aria-label="Toggle theme"
+      class="p-2.5 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors"
+      title="Toggle Theme"
     >
-      @if (isDark) {
-        <app-icon icon="sun" [size]="20" />
-      } @else {
-        <app-icon icon="moon" [size]="20" />
-      }
+      <span class="material-symbols-rounded">{{
+        isDark ? "light_mode" : "dark_mode"
+      }}</span>
     </button>
-  `, isInline: true, styles: [":host{display:inline-flex}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ThemeToggleComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-theme-toggle", standalone: true, imports: [IconComponent], changeDetection: ChangeDetectionStrategy.OnPush, template: `
+            args: [{
+                    selector: "app-theme-toggle",
+                    standalone: true,
+                    imports: [IconComponent],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
     <button
-      (click)="toggle()"
-      [class]="getButtonClasses()"
-      aria-label="Toggle theme"
+      class="p-2.5 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors"
+      title="Toggle Theme"
     >
-      @if (isDark) {
-        <app-icon icon="sun" [size]="20" />
-      } @else {
-        <app-icon icon="moon" [size]="20" />
-      }
+      <span class="material-symbols-rounded">{{
+        isDark ? "light_mode" : "dark_mode"
+      }}</span>
     </button>
-  `, styles: [":host{display:inline-flex}\n"] }]
+  `,
+                }]
         }], propDecorators: { classes: [{
                 type: Input
             }] } });
@@ -7165,11 +6592,11 @@ class ShortcutsOverlayComponent {
         this.visible = true;
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ShortcutsOverlayComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ShortcutsOverlayComponent, isStandalone: true, selector: "app-shortcuts-overlay", inputs: { visible: "visible", title: "title", shortcuts: "shortcuts", trigger: "trigger" }, outputs: { closed: "closed" }, host: { listeners: { "window:keydown.escape": "onEscape()" } }, ngImport: i0, template: "@if (visible) {\n  <div class=\"ui-modal-overlay\" (click)=\"close()\">\n    <div class=\"ui-shortcuts-overlay\" (click)=\"$event.stopPropagation()\">\n      <div class=\"ui-shortcuts-header\">\n        <h3>{{ title || \"Keyboard Shortcuts\" }}</h3>\n        <button (click)=\"close()\" aria-label=\"Close\">&times;</button>\n      </div>\n      <div class=\"ui-shortcuts-body\">\n        @for (shortcut of parsedShortcuts; track shortcut.key) {\n          <div class=\"ui-shortcuts-item\">\n            <kbd>{{ shortcut.key }}</kbd>\n            <span>{{ shortcut.description }}</span>\n          </div>\n        }\n      </div>\n    </div>\n  </div>\n}\n", styles: [":host{display:block}\n"] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ShortcutsOverlayComponent, isStandalone: true, selector: "app-shortcuts-overlay", inputs: { visible: "visible", title: "title", shortcuts: "shortcuts", trigger: "trigger" }, outputs: { closed: "closed" }, host: { listeners: { "window:keydown.escape": "onEscape()" } }, ngImport: i0, template: "@if (visible) {\n  <div class=\"ui-modal-overlay\" (click)=\"close()\">\n    <div class=\"ui-shortcuts-overlay\" (click)=\"$event.stopPropagation()\">\n      <div class=\"ui-shortcuts-header\">\n        <h3>{{ title || \"Keyboard Shortcuts\" }}</h3>\n        <button (click)=\"close()\" aria-label=\"Close\">&times;</button>\n      </div>\n      <div class=\"ui-shortcuts-body\">\n        @for (shortcut of parsedShortcuts; track shortcut.key) {\n          <div class=\"ui-shortcuts-item\">\n            <kbd>{{ shortcut.key }}</kbd>\n            <span>{{ shortcut.description }}</span>\n          </div>\n        }\n      </div>\n    </div>\n  </div>\n}\n" });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ShortcutsOverlayComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-shortcuts-overlay", standalone: true, imports: [], template: "@if (visible) {\n  <div class=\"ui-modal-overlay\" (click)=\"close()\">\n    <div class=\"ui-shortcuts-overlay\" (click)=\"$event.stopPropagation()\">\n      <div class=\"ui-shortcuts-header\">\n        <h3>{{ title || \"Keyboard Shortcuts\" }}</h3>\n        <button (click)=\"close()\" aria-label=\"Close\">&times;</button>\n      </div>\n      <div class=\"ui-shortcuts-body\">\n        @for (shortcut of parsedShortcuts; track shortcut.key) {\n          <div class=\"ui-shortcuts-item\">\n            <kbd>{{ shortcut.key }}</kbd>\n            <span>{{ shortcut.description }}</span>\n          </div>\n        }\n      </div>\n    </div>\n  </div>\n}\n", styles: [":host{display:block}\n"] }]
+            args: [{ selector: "app-shortcuts-overlay", standalone: true, imports: [], template: "@if (visible) {\n  <div class=\"ui-modal-overlay\" (click)=\"close()\">\n    <div class=\"ui-shortcuts-overlay\" (click)=\"$event.stopPropagation()\">\n      <div class=\"ui-shortcuts-header\">\n        <h3>{{ title || \"Keyboard Shortcuts\" }}</h3>\n        <button (click)=\"close()\" aria-label=\"Close\">&times;</button>\n      </div>\n      <div class=\"ui-shortcuts-body\">\n        @for (shortcut of parsedShortcuts; track shortcut.key) {\n          <div class=\"ui-shortcuts-item\">\n            <kbd>{{ shortcut.key }}</kbd>\n            <span>{{ shortcut.description }}</span>\n          </div>\n        }\n      </div>\n    </div>\n  </div>\n}\n" }]
         }], propDecorators: { visible: [{
                 type: Input
             }], title: [{
@@ -7201,11 +6628,11 @@ class LocaleSwitcherComponent {
         this.i18n.setLocale(locale);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LocaleSwitcherComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: LocaleSwitcherComponent, isStandalone: true, selector: "app-locale-switcher", inputs: { size: "size", variant: "variant", classes: "classes" }, ngImport: i0, template: "<div\n  class=\"ui-locale-switcher ui-locale-switcher-{{ size }} ui-locale-switcher-{{\n    variant\n  }}\"\n>\n  <select\n    class=\"ui-locale-select\"\n    [value]=\"currentLocale\"\n    (change)=\"setLocale($any($event.target).value)\"\n  >\n    @for (locale of availableLocales; track locale) {\n      <option [value]=\"locale\">{{ locale.toUpperCase() }}</option>\n    }\n  </select>\n  <span class=\"ui-locale-icon\">\n    <app-icon icon=\"globe\" [size]=\"16\" />\n  </span>\n</div>\n", styles: [":host{display:inline-flex}.ui-locale-switcher{display:inline-flex;align-items:center;position:relative;border-radius:var(--radius-sm, 4px)}.ui-locale-select{appearance:none;background:transparent;border:none;cursor:pointer;padding:.5rem 1.5rem .5rem .5rem;font-size:inherit;color:inherit;width:100%}.ui-locale-select:focus{outline:none}.ui-locale-icon{position:absolute;right:.25rem;pointer-events:none;display:flex;align-items:center}.ui-locale-switcher-sm .ui-locale-select{padding:.25rem 1.25rem .25rem .25rem;font-size:.875rem}.ui-locale-switcher-md .ui-locale-select{padding:.375rem 1.375rem .375rem .375rem;font-size:1rem}.ui-locale-switcher-lg .ui-locale-select{padding:.5rem 1.5rem .5rem .5rem;font-size:1.125rem}.ui-locale-switcher-ghost .ui-locale-select{background:transparent}.ui-locale-switcher-solid .ui-locale-select{background:var(--bg-elevated);border-radius:var(--radius-md)}.ui-locale-switcher-outline .ui-locale-select{background:transparent;border:1px solid var(--border-color);border-radius:var(--radius-sm)}\n"], dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: LocaleSwitcherComponent, isStandalone: true, selector: "app-locale-switcher", inputs: { size: "size", variant: "variant", classes: "classes" }, ngImport: i0, template: "<div\n  class=\"ui-locale-switcher ui-locale-switcher-{{ size }} ui-locale-switcher-{{\n    variant\n  }}\"\n>\n  <select\n    class=\"ui-locale-select\"\n    [value]=\"currentLocale\"\n    (change)=\"setLocale($any($event.target).value)\"\n  >\n    @for (locale of availableLocales; track locale) {\n      <option [value]=\"locale\">{{ locale.toUpperCase() }}</option>\n    }\n  </select>\n  <span class=\"ui-locale-icon\">\n    <app-icon icon=\"globe\" [size]=\"16\" />\n  </span>\n</div>\n", dependencies: [{ kind: "component", type: IconComponent, selector: "app-icon", inputs: ["icon", "size", "classes", "spin"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: LocaleSwitcherComponent, decorators: [{
             type: Component,
-            args: [{ selector: "app-locale-switcher", standalone: true, imports: [IconComponent], template: "<div\n  class=\"ui-locale-switcher ui-locale-switcher-{{ size }} ui-locale-switcher-{{\n    variant\n  }}\"\n>\n  <select\n    class=\"ui-locale-select\"\n    [value]=\"currentLocale\"\n    (change)=\"setLocale($any($event.target).value)\"\n  >\n    @for (locale of availableLocales; track locale) {\n      <option [value]=\"locale\">{{ locale.toUpperCase() }}</option>\n    }\n  </select>\n  <span class=\"ui-locale-icon\">\n    <app-icon icon=\"globe\" [size]=\"16\" />\n  </span>\n</div>\n", styles: [":host{display:inline-flex}.ui-locale-switcher{display:inline-flex;align-items:center;position:relative;border-radius:var(--radius-sm, 4px)}.ui-locale-select{appearance:none;background:transparent;border:none;cursor:pointer;padding:.5rem 1.5rem .5rem .5rem;font-size:inherit;color:inherit;width:100%}.ui-locale-select:focus{outline:none}.ui-locale-icon{position:absolute;right:.25rem;pointer-events:none;display:flex;align-items:center}.ui-locale-switcher-sm .ui-locale-select{padding:.25rem 1.25rem .25rem .25rem;font-size:.875rem}.ui-locale-switcher-md .ui-locale-select{padding:.375rem 1.375rem .375rem .375rem;font-size:1rem}.ui-locale-switcher-lg .ui-locale-select{padding:.5rem 1.5rem .5rem .5rem;font-size:1.125rem}.ui-locale-switcher-ghost .ui-locale-select{background:transparent}.ui-locale-switcher-solid .ui-locale-select{background:var(--bg-elevated);border-radius:var(--radius-md)}.ui-locale-switcher-outline .ui-locale-select{background:transparent;border:1px solid var(--border-color);border-radius:var(--radius-sm)}\n"] }]
+            args: [{ selector: "app-locale-switcher", standalone: true, imports: [IconComponent], template: "<div\n  class=\"ui-locale-switcher ui-locale-switcher-{{ size }} ui-locale-switcher-{{\n    variant\n  }}\"\n>\n  <select\n    class=\"ui-locale-select\"\n    [value]=\"currentLocale\"\n    (change)=\"setLocale($any($event.target).value)\"\n  >\n    @for (locale of availableLocales; track locale) {\n      <option [value]=\"locale\">{{ locale.toUpperCase() }}</option>\n    }\n  </select>\n  <span class=\"ui-locale-icon\">\n    <app-icon icon=\"globe\" [size]=\"16\" />\n  </span>\n</div>\n" }]
         }], propDecorators: { size: [{
                 type: Input
             }], variant: [{
@@ -7278,7 +6705,7 @@ class RowComponent {
         return "md:flex-col";
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: RowComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: RowComponent, isStandalone: true, selector: "app-row", inputs: { classes: "classes", children: "children", gap: "gap", align: "align", justify: "justify", width: "width", height: "height", responsive: "responsive" }, ngImport: i0, template: "<div class=\"ui-row\">\n  <ng-container *ngFor=\"let child of children\">\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  </ng-container>\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: RowComponent, isStandalone: true, selector: "app-row", inputs: { classes: "classes", children: "children", gap: "gap", align: "align", justify: "justify", width: "width", height: "height", responsive: "responsive" }, ngImport: i0, template: "<div class=\"ui-row\">\n  <ng-container *ngFor=\"let child of children\">\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  </ng-container>\n</div>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: RowComponent, decorators: [{
             type: Component,
@@ -7356,7 +6783,7 @@ class ColumnComponent {
         return classes.join(" ");
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ColumnComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: ColumnComponent, isStandalone: true, selector: "app-column", inputs: { classes: "classes", children: "children", gap: "gap", align: "align", justify: "justify", width: "width", height: "height" }, ngImport: i0, template: "<div class=\"ui-column\">\n  <ng-container *ngFor=\"let child of children\">\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  </ng-container>\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: ColumnComponent, isStandalone: true, selector: "app-column", inputs: { classes: "classes", children: "children", gap: "gap", align: "align", justify: "justify", width: "width", height: "height" }, ngImport: i0, template: "<div class=\"ui-column\">\n  <ng-container *ngFor=\"let child of children\">\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  </ng-container>\n</div>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ColumnComponent, decorators: [{
             type: Component,
@@ -7417,7 +6844,7 @@ class StackComponent {
         return classes.join(" ");
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: StackComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: StackComponent, isStandalone: true, selector: "app-stack", inputs: { classes: "classes", children: "children", gap: "gap", align: "align", width: "width", height: "height" }, ngImport: i0, template: "<div class=\"ui-stack\">\n  <ng-container *ngFor=\"let child of children\">\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  </ng-container>\n</div>\n", styles: [""], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "22.0.6", type: StackComponent, isStandalone: true, selector: "app-stack", inputs: { classes: "classes", children: "children", gap: "gap", align: "align", width: "width", height: "height" }, ngImport: i0, template: "<div class=\"ui-stack\">\n  <ng-container *ngFor=\"let child of children\">\n    <app-schema-element\n      [element]=\"child\"\n      [elements]=\"children\"\n    ></app-schema-element>\n  </ng-container>\n</div>\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: StackComponent, decorators: [{
             type: Component,
@@ -7437,6 +6864,988 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
             }] } });
 registerSchemaComponent("app-stack", StackComponent);
 
+class AlertComponent {
+    type = "info";
+    title = "";
+    message = "";
+    dismissible = false;
+    actions;
+    icon = "";
+    dismissed = new EventEmitter();
+    action = new EventEmitter();
+    onActionClick(act) {
+        this.action.emit(act.value);
+    }
+    dismiss() {
+        this.dismissed.emit();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: AlertComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: AlertComponent, isStandalone: true, selector: "app-alert", inputs: { type: "type", title: "title", message: "message", dismissible: "dismissible", actions: "actions", icon: "icon" }, outputs: { dismissed: "dismissed", action: "action" }, ngImport: i0, template: `
+    <div
+      class="flex items-start gap-3 p-4 rounded-3xl transition-colors"
+      [class.bg-indigo-50]="type === 'info'"
+      [class.text-indigo-800]="type === 'info'"
+      [class.border]="type === 'info'"
+      [class.border-indigo-100]="type === 'info'"
+      [class.bg-emerald-50]="type === 'success'"
+      [class.text-emerald-800]="type === 'success'"
+      [class.bg-amber-50]="type === 'warning'"
+      [class.text-amber-800]="type === 'warning'"
+      [class.bg-rose-50]="type === 'danger'"
+      [class.text-rose-800]="type === 'danger'"
+    >
+      @if (title) {
+        <div class="font-semibold text-sm">{{ title }}</div>
+      }
+      @if (message) {
+        <p class="text-xs mt-1 opacity-80">{{ message }}</p>
+      }
+      @if (dismissible) {
+        <button
+          class="ml-auto p-1 hover:bg-black/10 rounded-full"
+          (click)="dismissed.emit()"
+        >
+          <span class="material-symbols-rounded text-sm">close</span>
+        </button>
+      }
+    </div>
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: AlertComponent, decorators: [{
+            type: Component,
+            args: [{
+                    selector: "app-alert",
+                    standalone: true,
+                    imports: [IconComponent],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <div
+      class="flex items-start gap-3 p-4 rounded-3xl transition-colors"
+      [class.bg-indigo-50]="type === 'info'"
+      [class.text-indigo-800]="type === 'info'"
+      [class.border]="type === 'info'"
+      [class.border-indigo-100]="type === 'info'"
+      [class.bg-emerald-50]="type === 'success'"
+      [class.text-emerald-800]="type === 'success'"
+      [class.bg-amber-50]="type === 'warning'"
+      [class.text-amber-800]="type === 'warning'"
+      [class.bg-rose-50]="type === 'danger'"
+      [class.text-rose-800]="type === 'danger'"
+    >
+      @if (title) {
+        <div class="font-semibold text-sm">{{ title }}</div>
+      }
+      @if (message) {
+        <p class="text-xs mt-1 opacity-80">{{ message }}</p>
+      }
+      @if (dismissible) {
+        <button
+          class="ml-auto p-1 hover:bg-black/10 rounded-full"
+          (click)="dismissed.emit()"
+        >
+          <span class="material-symbols-rounded text-sm">close</span>
+        </button>
+      }
+    </div>
+  `,
+                }]
+        }], propDecorators: { type: [{
+                type: Input
+            }], title: [{
+                type: Input
+            }], message: [{
+                type: Input
+            }], dismissible: [{
+                type: Input
+            }], actions: [{
+                type: Input
+            }], icon: [{
+                type: Input
+            }], dismissed: [{
+                type: Output
+            }], action: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-alert", AlertComponent);
+
+class FabComponent {
+    icon = "add";
+    label = "";
+    position = "bottom-right";
+    items;
+    mainClick = new EventEmitter();
+    actionSelected = new EventEmitter();
+    open = false;
+    onMainClick() {
+        if (this.items && this.items.length) {
+            this.open = !this.open;
+        }
+        this.mainClick.emit();
+    }
+    selectItem(item) {
+        this.actionSelected.emit(item.value);
+        this.open = false;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: FabComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: FabComponent, isStandalone: true, selector: "app-fab", inputs: { icon: "icon", label: "label", position: "position", items: "items" }, outputs: { mainClick: "mainClick", actionSelected: "actionSelected" }, ngImport: i0, template: `
+    <div class="fixed bottom-6 right-6 z-40 flex flex-col items-center">
+      @if (items && items.length) {
+        <div class="flex flex-col items-center hidden mb-4 space-y-2">
+          @for (item of items; track item.label) {
+            <button
+              class="w-12 h-12 bg-white dark:bg-neutral-800 rounded-full border border-neutral-200 dark:border-neutral-700 shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+              (click)="selectItem(item)"
+            >
+              <span
+                class="material-symbols-rounded text-xl text-neutral-600 dark:text-neutral-300"
+                >{{ item.icon }}</span
+              >
+            </button>
+          }
+        </div>
+      }
+      <button
+        class="w-14 h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all"
+        (click)="onMainClick()"
+      >
+        <span class="material-symbols-rounded text-2xl">{{ icon }}</span>
+      </button>
+    </div>
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: FabComponent, decorators: [{
+            type: Component,
+            args: [{
+                    selector: "app-fab",
+                    standalone: true,
+                    imports: [IconComponent],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <div class="fixed bottom-6 right-6 z-40 flex flex-col items-center">
+      @if (items && items.length) {
+        <div class="flex flex-col items-center hidden mb-4 space-y-2">
+          @for (item of items; track item.label) {
+            <button
+              class="w-12 h-12 bg-white dark:bg-neutral-800 rounded-full border border-neutral-200 dark:border-neutral-700 shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+              (click)="selectItem(item)"
+            >
+              <span
+                class="material-symbols-rounded text-xl text-neutral-600 dark:text-neutral-300"
+                >{{ item.icon }}</span
+              >
+            </button>
+          }
+        </div>
+      }
+      <button
+        class="w-14 h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all"
+        (click)="onMainClick()"
+      >
+        <span class="material-symbols-rounded text-2xl">{{ icon }}</span>
+      </button>
+    </div>
+  `,
+                }]
+        }], propDecorators: { icon: [{
+                type: Input
+            }], label: [{
+                type: Input
+            }], position: [{
+                type: Input
+            }], items: [{
+                type: Input
+            }], mainClick: [{
+                type: Output
+            }], actionSelected: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-fab", FabComponent);
+
+class RatingComponent {
+    value = 0;
+    max = 5;
+    readonly = true;
+    size = "md";
+    accentColor;
+    showLabel = false;
+    ratingChange = new EventEmitter();
+    get indices() {
+        return Array.from({ length: this.max }, (_, i) => i + 1);
+    }
+    onStarClick(idx) {
+        if (this.readonly)
+            return;
+        this.value = idx;
+        this.ratingChange.emit(idx);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: RatingComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: RatingComponent, isStandalone: true, selector: "app-rating", inputs: { value: "value", max: "max", readonly: "readonly", size: "size", accentColor: "accentColor", showLabel: "showLabel" }, outputs: { ratingChange: "ratingChange" }, ngImport: i0, template: `
+    <div class="flex items-center gap-1">
+      @for (i of indices; track i) {
+        <span
+          class="material-symbols-rounded cursor-pointer transition-colors"
+          [class.text-amber-500]="i <= value"
+          [class.text-neutral-300]="i > value"
+          >star</span
+        >
+      }
+      @if (showLabel) {
+        <span class="text-xs text-neutral-500 ml-2"
+          >({{ value }}/{{ max }})</span
+        >
+      }
+    </div>
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: RatingComponent, decorators: [{
+            type: Component,
+            args: [{
+                    selector: "app-rating",
+                    standalone: true,
+                    imports: [],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <div class="flex items-center gap-1">
+      @for (i of indices; track i) {
+        <span
+          class="material-symbols-rounded cursor-pointer transition-colors"
+          [class.text-amber-500]="i <= value"
+          [class.text-neutral-300]="i > value"
+          >star</span
+        >
+      }
+      @if (showLabel) {
+        <span class="text-xs text-neutral-500 ml-2"
+          >({{ value }}/{{ max }})</span
+        >
+      }
+    </div>
+  `,
+                }]
+        }], propDecorators: { value: [{
+                type: Input
+            }], max: [{
+                type: Input
+            }], readonly: [{
+                type: Input
+            }], size: [{
+                type: Input
+            }], accentColor: [{
+                type: Input
+            }], showLabel: [{
+                type: Input
+            }], ratingChange: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-rating", RatingComponent);
+
+class StepperComponent {
+    steps = [];
+    current = 0;
+    clickable = false;
+    stepChange = new EventEmitter();
+    getStepClass(i) {
+        if (i < this.current)
+            return "app-stepper__item--completed";
+        if (i === this.current)
+            return "app-stepper__item--active";
+        return "";
+    }
+    getConnectorClass(i) {
+        return i < this.current ? "app-stepper__connector--completed" : "";
+    }
+    onStepClick(i) {
+        if (!this.clickable)
+            return;
+        this.stepChange.emit(i);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: StepperComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: StepperComponent, isStandalone: true, selector: "app-stepper", inputs: { steps: "steps", current: "current", clickable: "clickable" }, outputs: { stepChange: "stepChange" }, ngImport: i0, template: `
+    <ol class="flex items-center w-full">
+      @for (step of steps; track step.label; let i = $index) {
+        <li
+          class="flex w-full items-center"
+          [class.text-indigo-600]="i < current"
+          [class.text-neutral-400]="i >= current"
+        >
+          <span
+            class="flex items-center justify-center w-9 h-9 rounded-full shrink-0 text-xs font-bold"
+            [class.bg-indigo-100]="i < current"
+            [class.bg-neutral-100]="i >= current"
+          >
+            @if (i < current) {
+              <span class="material-symbols-rounded text-sm">done</span>
+            } @else {
+              {{ i + 1 }}
+            }
+          </span>
+          @if (i < steps.length - 1) {
+            <span
+              class="w-full h-0.5 bg-neutral-200 dark:bg-neutral-700 mx-2"
+            ></span>
+          }
+        </li>
+      }
+    </ol>
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: StepperComponent, decorators: [{
+            type: Component,
+            args: [{
+                    selector: "app-stepper",
+                    standalone: true,
+                    imports: [],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <ol class="flex items-center w-full">
+      @for (step of steps; track step.label; let i = $index) {
+        <li
+          class="flex w-full items-center"
+          [class.text-indigo-600]="i < current"
+          [class.text-neutral-400]="i >= current"
+        >
+          <span
+            class="flex items-center justify-center w-9 h-9 rounded-full shrink-0 text-xs font-bold"
+            [class.bg-indigo-100]="i < current"
+            [class.bg-neutral-100]="i >= current"
+          >
+            @if (i < current) {
+              <span class="material-symbols-rounded text-sm">done</span>
+            } @else {
+              {{ i + 1 }}
+            }
+          </span>
+          @if (i < steps.length - 1) {
+            <span
+              class="w-full h-0.5 bg-neutral-200 dark:bg-neutral-700 mx-2"
+            ></span>
+          }
+        </li>
+      }
+    </ol>
+  `,
+                }]
+        }], propDecorators: { steps: [{
+                type: Input
+            }], current: [{
+                type: Input
+            }], clickable: [{
+                type: Input
+            }], stepChange: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-stepper", StepperComponent);
+
+class BreadcrumbComponent {
+    items = [];
+    itemClick = new EventEmitter();
+    onItemClick(index, e) {
+        this.itemClick.emit(index);
+        if (this.items[index]?.href) {
+            // allow native navigation; only prevent default when no href
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BreadcrumbComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: BreadcrumbComponent, isStandalone: true, selector: "app-breadcrumb", inputs: { items: "items" }, outputs: { itemClick: "itemClick" }, ngImport: i0, template: `
+    <nav class="flex items-center gap-1 text-xs text-neutral-500">
+      @for (item of items; track item.label; let i = $index) {
+        @if (i < items.length - 1) {
+          <a
+            [href]="item.href || '#'"
+            class="hover:text-indigo-600 transition-colors"
+            >{{ item.label }}</a
+          >
+          <span class="material-symbols-rounded text-sm">chevron_right</span>
+        } @else {
+          <span class="font-semibold text-neutral-800 dark:text-neutral-200">{{
+            item.label
+          }}</span>
+        }
+      }
+    </nav>
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: BreadcrumbComponent, decorators: [{
+            type: Component,
+            args: [{
+                    selector: "app-breadcrumb",
+                    standalone: true,
+                    imports: [],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <nav class="flex items-center gap-1 text-xs text-neutral-500">
+      @for (item of items; track item.label; let i = $index) {
+        @if (i < items.length - 1) {
+          <a
+            [href]="item.href || '#'"
+            class="hover:text-indigo-600 transition-colors"
+            >{{ item.label }}</a
+          >
+          <span class="material-symbols-rounded text-sm">chevron_right</span>
+        } @else {
+          <span class="font-semibold text-neutral-800 dark:text-neutral-200">{{
+            item.label
+          }}</span>
+        }
+      }
+    </nav>
+  `,
+                }]
+        }], propDecorators: { items: [{
+                type: Input
+            }], itemClick: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-breadcrumb", BreadcrumbComponent);
+
+class ProgressRingComponent {
+    value = 0;
+    max = 100;
+    size = "md";
+    label;
+    showLabel = true;
+    accent = "#6366f1";
+    get diameter() {
+        return this.size === "sm" ? 48 : this.size === "md" ? 80 : 128;
+    }
+    get strokeWidth() {
+        return this.size === "sm" ? 4 : this.size === "md" ? 6 : 10;
+    }
+    get radius() {
+        return (this.diameter - this.strokeWidth) / 2;
+    }
+    get center() {
+        return this.diameter / 2;
+    }
+    get circumference() {
+        return 2 * Math.PI * this.radius;
+    }
+    get percent() {
+        if (!this.max)
+            return 0;
+        return Math.round((this.value / this.max) * 100);
+    }
+    get dashOffset() {
+        const clamped = Math.max(0, Math.min(this.value, this.max));
+        const ratio = this.max > 0 ? clamped / this.max : 0;
+        return this.circumference * (1 - ratio);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ProgressRingComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ProgressRingComponent, isStandalone: true, selector: "app-progress-ring", inputs: { value: "value", max: "max", size: "size", label: "label", showLabel: "showLabel", accent: "accent" }, ngImport: i0, template: `
+    <div class="relative inline-flex items-center justify-center">
+      <svg class="w-full h-full" viewBox="0 0 36 36">
+        <path
+          class="text-neutral-200 dark:text-neutral-700"
+          stroke-width="3"
+          stroke="currentColor"
+          fill="none"
+          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+        />
+        <path
+          [class]="accent"
+          [attr.stroke-dasharray]="(value / max) * 100 + ', 100'"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke="currentColor"
+          fill="none"
+          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+        />
+      </svg>
+      @if (showLabel) {
+        <span
+          class="absolute inset-0 flex items-center justify-center text-[10px] font-bold"
+          >{{ value }}%</span
+        >
+      }
+    </div>
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ProgressRingComponent, decorators: [{
+            type: Component,
+            args: [{
+                    selector: "app-progress-ring",
+                    standalone: true,
+                    imports: [],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <div class="relative inline-flex items-center justify-center">
+      <svg class="w-full h-full" viewBox="0 0 36 36">
+        <path
+          class="text-neutral-200 dark:text-neutral-700"
+          stroke-width="3"
+          stroke="currentColor"
+          fill="none"
+          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+        />
+        <path
+          [class]="accent"
+          [attr.stroke-dasharray]="(value / max) * 100 + ', 100'"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke="currentColor"
+          fill="none"
+          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+        />
+      </svg>
+      @if (showLabel) {
+        <span
+          class="absolute inset-0 flex items-center justify-center text-[10px] font-bold"
+          >{{ value }}%</span
+        >
+      }
+    </div>
+  `,
+                }]
+        }], propDecorators: { value: [{
+                type: Input
+            }], max: [{
+                type: Input
+            }], size: [{
+                type: Input
+            }], label: [{
+                type: Input
+            }], showLabel: [{
+                type: Input
+            }], accent: [{
+                type: Input
+            }] } });
+registerSchemaComponent("app-progress-ring", ProgressRingComponent);
+
+class SkeletonComponent {
+    variant = "text";
+    lines;
+    animated = true;
+    get linesArray() {
+        const count = this.lines ?? (this.variant === "text" ? 1 : 3);
+        return Array.from({ length: Math.max(1, count) }, (_, i) => i);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SkeletonComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SkeletonComponent, isStandalone: true, selector: "app-skeleton", inputs: { variant: "variant", lines: "lines", animated: "animated" }, ngImport: i0, template: `
+    <div class="animate-pulse space-y-3">
+      @switch (variant) {
+        @case ("circle") {
+          <div
+            class="h-10 w-10 bg-neutral-200 dark:bg-neutral-700 rounded-full"
+          ></div>
+        }
+        @case ("card") {
+          <div
+            class="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-3/4"
+          ></div>
+          <div
+            class="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-full"
+          ></div>
+          <div
+            class="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-5/6"
+          ></div>
+        }
+        @case ("list") {
+          @for (n of linesArray; track n) {
+            <div
+              class="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-full"
+            ></div>
+          }
+        }
+        @default {
+          <div
+            class="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-3/4"
+          ></div>
+          <div
+            class="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-full"
+          ></div>
+          <div
+            class="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-5/6"
+          ></div>
+        }
+      }
+    </div>
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SkeletonComponent, decorators: [{
+            type: Component,
+            args: [{
+                    selector: "app-skeleton",
+                    standalone: true,
+                    imports: [],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <div class="animate-pulse space-y-3">
+      @switch (variant) {
+        @case ("circle") {
+          <div
+            class="h-10 w-10 bg-neutral-200 dark:bg-neutral-700 rounded-full"
+          ></div>
+        }
+        @case ("card") {
+          <div
+            class="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-3/4"
+          ></div>
+          <div
+            class="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-full"
+          ></div>
+          <div
+            class="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-5/6"
+          ></div>
+        }
+        @case ("list") {
+          @for (n of linesArray; track n) {
+            <div
+              class="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-full"
+            ></div>
+          }
+        }
+        @default {
+          <div
+            class="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-3/4"
+          ></div>
+          <div
+            class="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-full"
+          ></div>
+          <div
+            class="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-5/6"
+          ></div>
+        }
+      }
+    </div>
+  `,
+                }]
+        }], propDecorators: { variant: [{
+                type: Input
+            }], lines: [{
+                type: Input
+            }], animated: [{
+                type: Input
+            }] } });
+registerSchemaComponent("app-skeleton", SkeletonComponent);
+
+class ListComponent {
+    items = [];
+    selectable = false;
+    divided = true;
+    itemSelected = new EventEmitter();
+    onItemClick(item) {
+        if (!this.selectable)
+            return;
+        this.itemSelected.emit(item.value);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ListComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ListComponent, isStandalone: true, selector: "app-list", inputs: { items: "items", selectable: "selectable", divided: "divided" }, outputs: { itemSelected: "itemSelected" }, ngImport: i0, template: `
+    <ul class="divide-y divide-neutral-100 dark:divide-neutral-800">
+      @for (item of items; track item.title) {
+        <li class="flex items-start gap-3 py-3">
+          @if (item.icon) {
+            <div
+              class="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-950 flex items-center justify-center shrink-0"
+            >
+              <span
+                class="material-symbols-rounded text-indigo-600 dark:text-indigo-400"
+                >{{ item.icon }}</span
+              >
+            </div>
+          }
+          <div class="flex-1 min-w-0">
+            <p
+              class="text-xs font-bold text-neutral-800 dark:text-white truncate"
+            >
+              {{ item.title }}
+            </p>
+            @if (item.subtitle) {
+              <p class="text-[10px] text-neutral-400 dark:text-neutral-500">
+                {{ item.subtitle }}
+              </p>
+            }
+          </div>
+          @if (item.timestamp) {
+            <span class="text-[10px] text-neutral-400">{{
+              item.timestamp
+            }}</span>
+          }
+        </li>
+      }
+    </ul>
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ListComponent, decorators: [{
+            type: Component,
+            args: [{
+                    selector: "app-list",
+                    standalone: true,
+                    imports: [IconComponent],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <ul class="divide-y divide-neutral-100 dark:divide-neutral-800">
+      @for (item of items; track item.title) {
+        <li class="flex items-start gap-3 py-3">
+          @if (item.icon) {
+            <div
+              class="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-950 flex items-center justify-center shrink-0"
+            >
+              <span
+                class="material-symbols-rounded text-indigo-600 dark:text-indigo-400"
+                >{{ item.icon }}</span
+              >
+            </div>
+          }
+          <div class="flex-1 min-w-0">
+            <p
+              class="text-xs font-bold text-neutral-800 dark:text-white truncate"
+            >
+              {{ item.title }}
+            </p>
+            @if (item.subtitle) {
+              <p class="text-[10px] text-neutral-400 dark:text-neutral-500">
+                {{ item.subtitle }}
+              </p>
+            }
+          </div>
+          @if (item.timestamp) {
+            <span class="text-[10px] text-neutral-400">{{
+              item.timestamp
+            }}</span>
+          }
+        </li>
+      }
+    </ul>
+  `,
+                }]
+        }], propDecorators: { items: [{
+                type: Input
+            }], selectable: [{
+                type: Input
+            }], divided: [{
+                type: Input
+            }], itemSelected: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-list", ListComponent);
+
+class ButtonGroupComponent {
+    items = [];
+    value = null;
+    rounded = "full";
+    multiple = false;
+    valueChange = new EventEmitter();
+    isSelected(item) {
+        if (this.multiple) {
+            return Array.isArray(this.value) && this.value.includes(item.value);
+        }
+        return this.value === item.value;
+    }
+    onItemClick(item) {
+        if (this.multiple) {
+            const current = Array.isArray(this.value) ? [...this.value] : [];
+            const idx = current.indexOf(item.value);
+            if (idx >= 0) {
+                current.splice(idx, 1);
+            }
+            else {
+                current.push(item.value);
+            }
+            this.value = current;
+            this.valueChange.emit(current);
+        }
+        else {
+            this.value = item.value;
+            this.valueChange.emit(item.value);
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ButtonGroupComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: ButtonGroupComponent, isStandalone: true, selector: "app-button-group", inputs: { items: "items", value: "value", rounded: "rounded", multiple: "multiple" }, outputs: { valueChange: "valueChange" }, ngImport: i0, template: `
+    <div
+      class="inline-flex rounded-full shadow-sm"
+      [class.rounded-none]="rounded === 'none'"
+      role="group"
+    >
+      @for (item of items; track item.label) {
+        <button
+          class="px-4 py-2 text-xs font-medium border transition-colors"
+          [class.bg-indigo-600]="item.value === value"
+          [class.text-white]="item.value === value"
+          [class.bg-white]="item.value !== value"
+          [class.text-neutral-700]="item.value !== value"
+          [class.border-neutral-200]="true"
+          [class.first:rounded-s-full]="rounded === 'full'"
+          [class.last:rounded-e-full]="rounded === 'full'"
+          (click)="valueChange.emit(item.value)"
+        >
+          {{ item.label }}
+        </button>
+      }
+    </div>
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: ButtonGroupComponent, decorators: [{
+            type: Component,
+            args: [{
+                    selector: "app-button-group",
+                    standalone: true,
+                    imports: [IconComponent],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <div
+      class="inline-flex rounded-full shadow-sm"
+      [class.rounded-none]="rounded === 'none'"
+      role="group"
+    >
+      @for (item of items; track item.label) {
+        <button
+          class="px-4 py-2 text-xs font-medium border transition-colors"
+          [class.bg-indigo-600]="item.value === value"
+          [class.text-white]="item.value === value"
+          [class.bg-white]="item.value !== value"
+          [class.text-neutral-700]="item.value !== value"
+          [class.border-neutral-200]="true"
+          [class.first:rounded-s-full]="rounded === 'full'"
+          [class.last:rounded-e-full]="rounded === 'full'"
+          (click)="valueChange.emit(item.value)"
+        >
+          {{ item.label }}
+        </button>
+      }
+    </div>
+  `,
+                }]
+        }], propDecorators: { items: [{
+                type: Input
+            }], value: [{
+                type: Input
+            }], rounded: [{
+                type: Input
+            }], multiple: [{
+                type: Input
+            }], valueChange: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-button-group", ButtonGroupComponent);
+
+class FileInputComponent {
+    label;
+    accept;
+    placeholder = "Upload file";
+    multiple = false;
+    filesSelected = new EventEmitter();
+    fileName = new EventEmitter();
+    isDragOver = false;
+    fileEl = inject((ElementRef));
+    openPicker() {
+        const input = this.fileEl.nativeElement.querySelector("input[type='file']");
+        input?.click();
+    }
+    onFileChange(event) {
+        const input = event.target;
+        this.emitFiles(input.files);
+    }
+    onDragOver(event) {
+        event.preventDefault();
+        this.isDragOver = true;
+    }
+    onDragLeave(event) {
+        event.preventDefault();
+        this.isDragOver = false;
+    }
+    onDrop(event) {
+        event.preventDefault();
+        this.isDragOver = false;
+        this.emitFiles(event.dataTransfer?.files ?? null);
+    }
+    emitFiles(files) {
+        this.filesSelected.emit(files);
+        if (files && files.length > 0) {
+            const names = [];
+            for (let i = 0; i < files.length; i++) {
+                names.push(files[i].name);
+            }
+            this.fileName.emit(names.join(", "));
+        }
+        else {
+            this.fileName.emit("");
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: FileInputComponent, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: FileInputComponent, isStandalone: true, selector: "app-file-input", inputs: { label: "label", accept: "accept", placeholder: "placeholder", multiple: "multiple" }, outputs: { filesSelected: "filesSelected", fileName: "fileName" }, ngImport: i0, template: `
+    <div class="w-full">
+      @if (label) {
+        <label
+          class="block mb-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+          >{{ label }}</label
+        >
+      }
+      <label
+        class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-neutral-300 dark:border-neutral-700 rounded-2xl cursor-pointer bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 transition-colors"
+      >
+        <span
+          class="material-symbols-rounded text-neutral-500 dark:text-neutral-400 mb-1"
+          >cloud_upload</span
+        >
+        <p
+          class="text-[11px] text-neutral-500 dark:text-neutral-400 font-semibold"
+        >
+          {{ placeholder }}
+        </p>
+        <input
+          type="file"
+          class="hidden"
+          (change)="onFileChange($event)"
+          [accept]="accept"
+          [multiple]="multiple"
+        />
+      </label>
+    </div>
+  `, isInline: true, changeDetection: i0.ChangeDetectionStrategy.OnPush });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: FileInputComponent, decorators: [{
+            type: Component,
+            args: [{
+                    selector: "app-file-input",
+                    standalone: true,
+                    imports: [IconComponent],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    template: `
+    <div class="w-full">
+      @if (label) {
+        <label
+          class="block mb-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider"
+          >{{ label }}</label
+        >
+      }
+      <label
+        class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-neutral-300 dark:border-neutral-700 rounded-2xl cursor-pointer bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 transition-colors"
+      >
+        <span
+          class="material-symbols-rounded text-neutral-500 dark:text-neutral-400 mb-1"
+          >cloud_upload</span
+        >
+        <p
+          class="text-[11px] text-neutral-500 dark:text-neutral-400 font-semibold"
+        >
+          {{ placeholder }}
+        </p>
+        <input
+          type="file"
+          class="hidden"
+          (change)="onFileChange($event)"
+          [accept]="accept"
+          [multiple]="multiple"
+        />
+      </label>
+    </div>
+  `,
+                }]
+        }], propDecorators: { label: [{
+                type: Input
+            }], accept: [{
+                type: Input
+            }], placeholder: [{
+                type: Input
+            }], multiple: [{
+                type: Input
+            }], filesSelected: [{
+                type: Output
+            }], fileName: [{
+                type: Output
+            }] } });
+registerSchemaComponent("app-file-input", FileInputComponent);
+
 // Side-effect import: Import ALL Angular components to trigger registerSchemaComponent()
 // Each component file calls registerSchemaComponent() on module load,
 // which registers the component in SCHEMA_COMPONENT_MAP for dynamic resolution.
@@ -7445,6 +7854,13 @@ registerSchemaComponent("app-stack", StackComponent);
 
 // UI Components
 const uiComponents = [
+    {
+        id: "alert",
+        name: "AppAlert",
+        selector: "app-alert",
+        packageType: "shared",
+        category: "feedback",
+    },
     {
         id: "avatar",
         name: "AppAvatar",
@@ -7467,9 +7883,23 @@ const uiComponents = [
         category: "forms",
     },
     {
+        id: "breadcrumb",
+        name: "AppBreadcrumb",
+        selector: "app-breadcrumb",
+        packageType: "shared",
+        category: "navigation",
+    },
+    {
         id: "button",
         name: "AppButton",
         selector: "app-button",
+        packageType: "shared",
+        category: "forms",
+    },
+    {
+        id: "button-group",
+        name: "AppButtonGroup",
+        selector: "app-button-group",
         packageType: "shared",
         category: "forms",
     },
@@ -7537,6 +7967,20 @@ const uiComponents = [
         category: "forms",
     },
     {
+        id: "fab",
+        name: "AppFab",
+        selector: "app-fab",
+        packageType: "shared",
+        category: "navigation",
+    },
+    {
+        id: "file-input",
+        name: "AppFileInput",
+        selector: "app-file-input",
+        packageType: "shared",
+        category: "forms",
+    },
+    {
         id: "footer",
         name: "AppFooter",
         selector: "app-footer",
@@ -7561,6 +8005,13 @@ const uiComponents = [
         id: "json-view",
         name: "AppJsonView",
         selector: "app-json-view",
+        packageType: "shared",
+        category: "layout",
+    },
+    {
+        id: "list",
+        name: "AppList",
+        selector: "app-list",
         packageType: "shared",
         category: "layout",
     },
@@ -7607,6 +8058,13 @@ const uiComponents = [
         category: "forms",
     },
     {
+        id: "progress-ring",
+        name: "AppProgressRing",
+        selector: "app-progress-ring",
+        packageType: "shared",
+        category: "feedback",
+    },
+    {
         id: "properties-panel",
         name: "AppPropertiesPanel",
         selector: "app-properties-panel",
@@ -7619,6 +8077,13 @@ const uiComponents = [
         selector: "app-radio",
         packageType: "shared",
         category: "forms",
+    },
+    {
+        id: "rating",
+        name: "AppRating",
+        selector: "app-rating",
+        packageType: "shared",
+        category: "feedback",
     },
     {
         id: "segment-selector",
@@ -7640,6 +8105,13 @@ const uiComponents = [
         selector: "app-sidebar",
         packageType: "shared",
         category: "forms",
+    },
+    {
+        id: "skeleton",
+        name: "AppSkeleton",
+        selector: "app-skeleton",
+        packageType: "shared",
+        category: "feedback",
     },
     {
         id: "slider",
@@ -7668,6 +8140,13 @@ const uiComponents = [
         selector: "app-stats-card",
         packageType: "shared",
         category: "forms",
+    },
+    {
+        id: "stepper",
+        name: "AppStepper",
+        selector: "app-stepper",
+        packageType: "shared",
+        category: "navigation",
     },
     {
         id: "switch",
@@ -7995,11 +8474,11 @@ class SchemaRouteViewerComponent {
             this.router.navigate(this.route);
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaRouteViewerComponent, deps: [{ token: SchemaRouterService }, { token: SchemaRendererService }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaRouteViewerComponent, isStandalone: true, selector: "lib-schema-route-viewer", inputs: { route: "route", showLayoutRegions: "showLayoutRegions" }, usesOnChanges: true, ngImport: i0, template: "@if (headerRegion(); as region) {\n  <header class=\"schema-layout-header\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]=\"containerClass()\" [ngStyle]=\"gridStyles()\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]=\"element\"\n        [elements]=\"p.canvasElements || []\"\n      ></app-schema-element>\n    }\n  </div>\n} @else if (router.schema() && router.schema()!.pages?.length) {\n  <div class=\"schema-page sf-p-8 sf-text-center\">\n    <div class=\"sf-text-4xl sf-mb-4\">&#9888;</div>\n    <h2 class=\"sf-text-xl sf-font-bold sf-mb-2\">Page Not Found</h2>\n    <p style=\"color: var(--text); opacity: 0.7\">\n      Route \"{{ router.currentRoute() }}\" not found in schema. Available pages:\n      {{ getAvailableRoutes() }}\n    </p>\n  </div>\n} @else {\n  <div class=\"schema-page sf-p-8 sf-text-center\">\n    <div style=\"color: var(--text); opacity: 0.5\">Waiting for schema...</div>\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class=\"schema-layout-footer\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class=\"schema-layout-bottom-nav\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class=\"schema-layout-overlay\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{min-height:100%}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaRouteViewerComponent, isStandalone: true, selector: "lib-schema-route-viewer", inputs: { route: "route", showLayoutRegions: "showLayoutRegions" }, usesOnChanges: true, ngImport: i0, template: "@if (headerRegion(); as region) {\n  <header class=\"schema-layout-header\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]=\"containerClass()\" [ngStyle]=\"gridStyles()\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]=\"element\"\n        [elements]=\"p.canvasElements || []\"\n      ></app-schema-element>\n    }\n  </div>\n} @else if (router.schema() && router.schema()!.pages?.length) {\n  <div class=\"schema-page sf-p-8 sf-text-center\">\n    <div class=\"sf-text-4xl sf-mb-4\">&#9888;</div>\n    <h2 class=\"sf-text-xl sf-font-bold sf-mb-2\">Page Not Found</h2>\n    <p style=\"color: var(--text); opacity: 0.7\">\n      Route \"{{ router.currentRoute() }}\" not found in schema. Available pages:\n      {{ getAvailableRoutes() }}\n    </p>\n  </div>\n} @else {\n  <div class=\"schema-page sf-p-8 sf-text-center\">\n    <div style=\"color: var(--text); opacity: 0.5\">Waiting for schema...</div>\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class=\"schema-layout-footer\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class=\"schema-layout-bottom-nav\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class=\"schema-layout-overlay\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </div>\n}\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaRouteViewerComponent, decorators: [{
             type: Component,
-            args: [{ selector: "lib-schema-route-viewer", standalone: true, imports: [CommonModule, SchemaElementComponent], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (headerRegion(); as region) {\n  <header class=\"schema-layout-header\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]=\"containerClass()\" [ngStyle]=\"gridStyles()\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]=\"element\"\n        [elements]=\"p.canvasElements || []\"\n      ></app-schema-element>\n    }\n  </div>\n} @else if (router.schema() && router.schema()!.pages?.length) {\n  <div class=\"schema-page sf-p-8 sf-text-center\">\n    <div class=\"sf-text-4xl sf-mb-4\">&#9888;</div>\n    <h2 class=\"sf-text-xl sf-font-bold sf-mb-2\">Page Not Found</h2>\n    <p style=\"color: var(--text); opacity: 0.7\">\n      Route \"{{ router.currentRoute() }}\" not found in schema. Available pages:\n      {{ getAvailableRoutes() }}\n    </p>\n  </div>\n} @else {\n  <div class=\"schema-page sf-p-8 sf-text-center\">\n    <div style=\"color: var(--text); opacity: 0.5\">Waiting for schema...</div>\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class=\"schema-layout-footer\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class=\"schema-layout-bottom-nav\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class=\"schema-layout-overlay\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </div>\n}\n", styles: [":host{display:block}.schema-page{min-height:100%}\n"] }]
+            args: [{ selector: "lib-schema-route-viewer", standalone: true, imports: [CommonModule, SchemaElementComponent], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (headerRegion(); as region) {\n  <header class=\"schema-layout-header\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </header>\n}\n\n@if (page(); as p) {\n  <div [class]=\"containerClass()\" [ngStyle]=\"gridStyles()\">\n    @for (element of p.canvasElements; track element.id) {\n      <app-schema-element\n        [element]=\"element\"\n        [elements]=\"p.canvasElements || []\"\n      ></app-schema-element>\n    }\n  </div>\n} @else if (router.schema() && router.schema()!.pages?.length) {\n  <div class=\"schema-page sf-p-8 sf-text-center\">\n    <div class=\"sf-text-4xl sf-mb-4\">&#9888;</div>\n    <h2 class=\"sf-text-xl sf-font-bold sf-mb-2\">Page Not Found</h2>\n    <p style=\"color: var(--text); opacity: 0.7\">\n      Route \"{{ router.currentRoute() }}\" not found in schema. Available pages:\n      {{ getAvailableRoutes() }}\n    </p>\n  </div>\n} @else {\n  <div class=\"schema-page sf-p-8 sf-text-center\">\n    <div style=\"color: var(--text); opacity: 0.5\">Waiting for schema...</div>\n  </div>\n}\n\n@if (footerRegion(); as region) {\n  <footer class=\"schema-layout-footer\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </footer>\n}\n\n@if (bottomNavRegion(); as region) {\n  <nav class=\"schema-layout-bottom-nav\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </nav>\n}\n\n@for (region of overlayRegions(); track region.id) {\n  <div class=\"schema-layout-overlay\">\n    @for (child of region.children || []; track child.id) {\n      <app-schema-element\n        [element]=\"child\"\n        [elements]=\"region.children || []\"\n      />\n    }\n  </div>\n}\n" }]
         }], ctorParameters: () => [{ type: SchemaRouterService }, { type: SchemaRendererService }], propDecorators: { route: [{
                 type: Input
             }], showLayoutRegions: [{
@@ -9389,7 +9868,7 @@ class SchemaShellComponent {
             .join(" ");
     }
     static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaShellComponent, deps: [{ token: InvokeWrapperService }, { token: SchemaRouterService }, { token: SchemaRendererService }, { token: StyleThemeService }, { token: ThemeToggleService }, { token: FallbackService }, { token: HandlerExecutorService }, { token: SignalStoreService }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaShellComponent, isStandalone: true, selector: "lib-schema-shell", inputs: { appId: "appId", commandName: "commandName", defaultTheme: "defaultTheme", initialRoute: "initialRoute", errorFallbackCommandName: "errorFallbackCommandName", includeOverlays: "includeOverlays" }, host: { listeners: { "window:toggle-dark": "onWindowToggleDark($event)" } }, ngImport: i0, template: "@if (loading()) {\n  <div class=\"min-h-screen flex flex-col items-center justify-center gap-4 bg-surface text-on-surface\">\n    <div class=\"w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin\"></div>\n    <p class=\"text-lg text-on-surface-variant\">Loading application...</p>\n  </div>\n} @else if (error(); as err) {\n  <div class=\"min-h-screen flex flex-col items-center justify-center p-8 bg-surface text-on-surface\">\n    <div class=\"w-20 h-20 flex items-center justify-center rounded-full bg-error-container text-error text-4xl mb-4\">\n      &#9888;\n    </div>\n    <h2 class=\"text-2xl font-bold text-on-surface mb-2\">\n      Application Not Available\n    </h2>\n    <p class=\"text-center text-on-surface-variant max-w-md mb-6\">\n      {{ err }}\n    </p>\n    <button\n      class=\"inline-flex items-center justify-center gap-2 h-10 px-4 rounded-md bg-primary text-on-primary shadow-1 hover:shadow-2 transition-shadow\"\n      (click)=\"retry()\"\n    >\n      Retry\n    </button>\n  </div>\n} @else {\n  <!-- Main scaffold: flex column, full viewport height -->\n  <div class=\"min-h-screen flex flex-col bg-surface text-on-surface\">\n\n    <!-- Header region - fixed height, flex row -->\n    @if (headerRegion(); as region) {\n      <header\n        data-region=\"header\"\n        class=\"flex-shrink-0 h-16 px-6 flex items-center justify-between border-b border-outline-variant bg-surface-container\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </header>\n    }\n\n    <!-- Main content area - flex row that fills remaining space -->\n    <div class=\"flex-1 flex flex-row min-h-0\">\n\n      <!-- Sidebar left -->\n      @if (sidebarLeftRegion(); as region) {\n        <aside\n          data-region=\"sidebar-left\"\n          class=\"hidden lg:flex w-64 flex-shrink-0 flex-col border-r border-outline-variant bg-surface-container-low p-4\"\n        >\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </aside>\n      }\n\n      <!-- Content area with M3 surface container -->\n      <main\n        data-region=\"content\"\n        class=\"flex-1 p-4 md:p-6 min-w-0\"\n      >\n        <!-- M3 surface container for content -->\n        <div class=\"h-full rounded-xl bg-surface-container-lowest border border-outline-variant p-6 md:p-8 shadow-1\">\n          <lib-schema-route-viewer />\n        </div>\n      </main>\n\n      <!-- Sidebar right -->\n      @if (sidebarRightRegion(); as region) {\n        <aside\n          data-region=\"sidebar-right\"\n          class=\"hidden lg:flex w-64 flex-shrink-0 flex-col border-l border-outline-variant bg-surface-container-low p-4\"\n        >\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </aside>\n      }\n    </div>\n\n    <!-- Footer region -->\n    @if (footerRegion(); as region) {\n      <footer\n        data-region=\"footer\"\n        class=\"flex-shrink-0 h-12 px-6 flex items-center border-t border-outline-variant bg-surface-container text-on-surface-variant text-sm\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </footer>\n    }\n\n    <!-- Bottom nav region -->\n    @if (bottomNavRegion(); as region) {\n      <nav\n        data-region=\"bottom-nav\"\n        class=\"flex-shrink-0 h-16 px-4 flex items-center justify-around border-t border-outline-variant bg-surface-container\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </nav>\n    }\n\n    <!-- Other regions (rendered below main layout) -->\n    @for (region of otherRegions(); track region.id) {\n      <div\n        data-region=\"other\"\n        class=\"flex-shrink-0 px-6 py-4\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </div>\n    }\n\n    <!-- Overlay regions (fixed positioning) -->\n    @for (region of overlayRegions(); track region.id) {\n      <div class=\"layout-overlay\" data-region=\"overlay\">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </div>\n    }\n  </div>\n}\n\n@if (includeOverlays) {\n  <app-toast-container position=\"top-right\" />\n}\n", styles: [":host{display:block;height:100%}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaRouteViewerComponent, selector: "lib-schema-route-viewer", inputs: ["route", "showLayoutRegions"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "component", type: ToastContainerComponent, selector: "app-toast-container", inputs: ["position"] }] });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "22.0.6", type: SchemaShellComponent, isStandalone: true, selector: "lib-schema-shell", inputs: { appId: "appId", commandName: "commandName", defaultTheme: "defaultTheme", initialRoute: "initialRoute", errorFallbackCommandName: "errorFallbackCommandName", includeOverlays: "includeOverlays" }, host: { listeners: { "window:toggle-dark": "onWindowToggleDark($event)" } }, ngImport: i0, template: "@if (loading()) {\n  <div\n    class=\"min-h-screen flex flex-col items-center justify-center gap-4 bg-surface text-on-surface\"\n  >\n    <div\n      class=\"w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin\"\n    ></div>\n    <p class=\"text-lg text-on-surface-variant\">Loading application...</p>\n  </div>\n} @else if (error(); as err) {\n  <div\n    class=\"min-h-screen flex flex-col items-center justify-center p-8 bg-surface text-on-surface\"\n  >\n    <div\n      class=\"w-20 h-20 flex items-center justify-center rounded-full bg-error-container text-error text-4xl mb-4\"\n    >\n      &#9888;\n    </div>\n    <h2 class=\"text-2xl font-bold text-on-surface mb-2\">\n      Application Not Available\n    </h2>\n    <p class=\"text-center text-on-surface-variant max-w-md mb-6\">\n      {{ err }}\n    </p>\n    <button\n      class=\"inline-flex items-center justify-center gap-2 h-10 px-4 rounded-md bg-primary text-on-primary shadow-1 hover:shadow-2 transition-shadow\"\n      (click)=\"retry()\"\n    >\n      Retry\n    </button>\n  </div>\n} @else {\n  <!-- Main scaffold: flex column, full viewport height -->\n  <div class=\"min-h-screen flex flex-col bg-surface text-on-surface\">\n    <!-- Header region - fixed height, flex row -->\n    @if (headerRegion(); as region) {\n      <header\n        data-region=\"header\"\n        class=\"flex-shrink-0 h-16 px-6 flex items-center justify-between border-b border-outline-variant bg-surface-container\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </header>\n    }\n\n    <!-- Main content area - flex row that fills remaining space -->\n    <div class=\"flex-1 flex flex-row min-h-0\">\n      <!-- Sidebar left -->\n      @if (sidebarLeftRegion(); as region) {\n        <aside\n          data-region=\"sidebar-left\"\n          class=\"hidden lg:flex w-64 flex-shrink-0 flex-col border-r border-outline-variant bg-surface-container-low p-4\"\n        >\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </aside>\n      }\n\n      <!-- Content area with M3 surface container -->\n      <main data-region=\"content\" class=\"flex-1 p-4 md:p-6 min-w-0\">\n        <!-- M3 surface container for content -->\n        <div\n          class=\"h-full rounded-xl bg-surface-container-lowest border border-outline-variant p-6 md:p-8 shadow-1\"\n        >\n          <lib-schema-route-viewer />\n        </div>\n      </main>\n\n      <!-- Sidebar right -->\n      @if (sidebarRightRegion(); as region) {\n        <aside\n          data-region=\"sidebar-right\"\n          class=\"hidden lg:flex w-64 flex-shrink-0 flex-col border-l border-outline-variant bg-surface-container-low p-4\"\n        >\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </aside>\n      }\n    </div>\n\n    <!-- Footer region -->\n    @if (footerRegion(); as region) {\n      <footer\n        data-region=\"footer\"\n        class=\"flex-shrink-0 h-12 px-6 flex items-center border-t border-outline-variant bg-surface-container text-on-surface-variant text-sm\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </footer>\n    }\n\n    <!-- Bottom nav region -->\n    @if (bottomNavRegion(); as region) {\n      <nav\n        data-region=\"bottom-nav\"\n        class=\"flex-shrink-0 h-16 px-4 flex items-center justify-around border-t border-outline-variant bg-surface-container\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </nav>\n    }\n\n    <!-- Other regions (rendered below main layout) -->\n    @for (region of otherRegions(); track region.id) {\n      <div data-region=\"other\" class=\"flex-shrink-0 px-6 py-4\">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </div>\n    }\n\n    <!-- Overlay regions (fixed positioning) -->\n    @for (region of overlayRegions(); track region.id) {\n      <div class=\"layout-overlay\" data-region=\"overlay\">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </div>\n    }\n  </div>\n}\n\n@if (includeOverlays) {\n  <app-toast-container position=\"top-right\" />\n}\n", dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "component", type: SchemaRouteViewerComponent, selector: "lib-schema-route-viewer", inputs: ["route", "showLayoutRegions"] }, { kind: "component", type: SchemaElementComponent, selector: "app-schema-element", inputs: ["element", "elements"] }, { kind: "component", type: ToastContainerComponent, selector: "app-toast-container", inputs: ["position"] }] });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImport: i0, type: SchemaShellComponent, decorators: [{
             type: Component,
@@ -9398,7 +9877,7 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "22.0.6", ngImpor
                         SchemaRouteViewerComponent,
                         SchemaElementComponent,
                         ToastContainerComponent,
-                    ], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (loading()) {\n  <div class=\"min-h-screen flex flex-col items-center justify-center gap-4 bg-surface text-on-surface\">\n    <div class=\"w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin\"></div>\n    <p class=\"text-lg text-on-surface-variant\">Loading application...</p>\n  </div>\n} @else if (error(); as err) {\n  <div class=\"min-h-screen flex flex-col items-center justify-center p-8 bg-surface text-on-surface\">\n    <div class=\"w-20 h-20 flex items-center justify-center rounded-full bg-error-container text-error text-4xl mb-4\">\n      &#9888;\n    </div>\n    <h2 class=\"text-2xl font-bold text-on-surface mb-2\">\n      Application Not Available\n    </h2>\n    <p class=\"text-center text-on-surface-variant max-w-md mb-6\">\n      {{ err }}\n    </p>\n    <button\n      class=\"inline-flex items-center justify-center gap-2 h-10 px-4 rounded-md bg-primary text-on-primary shadow-1 hover:shadow-2 transition-shadow\"\n      (click)=\"retry()\"\n    >\n      Retry\n    </button>\n  </div>\n} @else {\n  <!-- Main scaffold: flex column, full viewport height -->\n  <div class=\"min-h-screen flex flex-col bg-surface text-on-surface\">\n\n    <!-- Header region - fixed height, flex row -->\n    @if (headerRegion(); as region) {\n      <header\n        data-region=\"header\"\n        class=\"flex-shrink-0 h-16 px-6 flex items-center justify-between border-b border-outline-variant bg-surface-container\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </header>\n    }\n\n    <!-- Main content area - flex row that fills remaining space -->\n    <div class=\"flex-1 flex flex-row min-h-0\">\n\n      <!-- Sidebar left -->\n      @if (sidebarLeftRegion(); as region) {\n        <aside\n          data-region=\"sidebar-left\"\n          class=\"hidden lg:flex w-64 flex-shrink-0 flex-col border-r border-outline-variant bg-surface-container-low p-4\"\n        >\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </aside>\n      }\n\n      <!-- Content area with M3 surface container -->\n      <main\n        data-region=\"content\"\n        class=\"flex-1 p-4 md:p-6 min-w-0\"\n      >\n        <!-- M3 surface container for content -->\n        <div class=\"h-full rounded-xl bg-surface-container-lowest border border-outline-variant p-6 md:p-8 shadow-1\">\n          <lib-schema-route-viewer />\n        </div>\n      </main>\n\n      <!-- Sidebar right -->\n      @if (sidebarRightRegion(); as region) {\n        <aside\n          data-region=\"sidebar-right\"\n          class=\"hidden lg:flex w-64 flex-shrink-0 flex-col border-l border-outline-variant bg-surface-container-low p-4\"\n        >\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </aside>\n      }\n    </div>\n\n    <!-- Footer region -->\n    @if (footerRegion(); as region) {\n      <footer\n        data-region=\"footer\"\n        class=\"flex-shrink-0 h-12 px-6 flex items-center border-t border-outline-variant bg-surface-container text-on-surface-variant text-sm\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </footer>\n    }\n\n    <!-- Bottom nav region -->\n    @if (bottomNavRegion(); as region) {\n      <nav\n        data-region=\"bottom-nav\"\n        class=\"flex-shrink-0 h-16 px-4 flex items-center justify-around border-t border-outline-variant bg-surface-container\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </nav>\n    }\n\n    <!-- Other regions (rendered below main layout) -->\n    @for (region of otherRegions(); track region.id) {\n      <div\n        data-region=\"other\"\n        class=\"flex-shrink-0 px-6 py-4\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </div>\n    }\n\n    <!-- Overlay regions (fixed positioning) -->\n    @for (region of overlayRegions(); track region.id) {\n      <div class=\"layout-overlay\" data-region=\"overlay\">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </div>\n    }\n  </div>\n}\n\n@if (includeOverlays) {\n  <app-toast-container position=\"top-right\" />\n}\n", styles: [":host{display:block;height:100%}.layout-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.layout-overlay>*{pointer-events:auto}\n"] }]
+                    ], schemas: [CUSTOM_ELEMENTS_SCHEMA], template: "@if (loading()) {\n  <div\n    class=\"min-h-screen flex flex-col items-center justify-center gap-4 bg-surface text-on-surface\"\n  >\n    <div\n      class=\"w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin\"\n    ></div>\n    <p class=\"text-lg text-on-surface-variant\">Loading application...</p>\n  </div>\n} @else if (error(); as err) {\n  <div\n    class=\"min-h-screen flex flex-col items-center justify-center p-8 bg-surface text-on-surface\"\n  >\n    <div\n      class=\"w-20 h-20 flex items-center justify-center rounded-full bg-error-container text-error text-4xl mb-4\"\n    >\n      &#9888;\n    </div>\n    <h2 class=\"text-2xl font-bold text-on-surface mb-2\">\n      Application Not Available\n    </h2>\n    <p class=\"text-center text-on-surface-variant max-w-md mb-6\">\n      {{ err }}\n    </p>\n    <button\n      class=\"inline-flex items-center justify-center gap-2 h-10 px-4 rounded-md bg-primary text-on-primary shadow-1 hover:shadow-2 transition-shadow\"\n      (click)=\"retry()\"\n    >\n      Retry\n    </button>\n  </div>\n} @else {\n  <!-- Main scaffold: flex column, full viewport height -->\n  <div class=\"min-h-screen flex flex-col bg-surface text-on-surface\">\n    <!-- Header region - fixed height, flex row -->\n    @if (headerRegion(); as region) {\n      <header\n        data-region=\"header\"\n        class=\"flex-shrink-0 h-16 px-6 flex items-center justify-between border-b border-outline-variant bg-surface-container\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </header>\n    }\n\n    <!-- Main content area - flex row that fills remaining space -->\n    <div class=\"flex-1 flex flex-row min-h-0\">\n      <!-- Sidebar left -->\n      @if (sidebarLeftRegion(); as region) {\n        <aside\n          data-region=\"sidebar-left\"\n          class=\"hidden lg:flex w-64 flex-shrink-0 flex-col border-r border-outline-variant bg-surface-container-low p-4\"\n        >\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </aside>\n      }\n\n      <!-- Content area with M3 surface container -->\n      <main data-region=\"content\" class=\"flex-1 p-4 md:p-6 min-w-0\">\n        <!-- M3 surface container for content -->\n        <div\n          class=\"h-full rounded-xl bg-surface-container-lowest border border-outline-variant p-6 md:p-8 shadow-1\"\n        >\n          <lib-schema-route-viewer />\n        </div>\n      </main>\n\n      <!-- Sidebar right -->\n      @if (sidebarRightRegion(); as region) {\n        <aside\n          data-region=\"sidebar-right\"\n          class=\"hidden lg:flex w-64 flex-shrink-0 flex-col border-l border-outline-variant bg-surface-container-low p-4\"\n        >\n          @for (child of region.children || []; track child.id) {\n            <app-schema-element\n              [element]=\"child\"\n              [elements]=\"region.children || []\"\n            />\n          }\n        </aside>\n      }\n    </div>\n\n    <!-- Footer region -->\n    @if (footerRegion(); as region) {\n      <footer\n        data-region=\"footer\"\n        class=\"flex-shrink-0 h-12 px-6 flex items-center border-t border-outline-variant bg-surface-container text-on-surface-variant text-sm\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </footer>\n    }\n\n    <!-- Bottom nav region -->\n    @if (bottomNavRegion(); as region) {\n      <nav\n        data-region=\"bottom-nav\"\n        class=\"flex-shrink-0 h-16 px-4 flex items-center justify-around border-t border-outline-variant bg-surface-container\"\n      >\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </nav>\n    }\n\n    <!-- Other regions (rendered below main layout) -->\n    @for (region of otherRegions(); track region.id) {\n      <div data-region=\"other\" class=\"flex-shrink-0 px-6 py-4\">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </div>\n    }\n\n    <!-- Overlay regions (fixed positioning) -->\n    @for (region of overlayRegions(); track region.id) {\n      <div class=\"layout-overlay\" data-region=\"overlay\">\n        @for (child of region.children || []; track child.id) {\n          <app-schema-element\n            [element]=\"child\"\n            [elements]=\"region.children || []\"\n          />\n        }\n      </div>\n    }\n  </div>\n}\n\n@if (includeOverlays) {\n  <app-toast-container position=\"top-right\" />\n}\n" }]
         }], ctorParameters: () => [{ type: InvokeWrapperService }, { type: SchemaRouterService }, { type: SchemaRendererService }, { type: StyleThemeService }, { type: ThemeToggleService }, { type: FallbackService }, { type: HandlerExecutorService }, { type: SignalStoreService }], propDecorators: { appId: [{
                 type: Input
             }], commandName: [{
@@ -11672,5 +12151,5 @@ class AboutService {
  * Generated bundle index. Do not edit.
  */
 
-export { AboutService, ApiCrudService, ApiException, BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, LocalStorageService, PaginationComponent, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStoreService, SignalSyncService, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createState, createStateSubject, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue$1 as getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, loadStyleVariantNoop, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, setTheme, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
+export { AboutService, AlertComponent, ApiCrudService, ApiException, BaseDestroyableComponent, BreadcrumbComponent, ButtonGroupComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, FabComponent, FileInputComponent, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, ListComponent, LocalStorageService, PaginationComponent, PermissionService, ProgressRingComponent, RatingComponent, RbacHasPermissionDirective, RbacHasRoleDirective, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStoreService, SignalSyncService, SkeletonComponent, StepperComponent, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createState, createStateSubject, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue$1 as getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, loadStyleVariantNoop, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, setTheme, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
 //# sourceMappingURL=tauri-front-shared.mjs.map

@@ -15,7 +15,6 @@ interface ToolbarAction {
   standalone: true,
   imports: [IconComponent],
   templateUrl: "./page-toolbar.component.html",
-  styleUrls: ["./page-toolbar.component.scss"],
 })
 export class PageToolbarComponent {
   @Input() title = "";

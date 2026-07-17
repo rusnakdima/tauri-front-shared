@@ -20,7 +20,6 @@ import type { Layout, LayoutElement, RegionType } from "../types";
   imports: [CommonModule, SchemaElementComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: "./schema-route-viewer.component.html",
-  styleUrl: "./schema-route-viewer.component.css",
 })
 export class SchemaRouteViewerComponent implements OnInit, OnChanges {
   @Input() route = "";

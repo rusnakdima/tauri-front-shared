@@ -6,7 +6,6 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./avatar.component.html",
-  styleUrls: ["./avatar.component.scss"],
 })
 export class AvatarComponent {
   @Input() src = "";

@@ -14,32 +14,90 @@
     </button>
   </div>
   <nav class="ui-sidebar-nav">
-    <ul>
-      @for (item of parsedItems; track item.label) {
-        <li>
-          <div class="ui-sidebar-item" (click)="handleItemClick(item)">
-            @if (item.icon) {
-              <span class="ui-sidebar-item-icon">{{ item.icon }}</span>
-            }
-            <span class="ui-sidebar-item-label">{{ item.label }}</span>
-          </div>
-          @if (item.children?.length) {
-            <ul class="ui-sidebar-submenu">
-              @for (child of item.children; track child.label) {
-                <li>
-                  <div class="ui-sidebar-item" (click)="handleItemClick(child)">
-                    @if (child.icon) {
-                      <span class="ui-sidebar-item-icon">{{ child.icon }}</span>
+    @if (hasGroups) {
+      @for (group of parsedGroups; track group.groupLabel) {
+        <div class="ui-sidebar-group">
+          <div class="ui-sidebar-group-label">{{ group.groupLabel }}</div>
+          <ul>
+            @for (item of group.items; track item.label) {
+              <li>
+                <div
+                  class="ui-sidebar-item"
+                  [class.ui-sidebar-item-active]="isActive(item)"
+                  (click)="handleItemClick(item)"
+                >
+                  @if (item.icon) {
+                    <span class="ui-sidebar-item-icon">{{ item.icon }}</span>
+                  }
+                  <span class="ui-sidebar-item-label">{{ item.label }}</span>
+                </div>
+                @if (item.children?.length) {
+                  <ul class="ui-sidebar-submenu">
+                    @for (child of item.children; track child.label) {
+                      <li>
+                        <div
+                          class="ui-sidebar-item"
+                          [class.ui-sidebar-item-active]="isActive(child)"
+                          (click)="handleItemClick(child)"
+                        >
+                          @if (child.icon) {
+                            <span class="ui-sidebar-item-icon">{{
+                              child.icon
+                            }}</span>
+                          }
+                          <span class="ui-sidebar-item-label">{{
+                            child.label
+                          }}</span>
+                        </div>
+                      </li>
                     }
-                    <span class="ui-sidebar-item-label">{{ child.label }}</span>
-                  </div>
-                </li>
-              }
-            </ul>
-          }
-        </li>
+                  </ul>
+                }
+              </li>
+            }
+          </ul>
+        </div>
       }
-    </ul>
+    } @else {
+      <ul>
+        @for (item of parsedItems; track item.label) {
+          <li>
+            <div
+              class="ui-sidebar-item"
+              [class.ui-sidebar-item-active]="isActive(item)"
+              (click)="handleItemClick(item)"
+            >
+              @if (item.icon) {
+                <span class="ui-sidebar-item-icon">{{ item.icon }}</span>
+              }
+              <span class="ui-sidebar-item-label">{{ item.label }}</span>
+            </div>
+            @if (item.children?.length) {
+              <ul class="ui-sidebar-submenu">
+                @for (child of item.children; track child.label) {
+                  <li>
+                    <div
+                      class="ui-sidebar-item"
+                      [class.ui-sidebar-item-active]="isActive(child)"
+                      (click)="handleItemClick(child)"
+                    >
+                      @if (child.icon) {
+                        <span class="ui-sidebar-item-icon">{{
+                          child.icon
+                        }}</span>
+                      }
+                      <span class="ui-sidebar-item-label">{{
+                        child.label
+                      }}</span>
+                    </div>
+                  </li>
+                }
+              </ul>
+            }
+          </li>
+        }
+      </ul>
+    }
   </nav>
   <ng-content></ng-content>
 </aside>

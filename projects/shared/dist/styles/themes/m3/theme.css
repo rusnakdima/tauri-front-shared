@@ -1,162 +1,89 @@
-/**
- * M3 Material Design 3 Theme for TailwindCSS v4
- * Light mode + Dark mode via .dark class
- *
- * IMPORTANT: This file should be imported AFTER @import "tailwindcss" in your app's styles.css
- */
 
-@theme {
-  /* M3 Color tokens - Light mode */
-  --color-primary: #6750a4;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #eaddff;
-  --color-on-primary-container: #21005d;
-  --color-primary-hover: #5d4895;
-
-  --color-secondary: #625b71;
-  --color-on-secondary: #ffffff;
-  --color-secondary-container: #e8def8;
-  --color-on-secondary-container: #1d192b;
-
-  --color-tertiary: #7d5260;
-  --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #ffd8e4;
-  --color-on-tertiary-container: #31111d;
-
-  --color-error: #b3261e;
-  --color-on-error: #ffffff;
-  --color-error-container: #f9dedc;
-  --color-on-error-container: #410e0b;
-
-  --color-surface: #fffbfe;
-  --color-on-surface: #1c1b1f;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f6f2f7;
-  --color-surface-container: #f3edf7;
-  --color-surface-container-high: #ece6f0;
-  --color-surface-container-highest: #e6e0e9;
-
-  --color-outline: #79747e;
-  --color-outline-variant: #cac4d0;
-
-  /* Semantic aliases */
-  --accent: #6750a4;
-  --accent-hover: #5d4895;
-  --success: #198754;
-  --warning: #ffc107;
-  --info: #0dcaf0;
-  --text-primary: #1c1b1f;
-  --text-secondary: #625b71;
-  --text-muted: #79747e;
-  --text-on-accent: #ffffff;
-  --text-on-error: #ffffff;
-  --text-on-warning: #3e2723;
-  --text-on-success: #ffffff;
-  --bg-primary: #fffbfe;
-  --bg-secondary: #f3edf7;
-  --bg-tertiary: #ece6f0;
-  --bg-elevated: #ffffff;
-  --bg-hover: rgba(103, 80, 164, 0.08);
-  --bg-header: #f3edf7;
-  --border: #79747e;
-  --border-subtle: #cac4d0;
-
-  /* Shadows */
-  --shadow-1: 0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
-  --shadow-2: 0 1px 2px 0 rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
-  --shadow-3: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px 1px rgba(0,0,0,0.3);
-  --shadow-4: 0 6px 10px 4px rgba(0,0,0,0.15), 0 2px 3px 1px rgba(0,0,0,0.3);
-  --shadow-5: 0 8px 12px 6px rgba(0,0,0,0.15), 0 4px 4px 2px rgba(0,0,0,0.3);
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.1);
-  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-  --shadow-focus: 0 0 0 3px rgba(103, 80, 164, 0.3);
-  --shadow-inset: inset 0 2px 4px rgba(0,0,0,0.06);
-
-  /* State layers */
-  --state-hover: rgba(103, 80, 164, 0.08);
-  --state-pressed: rgba(103, 80, 164, 0.12);
-  --state-focused: rgba(103, 80, 164, 0.12);
-  --state-dragged: rgba(103, 80, 164, 0.16);
-
-  /* Border radius */
-  --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 28px;
-  --radius-full: 9999px;
-
-  /* Typography */
-  --font-family: "Roboto", "Segoe UI", system-ui, sans-serif;
+body[data-theme="material-design-v3"] {
+  @theme {
+    --color-primary: #6366f1;
+    --color-on-primary: #ffffff;
+    --color-primary-container: #e0e2ff;
+    --color-on-primary-container: #312e81;
+    --color-primary-hover: #4f46e5;
+    --color-secondary: #818cf8;
+    --color-secondary-container: #c7d2fe;
+    --color-tertiary: #a78bfa;
+    --color-error: #ef4444;
+    --color-error-container: #fecaca;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-surface: #ffffff;
+    --color-on-surface: #171717;
+    --color-surface-2: #fafafa;
+    --color-surface-3: #f5f5f5;
+    --color-text: #171717;
+    --color-text-secondary: #525252;
+    --color-text-muted: #a3a3a3;
+    --color-text-on-accent: #ffffff;
+    --color-border: #e5e5e5;
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+    --error: #ef4444;
+    --text-primary: #171717;
+    --text-secondary: #525252;
+    --text-muted: #a3a3a3;
+    --bg-primary: #fbfdf7;
+    --bg-secondary: #ffffff;
+    --bg-elevated: #ffffff;
+    --bg-hover: rgba(99,102,241,0.06);
+    --bg-header: rgba(255,255,255,0.95);
+    --border: #e5e5e5;
+    --border-subtle: #f5f5f5;
+    --radius-xs: 8px;
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  }
 }
 
-/* Dark mode overrides via @variant */
-@variant dark (&) {
+body[data-theme="material-design-v3"][data-theme-mode="dark"] {
   @theme {
-    --color-primary: #d0bcff;
-    --color-on-primary: #381e72;
-    --color-primary-container: #4f378b;
-    --color-on-primary-container: #eaddff;
-    --color-primary-hover: #b69df8;
-
-    --color-secondary: #ccc2dc;
-    --color-on-secondary: #332d41;
-    --color-secondary-container: #4a4458;
-    --color-on-secondary-container: #e8def8;
-
-    --color-tertiary: #efb8c8;
-    --color-on-tertiary: #492532;
-    --color-tertiary-container: #633b48;
-    --color-on-tertiary-container: #ffd8e4;
-
-    --color-error: #f2b8b5;
-    --color-on-error: #601410;
-    --color-error-container: #8c1d18;
-    --color-on-error-container: #f9dedc;
-
+    --color-primary: #a5b4fc;
+    --color-on-primary: #1e1b4b;
+    --color-primary-container: #4338ca;
+    --color-on-primary-container: #c7d2fe;
+    --color-primary-hover: #818cf8;
+    --color-secondary: #c7d2fe;
+    --color-secondary-container: #6366f1;
+    --color-tertiary: #c4b5fd;
+    --color-error: #f87171;
+    --color-error-container: #dc2626;
+    --color-success: #34d399;
+    --color-warning: #fbbf24;
     --color-surface: #1c1b1f;
-    --color-on-surface: #e6e1e5;
-    --color-surface-container-lowest: #0f0d13;
-    --color-surface-container-low: #211f26;
-    --color-surface-container: #2b2930;
-    --color-surface-container-high: #36343b;
-    --color-surface-container-highest: #413d46;
-
-    --color-outline: #938f99;
-    --color-outline-variant: #49454f;
-
-    /* Semantic aliases - dark mode */
-    --accent: #d0bcff;
-    --accent-hover: #b69df8;
-    --text-primary: #e6e1e5;
-    --text-secondary: #cac4d0;
-    --text-muted: #938f99;
-    --text-on-accent: #381e72;
-    --text-on-error: #601410;
-    --text-on-warning: #3e2723;
-    --text-on-success: #ffffff;
-    --bg-primary: #1c1b1f;
-    --bg-secondary: #2b2930;
-    --bg-tertiary: #49454f;
-    --bg-elevated: #36343b;
-    --bg-hover: rgba(187, 184, 201, 0.08);
-    --bg-header: #1c1b1f;
-    --border: #938f99;
-    --border-subtle: #49454f;
-
-    /* Shadows - darker for dark mode */
-    --shadow-1: 0 1px 2px 0 rgba(0,0,0,0.5), 0 1px 3px 1px rgba(0,0,0,0.4);
-    --shadow-2: 0 1px 2px 0 rgba(0,0,0,0.5), 0 2px 6px 2px rgba(0,0,0,0.4);
-    --shadow-3: 0 4px 8px 3px rgba(0,0,0,0.4), 0 1px 3px 1px rgba(0,0,0,0.5);
-    --shadow-4: 0 6px 10px 4px rgba(0,0,0,0.4), 0 2px 3px 1px rgba(0,0,0,0.5);
-    --shadow-5: 0 8px 12px 6px rgba(0,0,0,0.4), 0 4px 4px 2px rgba(0,0,0,0.5);
-    --shadow-focus: 0 0 0 3px rgba(208, 188, 255, 0.3);
-
-    /* State layers - lighter for dark mode */
-    --state-hover: rgba(208, 188, 255, 0.08);
-    --state-pressed: rgba(208, 188, 255, 0.12);
-    --state-focused: rgba(208, 188, 255, 0.12);
-    --state-dragged: rgba(208, 188, 255, 0.16);
+    --color-on-surface: #e5e5e5;
+    --color-surface-2: #2b2930;
+    --color-surface-3: #1f1b22;
+    --color-text: #e5e5e5;
+    --color-text-secondary: #a3a3a3;
+    --color-text-muted: #737373;
+    --color-text-on-accent: #1e1b4b;
+    --color-border: #404040;
+    --accent: #a5b4fc;
+    --accent-hover: #818cf8;
+    --text-primary: #e5e5e5;
+    --text-secondary: #a3a3a3;
+    --text-muted: #737373;
+    --bg-primary: #121310;
+    --bg-secondary: #1c1b1f;
+    --bg-elevated: #2b2930;
+    --bg-hover: rgba(165,180,252,0.08);
+    --bg-header: rgba(28,27,31,0.95);
+    --border: #404040;
+    --border-subtle: #2b2930;
   }
 }

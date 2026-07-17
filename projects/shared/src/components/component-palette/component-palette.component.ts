@@ -12,7 +12,6 @@ export interface PaletteCategory {
   standalone: true,
   imports: [],
   templateUrl: "./component-palette.component.html",
-  styleUrls: ["./component-palette.component.scss"],
 })
 export class ComponentPaletteComponent {
   @Input() categories: string | PaletteCategory[] = "[]";

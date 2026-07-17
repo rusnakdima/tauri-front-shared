@@ -8,7 +8,6 @@ import { IconComponent } from "../icons/icons.component";
   standalone: true,
   imports: [IconComponent],
   templateUrl: "./locale-switcher.component.html",
-  styleUrls: ["./locale-switcher.component.scss"],
 })
 export class LocaleSwitcherComponent {
   private i18n = inject(I18nService);

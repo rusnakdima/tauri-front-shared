@@ -18,7 +18,6 @@ interface Shortcut {
   standalone: true,
   imports: [],
   templateUrl: "./shortcuts-overlay.component.html",
-  styleUrls: ["./shortcuts-overlay.component.scss"],
 })
 export class ShortcutsOverlayComponent {
   @Input() visible = false;

@@ -25,9 +25,10 @@ import { StyleThemeService } from "../../../styles/theme.service";
   standalone: true,
   imports: [CommonModule],
   templateUrl: "./schema-element.component.html",
-  styleUrls: ["./schema-element.component.scss"],
 })
-export class SchemaElementComponent implements AfterViewInit, OnChanges, OnInit {
+export class SchemaElementComponent
+  implements AfterViewInit, OnChanges, OnInit
+{
   private rendererService = inject(SchemaRendererService);
   private appRef = inject(ApplicationRef);
   private injector = inject(Injector);

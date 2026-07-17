@@ -15,8 +15,31 @@ export type SnackbarType = "default" | "success" | "error" | "warning" | "info";
   selector: "app-snackbar",
   standalone: true,
   imports: [],
-  templateUrl: "./snackbar.component.html",
-  styleUrls: ["./snackbar.component.scss"],
+  template: `
+    @if (open) {
+      <div
+        class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-3 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm rounded-2xl shadow-xl transition-colors"
+        role="status"
+      >
+        <span class="font-medium">{{ message }}</span>
+        @if (action) {
+          <button
+            class="text-indigo-400 dark:text-indigo-600 font-semibold hover:underline"
+            (click)="handleAction()"
+          >
+            {{ action }}
+          </button>
+        }
+        <button
+          class="ml-2 p-1 hover:bg-white/10 dark:hover:bg-black/10 rounded-full"
+          (click)="dismiss()"
+          aria-label="Dismiss"
+        >
+          <span class="material-symbols-rounded text-sm">close</span>
+        </button>
+      </div>
+    }
+  `,
 })
 export class SnackbarComponent implements OnChanges, OnDestroy {
   @Input() message = "";

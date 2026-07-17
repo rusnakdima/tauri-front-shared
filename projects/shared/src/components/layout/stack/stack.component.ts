@@ -8,7 +8,6 @@ import { registerSchemaComponent } from "../../../core/lib/schema-component.regi
   standalone: true,
   imports: [CommonModule, SchemaElementComponent],
   templateUrl: "./stack.component.html",
-  styleUrl: "./stack.component.scss",
 })
 export class StackComponent {
   @Input() classes = "";

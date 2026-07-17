@@ -17,11 +17,13 @@ import { IconComponent } from "../icons/icons.component";
       <app-icon icon="chevron-down" [size]="20" class="rotate-90" />
     </button>
   `,
-  styles: [`
-    :host {
-      display: inline-flex;
-    }
-  `],
+  styles: [
+    `
+      :host {
+        display: inline-flex;
+      }
+    `,
+  ],
 })
 export class SwapButtonComponent {
   @Input() ariaLabel = "";

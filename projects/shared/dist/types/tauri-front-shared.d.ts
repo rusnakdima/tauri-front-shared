@@ -327,6 +327,168 @@ declare class I18nService {
     static ɵprov: i0.ɵɵInjectableDeclaration<I18nService>;
 }
 
+type AlertType = "info" | "success" | "warning" | "danger";
+interface AlertAction {
+    label: string;
+    value: any;
+}
+declare class AlertComponent {
+    type: AlertType;
+    title: string;
+    message: string;
+    dismissible: boolean;
+    actions?: AlertAction[];
+    icon: string;
+    dismissed: EventEmitter<void>;
+    action: EventEmitter<any>;
+    onActionClick(act: AlertAction): void;
+    dismiss(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<AlertComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<AlertComponent, "app-alert", never, { "type": { "alias": "type"; "required": false; }; "title": { "alias": "title"; "required": false; }; "message": { "alias": "message"; "required": false; }; "dismissible": { "alias": "dismissible"; "required": false; }; "actions": { "alias": "actions"; "required": false; }; "icon": { "alias": "icon"; "required": false; }; }, { "dismissed": "dismissed"; "action": "action"; }, never, never, true, never>;
+}
+
+interface FabItem {
+    icon: string;
+    label: string;
+    value: any;
+}
+declare class FabComponent {
+    icon: string;
+    label: string;
+    position: "bottom-right" | "bottom-left";
+    items?: FabItem[];
+    mainClick: EventEmitter<void>;
+    actionSelected: EventEmitter<any>;
+    open: boolean;
+    onMainClick(): void;
+    selectItem(item: FabItem): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<FabComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<FabComponent, "app-fab", never, { "icon": { "alias": "icon"; "required": false; }; "label": { "alias": "label"; "required": false; }; "position": { "alias": "position"; "required": false; }; "items": { "alias": "items"; "required": false; }; }, { "mainClick": "mainClick"; "actionSelected": "actionSelected"; }, never, never, true, never>;
+}
+
+declare class RatingComponent {
+    value: number;
+    max: number;
+    readonly: boolean;
+    size: "sm" | "md" | "lg";
+    accentColor?: string;
+    showLabel: boolean;
+    ratingChange: EventEmitter<number>;
+    get indices(): number[];
+    onStarClick(idx: number): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<RatingComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<RatingComponent, "app-rating", never, { "value": { "alias": "value"; "required": false; }; "max": { "alias": "max"; "required": false; }; "readonly": { "alias": "readonly"; "required": false; }; "size": { "alias": "size"; "required": false; }; "accentColor": { "alias": "accentColor"; "required": false; }; "showLabel": { "alias": "showLabel"; "required": false; }; }, { "ratingChange": "ratingChange"; }, never, never, true, never>;
+}
+
+interface StepperStep {
+    label: string;
+    icon?: string;
+}
+declare class StepperComponent {
+    steps: StepperStep[];
+    current: number;
+    clickable: boolean;
+    stepChange: EventEmitter<number>;
+    getStepClass(i: number): string;
+    getConnectorClass(i: number): string;
+    onStepClick(i: number): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<StepperComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<StepperComponent, "app-stepper", never, { "steps": { "alias": "steps"; "required": false; }; "current": { "alias": "current"; "required": false; }; "clickable": { "alias": "clickable"; "required": false; }; }, { "stepChange": "stepChange"; }, never, never, true, never>;
+}
+
+interface BreadcrumbItem {
+    label: string;
+    href?: string;
+    id?: string;
+}
+declare class BreadcrumbComponent {
+    items: BreadcrumbItem[];
+    itemClick: EventEmitter<number>;
+    onItemClick(index: number, e: Event): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<BreadcrumbComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<BreadcrumbComponent, "app-breadcrumb", never, { "items": { "alias": "items"; "required": false; }; }, { "itemClick": "itemClick"; }, never, never, true, never>;
+}
+
+declare class ProgressRingComponent {
+    value: number;
+    max: number;
+    size: "sm" | "md" | "lg";
+    label?: string;
+    showLabel: boolean;
+    accent: string;
+    get diameter(): number;
+    get strokeWidth(): number;
+    get radius(): number;
+    get center(): number;
+    get circumference(): number;
+    get percent(): number;
+    get dashOffset(): number;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ProgressRingComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ProgressRingComponent, "app-progress-ring", never, { "value": { "alias": "value"; "required": false; }; "max": { "alias": "max"; "required": false; }; "size": { "alias": "size"; "required": false; }; "label": { "alias": "label"; "required": false; }; "showLabel": { "alias": "showLabel"; "required": false; }; "accent": { "alias": "accent"; "required": false; }; }, {}, never, never, true, never>;
+}
+
+declare class SkeletonComponent {
+    variant: "card" | "list" | "text" | "circle";
+    lines?: number;
+    animated: boolean;
+    get linesArray(): number[];
+    static ɵfac: i0.ɵɵFactoryDeclaration<SkeletonComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<SkeletonComponent, "app-skeleton", never, { "variant": { "alias": "variant"; "required": false; }; "lines": { "alias": "lines"; "required": false; }; "animated": { "alias": "animated"; "required": false; }; }, {}, never, never, true, never>;
+}
+
+interface ListItem {
+    icon?: string;
+    title: string;
+    subtitle?: string;
+    timestamp?: string;
+    value?: any;
+}
+declare class ListComponent {
+    items: ListItem[];
+    selectable: boolean;
+    divided: boolean;
+    itemSelected: EventEmitter<any>;
+    onItemClick(item: ListItem): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ListComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ListComponent, "app-list", never, { "items": { "alias": "items"; "required": false; }; "selectable": { "alias": "selectable"; "required": false; }; "divided": { "alias": "divided"; "required": false; }; }, { "itemSelected": "itemSelected"; }, never, never, true, never>;
+}
+
+interface ButtonGroupItem {
+    label: string;
+    value: any;
+    icon?: string;
+}
+declare class ButtonGroupComponent {
+    items: ButtonGroupItem[];
+    value: any;
+    rounded: "full" | "md" | "none";
+    multiple: boolean;
+    valueChange: EventEmitter<any>;
+    isSelected(item: ButtonGroupItem): boolean;
+    onItemClick(item: ButtonGroupItem): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ButtonGroupComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ButtonGroupComponent, "app-button-group", never, { "items": { "alias": "items"; "required": false; }; "value": { "alias": "value"; "required": false; }; "rounded": { "alias": "rounded"; "required": false; }; "multiple": { "alias": "multiple"; "required": false; }; }, { "valueChange": "valueChange"; }, never, never, true, never>;
+}
+
+declare class FileInputComponent {
+    label?: string;
+    accept?: string;
+    placeholder: string;
+    multiple: boolean;
+    filesSelected: EventEmitter<FileList | null>;
+    fileName: EventEmitter<string>;
+    isDragOver: boolean;
+    private fileEl;
+    openPicker(): void;
+    onFileChange(event: Event): void;
+    onDragOver(event: DragEvent): void;
+    onDragLeave(event: DragEvent): void;
+    onDrop(event: DragEvent): void;
+    private emitFiles;
+    static ɵfac: i0.ɵɵFactoryDeclaration<FileInputComponent, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<FileInputComponent, "app-file-input", never, { "label": { "alias": "label"; "required": false; }; "accept": { "alias": "accept"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "multiple": { "alias": "multiple"; "required": false; }; }, { "filesSelected": "filesSelected"; "fileName": "fileName"; }, never, never, true, never>;
+}
+
 declare const uiComponents: SharedComponentDef[];
 declare const layoutComponents: SharedComponentDef[];
 declare const feedbackComponents: SharedComponentDef[];
@@ -522,10 +684,9 @@ declare class LayoutEngineService {
 /**
  * Style Registry - TailwindCSS v4 Theme System
  *
- * Themes are loaded dynamically at runtime via CSS <link> injection.
- * Each theme has a theme.css file with @theme directive.
+ * Each theme is defined in its theme.css file and selected via data attributes.
  */
-type StyleVariant = "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3" | "brutalism" | "skeuomorphism";
+type StyleVariant = "claymorphism" | "glassmorphism" | "neumorphism" | "material-design-v3" | "brutalism" | "skeuomorphism" | "neo-brutalism";
 interface GlobalStyleContext {
     variant?: string;
     size?: string;
@@ -535,6 +696,7 @@ interface StyleVariantConfig {
     name: string;
     classPrefix: string;
     description: string;
+    redesigned: boolean;
 }
 /**
  * @deprecated - Component style mapping is no longer used in TailwindCSS v4 approach
@@ -544,8 +706,7 @@ interface ComponentStyleMap {
 }
 declare function loadStyleVariant(variant: StyleVariant): Promise<void>;
 /**
- * SCSS-only fallback — sets body[data-style] without injecting runtime CSS.
- * Kept for compatibility with apps using static SCSS themes.
+ * SCSS-only fallback for apps using static SCSS themes.
  */
 declare function loadStyleVariantNoop(variant?: StyleVariant): Promise<void>;
 declare function setTheme(variant: StyleVariant): void;
@@ -935,16 +1096,6 @@ declare class StyleThemeService {
     private static readonly THEMES;
     cycle(): void;
     getCurrentTheme(): StyleVariant;
-    private injectDarkModeVariables;
-    private removeDarkModeVariables;
-    private getDarkModeVariablesCSS;
-    private getDarkModeCSSForVariant;
-    private brutalismDarkCSS;
-    private skeuomorphismDarkCSS;
-    private materialDesignV3DarkCSS;
-    private neumorphismDarkCSS;
-    private claymorphismDarkCSS;
-    private glassmorphismDarkCSS;
     private initializeDarkMode;
     private loadDarkModePreference;
     private saveDarkModePreference;
@@ -1838,5 +1989,5 @@ declare class AboutService {
     private isNewerVersion;
 }
 
-export { AboutService, ApiCrudService, ApiException, BaseDestroyableComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, LocalStorageService, PaginationComponent, PermissionService, RbacHasPermissionDirective, RbacHasRoleDirective, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStoreService, SignalSyncService, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createState, createStateSubject, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, loadStyleVariantNoop, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, setTheme, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
-export type { AppError, AppProvider, AppSchema, CacheEntry, CanvasElement, ColorMode, ComponentBehavior, ComponentDef, ComponentStyleMap, DataBinding, DownloadProgress, ElementConfig, ElementEvents, GridPosition, GridTemplate, HandlerDefinition, Layout, LayoutElement, LoadingState, Page, Permission, PermissionCheckResult, QueryFilter, RenderContext, ResizeObserverCallback, ResizeObserverEntry, Response, Role, SchemaSetupOptions, Signal, StorageValidator, StyleVariant, Theme, ToastNotification, TodoPermissionContext, UiSchema, UnifiedAppConfig, UpdateInfo, User };
+export { AboutService, AlertComponent, ApiCrudService, ApiException, BaseDestroyableComponent, BreadcrumbComponent, ButtonGroupComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, FabComponent, FileInputComponent, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, ListComponent, LocalStorageService, PaginationComponent, PermissionService, ProgressRingComponent, RatingComponent, RbacHasPermissionDirective, RbacHasRoleDirective, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStoreService, SignalSyncService, SkeletonComponent, StepperComponent, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createState, createStateSubject, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, loadStyleVariantNoop, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, setTheme, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
+export type { AlertAction, AlertType, AppError, AppProvider, AppSchema, BreadcrumbItem, ButtonGroupItem, CacheEntry, CanvasElement, ColorMode, ComponentBehavior, ComponentDef, ComponentStyleMap, DataBinding, DownloadProgress, ElementConfig, ElementEvents, FabItem, GridPosition, GridTemplate, HandlerDefinition, Layout, LayoutElement, ListItem, LoadingState, Page, Permission, PermissionCheckResult, QueryFilter, RenderContext, ResizeObserverCallback, ResizeObserverEntry, Response, Role, SchemaSetupOptions, Signal, StepperStep, StorageValidator, StyleVariant, Theme, ToastNotification, TodoPermissionContext, UiSchema, UnifiedAppConfig, UpdateInfo, User };

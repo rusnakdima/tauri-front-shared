@@ -55,16 +55,20 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
           <span class="text-sm text-error">{{ error }}</span>
         }
         @if (maxChars) {
-          <span class="text-sm text-on-surface-variant ml-auto">{{ value.length }}/{{ maxChars }}</span>
+          <span class="text-sm text-on-surface-variant ml-auto"
+            >{{ value.length }}/{{ maxChars }}</span
+          >
         }
       </div>
     </div>
   `,
-  styles: [`
-    :host {
-      display: block;
-    }
-  `],
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
 })
 export class TextInputComponent implements AfterViewInit {
   @ViewChild("textareaEl") textareaEl!: ElementRef<HTMLTextAreaElement>;

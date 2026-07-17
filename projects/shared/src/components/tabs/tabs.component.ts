@@ -6,8 +6,23 @@ import { parseJsonOrDefault } from "../../utils/json";
   selector: "app-tabs",
   standalone: true,
   imports: [],
-  templateUrl: "./tabs.component.html",
-  styleUrls: ["./tabs.component.scss"],
+  template: `
+    <div class="flex gap-1 border-b border-neutral-200 dark:border-neutral-700">
+      @for (tab of parsedTabs; track tab) {
+        <button
+          class="px-4 py-2 text-sm font-medium transition-colors rounded-t-lg"
+          [class.text-indigo-600]="tab === activeTab"
+          [class.border-b-2]="tab === activeTab"
+          [class.border-indigo-600]="tab === activeTab"
+          [class.text-neutral-500]="tab !== activeTab"
+          [class.hover:text-neutral-700]="tab !== activeTab"
+          (click)="selectTab(tab)"
+        >
+          {{ tab }}
+        </button>
+      }
+    </div>
+  `,
 })
 export class TabsComponent {
   @Input() tabs: string | string[] = "[]";

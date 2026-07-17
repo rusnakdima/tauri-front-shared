@@ -12,7 +12,6 @@ export interface BottomPanelTab {
   standalone: true,
   imports: [],
   templateUrl: "./bottom-panel.component.html",
-  styleUrls: ["./bottom-panel.component.scss"],
 })
 export class BottomPanelComponent {
   @Input() tabs: string | BottomPanelTab[] = "[]";

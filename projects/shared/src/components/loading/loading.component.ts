@@ -6,7 +6,6 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./loading.component.html",
-  styleUrls: ["./loading.component.scss"],
 })
 export class LoadingComponent {
   @Input() size: "sm" | "md" | "lg" = "md";

@@ -6,7 +6,6 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./progress-bar.component.html",
-  styleUrls: ["./progress-bar.component.scss"],
 })
 export class ProgressBarComponent {
   @Input() value = 0;

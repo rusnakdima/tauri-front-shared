@@ -16,7 +16,6 @@ export type BlockWrap = "nowrap" | "wrap" | "wrap-reverse";
   standalone: true,
   imports: [CommonModule, SchemaElementComponent],
   templateUrl: "./block.component.html",
-  styleUrls: ["./block.component.scss"],
 })
 export class BlockComponent {
   @Input() display: "flex" | "grid" | "block" = "flex";

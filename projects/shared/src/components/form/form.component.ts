@@ -6,7 +6,6 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [],
   templateUrl: "./form.component.html",
-  styleUrls: ["./form.component.scss"],
 })
 export class FormComponent {
   @Input() heading = "";

@@ -1,4 +1,5 @@
-type FilterOperator = "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "contains" | "in";
+type FilterOperator =
+  "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "contains" | "in";
 
 export interface QueryFilter {
   field: string;

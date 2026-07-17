@@ -23,7 +23,6 @@ export interface Command {
   standalone: true,
   imports: [IconComponent],
   templateUrl: "./command-palette.component.html",
-  styleUrls: ["./command-palette.component.scss"],
 })
 export class CommandPaletteComponent {
   @Input() commands: Command[] = [];

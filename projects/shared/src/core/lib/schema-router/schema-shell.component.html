@@ -1,11 +1,19 @@
 @if (loading()) {
-  <div class="min-h-screen flex flex-col items-center justify-center gap-4 bg-surface text-on-surface">
-    <div class="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+  <div
+    class="min-h-screen flex flex-col items-center justify-center gap-4 bg-surface text-on-surface"
+  >
+    <div
+      class="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"
+    ></div>
     <p class="text-lg text-on-surface-variant">Loading application...</p>
   </div>
 } @else if (error(); as err) {
-  <div class="min-h-screen flex flex-col items-center justify-center p-8 bg-surface text-on-surface">
-    <div class="w-20 h-20 flex items-center justify-center rounded-full bg-error-container text-error text-4xl mb-4">
+  <div
+    class="min-h-screen flex flex-col items-center justify-center p-8 bg-surface text-on-surface"
+  >
+    <div
+      class="w-20 h-20 flex items-center justify-center rounded-full bg-error-container text-error text-4xl mb-4"
+    >
       &#9888;
     </div>
     <h2 class="text-2xl font-bold text-on-surface mb-2">
@@ -24,7 +32,6 @@
 } @else {
   <!-- Main scaffold: flex column, full viewport height -->
   <div class="min-h-screen flex flex-col bg-surface text-on-surface">
-
     <!-- Header region - fixed height, flex row -->
     @if (headerRegion(); as region) {
       <header
@@ -42,7 +49,6 @@
 
     <!-- Main content area - flex row that fills remaining space -->
     <div class="flex-1 flex flex-row min-h-0">
-
       <!-- Sidebar left -->
       @if (sidebarLeftRegion(); as region) {
         <aside
@@ -59,12 +65,11 @@
       }
 
       <!-- Content area with M3 surface container -->
-      <main
-        data-region="content"
-        class="flex-1 p-4 md:p-6 min-w-0"
-      >
+      <main data-region="content" class="flex-1 p-4 md:p-6 min-w-0">
         <!-- M3 surface container for content -->
-        <div class="h-full rounded-xl bg-surface-container-lowest border border-outline-variant p-6 md:p-8 shadow-1">
+        <div
+          class="h-full rounded-xl bg-surface-container-lowest border border-outline-variant p-6 md:p-8 shadow-1"
+        >
           <lib-schema-route-viewer />
         </div>
       </main>
@@ -117,10 +122,7 @@
 
     <!-- Other regions (rendered below main layout) -->
     @for (region of otherRegions(); track region.id) {
-      <div
-        data-region="other"
-        class="flex-shrink-0 px-6 py-4"
-      >
+      <div data-region="other" class="flex-shrink-0 px-6 py-4">
         @for (child of region.children || []; track child.id) {
           <app-schema-element
             [element]="child"

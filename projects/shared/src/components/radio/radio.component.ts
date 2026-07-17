@@ -5,8 +5,18 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   selector: "app-radio",
   standalone: true,
   imports: [],
-  templateUrl: "./radio.component.html",
-  styleUrls: ["./radio.component.scss"],
+  template: `
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input
+        type="radio"
+        [name]="name"
+        class="w-5 h-5 text-indigo-600 bg-neutral-100 border-neutral-300 focus:ring-indigo-500 dark:bg-neutral-700 dark:border-neutral-600"
+      />
+      <span class="text-sm text-neutral-700 dark:text-neutral-300">{{
+        label
+      }}</span>
+    </label>
+  `,
 })
 export class RadioComponent {
   @Input() name = "";

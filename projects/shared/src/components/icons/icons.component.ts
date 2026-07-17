@@ -73,8 +73,11 @@ const MI_ICONS: Record<string, string> = {
   selector: "app-icon",
   standalone: true,
   imports: [],
-  templateUrl: "./icons.component.html",
-  styleUrls: ["./icons.component.scss"],
+  template: `
+    <span class="material-symbols-rounded" [style.font-size.px]="size">{{
+      icon
+    }}</span>
+  `,
 })
 export class IconComponent {
   @Input() icon = "";

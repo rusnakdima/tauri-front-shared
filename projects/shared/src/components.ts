@@ -3,6 +3,13 @@ import type { SharedComponentDef } from "./core/lib/types";
 // UI Components
 export const uiComponents: SharedComponentDef[] = [
   {
+    id: "alert",
+    name: "AppAlert",
+    selector: "app-alert",
+    packageType: "shared",
+    category: "feedback",
+  },
+  {
     id: "avatar",
     name: "AppAvatar",
     selector: "app-avatar",
@@ -24,9 +31,23 @@ export const uiComponents: SharedComponentDef[] = [
     category: "forms",
   },
   {
+    id: "breadcrumb",
+    name: "AppBreadcrumb",
+    selector: "app-breadcrumb",
+    packageType: "shared",
+    category: "navigation",
+  },
+  {
     id: "button",
     name: "AppButton",
     selector: "app-button",
+    packageType: "shared",
+    category: "forms",
+  },
+  {
+    id: "button-group",
+    name: "AppButtonGroup",
+    selector: "app-button-group",
     packageType: "shared",
     category: "forms",
   },
@@ -94,6 +115,20 @@ export const uiComponents: SharedComponentDef[] = [
     category: "forms",
   },
   {
+    id: "fab",
+    name: "AppFab",
+    selector: "app-fab",
+    packageType: "shared",
+    category: "navigation",
+  },
+  {
+    id: "file-input",
+    name: "AppFileInput",
+    selector: "app-file-input",
+    packageType: "shared",
+    category: "forms",
+  },
+  {
     id: "footer",
     name: "AppFooter",
     selector: "app-footer",
@@ -118,6 +153,13 @@ export const uiComponents: SharedComponentDef[] = [
     id: "json-view",
     name: "AppJsonView",
     selector: "app-json-view",
+    packageType: "shared",
+    category: "layout",
+  },
+  {
+    id: "list",
+    name: "AppList",
+    selector: "app-list",
     packageType: "shared",
     category: "layout",
   },
@@ -164,6 +206,13 @@ export const uiComponents: SharedComponentDef[] = [
     category: "forms",
   },
   {
+    id: "progress-ring",
+    name: "AppProgressRing",
+    selector: "app-progress-ring",
+    packageType: "shared",
+    category: "feedback",
+  },
+  {
     id: "properties-panel",
     name: "AppPropertiesPanel",
     selector: "app-properties-panel",
@@ -176,6 +225,13 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-radio",
     packageType: "shared",
     category: "forms",
+  },
+  {
+    id: "rating",
+    name: "AppRating",
+    selector: "app-rating",
+    packageType: "shared",
+    category: "feedback",
   },
   {
     id: "segment-selector",
@@ -197,6 +253,13 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-sidebar",
     packageType: "shared",
     category: "forms",
+  },
+  {
+    id: "skeleton",
+    name: "AppSkeleton",
+    selector: "app-skeleton",
+    packageType: "shared",
+    category: "feedback",
   },
   {
     id: "slider",
@@ -226,6 +289,14 @@ export const uiComponents: SharedComponentDef[] = [
     packageType: "shared",
     category: "forms",
   },
+  {
+    id: "stepper",
+    name: "AppStepper",
+    selector: "app-stepper",
+    packageType: "shared",
+    category: "navigation",
+  },
+
   {
     id: "switch",
     name: "AppSwitch",

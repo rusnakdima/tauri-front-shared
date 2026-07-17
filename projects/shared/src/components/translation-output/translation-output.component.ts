@@ -25,7 +25,9 @@ import { IconComponent } from "../icons/icons.component";
         ></textarea>
         @if (loading) {
           <div class="absolute right-3 top-1/2 -translate-y-1/2">
-            <div class="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <div
+              class="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"
+            ></div>
           </div>
         }
         @if (showCopyButton && value && !loading) {
@@ -55,14 +57,16 @@ import { IconComponent } from "../icons/icons.component";
       </div>
     </div>
   `,
-  styles: [`
-    :host {
-      display: block;
-    }
-    textarea:disabled {
-      cursor: default;
-    }
-  `],
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+      textarea:disabled {
+        cursor: default;
+      }
+    `,
+  ],
 })
 export class TranslationOutputComponent {
   @Input() value = "";

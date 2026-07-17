@@ -1,13 +1,16 @@
 import {
   Component,
+  Input,
   input,
   output,
   signal,
   ElementRef,
   OnInit,
   OnDestroy,
+  OnChanges,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  SimpleChanges,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 export type ModalSize = "sm" | "md" | "lg" | "xl" | "full";
@@ -17,18 +20,80 @@ export type ModalContentPosition = "center" | "top";
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
-  templateUrl: "./modal.component.html",
+  template: `
+    @if (isVisible()) {
+      <div
+        class="modal-backdrop fixed inset-0 z-50 flex justify-center backdrop-blur-sm transition-opacity duration-200"
+        style="background: var(--bg-backdrop)"
+        [class.opacity-0]="isAnimating()"
+        [class.opacity-100]="!isAnimating()"
+        [class]="contentPositionClasses"
+        (click)="onBackdropClick($event)"
+      >
+        <div
+          role="dialog"
+          aria-modal="true"
+          [attr.aria-labelledby]="'modal-title-' + title"
+          class="relative w-full rounded-2xl border shadow-2xl backdrop-blur-md transition-all duration-200"
+          style="border-color: var(--border-visible); background: var(--bg-modal)"
+          [class.scale-95]="isAnimating()"
+          [class.scale-100]="!isAnimating()"
+          [class]="sizeClasses"
+        >
+          @if (showHeader) {
+            <div
+              class="flex items-center justify-between border-b"
+              style="border-color: var(--border-subtle)"
+            >
+              <h2 [id]="'modal-title-' + title" style="color: var(--text-main)">
+                {{ title }}
+              </h2>
+              @if (showCloseButton) {
+                <button
+                  type="button"
+                  (click)="onClose()"
+                  class="transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white"
+                  aria-label="Close modal"
+                >
+                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fill-rule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </button>
+              }
+            </div>
+          }
+          <div style="max-height: calc(100vh - 12rem)" class="overflow-y-auto">
+            <ng-content></ng-content>
+          </div>
+          @if (showFooter) {
+            <div
+              class="flex items-center justify-end gap-3 border-t"
+              style="border-color: var(--border-subtle)"
+            >
+              <ng-content select="[modal-footer]"></ng-content>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  `,
 })
-export class ModalComponent implements OnInit, OnDestroy {
-  open = input<boolean>(false);
-  title = input<string>("");
-  size = input<ModalSize>("md");
-  closeOnBackdrop = input<boolean>(true);
-  closeOnEscape = input<boolean>(true);
-  showCloseButton = input<boolean>(true);
-  showHeader = input<boolean>(true);
-  showFooter = input<boolean>(true);
-  contentPosition = input<ModalContentPosition>("center");
+export class ModalComponent implements OnInit, OnDestroy, OnChanges {
+  // Legacy @Input — required so SchemaRendererService can do `modalElement['open'] = true`
+  // (signal-based inputs are not reactive to direct DOM property assignment).
+  @Input() open = false;
+  @Input() title = "";
+  @Input() size: ModalSize = "md";
+  @Input() closeOnBackdrop = true;
+  @Input() closeOnEscape = true;
+  @Input() showCloseButton = true;
+  @Input() showHeader = true;
+  @Input() showFooter = true;
+  @Input() contentPosition: ModalContentPosition = "center";
   closed = output<void>();
   opened = output<void>();
   isVisible = signal(false);
@@ -37,12 +102,12 @@ export class ModalComponent implements OnInit, OnDestroy {
   private openedTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private closedTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private escapeKeyHandler = (event: KeyboardEvent) => {
-    if (event.key === "Escape" && this.closeOnEscape() && this.open()) {
+    if (event.key === "Escape" && this.closeOnEscape && this.open) {
       this.onClose();
     }
   };
   ngOnInit(): void {
-    if (this.open()) {
+    if (this.open) {
       this.openModal();
     }
   }
@@ -51,8 +116,8 @@ export class ModalComponent implements OnInit, OnDestroy {
     if (this.closedTimeoutId) clearTimeout(this.closedTimeoutId);
     this.cleanup();
   }
-  ngOnChanges(): void {
-    if (this.open()) {
+  ngOnChanges(_changes: SimpleChanges): void {
+    if (this.open) {
       this.openModal();
     } else {
       this.closeModal();
@@ -95,7 +160,7 @@ export class ModalComponent implements OnInit, OnDestroy {
   }
   onBackdropClick(event: MouseEvent): void {
     if (
-      this.closeOnBackdrop() &&
+      this.closeOnBackdrop &&
       (event.target as HTMLElement).classList.contains("modal-backdrop")
     ) {
       this.onClose();
@@ -112,10 +177,10 @@ export class ModalComponent implements OnInit, OnDestroy {
       xl: "max-w-[1000px]",
       full: "max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)]",
     };
-    return sizes[this.size()];
+    return sizes[this.size];
   }
   get contentPositionClasses(): string {
-    return this.contentPosition() === "top"
+    return this.contentPosition === "top"
       ? "items-start pt-[10vh]"
       : "items-center";
   }

@@ -1,6 +1,21 @@
 <footer class="ui-footer">
-  @if (text) {
-    <p>{{ text }}</p>
+  <div class="ui-footer-text">
+    @if (text) {
+      <p>{{ text }}</p>
+    }
+  </div>
+  @if (parsedLinks.length) {
+    <nav class="ui-footer-links" aria-label="Footer links">
+      @for (link of parsedLinks; track link.label) {
+        @if (link.href) {
+          <a [href]="link.href" class="ui-footer-link">{{ link.label }}</a>
+        } @else {
+          <span class="ui-footer-link ui-footer-link-static">{{
+            link.label
+          }}</span>
+        }
+      }
+    </nav>
   }
   <ng-content></ng-content>
 </footer>

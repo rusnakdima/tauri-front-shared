@@ -12,11 +12,23 @@
       "types": "./index.d.ts",
       "default": "./fesm2022/tauri-front-shared.mjs"
     },
+    "./styles/themes/m3/tokens.css": {
+      "default": "./styles/themes/m3/tokens.css"
+    },
+    "./styles/themes/m3/components.css": {
+      "default": "./styles/themes/m3/components.css"
+    },
     "./styles/themes/m3/theme": {
       "default": "./styles/themes/m3/theme.css"
     },
     "./styles/themes/m3/theme.css": {
       "default": "./styles/themes/m3/theme.css"
+    },
+    "./styles/themes/glassmorphism/tokens.css": {
+      "default": "./styles/themes/glassmorphism/tokens.css"
+    },
+    "./styles/themes/glassmorphism/components.css": {
+      "default": "./styles/themes/glassmorphism/components.css"
     },
     "./styles/themes/glassmorphism/theme": {
       "default": "./styles/themes/glassmorphism/theme.css"
@@ -29,6 +41,12 @@
     },
     "./styles/themes/neumorphism/theme.css": {
       "default": "./styles/themes/neumorphism/theme.css"
+    },
+    "./styles/themes/claymorphism/tokens.css": {
+      "default": "./styles/themes/claymorphism/tokens.css"
+    },
+    "./styles/themes/claymorphism/components.css": {
+      "default": "./styles/themes/claymorphism/components.css"
     },
     "./styles/themes/claymorphism/theme": {
       "default": "./styles/themes/claymorphism/theme.css"
@@ -47,6 +65,12 @@
     },
     "./styles/themes/skeuomorphism/theme.css": {
       "default": "./styles/themes/skeuomorphism/theme.css"
+    },
+    "./styles/themes/neo-brutalism/theme": {
+      "default": "./styles/themes/neo-brutalism/theme.css"
+    },
+    "./styles/themes/neo-brutalism/theme.css": {
+      "default": "./styles/themes/neo-brutalism/theme.css"
     }
   },
   "scripts": {

@@ -7,7 +7,6 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
   standalone: true,
   imports: [CommonModule],
   templateUrl: "./menu-button.component.html",
-  styleUrls: ["./menu-button.component.scss"],
 })
 export class MenuButtonComponent {
   @Input() isOpen = false;

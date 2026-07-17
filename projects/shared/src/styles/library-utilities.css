@@ -111,63 +111,63 @@
 }
 
 .sf-col-span-1 {
-  grid-column: span 1/span 1;
+  grid-column: span 1 / span 1;
 }
 
 .sf-col-span-2 {
-  grid-column: span 2/span 2;
+  grid-column: span 2 / span 2;
 }
 
 .sf-col-span-3 {
-  grid-column: span 3/span 3;
+  grid-column: span 3 / span 3;
 }
 
 .sf-col-span-4 {
-  grid-column: span 4/span 4;
+  grid-column: span 4 / span 4;
 }
 
 .sf-col-span-5 {
-  grid-column: span 5/span 5;
+  grid-column: span 5 / span 5;
 }
 
 .sf-col-span-6 {
-  grid-column: span 6/span 6;
+  grid-column: span 6 / span 6;
 }
 
 .sf-col-span-7 {
-  grid-column: span 7/span 7;
+  grid-column: span 7 / span 7;
 }
 
 .sf-col-span-8 {
-  grid-column: span 8/span 8;
+  grid-column: span 8 / span 8;
 }
 
 .sf-col-span-9 {
-  grid-column: span 9/span 9;
+  grid-column: span 9 / span 9;
 }
 
 .sf-col-span-10 {
-  grid-column: span 10/span 10;
+  grid-column: span 10 / span 10;
 }
 
 .sf-col-span-11 {
-  grid-column: span 11/span 11;
+  grid-column: span 11 / span 11;
 }
 
 .sf-col-span-12 {
-  grid-column: span 12/span 12;
+  grid-column: span 12 / span 12;
 }
 
 .sf-row-span-1 {
-  grid-row: span 1/span 1;
+  grid-row: span 1 / span 1;
 }
 
 .sf-row-span-2 {
-  grid-row: span 2/span 2;
+  grid-row: span 2 / span 2;
 }
 
 .sf-row-span-3 {
-  grid-row: span 3/span 3;
+  grid-row: span 3 / span 3;
 }
 
 .sf-p-0 {
@@ -614,7 +614,9 @@
 }
 
 .sf-shadow {
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
 }
 
 .sf-shadow-sm {
@@ -622,7 +624,9 @@
 }
 
 .sf-shadow-lg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
 }
 
 .sf-shadow-2xl {
@@ -736,25 +740,25 @@
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
   .sf-md\:col-span-3 {
-    grid-column: span 3/span 3;
+    grid-column: span 3 / span 3;
   }
   .sf-md\:col-span-4 {
-    grid-column: span 4/span 4;
+    grid-column: span 4 / span 4;
   }
   .sf-md\:col-span-5 {
-    grid-column: span 5/span 5;
+    grid-column: span 5 / span 5;
   }
   .sf-md\:col-span-6 {
-    grid-column: span 6/span 6;
+    grid-column: span 6 / span 6;
   }
   .sf-md\:col-span-7 {
-    grid-column: span 7/span 7;
+    grid-column: span 7 / span 7;
   }
   .sf-md\:col-span-8 {
-    grid-column: span 8/span 8;
+    grid-column: span 8 / span 8;
   }
   .sf-md\:col-span-9 {
-    grid-column: span 9/span 9;
+    grid-column: span 9 / span 9;
   }
 }
 

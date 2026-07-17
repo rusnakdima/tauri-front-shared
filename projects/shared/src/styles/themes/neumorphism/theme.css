@@ -57,11 +57,21 @@ body[data-theme="neumorphism"] {
     --border-subtle: #d1d5db;
 
     /* Shadows (neumorphism uses soft shadows) */
-    --shadow-1: 4px 4px 8px rgba(180, 180, 190, 0.5), -4px -4px 8px rgba(255, 255, 255, 0.8);
-    --shadow-2: 6px 6px 12px rgba(180, 180, 190, 0.5), -6px -6px 12px rgba(255, 255, 255, 0.8);
-    --shadow-3: 8px 8px 16px rgba(180, 180, 190, 0.5), -8px -8px 16px rgba(255, 255, 255, 0.8);
-    --shadow-4: 12px 12px 24px rgba(180, 180, 190, 0.5), -12px -12px 24px rgba(255, 255, 255, 0.8);
-    --shadow-5: 16px 16px 32px rgba(180, 180, 190, 0.5), -16px -16px 32px rgba(255, 255, 255, 0.8);
+    --shadow-1:
+      4px 4px 8px rgba(180, 180, 190, 0.5),
+      -4px -4px 8px rgba(255, 255, 255, 0.8);
+    --shadow-2:
+      6px 6px 12px rgba(180, 180, 190, 0.5),
+      -6px -6px 12px rgba(255, 255, 255, 0.8);
+    --shadow-3:
+      8px 8px 16px rgba(180, 180, 190, 0.5),
+      -8px -8px 16px rgba(255, 255, 255, 0.8);
+    --shadow-4:
+      12px 12px 24px rgba(180, 180, 190, 0.5),
+      -12px -12px 24px rgba(255, 255, 255, 0.8);
+    --shadow-5:
+      16px 16px 32px rgba(180, 180, 190, 0.5),
+      -16px -16px 32px rgba(255, 255, 255, 0.8);
   }
 }
 
@@ -110,10 +120,15 @@ body[data-theme="neumorphism"][data-theme-mode="dark"] {
     --border-subtle: #4b5563;
 
     /* Shadows - darker for dark mode (neumorphism dark uses darker base) */
-    --shadow-1: 4px 4px 8px rgba(0, 0, 0, 0.5), -4px -4px 8px rgba(60, 60, 70, 0.3);
-    --shadow-2: 6px 6px 12px rgba(0, 0, 0, 0.5), -6px -6px 12px rgba(60, 60, 70, 0.3);
-    --shadow-3: 8px 8px 16px rgba(0, 0, 0, 0.5), -8px -8px 16px rgba(60, 60, 70, 0.3);
-    --shadow-4: 12px 12px 24px rgba(0, 0, 0, 0.5), -12px -12px 24px rgba(60, 60, 70, 0.3);
-    --shadow-5: 16px 16px 32px rgba(0, 0, 0, 0.5), -16px -16px 32px rgba(60, 60, 70, 0.3);
+    --shadow-1:
+      4px 4px 8px rgba(0, 0, 0, 0.5), -4px -4px 8px rgba(60, 60, 70, 0.3);
+    --shadow-2:
+      6px 6px 12px rgba(0, 0, 0, 0.5), -6px -6px 12px rgba(60, 60, 70, 0.3);
+    --shadow-3:
+      8px 8px 16px rgba(0, 0, 0, 0.5), -8px -8px 16px rgba(60, 60, 70, 0.3);
+    --shadow-4:
+      12px 12px 24px rgba(0, 0, 0, 0.5), -12px -12px 24px rgba(60, 60, 70, 0.3);
+    --shadow-5:
+      16px 16px 32px rgba(0, 0, 0, 0.5), -16px -16px 32px rgba(60, 60, 70, 0.3);
   }
 }

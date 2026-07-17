@@ -1,4 +1,3 @@
-
 body[data-theme="claymorphism"] {
   @theme {
     --color-primary: #6366f1;
@@ -13,7 +12,7 @@ body[data-theme="claymorphism"] {
     --color-text-secondary: #525252;
     --color-text-muted: #a3a3a3;
     --color-text-on-accent: #ffffff;
-    --color-border: rgba(255,255,255,0.4);
+    --color-border: rgba(255, 255, 255, 0.4);
     --color-clay-blue: #e0f2fe;
     --color-clay-purple: #f3e8ff;
     --color-clay-pink: #fce7f3;
@@ -27,14 +26,14 @@ body[data-theme="claymorphism"] {
     --bg-primary: #f0f4f9;
     --bg-secondary: #ffffff;
     --bg-elevated: #ffffff;
-    --bg-hover: rgba(99,102,241,0.06);
-    --bg-header: rgba(255,255,255,0.7);
-    --border: rgba(255,255,255,0.4);
-    --border-subtle: rgba(255,255,255,0.3);
-    --shadow-clay-blue: 10px 10px 24px rgba(14,165,233,0.15);
-    --shadow-clay-purple: 10px 10px 24px rgba(168,85,247,0.12);
-    --shadow-clay-pink: 10px 10px 24px rgba(236,72,153,0.12);
-    --shadow-clay-green: 10px 10px 24px rgba(34,197,94,0.12);
+    --bg-hover: rgba(99, 102, 241, 0.06);
+    --bg-header: rgba(255, 255, 255, 0.7);
+    --border: rgba(255, 255, 255, 0.4);
+    --border-subtle: rgba(255, 255, 255, 0.3);
+    --shadow-clay-blue: 10px 10px 24px rgba(14, 165, 233, 0.15);
+    --shadow-clay-purple: 10px 10px 24px rgba(168, 85, 247, 0.12);
+    --shadow-clay-pink: 10px 10px 24px rgba(236, 72, 153, 0.12);
+    --shadow-clay-green: 10px 10px 24px rgba(34, 197, 94, 0.12);
     --font-sans: "Quicksand", system-ui, sans-serif;
   }
 }
@@ -58,7 +57,7 @@ body[data-theme="claymorphism"][data-theme-mode="dark"] {
     --color-text-secondary: #94a3b8;
     --color-text-muted: #64748b;
     --color-text-on-accent: #1e1b4b;
-    --color-border: rgba(255,255,255,0.05);
+    --color-border: rgba(255, 255, 255, 0.05);
     --accent: #818cf8;
     --accent-hover: #6366f1;
     --text-primary: #e2e8f0;
@@ -67,9 +66,9 @@ body[data-theme="claymorphism"][data-theme-mode="dark"] {
     --bg-primary: #0f131a;
     --bg-secondary: #1e293b;
     --bg-elevated: #1e293b;
-    --bg-hover: rgba(129,140,248,0.08);
-    --bg-header: rgba(15,19,26,0.8);
-    --border: rgba(255,255,255,0.05);
-    --border-subtle: rgba(255,255,255,0.03);
+    --bg-hover: rgba(129, 140, 248, 0.08);
+    --bg-header: rgba(15, 19, 26, 0.8);
+    --border: rgba(255, 255, 255, 0.05);
+    --border-subtle: rgba(255, 255, 255, 0.03);
   }
 }

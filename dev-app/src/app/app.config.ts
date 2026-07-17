@@ -1,11 +1,16 @@
-import { ApplicationConfig, provideZoneChangeDetection } from "@angular/core";
+import { ApplicationConfig } from "@angular/core";
 import { provideRouter } from "@angular/router";
 import { provideUnifiedApp } from "@tauri-front/shared";
+import { ROUTES } from "./app.routes";
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter([]),
-    provideUnifiedApp(),
+    ...provideUnifiedApp({
+      appId: "dev-app",
+      enableAnimations: false,
+      enableHttpClient: true,
+      enableZoneChangeDetection: true,
+    }),
+    provideRouter(ROUTES),
   ],
 };

@@ -1,0 +1,208 @@
+{
+  "id": "dev-app-playground",
+  "schemaVersion": "1.0",
+  "app": {
+    "id": "dev-app",
+    "name": "@tauri-front/shared playground",
+    "style": "material-design-v3",
+    "styleMode": "light"
+  },
+  "handlers": {
+    "setStyleVariant": { "call": "setStyleVariant" },
+    "scrollToSection": { "call": "scrollToSection" },
+    "toggleDarkMode": { "call": "toggleDarkMode" },
+    "openModal": { "call": "openModal" },
+    "closeModal": { "call": "closeModal" },
+    "fabAction": { "call": "fabAction" }
+  },
+  "stores": {},
+  "layoutRegions": [
+    {
+      "id": "showcase-header",
+      "region": "header",
+      "componentId": "app-header",
+      "props": {
+        "title": "@tauri-front/shared",
+        "subtitle": "Component playground",
+        "fixed": true
+      },
+      "children": [
+        {
+          "id": "design-switcher",
+          "componentId": "app-button",
+          "props": {
+            "label": "Design",
+            "variant": "tonal"
+          }
+        },
+        {
+          "id": "theme-toggle",
+          "componentId": "app-theme-toggle",
+          "props": {}
+        }
+      ]
+    },
+    {
+      "id": "showcase-sidebar",
+      "region": "sidebar-left",
+      "componentId": "app-sidebar",
+      "props": {
+        "items": [
+          { "id": "hero", "label": "Hero" },
+          { "id": "inputs", "label": "Form Fields" },
+          { "id": "controls", "label": "Selection Controls" },
+          { "id": "navigation", "label": "Navigation" },
+          { "id": "cards", "label": "Cards & Lists" },
+          { "id": "feedback", "label": "Feedback" },
+          { "id": "loading", "label": "Loading" },
+          { "id": "data", "label": "Data" }
+        ],
+        "activeId": "hero"
+      }
+    },
+    {
+      "id": "showcase-footer",
+      "region": "footer",
+      "componentId": "app-footer",
+      "props": {
+        "text": "© 2026 @tauri-front/shared playground",
+        "links": [
+          { "label": "Privacy" },
+          { "label": "Licensing" },
+          { "label": "Contact" }
+        ]
+      }
+    },
+    {
+      "id": "showcase-fab",
+      "region": "overlay",
+      "componentId": "app-fab",
+      "props": {
+        "icon": "add",
+        "label": "Create",
+        "position": "bottom-right",
+        "items": [
+          { "icon": "share", "label": "Share", "value": "share" },
+          { "icon": "print", "label": "Print", "value": "print" }
+        ]
+      }
+    }
+  ],
+  "pages": [
+    {
+      "id": "playground",
+      "name": "Playground",
+      "route": "/",
+      "canvasElements": [
+        {
+          "id": "hero",
+          "sectionId": "hero",
+          "componentId": "app-card",
+          "props": {
+            "kind": "elevated",
+            "title": "One library, six visual systems",
+            "subtitle": "Tailwind v4 + Flowbite. Switch design in the header."
+          }
+        },
+        {
+          "id": "section-inputs",
+          "sectionId": "inputs",
+          "componentId": "app-card",
+          "props": {
+            "title": "Form fields & inputs"
+          },
+          "children": [
+            { "id": "input-floating", "componentId": "app-input", "props": { "label": "Workspace tenant", "placeholder": "acme-corp" } },
+            { "id": "input-icon", "componentId": "app-input", "props": { "label": "Username", "icon": "user" } },
+            { "id": "select-region", "componentId": "app-select", "props": { "label": "Cluster region", "options": ["US East", "EU West", "APAC"] } },
+            { "id": "textarea-notes", "componentId": "app-textarea", "props": { "label": "Workspace notes", "rows": 3 } },
+            { "id": "input-pin", "componentId": "app-input", "props": { "label": "Secure PIN", "type": "password", "error": "Too short" } },
+            { "id": "file-upload", "componentId": "app-file-input", "props": { "label": "Config profile", "placeholder": "Drop JSON or YAML here" } }
+          ]
+        },
+        {
+          "id": "section-controls",
+          "sectionId": "controls",
+          "componentId": "app-card",
+          "props": {
+            "title": "Selection controls, toggles & buttons"
+          },
+          "children": [
+            { "id": "sw-autopilot", "componentId": "app-switch", "props": { "label": "Autopilot replication", "checked": true } },
+            { "id": "sw-offline", "componentId": "app-switch", "props": { "label": "Offline fallback sync" } },
+            { "id": "btn-primary", "componentId": "app-button", "props": { "label": "Primary", "variant": "primary" } },
+            { "id": "btn-tonal", "componentId": "app-button", "props": { "label": "Tonal", "variant": "tonal" } },
+            { "id": "btn-outlined", "componentId": "app-button", "props": { "label": "Outlined", "variant": "outlined" } },
+            { "id": "cb-std", "componentId": "app-checkbox", "props": { "label": "Standard checking enabled", "checked": true } },
+            { "id": "cb-ci", "componentId": "app-checkbox", "props": { "label": "Continuous integration" } },
+            { "id": "rating", "componentId": "app-rating", "props": { "value": 4, "max": 5 } }
+          ]
+        },
+        {
+          "id": "section-navigation",
+          "sectionId": "navigation",
+          "componentId": "app-card",
+          "props": {
+            "title": "Tabs, steppers & breadcrumbs"
+          },
+          "children": [
+            { "id": "tabs", "componentId": "app-tabs", "props": { "tabs": ["Account", "Invoices"], "activeTab": "Account" } },
+            { "id": "stepper", "componentId": "app-stepper", "props": { "steps": [{"label": "Auth Setup"}, {"label": "Details"}, {"label": "Finish"}], "current": 1 } },
+            { "id": "breadcrumb", "componentId": "app-breadcrumb", "props": { "items": [{"label": "Workspace"}, {"label": "Playground"}] } }
+          ]
+        },
+        {
+          "id": "section-cards",
+          "sectionId": "cards",
+          "componentId": "app-card",
+          "props": {
+            "title": "Cards & lists"
+          },
+          "children": [
+            { "id": "card-elevated", "componentId": "app-card", "props": { "kind": "elevated", "title": "Telemetry Node 4A", "subtitle": "Monitoring CPU cycles." } },
+            { "id": "card-outlined", "componentId": "app-card", "props": { "kind": "outlined", "title": "Storage Cache Bucket", "subtitle": "Cross-region cache backups." } },
+            { "id": "list-events", "componentId": "app-list", "props": { "items": [{"title": "Instance deployment complete", "subtitle": "proxy-router-east", "timestamp": "1m ago"}, {"title": "Memory alert generated", "subtitle": "Host lag exceeded 15s", "timestamp": "12m ago"}] } }
+          ]
+        },
+        {
+          "id": "section-feedback",
+          "sectionId": "feedback",
+          "componentId": "app-card",
+          "props": {
+            "title": "Alerts, toasts & modal"
+          },
+          "children": [
+            { "id": "alert-info", "componentId": "app-alert", "props": { "type": "info", "title": "Workspace sync pending", "message": "Local sandbox changes are currently unsaved.", "dismissible": true } },
+            { "id": "alert-success", "componentId": "app-alert", "props": { "type": "success", "title": "Automatic credentials security clearance success.", "dismissible": true } },
+            { "id": "btn-open-modal", "componentId": "app-button", "props": { "label": "Open Dialogue" }, "events": { "click": "openModal" } },
+            { "id": "snackbar", "componentId": "app-snackbar", "props": { "message": "Saved to clipboard", "action": "Undo" } }
+          ]
+        },
+        {
+          "id": "section-loading",
+          "sectionId": "loading",
+          "componentId": "app-card",
+          "props": {
+            "title": "Loading & progress"
+          },
+          "children": [
+            { "id": "skeleton-card", "componentId": "app-skeleton", "props": {} },
+            { "id": "spinner-md", "componentId": "app-loading", "props": { "size": "md" } },
+            { "id": "ring", "componentId": "app-progress-ring", "props": { "value": 75, "max": 100, "label": "Memory" } }
+          ]
+        },
+        {
+          "id": "section-data",
+          "sectionId": "data",
+          "componentId": "app-card",
+          "props": {
+            "title": "Data table"
+          },
+          "children": [
+            { "id": "table-activity", "componentId": "app-data-table", "props": { "columns": [{"key": "name", "label": "Terminal"}, {"key": "profile", "label": "Framework"}, {"key": "status", "label": "Status"}], "data": [{"name": "Sarah's MacBook Pro", "profile": "Tailwind v4", "status": "Online"}, {"name": "Internal iPhone Core", "profile": "React Native", "status": "Idle"}] } }
+          ]
+        }
+      ]
+    }
+  ]
+}

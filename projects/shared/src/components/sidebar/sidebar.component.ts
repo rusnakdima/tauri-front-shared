@@ -1,4 +1,10 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+} from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { parseJsonOrDefault } from "../../utils/json";
 
@@ -17,6 +23,7 @@ export interface SidebarGroup {
 @Component({
   selector: "app-sidebar",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   template: `
     <aside

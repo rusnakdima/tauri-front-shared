@@ -1,4 +1,10 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+} from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { parseJsonOrDefault } from "../../utils/json";
 
@@ -11,6 +17,7 @@ type RowData = Record<string, unknown>;
 @Component({
   selector: "app-data-table",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: "./data-table.component.html",
 })

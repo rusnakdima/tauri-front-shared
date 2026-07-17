@@ -1,5 +1,10 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+} from "@angular/core";
 
 export interface TreeNode {
   id: string;
@@ -13,7 +18,8 @@ export interface TreeNode {
 @Component({
   selector: "app-designer-tree-node",
   standalone: true,
-  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [],
   templateUrl: "./designer-tree-node.component.html",
 })
 export class DesignerTreeNodeComponent {

@@ -1,4 +1,9 @@
-import { Component, inject, Input } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  Input,
+} from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { I18nService } from "../../core/lib/i18n/i18n.service";
 import { IconComponent } from "../icons/icons.component";
@@ -6,6 +11,7 @@ import { IconComponent } from "../icons/icons.component";
 @Component({
   selector: "app-locale-switcher",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IconComponent],
   templateUrl: "./locale-switcher.component.html",
 })

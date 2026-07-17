@@ -1,10 +1,17 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+} from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { parseJsonOrDefault } from "../../utils/json";
 
 @Component({
   selector: "app-segment-selector",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: "./segment-selector.component.html",
 })

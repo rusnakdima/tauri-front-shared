@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { parseJsonOrDefault } from "../../utils/json";
 
@@ -11,6 +11,7 @@ type RowData = Record<string, unknown>;
 @Component({
   selector: "app-table-view",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: "./table-view.component.html",
 })

@@ -1,10 +1,17 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+} from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { parseJsonOrDefault } from "../../utils/json";
 
 @Component({
   selector: "app-tabs",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   template: `
     <div class="flex gap-1 border-b border-neutral-200 dark:border-neutral-700">

@@ -1,5 +1,6 @@
 import {
   Component,
+  ChangeDetectionStrategy,
   OnInit,
   OnDestroy,
   Input,
@@ -33,6 +34,7 @@ import { logger } from "../../../utils/legacy/logger";
 @Component({
   selector: "lib-schema-shell",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     SchemaRouteViewerComponent,

@@ -1,9 +1,10 @@
-import { Component, Input } from "@angular/core";
+import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 
 @Component({
   selector: "app-loading",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: "./loading.component.html",
 })

@@ -1,5 +1,6 @@
 import {
   Component,
+  ChangeDetectionStrategy,
   Input,
   Output,
   EventEmitter,
@@ -14,6 +15,7 @@ export type SnackbarType = "default" | "success" | "error" | "warning" | "info";
 @Component({
   selector: "app-snackbar",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   template: `
     @if (open) {

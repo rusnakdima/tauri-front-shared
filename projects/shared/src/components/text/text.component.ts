@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 
 export type TextSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
@@ -61,6 +61,7 @@ const TEXT_TRANSFORM_MAP: Record<TextTransform, string> = {
 @Component({
   selector: "app-text",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: "./text.component.html",
 })

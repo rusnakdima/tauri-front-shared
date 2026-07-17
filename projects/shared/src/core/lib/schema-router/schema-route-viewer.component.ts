@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import {
   Component,
+  ChangeDetectionStrategy,
   Input,
   OnInit,
   OnChanges,
@@ -17,6 +18,7 @@ import type { Layout, LayoutElement, RegionType } from "../types";
 @Component({
   selector: "lib-schema-route-viewer",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, SchemaElementComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: "./schema-route-viewer.component.html",

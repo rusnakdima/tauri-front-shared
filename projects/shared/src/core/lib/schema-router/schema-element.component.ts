@@ -1,5 +1,6 @@
 import {
   Component,
+  ChangeDetectionStrategy,
   Input,
   inject,
   AfterViewInit,
@@ -23,6 +24,7 @@ import { StyleThemeService } from "../../../styles/theme.service";
 @Component({
   selector: "app-schema-element",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   templateUrl: "./schema-element.component.html",
 })

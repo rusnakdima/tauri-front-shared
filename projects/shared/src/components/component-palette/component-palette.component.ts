@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { parseJsonOrDefault } from "../../utils/json";
 
@@ -10,6 +10,7 @@ export interface PaletteCategory {
 @Component({
   selector: "app-component-palette",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: "./component-palette.component.html",
 })

@@ -1,5 +1,6 @@
 import {
   Component,
+  ChangeDetectionStrategy,
   Input,
   Output,
   EventEmitter,
@@ -21,6 +22,7 @@ export interface Command {
 @Component({
   selector: "app-command-palette",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IconComponent],
   templateUrl: "./command-palette.component.html",
 })

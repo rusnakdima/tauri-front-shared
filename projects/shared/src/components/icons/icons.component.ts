@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 
 // MDI Font icon mapping - using @mdi/font icon names (kebab-case)
@@ -72,6 +72,7 @@ const MI_ICONS: Record<string, string> = {
 @Component({
   selector: "app-icon",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   template: `
     <span class="material-symbols-rounded" [style.font-size.px]="size">{{

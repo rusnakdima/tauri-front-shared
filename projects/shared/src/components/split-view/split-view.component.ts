@@ -1,5 +1,6 @@
 import {
   Component,
+  ChangeDetectionStrategy,
   Input,
   Output,
   EventEmitter,
@@ -12,6 +13,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
 @Component({
   selector: "app-split-view",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: "./split-view.component.html",
 })

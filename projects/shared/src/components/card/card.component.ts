@@ -1,5 +1,4 @@
 import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
-import { CommonModule } from "@angular/common";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { SchemaElementComponent } from "../../core/lib/schema-router/schema-element.component";
 import type { CanvasElement } from "../../core/lib/types";
@@ -9,7 +8,7 @@ export type CardKind = "elevated" | "outlined" | "surface" | "plain";
 @Component({
   selector: "app-card",
   standalone: true,
-  imports: [CommonModule, SchemaElementComponent],
+  imports: [SchemaElementComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div

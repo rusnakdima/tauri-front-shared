@@ -1,5 +1,10 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+} from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { parseJsonOrDefault } from "../../utils/json";
 
@@ -15,7 +20,8 @@ export interface TreeNode {
 @Component({
   selector: "app-tree-node",
   standalone: true,
-  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [],
   templateUrl: "./tree-node.component.html",
 })
 export class TreeNodeComponent {
@@ -43,7 +49,8 @@ export class TreeNodeComponent {
 @Component({
   selector: "app-tree",
   standalone: true,
-  imports: [CommonModule, TreeNodeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TreeNodeComponent],
   templateUrl: "./tree.component.html",
 })
 export class TreeComponent {

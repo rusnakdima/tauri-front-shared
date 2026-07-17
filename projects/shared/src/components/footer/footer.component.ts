@@ -1,5 +1,4 @@
-import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { parseJsonOrDefault } from "../../utils/json";
 
@@ -11,7 +10,8 @@ export interface FooterLink {
 @Component({
   selector: "app-footer",
   standalone: true,
-  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [],
   template: `
     <footer
       class="mt-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-5 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 text-xs text-neutral-500 transition-colors"

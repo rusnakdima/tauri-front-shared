@@ -1,5 +1,4 @@
-import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { SchemaElementComponent } from "../../core/lib/schema-router/schema-element.component";
 import type { CanvasElement } from "../../core/lib/types";
@@ -14,7 +13,8 @@ export type BlockWrap = "nowrap" | "wrap" | "wrap-reverse";
 @Component({
   selector: "app-block",
   standalone: true,
-  imports: [CommonModule, SchemaElementComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [SchemaElementComponent],
   templateUrl: "./block.component.html",
 })
 export class BlockComponent {

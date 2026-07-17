@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter, signal } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+  signal,
+} from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { parseJsonOrDefault } from "../../utils/json";
 import { IconComponent } from "../icons/icons.component";
@@ -11,6 +18,7 @@ export interface LanguageOption {
 @Component({
   selector: "app-language-selector",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IconComponent],
   template: `
     <div class="flex flex-col gap-1.5">

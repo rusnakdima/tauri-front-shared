@@ -1,5 +1,6 @@
 import {
   Component,
+  ChangeDetectionStrategy,
   Input,
   Output,
   EventEmitter,
@@ -12,6 +13,7 @@ export type DialogSize = "sm" | "md" | "lg";
 @Component({
   selector: "app-dialog",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: "./dialog.component.html",
 })

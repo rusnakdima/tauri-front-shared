@@ -1,5 +1,9 @@
-import { Component, inject, computed } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  computed,
+} from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { DesignerCanvasService } from "../../core/lib/designer/designer-canvas.service";
 
@@ -8,7 +12,8 @@ type Tab = "props" | "style" | "events";
 @Component({
   selector: "app-properties-panel",
   standalone: true,
-  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [],
   templateUrl: "./properties-panel.component.html",
 })
 export class PropertiesPanelComponent {

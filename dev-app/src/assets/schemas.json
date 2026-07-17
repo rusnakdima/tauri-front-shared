@@ -24,7 +24,9 @@
       "props": {
         "title": "@tauri-front/shared",
         "subtitle": "Component playground",
-        "fixed": true
+        "fixed": true,
+        "headerWidth": "full",
+        "headerStyle": "sticky"
       },
       "children": [
         {
@@ -57,7 +59,8 @@
           { "id": "loading", "label": "Loading" },
           { "id": "data", "label": "Data" }
         ],
-        "activeId": "hero"
+        "activeId": "hero",
+        "sidebarMode": "expanded"
       }
     },
     {
@@ -70,7 +73,8 @@
           { "label": "Privacy" },
           { "label": "Licensing" },
           { "label": "Contact" }
-        ]
+        ],
+        "footerBehavior": "static"
       }
     },
     {
@@ -81,6 +85,7 @@
         "icon": "add",
         "label": "Create",
         "position": "bottom-right",
+        "fabBehavior": "fixed",
         "items": [
           { "icon": "share", "label": "Share", "value": "share" },
           { "icon": "print", "label": "Print", "value": "print" }

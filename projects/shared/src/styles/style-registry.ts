@@ -95,15 +95,6 @@ export async function loadStyleVariant(variant: StyleVariant): Promise<void> {
   // loadStyleVariant() only sets data-theme attributes for CSS selectors
 }
 
-/**
- * SCSS-only fallback for apps using static SCSS themes.
- */
-export async function loadStyleVariantNoop(
-  variant: StyleVariant = "material-design-v3",
-): Promise<void> {
-  setTheme(variant);
-}
-
 export function setTheme(variant: StyleVariant): void {
   const config = STYLE_VARIANTS[variant];
   if (!config) {

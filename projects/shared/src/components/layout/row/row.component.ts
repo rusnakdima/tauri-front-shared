@@ -1,12 +1,12 @@
-import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
 import { SchemaElementComponent } from "../../../core/lib/schema-router/schema-element.component";
 import { registerSchemaComponent } from "../../../core/lib/schema-component.registry";
 
 @Component({
   selector: "app-row",
   standalone: true,
-  imports: [CommonModule, SchemaElementComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [SchemaElementComponent],
   templateUrl: "./row.component.html",
 })
 export class RowComponent {

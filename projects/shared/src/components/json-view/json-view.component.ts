@@ -1,9 +1,15 @@
-import { Component, Input, inject } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Input,
+  inject,
+} from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 @Component({
   selector: "app-json-view",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: "./json-view.component.html",
 })

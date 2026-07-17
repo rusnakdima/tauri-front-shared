@@ -1,5 +1,6 @@
 import {
   Component,
+  ChangeDetectionStrategy,
   Input,
   Output,
   EventEmitter,
@@ -16,6 +17,7 @@ interface Shortcut {
 @Component({
   selector: "app-shortcuts-overlay",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: "./shortcuts-overlay.component.html",
 })

@@ -1,9 +1,10 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { ModalComponent } from "../modal/modal.component";
 import { ConfirmService } from "./confirm.service";
 @Component({
   selector: "app-confirm-dialog",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ModalComponent],
   templateUrl: "./confirm-dialog.component.html",
 })

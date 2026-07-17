@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from "@angular/core";
+import { Component, ChangeDetectionStrategy, OnDestroy } from "@angular/core";
 import { Subject } from "rxjs";
 
 /**
@@ -8,6 +8,7 @@ import { Subject } from "rxjs";
 @Component({
   selector: "lib-base-destroyable",
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: "",
 })
 export abstract class BaseDestroyableComponent implements OnDestroy {

@@ -246,6 +246,24 @@ export interface CanvasElement {
       disabled?: Record<string, string>;
     };
   };
+  // Variative UI element metainfo
+  variants?: {
+    options: Array<{
+      id: string;
+      label: string;
+      default?: boolean;
+      preview?: string;
+    }>;
+    active?: string;
+  };
+  layout?: {
+    headerWidth?: "full" | "container";
+    bottomNavStyle?: "full" | "floating";
+    sidebarMode?: "collapsed" | "expanded" | "overlay";
+    fabBehavior?: "fixed" | "scroll";
+    contentOverflow?: "scroll" | "fixed";
+    footerBehavior?: "sticky" | "static";
+  };
 }
 
 export type RegionType =

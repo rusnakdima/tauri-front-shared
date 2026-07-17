@@ -14,9 +14,6 @@ body[data-theme="glassmorphism"] {
     --color-primary-hover: #4f46e5;
     --color-secondary: #818cf8;
     --color-tertiary: #a78bfa;
-    --color-error: #ef4444;
-    --color-success: #10b981;
-    --color-warning: #f59e0b;
     --color-surface: rgba(255,255,255,0.35);
     --color-on-surface: #171717;
     --color-text: #171717;
@@ -26,9 +23,6 @@ body[data-theme="glassmorphism"] {
     --color-border: rgba(255,255,255,0.4);
     --accent: #6366f1;
     --accent-hover: #4f46e5;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --info: #3b82f6;
     --text-primary: #171717;
     --text-secondary: #525252;
     --text-muted: #a3a3a3;
@@ -41,15 +35,6 @@ body[data-theme="glassmorphism"] {
     --border-subtle: rgba(255,255,255,0.2);
     --blur-glass: 20px;
     --blur-input: 10px;
-    --radius-xs: 8px;
-    --radius-sm: 12px;
-    --radius-md: 16px;
-    --radius-lg: 24px;
-    --radius-xl: 24px;
-    --radius-full: 9999px;
-    --shadow-sm: 0 2px 8px rgba(31,38,135,0.04);
-    --shadow-md: 0 4px 16px rgba(31,38,135,0.06);
-    --shadow-lg: 0 8px 32px rgba(31,38,135,0.08);
   }
 }
 
@@ -67,9 +52,6 @@ body[data-theme="glassmorphism"][data-theme-mode="dark"] {
     --color-primary-hover: #6366f1;
     --color-secondary: #c7d2fe;
     --color-tertiary: #c4b5fd;
-    --color-error: #f87171;
-    --color-success: #34d399;
-    --color-warning: #fbbf24;
     --color-surface: rgba(18,18,18,0.35);
     --color-on-surface: #e5e5e5;
     --color-text: #e5e5e5;

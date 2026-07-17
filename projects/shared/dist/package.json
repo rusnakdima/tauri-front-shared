@@ -15,6 +15,9 @@
       "types": "./types/tauri-front-shared.d.ts",
       "default": "./fesm2022/tauri-front-shared.mjs"
     },
+    "./styles/tokens-base.css": {
+      "default": "./styles/tokens-base.css"
+    },
     "./styles/themes/m3/tokens.css": {
       "default": "./styles/themes/m3/tokens.css"
     },

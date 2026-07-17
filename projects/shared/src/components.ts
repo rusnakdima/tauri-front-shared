@@ -347,13 +347,6 @@ export const uiComponents: SharedComponentDef[] = [
     category: "forms",
   },
   {
-    id: "text-input",
-    name: "AppTextInput",
-    selector: "app-text-input",
-    packageType: "shared",
-    category: "forms",
-  },
-  {
     id: "language-selector",
     name: "AppLanguageSelector",
     selector: "app-language-selector",
@@ -366,13 +359,6 @@ export const uiComponents: SharedComponentDef[] = [
     selector: "app-shortcuts-overlay",
     packageType: "shared",
     category: "layout",
-  },
-  {
-    id: "translation-output",
-    name: "AppTranslationOutput",
-    selector: "app-translation-output",
-    packageType: "shared",
-    category: "forms",
   },
   {
     id: "tree",

@@ -202,6 +202,23 @@ interface CanvasElement {
             disabled?: Record<string, string>;
         };
     };
+    variants?: {
+        options: Array<{
+            id: string;
+            label: string;
+            default?: boolean;
+            preview?: string;
+        }>;
+        active?: string;
+    };
+    layout?: {
+        headerWidth?: "full" | "container";
+        bottomNavStyle?: "full" | "floating";
+        sidebarMode?: "collapsed" | "expanded" | "overlay";
+        fabBehavior?: "fixed" | "scroll";
+        contentOverflow?: "scroll" | "fixed";
+        footerBehavior?: "sticky" | "static";
+    };
 }
 type RegionType = "header" | "sidebar" | "sidebar-left" | "sidebar-right" | "footer" | "bottom-nav" | "nav" | "overlay" | "other";
 interface LayoutElement {
@@ -705,10 +722,6 @@ interface ComponentStyleMap {
     [key: string]: string;
 }
 declare function loadStyleVariant(variant: StyleVariant): Promise<void>;
-/**
- * SCSS-only fallback for apps using static SCSS themes.
- */
-declare function loadStyleVariantNoop(variant?: StyleVariant): Promise<void>;
 declare function setTheme(variant: StyleVariant): void;
 declare function getCurrentStyle(): StyleVariant;
 declare function setCurrentStyle(variant: StyleVariant): void;
@@ -1989,5 +2002,5 @@ declare class AboutService {
     private isNewerVersion;
 }
 
-export { AboutService, AlertComponent, ApiCrudService, ApiException, BaseDestroyableComponent, BreadcrumbComponent, ButtonGroupComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, FabComponent, FileInputComponent, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, ListComponent, LocalStorageService, PaginationComponent, PermissionService, ProgressRingComponent, RatingComponent, RbacHasPermissionDirective, RbacHasRoleDirective, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStoreService, SignalSyncService, SkeletonComponent, StepperComponent, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createState, createStateSubject, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, loadStyleVariantNoop, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, setTheme, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
+export { AboutService, AlertComponent, ApiCrudService, ApiException, BaseDestroyableComponent, BreadcrumbComponent, ButtonGroupComponent, ComponentRegistryService, DataBindingResolverService, ErrorHandlerService, ErrorType, EventBusService, EventListenerManager, FabComponent, FileInputComponent, GuardService, HandlerExecutorService, I18nService, IndexedDbService, InvokeWrapperService, LayoutEngineService, ListComponent, LocalStorageService, PaginationComponent, PermissionService, ProgressRingComponent, RatingComponent, RbacHasPermissionDirective, RbacHasRoleDirective, ResponseStatus, SCHEMA_COMPONENT_MAP, SchemaElementComponent, SchemaRendererService, SchemaRouteViewerComponent, SchemaRouterService, SchemaSetupService, SchemaShellComponent, SignalLoggerService, SignalStoreService, SignalSyncService, SkeletonComponent, StepperComponent, StorageCacheService, StorageQueryService, StorageService, StyleThemeService, StyleThemeService as ThemeService, ThemeToggleService, ToastService, TodoPermission, UnifiedStorageService, UpdateService, applyUpdate, calculateDistance3D, capitalize, clamp, compareByTimestamp, createDerivedState, createResizeObserver, createState, createStateSubject, debounce, deduplicateById, deepClone, easeInOutQuad, easeOutQuad, escapeCsvValue, escapeSqlValue, evictLRU, evictLRUInPlace, feedbackComponents, filterBySearch, findById, findByIdOrThrow, formatBytes, formatCompactNumber, formatDateRelative, formatError, formatLocaleDate, formatTime$1 as formatTime, formatTime as formatTimeFromDate, generateBatchId, generateCalendarDays, generateId, generateLogId, generatePeerId, generateQueryId, generateTabId, generateTransactionId, getAllStyleVariants, getComponentStyleClasses, getCurrentStyle, getErrorMessage$1 as getErrorMessage, getErrorMessage as getErrorMessageFromUnknown, getLatestTimestamp, getNestedValue, getStyleClassPrefix, groupByField, groupByKey, invokeCommand, invokeCommandWithResponse, invokeVoid, invokeWithError, isClose, isError, isNullOrUndefined, isPresent, isSameDay, isStale, isSuccess, isValidBase64Image, isValidEmail, layoutComponents, lerp, lerpAngle, lerpVector3D, loadStyleVariant, mapResponse, observeElement, parseError, parseJsonOrDefault, provideUnifiedApp, randomChoice, randomChoice as randomElement, randomInt, randomInterval, randomPitchVariation, randomRange, rbacGuard, rbacRoleGuard, registerSchemaComponent, setCurrentStyle, setTheme, slugify, sortBy, throttle, trackByIndex, trackByRow, truncate, uiComponents, unobserveElement, unwrapResponse, upsertEntity, weightedRandom, withErrorHandling, withLoading };
 export type { AlertAction, AlertType, AppError, AppProvider, AppSchema, BreadcrumbItem, ButtonGroupItem, CacheEntry, CanvasElement, ColorMode, ComponentBehavior, ComponentDef, ComponentStyleMap, DataBinding, DownloadProgress, ElementConfig, ElementEvents, FabItem, GridPosition, GridTemplate, HandlerDefinition, Layout, LayoutElement, ListItem, LoadingState, Page, Permission, PermissionCheckResult, QueryFilter, RenderContext, ResizeObserverCallback, ResizeObserverEntry, Response, Role, SchemaSetupOptions, Signal, StepperStep, StorageValidator, StyleVariant, Theme, ToastNotification, TodoPermissionContext, UiSchema, UnifiedAppConfig, UpdateInfo, User };

@@ -27,11 +27,6 @@ body[data-theme="neumorphism"] {
     --color-tertiary-container: #e9d5ff;
     --color-on-tertiary-container: #4c1d95;
 
-    --color-error: #ef4444;
-    --color-on-error: #ffffff;
-    --color-error-container: #fecaca;
-    --color-on-error-container: #7f1d1d;
-
     --color-surface: #e8e8ed;
     --color-on-surface: #1f1f26;
     --color-surface-container-lowest: #f0f0f5;
@@ -48,14 +43,10 @@ body[data-theme="neumorphism"] {
     --accent-hover: #4f46e5;
     --success: #22c55e;
     --warning: #f59e0b;
-    --info: #3b82f6;
     --text-primary: #1f1f26;
     --text-secondary: #6b7280;
     --text-muted: #9ca3af;
     --text-on-accent: #ffffff;
-    --text-on-error: #ffffff;
-    --text-on-warning: #ffffff;
-    --text-on-success: #ffffff;
     --bg-primary: #e8e8ed;
     --bg-secondary: #d8d8df;
     --bg-tertiary: #c8c8cf;
@@ -71,25 +62,6 @@ body[data-theme="neumorphism"] {
     --shadow-3: 8px 8px 16px rgba(180, 180, 190, 0.5), -8px -8px 16px rgba(255, 255, 255, 0.8);
     --shadow-4: 12px 12px 24px rgba(180, 180, 190, 0.5), -12px -12px 24px rgba(255, 255, 255, 0.8);
     --shadow-5: 16px 16px 32px rgba(180, 180, 190, 0.5), -16px -16px 32px rgba(255, 255, 255, 0.8);
-    --shadow-sm: 2px 2px 4px rgba(180, 180, 190, 0.4), -2px -2px 4px rgba(255, 255, 255, 0.7);
-    --shadow-md: 4px 4px 8px rgba(180, 180, 190, 0.5), -4px -4px 8px rgba(255, 255, 255, 0.8);
-    --shadow-lg: 8px 8px 16px rgba(180, 180, 190, 0.5), -8px -8px 16px rgba(255, 255, 255, 0.8);
-    --shadow-focus: 0 0 0 3px rgba(99, 102, 241, 0.4);
-    --shadow-inset: inset 4px 4px 8px rgba(180, 180, 190, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.7);
-
-    /* State layers */
-    --state-hover: rgba(99, 102, 241, 0.06);
-    --state-pressed: rgba(99, 102, 241, 0.1);
-    --state-focused: rgba(99, 102, 241, 0.1);
-    --state-dragged: rgba(99, 102, 241, 0.14);
-
-    /* Border radius */
-    --radius-xs: 8px;
-    --radius-sm: 12px;
-    --radius-md: 16px;
-    --radius-lg: 24px;
-    --radius-xl: 32px;
-    --radius-full: 9999px;
   }
 }
 
@@ -110,11 +82,6 @@ body[data-theme="neumorphism"][data-theme-mode="dark"] {
     --color-on-tertiary: #4c1d95;
     --color-tertiary-container: #8b5cf6;
     --color-on-tertiary-container: #e9d5ff;
-
-    --color-error: #f87171;
-    --color-on-error: #7f1d1d;
-    --color-error-container: #dc2626;
-    --color-on-error-container: #fecaca;
 
     --color-surface: #1f1f26;
     --color-on-surface: #e8e8ed;
@@ -148,13 +115,5 @@ body[data-theme="neumorphism"][data-theme-mode="dark"] {
     --shadow-3: 8px 8px 16px rgba(0, 0, 0, 0.5), -8px -8px 16px rgba(60, 60, 70, 0.3);
     --shadow-4: 12px 12px 24px rgba(0, 0, 0, 0.5), -12px -12px 24px rgba(60, 60, 70, 0.3);
     --shadow-5: 16px 16px 32px rgba(0, 0, 0, 0.5), -16px -16px 32px rgba(60, 60, 70, 0.3);
-    --shadow-focus: 0 0 0 3px rgba(129, 140, 248, 0.4);
-    --shadow-inset: inset 4px 4px 8px rgba(0, 0, 0, 0.4), inset -4px -4px 8px rgba(60, 60, 70, 0.3);
-
-    /* State layers - lighter for dark mode */
-    --state-hover: rgba(129, 140, 248, 0.06);
-    --state-pressed: rgba(129, 140, 248, 0.1);
-    --state-focused: rgba(129, 140, 248, 0.1);
-    --state-dragged: rgba(129, 140, 248, 0.14);
   }
 }

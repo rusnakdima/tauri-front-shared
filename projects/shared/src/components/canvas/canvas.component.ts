@@ -1,5 +1,4 @@
-import { Component, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, ChangeDetectionStrategy, inject } from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { DesignerCanvasService } from "../../core/lib/designer/designer-canvas.service";
 import type { CanvasElement } from "../../core/lib/types";
@@ -13,7 +12,8 @@ interface DropIndicator {
 @Component({
   selector: "app-canvas",
   standalone: true,
-  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [],
   templateUrl: "./canvas.component.html",
 })
 export class CanvasComponent {
@@ -47,8 +47,6 @@ export class CanvasComponent {
       "app-text": "A",
       "app-block": "⊞",
       "app-icon": "◇",
-      "app-text-input": "✎",
-      "app-translation-output": "📄",
       "app-language-selector": "🌐",
     };
     return icons[_el.componentId] || "⊡";

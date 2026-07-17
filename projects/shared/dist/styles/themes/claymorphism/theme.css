@@ -7,9 +7,6 @@ body[data-theme="claymorphism"] {
     --color-primary-hover: #4f46e5;
     --color-secondary: #a78bfa;
     --color-tertiary: #f472b6;
-    --color-error: #ef4444;
-    --color-success: #10b981;
-    --color-warning: #f59e0b;
     --color-surface: #ffffff;
     --color-on-surface: #171717;
     --color-text: #171717;
@@ -24,9 +21,6 @@ body[data-theme="claymorphism"] {
     --color-clay-surface: #ffffff;
     --accent: #6366f1;
     --accent-hover: #4f46e5;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --info: #3b82f6;
     --text-primary: #171717;
     --text-secondary: #525252;
     --text-muted: #a3a3a3;
@@ -41,15 +35,6 @@ body[data-theme="claymorphism"] {
     --shadow-clay-purple: 10px 10px 24px rgba(168,85,247,0.12);
     --shadow-clay-pink: 10px 10px 24px rgba(236,72,153,0.12);
     --shadow-clay-green: 10px 10px 24px rgba(34,197,94,0.12);
-    --radius-xs: 12px;
-    --radius-sm: 16px;
-    --radius-md: 20px;
-    --radius-lg: 24px;
-    --radius-xl: 32px;
-    --radius-full: 9999px;
-    --shadow-sm: 2px 2px 4px rgba(100,116,139,0.08), -2px -2px 4px rgba(255,255,255,0.9);
-    --shadow-md: 4px 4px 8px rgba(100,116,139,0.1), -4px -4px 8px rgba(255,255,255,0.9);
-    --shadow-lg: 6px 6px 12px rgba(100,116,139,0.12), -6px -6px 12px rgba(255,255,255,0.9);
     --font-sans: "Quicksand", system-ui, sans-serif;
   }
 }
@@ -62,9 +47,6 @@ body[data-theme="claymorphism"][data-theme-mode="dark"] {
     --color-primary-hover: #6366f1;
     --color-secondary: #c7d2fe;
     --color-tertiary: #f9a8d4;
-    --color-error: #f87171;
-    --color-success: #34d399;
-    --color-warning: #fbbf24;
     --color-surface: #1e293b;
     --color-on-surface: #e2e8f0;
     --color-clay-blue: #0c4a6e;

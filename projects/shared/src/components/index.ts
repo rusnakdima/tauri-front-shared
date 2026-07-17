@@ -44,7 +44,5 @@ export * from "./segment-selector/segment-selector.component";
 export * from "./icons/icons.component";
 export * from "./language-selector/language-selector.component";
 export * from "./swap-button/swap-button.component";
-export * from "./text-input/text-input.component";
-export * from "./translation-output/translation-output.component";
 
 export * from "./designer-tree/designer-tree.component";

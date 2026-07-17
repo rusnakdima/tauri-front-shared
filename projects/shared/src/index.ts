@@ -168,7 +168,6 @@ export {
 // Style system
 export {
   loadStyleVariant,
-  loadStyleVariantNoop,
   setTheme,
   setCurrentStyle,
   getCurrentStyle,

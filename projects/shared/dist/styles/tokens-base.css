@@ -1,0 +1,59 @@
+/* =============================================================================
+ * tokens-base.css — Shared design tokens for all theme variants.
+ * These are the universal defaults. Individual themes override only what differs.
+ *
+ * D19: This file uses :root scope. Themes scope overrides via body[data-theme="X"].
+ * ========================================================================== */
+
+@layer theme {
+  :root {
+    /* === Error === */
+    --color-error: #ef4444;
+    --color-error-container: #fecaca;
+    --color-on-error: #ffffff;
+    --color-on-error-container: #7f1d1d;
+
+    /* === Success === */
+    --color-success: #10b981;
+    --color-success-container: #d1fae5;
+    --color-on-success: #ffffff;
+    --color-on-success-container: #065f46;
+
+    /* === Warning === */
+    --color-warning: #f59e0b;
+    --color-warning-container: #fef3c7;
+    --color-on-warning: #ffffff;
+    --color-on-warning-container: #78350f;
+
+    /* === Info === */
+    --info: #3b82f6;
+    --info-container: #dbeafe;
+
+    /* === Text on semantic colors === */
+    --text-on-error: #ffffff;
+    --text-on-warning: #ffffff;
+    --text-on-success: #ffffff;
+
+    /* === Border radius (universal) === */
+    --radius-xs: 8px;
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+
+    /* === State layers === */
+    --state-hover: rgba(99, 102, 241, 0.06);
+    --state-pressed: rgba(99, 102, 241, 0.1);
+    --state-focused: rgba(99, 102, 241, 0.1);
+    --state-dragged: rgba(99, 102, 241, 0.14);
+
+    /* === Shadows (light mode defaults) === */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.16);
+    --shadow-focus: 0 0 0 3px rgba(99, 102, 241, 0.4);
+    --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  }
+}

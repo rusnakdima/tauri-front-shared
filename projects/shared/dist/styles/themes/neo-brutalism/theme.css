@@ -21,10 +21,6 @@ body[data-theme="neo-brutalism"] {
     --color-on-tertiary: #ffffff;
     --color-tertiary-container: #ff66da;
     --color-on-tertiary-container: #000000;
-    --color-error: #ff0000;
-    --color-on-error: #ffffff;
-    --color-error-container: #ffcccc;
-    --color-on-error-container: #660000;
     --color-surface: #f6f3eb;
     --color-on-surface: #000000;
     --color-surface-container-lowest: #ffffff;
@@ -38,14 +34,10 @@ body[data-theme="neo-brutalism"] {
     --accent-hover: #ffe21a;
     --success: #00ff66;
     --warning: #ff8800;
-    --info: #00f0ff;
     --text-primary: #000000;
     --text-secondary: #333333;
     --text-muted: #666666;
     --text-on-accent: #000000;
-    --text-on-error: #ffffff;
-    --text-on-warning: #000000;
-    --text-on-success: #000000;
     --bg-primary: #f6f3eb;
     --bg-secondary: #ede8d8;
     --bg-tertiary: #d4cdb0;
@@ -59,17 +51,6 @@ body[data-theme="neo-brutalism"] {
     --shadow-3: 8px 8px 0px #000000;
     --shadow-4: 12px 12px 0px #000000;
     --shadow-5: 16px 16px 0px #000000;
-    --shadow-sm: 2px 2px 0px #000000;
-    --shadow-md: 4px 4px 0px #000000;
-    --shadow-lg: 8px 8px 0px #000000;
-    --shadow-focus: 0 0 0 3px #ff00c8;
-    --shadow-inset: inset 4px 4px 0px rgba(0,0,0,0.15);
-    --radius-xs: 0px;
-    --radius-sm: 0px;
-    --radius-md: 0px;
-    --radius-lg: 0px;
-    --radius-xl: 0px;
-    --radius-full: 0px;
     --font-display: "Space Grotesk", system-ui, sans-serif;
     --font-mono: "IBM Plex Mono", monospace;
   }
@@ -107,8 +88,5 @@ body[data-theme="neo-brutalism"][data-theme-mode="dark"] {
     --shadow-2: 6px 6px 0px #ffffff;
     --shadow-3: 8px 8px 0px #ffffff;
     --shadow-4: 12px 12px 0px #ffffff;
-    --shadow-sm: 2px 2px 0px #ffffff;
-    --shadow-md: 4px 4px 0px #ffffff;
-    --shadow-lg: 8px 8px 0px #ffffff;
   }
 }

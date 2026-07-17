@@ -1,5 +1,9 @@
-import { Component, inject, computed } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  computed,
+} from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { DesignerCanvasService } from "../../core/lib/designer/designer-canvas.service";
 import {
@@ -11,7 +15,8 @@ import type { CanvasElement } from "../../core/lib/types";
 @Component({
   selector: "app-designer-tree",
   standalone: true,
-  imports: [CommonModule, DesignerTreeNodeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [DesignerTreeNodeComponent],
   templateUrl: "./designer-tree.component.html",
 })
 export class DesignerTreeComponent {
@@ -47,8 +52,6 @@ export class DesignerTreeComponent {
       "app-text": "A",
       "app-block": "⊞",
       "app-icon": "◇",
-      "app-text-input": "✎",
-      "app-translation-output": "📄",
       "app-language-selector": "🌐",
     };
     return icons[componentId] || "⊡";

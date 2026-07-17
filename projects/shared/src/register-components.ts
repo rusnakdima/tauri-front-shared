@@ -59,11 +59,11 @@ import "./components/main-editor/main-editor.component";
 import "./components/command-palette/command-palette.component";
 import "./components/designer-tree/designer-tree.component";
 
+// Textarea Base Component
+
 // Translator-specific Components
 import "./components/language-selector/language-selector.component";
 import "./components/swap-button/swap-button.component";
-import "./components/text-input/text-input.component";
-import "./components/translation-output/translation-output.component";
 import "./components/menu/menu-button.component";
 
 // Layout/Text Components

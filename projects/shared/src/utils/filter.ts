@@ -1,3 +1,5 @@
+import { getNestedValue } from "./object";
+
 /**
  * Filter array items by search query across multiple fields
  */
@@ -10,17 +12,10 @@ export function filterBySearch<T>(
   const lowerQuery = query.toLowerCase();
   return items.filter((item) =>
     fields.some((field) => {
-      const value = getNestedValue(item, field);
+      const value = getNestedValue(item, String(field));
       return (
         typeof value === "string" && value.toLowerCase().includes(lowerQuery)
       );
     }),
   );
-}
-
-function getNestedValue(obj: any, path: string | keyof any): any {
-  if (typeof path === "string" && path.includes(".")) {
-    return path.split(".").reduce((o, k) => o?.[k], obj);
-  }
-  return obj[path];
 }

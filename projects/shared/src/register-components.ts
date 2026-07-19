@@ -81,6 +81,7 @@ import "./components/layout/stack/stack.component";
 // Newly added components (2026-07 batch)
 import "./components/alert/alert.component";
 import "./components/fab/fab.component";
+import "./components/translation-output/translation-output.component";
 
 import "./components/rating/rating.component";
 import "./components/stepper/stepper.component";

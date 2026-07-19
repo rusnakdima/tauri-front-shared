@@ -86,6 +86,8 @@ export class StyleThemeService {
 
   setDarkMode(enabled: boolean): void {
     document.body.setAttribute("data-theme-mode", enabled ? "dark" : "light");
+    // Add .dark class to <html> for Tailwind v4 dark: variant support
+    document.documentElement.classList.toggle("dark", enabled);
     this.saveDarkModePreference(enabled);
     this._themeChanged$.next({
       variant: this.getCurrentTheme(),
@@ -120,6 +122,8 @@ export class StyleThemeService {
       "data-theme-mode",
       savedDarkMode ? "dark" : "light",
     );
+    // Add .dark class to <html> for Tailwind v4 dark: variant support
+    document.documentElement.classList.toggle("dark", savedDarkMode);
     this._themeChanged$.next({
       variant: this.getCurrentTheme(),
       isDark: savedDarkMode,

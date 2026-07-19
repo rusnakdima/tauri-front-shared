@@ -1,1 +1,2 @@
-export { LoggerService, type LogEntry, type LogLevel } from "./logger.service";
+// DELETED — module removed 2026-07-19 (dead code cleanup)
+// LoggerService was never imported by any downstream consumer

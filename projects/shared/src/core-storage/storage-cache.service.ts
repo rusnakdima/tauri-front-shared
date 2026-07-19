@@ -228,7 +228,8 @@ export class StorageCacheService {
 
   getInFlightRequest<T>(key: string): Promise<T> | undefined {
     return this.shared.inFlightRequests.get(this.ns(key)) as
-      Promise<T> | undefined;
+      | Promise<T>
+      | undefined;
   }
 
   // ─── Sub-cache namespacing ───────────────────────────────────────────

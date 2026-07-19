@@ -23,6 +23,7 @@ export type { GridTemplate } from "./core/lib/schema-renderer/layout-engine";
 export { SchemaRouterService } from "./core/lib/schema-router/schema-router.service";
 export { SchemaShellComponent } from "./core/lib/schema-router/schema-shell.component";
 export { SchemaRouteViewerComponent } from "./core/lib/schema-router/schema-route-viewer.component";
+export { LibSchemaApp } from "./core/lib/lib-schema-app";
 export { GuardService } from "./core/lib/schema-router/guard.service";
 export { EventBusService } from "./core/lib/events/event-bus.service";
 export { I18nService } from "./core/lib/i18n/i18n.service";
@@ -32,6 +33,24 @@ export {
   HandlerExecutorService,
   type HandlerDefinition,
 } from "./core/lib/handler-executor/handler-executor.service";
+
+// Algorithm service (KAS - Kernel Algorithm System)
+export {
+  AlgorithmService,
+  type SortOptions,
+  type SearchOptions,
+  type PaginateOptions,
+  type Graph,
+  type GraphNode,
+  type DijkstraResult,
+  type ValidationResult,
+} from "./core/lib/algorithm/algorithm.service";
+export {
+  CRUD_HANDLERS,
+  ALGO_HANDLERS,
+  UI_HANDLERS,
+  ALL_HANDLERS,
+} from "./core/lib/algorithm/handler-templates";
 
 // Missing services
 export { SignalStoreService } from "./core/lib/signal-store/signal-store.service";
@@ -228,6 +247,12 @@ export {
   type ButtonGroupItem,
 } from "./components/button-group/button-group.component";
 export { FileInputComponent } from "./components/file-input/file-input.component";
+
+// Navigation components
+export { HeaderComponent } from "./components/header/header.component";
+export { SidebarComponent } from "./components/sidebar/sidebar.component";
+export { BottomPanelComponent } from "./components/bottom-panel/bottom-panel.component";
+export { ThemeToggleComponent } from "./components/theme-toggle/theme-toggle.component";
 
 // Update services
 export {

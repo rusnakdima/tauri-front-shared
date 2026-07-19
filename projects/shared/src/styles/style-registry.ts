@@ -109,6 +109,8 @@ export function setTheme(variant: StyleVariant): void {
     isDark ? "dark" : "light",
   );
   document.body.setAttribute("data-theme-mode", isDark ? "dark" : "light");
+  // Add .dark class to <html> for Tailwind v4 dark: variant support
+  document.documentElement.classList.toggle("dark", isDark);
   CURRENT_STYLE = variant;
   LOADED_STYLES.add(variant);
   document.dispatchEvent(

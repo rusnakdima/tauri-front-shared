@@ -1,17 +1,19 @@
 <div [class]="getCardClasses()">
-  @if (title || subtitle) {
+  <ng-container *ngIf="title || subtitle">
     <div [class]="getContentClasses()">
-      @if (title) {
-        <h3 class="text-base font-semibold text-on-surface mb-1">
-          {{ title }}
-        </h3>
-      }
-      @if (subtitle) {
-        <p class="text-xs text-on-surface-variant">
-          {{ subtitle }}
-        </p>
-      }
+      <h3 *ngIf="title" class="text-base font-semibold text-on-surface mb-1">
+        {{ title }}
+      </h3>
+      <p *ngIf="subtitle" class="text-xs text-on-surface-variant">
+        {{ subtitle }}
+      </p>
     </div>
-  }
-  <ng-content />
+  </ng-container>
+  <ng-container *ngIf="children && children.length > 0">
+    <div [class]="getContentClasses()">
+      <ng-container *ngFor="let child of children; trackBy: trackById">
+        <app-schema-element [element]="child" />
+      </ng-container>
+    </div>
+  </ng-container>
 </div>

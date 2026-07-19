@@ -37,7 +37,7 @@ export class SchemaElementComponent
   private styleThemeService = inject(StyleThemeService);
 
   @Input({ required: true }) element!: CanvasElement;
-  @Input({ required: true }) elements: CanvasElement[] = [];
+  @Input() elements: CanvasElement[] = [];
 
   @ViewChild("dynamicHost", { read: ViewContainerRef })
   private dynamicHost!: ViewContainerRef;

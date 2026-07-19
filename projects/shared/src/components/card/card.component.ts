@@ -1,4 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
+import { NgIf, NgFor } from "@angular/common";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { SchemaElementComponent } from "../../core/lib/schema-router/schema-element.component";
 import type { CanvasElement } from "../../core/lib/types";
@@ -8,7 +9,7 @@ export type CardKind = "elevated" | "outlined" | "surface" | "plain";
 @Component({
   selector: "app-card",
   standalone: true,
-  imports: [SchemaElementComponent],
+  imports: [SchemaElementComponent, NgIf, NgFor],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: "./card.component.html",
 })
@@ -52,6 +53,10 @@ export class CardComponent {
       lg: "p-8",
     };
     return paddingMap[this.padding];
+  }
+
+  trackById(index: number, item: CanvasElement): string {
+    return item.id;
   }
 }
 

@@ -4,10 +4,18 @@ import { SchemaElementComponent } from "../../core/lib/schema-router/schema-elem
 import type { CanvasElement } from "../../core/lib/types";
 
 export type BlockDirection =
-  "row" | "column" | "row-reverse" | "column-reverse";
+  | "row"
+  | "column"
+  | "row-reverse"
+  | "column-reverse";
 export type BlockAlign = "start" | "center" | "end" | "stretch" | "baseline";
 export type BlockJustify =
-  "start" | "center" | "end" | "between" | "around" | "evenly";
+  | "start"
+  | "center"
+  | "end"
+  | "between"
+  | "around"
+  | "evenly";
 export type BlockWrap = "nowrap" | "wrap" | "wrap-reverse";
 
 @Component({

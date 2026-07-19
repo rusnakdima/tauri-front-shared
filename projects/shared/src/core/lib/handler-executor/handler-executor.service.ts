@@ -4,20 +4,76 @@ import { SignalStoreService } from "../signal-store/signal-store.service";
 import { EventBusService } from "../events/event-bus.service";
 import { SchemaRouterService } from "../schema-router/schema-router.service";
 import { DataBindingResolverService } from "../schema-renderer/data-binding-resolver";
+import { ToastService } from "../toast/toast.service";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 
+/**
+ * Minimal AlgorithmService interface for handler execution.
+ * Full implementation lives in core/lib/algorithm/algorithm.service.ts
+ */
+export interface AlgorithmService {
+  execute<T = unknown>(name: string, input: unknown): Promise<T>;
+  list(): Promise<string[]>;
+}
+
+export interface ToastDefinition {
+  message: string | { template: string; params?: Record<string, unknown> };
+  type?: "success" | "error" | "warning" | "info";
+  duration?: number;
+}
+
+export interface ModalDefinition {
+  component: string;
+  props?: Record<string, unknown>;
+  onClose?: string;
+}
+
+export interface OverlayDefinition {
+  regionId: string;
+  component?: string;
+  props?: Record<string, unknown>;
+}
+
 export interface HandlerDefinition {
+  // --- Invocation ---
   invoke?: string;
   args?: unknown[];
   awaitEvent?: string;
   resultTo?: string;
+
+  // --- Routing ---
+  navigate?: string;
+  redirect?: string;
+  historyBack?: boolean;
+  historyForward?: boolean;
+
+  // --- Store Operations ---
   set?: { store?: string; field?: string; from?: string };
   setMany?: Record<string, string>;
   swap?: string[];
-  navigate?: string;
-  call?: string;
+
+  // --- Algorithms ---
+  algo?: {
+    name: string;
+    input?: unknown;
+    outputTo?: string;
+  };
+
+  // --- UI Operations ---
+  toast?: ToastDefinition;
+  modal?: ModalDefinition;
+  overlay?: OverlayDefinition;
+  closeOverlay?: string;
+
+  // --- Control Flow ---
   guard?: string;
   then?: string;
+  else?: string;
+  sequence?: string[];
+  parallel?: string[];
+
+  // --- Function Calls ---
+  call?: string;
   openOverlay?: string;
 }
 
@@ -27,14 +83,20 @@ export class HandlerExecutorService {
   private signalStore = inject(SignalStoreService);
   private eventBus = inject(EventBusService);
   private dataBindingResolver = inject(DataBindingResolverService);
+  private toastService = inject(ToastService);
 
   private router: SchemaRouterService | null = null;
   private handlers: Record<string, HandlerDefinition> = {};
   private registeredFunctions: Record<string, () => void> = {};
   private pendingListeners: Array<() => void> = [];
+  private algorithmService: AlgorithmService | null = null;
 
   setRouter(router: SchemaRouterService) {
     this.router = router;
+  }
+
+  setAlgorithmService(service: AlgorithmService) {
+    this.algorithmService = service;
   }
 
   setHandlers(handlers: Record<string, HandlerDefinition>) {
@@ -65,6 +127,26 @@ export class HandlerExecutorService {
       this.handleSwap(def.swap);
     } else if (def.navigate) {
       this.handleNavigate(def.navigate);
+    } else if (def.redirect) {
+      this.handleRedirect(def.redirect);
+    } else if (def.historyBack) {
+      this.handleHistoryBack();
+    } else if (def.historyForward) {
+      this.handleHistoryForward();
+    } else if (def.algo) {
+      await this.handleAlgo(def, eventData);
+    } else if (def.toast) {
+      await this.handleToast(def.toast);
+    } else if (def.modal) {
+      await this.handleModal(def.modal);
+    } else if (def.overlay) {
+      await this.handleOverlay(def.overlay);
+    } else if (def.closeOverlay) {
+      this.handleCloseOverlay(def.closeOverlay);
+    } else if (def.sequence) {
+      await this.handleSequence(def.sequence, eventData);
+    } else if (def.parallel) {
+      await this.handleParallel(def.parallel, eventData);
     } else if (def.call) {
       this.handleCall(def.call);
     } else if (def.guard) {
@@ -136,9 +218,30 @@ export class HandlerExecutorService {
     const rawArgs = def.args || [];
     const resolvedArgs: Record<string, unknown> = {};
 
+    // Build positional values array and map to parameter names
+    // The schema passes store paths as args, e.g. "$store.translator.sourceText"
+    // We extract the value and map the field name to the command parameter name
     for (const raw of rawArgs) {
       if (typeof raw === "string" && raw.startsWith("$")) {
-        resolvedArgs[raw] = this.resolveValue(raw, eventData);
+        const value = this.resolveValue(raw, eventData);
+        if (raw.startsWith("$store.")) {
+          // Extract field name from store path: "$store.translator.sourceText" -> "sourceText"
+          const storePath = raw.slice(7); // remove "$store."
+          const fieldName = storePath.split(".").pop() || "";
+
+          // Map schema field names to command parameter names
+          // Tauri auto-converts camelCase JS keys to snake_case Rust params (sourceLang -> source_lang)
+          let paramName = fieldName;
+          if (fieldName === "sourceText") {
+            paramName = "text"; // sourceText is the text content to translate
+          }
+          // sourceLang -> sourceLang (Tauri: sourceLang -> source_lang in Rust)
+          // targetLang -> targetLang (Tauri: targetLang -> target_lang in Rust)
+
+          resolvedArgs[paramName] = value;
+        } else {
+          resolvedArgs[raw] = value;
+        }
       } else if (typeof raw === "object" && raw !== null) {
         const entries = Object.entries(raw as Record<string, unknown>);
         for (const [k, v] of entries) {
@@ -162,7 +265,26 @@ export class HandlerExecutorService {
         });
       });
       if (result && def.resultTo) {
-        this.setStorePath(def.resultTo, result);
+        // Extract field from event payload if resultTo matches a field in the payload
+        // e.g., resultTo="$store.translator.translatedText" and event has { translatedText: "..." }
+        const storeFieldMatch = def.resultTo.match(/^\$store\.(\w+)\.(\w+)$/);
+        if (storeFieldMatch) {
+          const [, store, field] = storeFieldMatch;
+          const payload = result as Record<string, unknown>;
+          if (field in payload) {
+            this.setStorePath(def.resultTo, payload[field]);
+          } else {
+            // Fallback: try to extract from response.data for nested structures
+            const data = payload['data'] as Record<string, unknown> | undefined;
+            if (data && field in data) {
+              this.setStorePath(def.resultTo, data[field]);
+            } else {
+              this.setStorePath(def.resultTo, result);
+            }
+          }
+        } else {
+          this.setStorePath(def.resultTo, result);
+        }
       }
     } else {
       try {
@@ -239,11 +361,93 @@ export class HandlerExecutorService {
       if (thenDef) {
         await this.executeHandler(thenDef, eventData);
       }
+    } else if (!condition && def.else) {
+      const elseDef = this.handlers[def.else];
+      if (elseDef) {
+        await this.executeHandler(elseDef, eventData);
+      }
     }
   }
 
   private handleOpenOverlay(regionId: string) {
     this.eventBus.emit("open-overlay", { regionId });
+  }
+
+  private handleRedirect(url: string): void {
+    const resolved = this.resolveValue(url) as string;
+    window.location.href = resolved;
+  }
+
+  private handleHistoryBack(): void {
+    window.history.back();
+  }
+
+  private handleHistoryForward(): void {
+    window.history.forward();
+  }
+
+  private async handleAlgo(def: HandlerDefinition, eventData?: unknown): Promise<void> {
+    if (!this.algorithmService) {
+      console.warn("[HandlerExecutor] AlgorithmService not set");
+      return;
+    }
+    const { name, input, outputTo } = def.algo!;
+    const resolvedInput = this.resolveValue(input, eventData);
+    const result = await this.algorithmService.execute(name, resolvedInput);
+    if (outputTo) {
+      this.setStorePath(outputTo, result);
+    }
+  }
+
+  private async handleToast(toast: ToastDefinition): Promise<void> {
+    const message = typeof toast.message === "string"
+      ? toast.message
+      : this.interpolateTemplate(toast.message.template, toast.message.params);
+    this.toastService.show({
+      message,
+      type: toast.type ?? "info",
+      duration: toast.duration,
+    });
+  }
+
+  private async handleModal(modal: ModalDefinition): Promise<void> {
+    this.eventBus.emit("open-modal", {
+      component: modal.component,
+      props: modal.props,
+      onClose: modal.onClose,
+    });
+  }
+
+  private async handleOverlay(overlay: OverlayDefinition): Promise<void> {
+    this.eventBus.emit("open-overlay", {
+      regionId: overlay.regionId,
+      component: overlay.component,
+      props: overlay.props,
+    });
+  }
+
+  private handleCloseOverlay(regionId: string): void {
+    this.eventBus.emit("close-overlay", { regionId });
+  }
+
+  private async handleSequence(handlers: string[], eventData?: unknown): Promise<void> {
+    for (const handlerName of handlers) {
+      await this.execute(handlerName, eventData);
+    }
+  }
+
+  private async handleParallel(handlers: string[], eventData?: unknown): Promise<void> {
+    await Promise.all(handlers.map((h) => this.execute(h, eventData)));
+  }
+
+  private interpolateTemplate(
+    template: string,
+    params?: Record<string, unknown>,
+  ): string {
+    if (!params) return template;
+    return template.replace(/\{\{(\w+)\}\}/g, (_, key) => {
+      return params[key] !== undefined ? String(params[key]) : `{{${key}}}`;
+    });
   }
 
   destroy() {

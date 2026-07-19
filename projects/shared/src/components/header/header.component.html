@@ -1,4 +1,4 @@
-<header class="ui-header" [class]="classes">
+<header class="ui-header-main" [class]="classes">
   @if (showBack) {
     <button
       class="ui-btn ui-btn-icon"
@@ -9,21 +9,33 @@
     </button>
   }
   <div class="ui-header-content">
-    <h1>{{ title }}</h1>
-    @if (parsedBreadcrumbs.length) {
-      <div class="ui-header-breadcrumbs">
-        @for (crumb of parsedBreadcrumbs; track crumb.label; let last = $last) {
-          @if (!last && crumb.href) {
-            <a [href]="crumb.href">{{ crumb.label }}</a>
-          } @else {
-            <span>{{ crumb.label }}</span>
-          }
-          @if (!last) {
-            <span>/</span>
-          }
-        }
-      </div>
+    @if (icon) {
+      <app-icon [icon]="icon" [size]="20" />
     }
+    <div>
+      <h1>{{ title }}</h1>
+      @if (subtitle) {
+        <p class="ui-header-subtitle">{{ subtitle }}</p>
+      }
+      @if (parsedBreadcrumbs.length) {
+        <div class="ui-header-breadcrumbs">
+          @for (
+            crumb of parsedBreadcrumbs;
+            track crumb.label;
+            let last = $last
+          ) {
+            @if (!last && crumb.href) {
+              <a [href]="crumb.href">{{ crumb.label }}</a>
+            } @else {
+              <span>{{ crumb.label }}</span>
+            }
+            @if (!last) {
+              <span>/</span>
+            }
+          }
+        </div>
+      }
+    </div>
   </div>
   <ng-content></ng-content>
 </header>

@@ -9,31 +9,20 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
 import { IconComponent } from "../icons/icons.component";
 
 export type ButtonVariant =
-  "primary" | "danger" | "warning" | "success" | "info" | "tonal" | "outlined";
+  | "primary"
+  | "danger"
+  | "warning"
+  | "success"
+  | "info"
+  | "tonal"
+  | "outlined";
 
 @Component({
   selector: "app-button",
   standalone: true,
   imports: [IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <button
-      class="px-4 py-2 text-xs font-medium rounded-full transition-all"
-      [class.bg-indigo-600]="variant === 'primary'"
-      [class.text-white]="variant === 'primary'"
-      [class.hover:bg-indigo-700]="variant === 'primary'"
-      [class.bg-indigo-50]="variant === 'tonal'"
-      [class.text-indigo-700]="variant === 'tonal'"
-      [class.hover:bg-indigo-100]="variant === 'tonal'"
-      [class.border]="variant === 'outlined'"
-      [class.border-neutral-300]="variant === 'outlined'"
-      [class.text-neutral-700]="variant === 'outlined'"
-      [class.hover:bg-neutral-50]="variant === 'outlined'"
-      [disabled]="disabled"
-    >
-      {{ label }}
-    </button>
-  `,
+  templateUrl: "./button.component.html",
 })
 export class ButtonComponent {
   @Input() variant: ButtonVariant = "primary";

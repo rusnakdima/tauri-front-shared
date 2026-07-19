@@ -19,36 +19,7 @@ export interface AlertAction {
   standalone: true,
   imports: [IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div
-      class="flex items-start gap-3 p-4 rounded-3xl transition-colors"
-      [class.bg-indigo-50]="type === 'info'"
-      [class.text-indigo-800]="type === 'info'"
-      [class.border]="type === 'info'"
-      [class.border-indigo-100]="type === 'info'"
-      [class.bg-emerald-50]="type === 'success'"
-      [class.text-emerald-800]="type === 'success'"
-      [class.bg-amber-50]="type === 'warning'"
-      [class.text-amber-800]="type === 'warning'"
-      [class.bg-rose-50]="type === 'danger'"
-      [class.text-rose-800]="type === 'danger'"
-    >
-      @if (title) {
-        <div class="font-semibold text-sm">{{ title }}</div>
-      }
-      @if (message) {
-        <p class="text-xs mt-1 opacity-80">{{ message }}</p>
-      }
-      @if (dismissible) {
-        <button
-          class="ml-auto p-1 hover:bg-black/10 rounded-full"
-          (click)="dismissed.emit()"
-        >
-          <span class="material-symbols-rounded text-sm">close</span>
-        </button>
-      }
-    </div>
-  `,
+  templateUrl: "./alert.component.html",
 })
 export class AlertComponent {
   @Input() type: AlertType = "info";

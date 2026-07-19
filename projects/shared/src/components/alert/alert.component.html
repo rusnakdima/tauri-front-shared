@@ -1,0 +1,36 @@
+<div
+  class="flex items-start gap-3 p-4 rounded-3xl transition-colors"
+  [class.bg-indigo-50]="type === 'info'"
+  [class.text-indigo-800]="type === 'info'"
+  [class.border]="type === 'info'"
+  [class.border-indigo-100]="type === 'info'"
+  [class.bg-emerald-50]="type === 'success'"
+  [class.text-emerald-800]="type === 'success'"
+  [class.border-emerald-100]="type === 'success'"
+  [class.bg-amber-50]="type === 'warning'"
+  [class.text-amber-800]="type === 'warning'"
+  [class.border-amber-100]="type === 'warning'"
+  [class.bg-rose-50]="type === 'danger'"
+  [class.text-rose-800]="type === 'danger'"
+  [class.border-rose-100]="type === 'danger'"
+>
+  @if (icon) {
+    <app-icon [icon]="icon" [size]="20" />
+  }
+  <div class="flex-1">
+    @if (title) {
+      <div class="font-semibold text-sm">{{ title }}</div>
+    }
+    @if (message) {
+      <p class="text-xs mt-1 opacity-80">{{ message }}</p>
+    }
+  </div>
+  @if (dismissible) {
+    <button
+      class="ml-auto p-1 hover:bg-black/10 rounded-full"
+      (click)="dismissed.emit()"
+    >
+      <app-icon icon="close" [size]="16" />
+    </button>
+  }
+</div>

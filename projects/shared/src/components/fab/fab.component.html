@@ -1,0 +1,20 @@
+<div class="fixed bottom-6 right-6 z-40 flex flex-col items-center">
+  @if (items && items.length && open) {
+    <div class="flex flex-col items-center mb-4 space-y-2">
+      @for (item of items; track item.label) {
+        <button
+          class="w-12 h-12 bg-white dark:bg-neutral-800 rounded-full border border-neutral-200 dark:border-neutral-700 shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+          (click)="selectItem(item)"
+        >
+          <app-icon [icon]="item.icon" [size]="20" />
+        </button>
+      }
+    </div>
+  }
+  <button
+    class="w-14 h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all"
+    (click)="onMainClick()"
+  >
+    <app-icon [icon]="icon" [size]="24" />
+  </button>
+</div>

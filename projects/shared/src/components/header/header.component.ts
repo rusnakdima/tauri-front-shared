@@ -19,14 +19,7 @@ interface Breadcrumb {
   standalone: true,
   imports: [IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <header
-      class="sticky top-0 z-40 w-full flex items-center justify-between px-4 py-3 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 shadow-sm transition-colors"
-    >
-      <ng-content select="[slot=brand]" />
-      <ng-content select="[slot=actions]" />
-    </header>
-  `,
+  templateUrl: "./header.component.html",
 })
 export class HeaderComponent {
   @Input() title = "";

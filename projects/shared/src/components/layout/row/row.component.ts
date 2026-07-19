@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { SchemaElementComponent } from "../../../core/lib/schema-router/schema-element.component";
 import { registerSchemaComponent } from "../../../core/lib/schema-component.registry";
 
@@ -6,7 +7,7 @@ import { registerSchemaComponent } from "../../../core/lib/schema-component.regi
   selector: "app-row",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SchemaElementComponent],
+  imports: [CommonModule, SchemaElementComponent],
   templateUrl: "./row.component.html",
 })
 export class RowComponent {
@@ -14,9 +15,20 @@ export class RowComponent {
   @Input() children: any[] = [];
   @Input() gap: number | undefined;
   @Input() align:
-    "start" | "center" | "end" | "stretch" | "baseline" | undefined;
+    | "start"
+    | "center"
+    | "end"
+    | "stretch"
+    | "baseline"
+    | undefined;
   @Input() justify:
-    "start" | "center" | "end" | "between" | "around" | "evenly" | undefined;
+    | "start"
+    | "center"
+    | "end"
+    | "between"
+    | "around"
+    | "evenly"
+    | undefined;
   @Input() width: "full" | "auto" | undefined;
   @Input() height: "full" | "auto" | undefined;
   @Input() responsive: boolean = true;

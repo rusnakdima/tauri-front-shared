@@ -1,21 +1,17 @@
-<div class="ui-card" [class.ui-card-elevated]="elevated">
-  @if (title) {
-    <div class="ui-card-header">
-      <h3>{{ title }}</h3>
+<div [class]="getCardClasses()">
+  @if (title || subtitle) {
+    <div [class]="getContentClasses()">
+      @if (title) {
+        <h3 class="text-base font-semibold text-on-surface mb-1">
+          {{ title }}
+        </h3>
+      }
       @if (subtitle) {
-        <p>{{ subtitle }}</p>
+        <p class="text-xs text-on-surface-variant">
+          {{ subtitle }}
+        </p>
       }
     </div>
   }
-  <div>
-    @if (content) {
-      {{ content }}
-    }
-    @for (child of children; track child.id) {
-      <app-schema-element
-        [element]="child"
-        [elements]="children"
-      ></app-schema-element>
-    }
-  </div>
+  <ng-content />
 </div>

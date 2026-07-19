@@ -21,41 +21,7 @@ export interface ListItem {
   standalone: true,
   imports: [IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <ul class="divide-y divide-neutral-100 dark:divide-neutral-800">
-      @for (item of items; track item.title) {
-        <li class="flex items-start gap-3 py-3">
-          @if (item.icon) {
-            <div
-              class="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-950 flex items-center justify-center shrink-0"
-            >
-              <span
-                class="material-symbols-rounded text-indigo-600 dark:text-indigo-400"
-                >{{ item.icon }}</span
-              >
-            </div>
-          }
-          <div class="flex-1 min-w-0">
-            <p
-              class="text-xs font-bold text-neutral-800 dark:text-white truncate"
-            >
-              {{ item.title }}
-            </p>
-            @if (item.subtitle) {
-              <p class="text-[10px] text-neutral-400 dark:text-neutral-500">
-                {{ item.subtitle }}
-              </p>
-            }
-          </div>
-          @if (item.timestamp) {
-            <span class="text-[10px] text-neutral-400">{{
-              item.timestamp
-            }}</span>
-          }
-        </li>
-      }
-    </ul>
-  `,
+  templateUrl: "./list.component.html",
 })
 export class ListComponent {
   @Input() items: ListItem[] = [];

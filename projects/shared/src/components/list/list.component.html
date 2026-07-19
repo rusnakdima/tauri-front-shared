@@ -1,0 +1,33 @@
+<ul class="divide-y divide-neutral-100 dark:divide-neutral-800">
+  @for (item of items; track item.title) {
+    <li
+      class="flex items-start gap-3 py-3 cursor-pointer"
+      (click)="onItemClick(item)"
+    >
+      @if (item.icon) {
+        <div
+          class="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-950 flex items-center justify-center shrink-0"
+        >
+          <app-icon [icon]="item.icon" [size]="20" />
+        </div>
+      }
+      <div class="flex-1 min-w-0">
+        <p
+          class="text-sm font-semibold text-neutral-800 dark:text-white truncate"
+        >
+          {{ item.title }}
+        </p>
+        @if (item.subtitle) {
+          <p class="text-xs text-neutral-500 dark:text-neutral-400">
+            {{ item.subtitle }}
+          </p>
+        }
+      </div>
+      @if (item.timestamp) {
+        <span class="text-xs text-neutral-400 shrink-0">{{
+          item.timestamp
+        }}</span>
+      }
+    </li>
+  }
+</ul>

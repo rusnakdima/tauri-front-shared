@@ -1,0 +1,27 @@
+<div class="flex flex-col gap-1.5">
+  @if (label) {
+    <label class="text-sm font-medium text-on-surface">{{ label }}</label>
+  }
+  <div
+    class="w-full p-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 rounded-2xl border border-neutral-300 dark:border-neutral-700 min-h-[120px]"
+  >
+    @if (loading) {
+      <div class="flex items-center gap-2 text-neutral-400">
+        <app-icon icon="loading" [size]="16" />
+        <span>Translating...</span>
+      </div>
+    } @else if (value) {
+      <p>{{ value }}</p>
+    } @else {
+      <p class="text-neutral-400">{{ placeholder }}</p>
+    }
+  </div>
+  @if (showConfidence && confidence !== null) {
+    <div class="flex items-center gap-1">
+      <app-icon icon="star" [size]="12" />
+      <span class="text-xs text-neutral-500"
+        >Confidence: {{ confidence }}%</span
+      >
+    </div>
+  }
+</div>

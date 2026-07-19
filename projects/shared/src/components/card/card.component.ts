@@ -10,36 +10,13 @@ export type CardKind = "elevated" | "outlined" | "surface" | "plain";
   standalone: true,
   imports: [SchemaElementComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div
-      class="rounded-3xl p-6 border border-neutral-100 dark:border-neutral-800 shadow-sm transition-colors"
-      [class.bg-white]="kind === 'elevated'"
-      [class.bg-transparent]="kind === 'outlined'"
-      [class.bg-neutral-50]="kind === 'surface'"
-      [class.border-2]="kind === 'outlined'"
-      [class.shadow-md]="kind === 'elevated'"
-    >
-      @if (title) {
-        <h3
-          class="text-base font-semibold text-neutral-800 dark:text-neutral-200 mb-1"
-        >
-          {{ title }}
-        </h3>
-      }
-      @if (subtitle) {
-        <p class="text-xs text-neutral-500 dark:text-neutral-400">
-          {{ subtitle }}
-        </p>
-      }
-      <ng-content />
-    </div>
-  `,
+  templateUrl: "./card.component.html",
 })
 export class CardComponent {
   @Input() title = "";
   @Input() subtitle = "";
   @Input() content = "";
-  @Input() elevated: 0 | 1 | 2 | 3 = 1;
+  @Input() elevation: 0 | 1 | 2 | 3 = 1;
   @Input() borderRadius: "sm" | "md" | "lg" | "xl" = "lg";
   @Input() padding: "sm" | "md" | "lg" = "md";
   @Input() children: CanvasElement[] = [];
@@ -60,7 +37,7 @@ export class CardComponent {
     const base =
       "bg-surface-container border border-outline-variant overflow-hidden";
     const radius = radiusMap[this.borderRadius];
-    const shadow = shadows[this.elevated];
+    const shadow = shadows[this.elevation];
     const kindClass = `app-card--${this.kind}`;
 
     return [base, radius, shadow, kindClass, this.classes]

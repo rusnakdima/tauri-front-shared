@@ -14,9 +14,20 @@ export class ColumnComponent {
   @Input() children: any[] = [];
   @Input() gap: number | undefined;
   @Input() align:
-    "start" | "center" | "end" | "stretch" | "baseline" | undefined;
+    | "start"
+    | "center"
+    | "end"
+    | "stretch"
+    | "baseline"
+    | undefined;
   @Input() justify:
-    "start" | "center" | "end" | "between" | "around" | "evenly" | undefined;
+    | "start"
+    | "center"
+    | "end"
+    | "between"
+    | "around"
+    | "evenly"
+    | undefined;
   @Input() width: "full" | "auto" | undefined;
   @Input() height: "full" | "auto" | undefined;
 

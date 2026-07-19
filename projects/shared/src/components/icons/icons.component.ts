@@ -67,6 +67,11 @@ const MI_ICONS: Record<string, string> = {
   // Schema icons
   "alert-triangle": "alert",
   globe: "web",
+  // History page
+  history: "history",
+  lightbulb: "lightbulb",
+  bookmark: "bookmark",
+  share: "share",
 };
 
 @Component({
@@ -74,11 +79,7 @@ const MI_ICONS: Record<string, string> = {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
-  template: `
-    <span class="material-symbols-rounded" [style.font-size.px]="size">{{
-      icon
-    }}</span>
-  `,
+  templateUrl: "./icons.component.html",
 })
 export class IconComponent {
   @Input() icon = "";

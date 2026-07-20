@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+
+.ui-divider {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.ui-divider-vertical {
+  flex-direction: column;
+  height: 100%;
+  width: auto;
+}
+
+.ui-divider-line {
+  flex-shrink: 0;
+}
+
+.ui-divider-line-vertical {
+  flex-shrink: 0;
+}

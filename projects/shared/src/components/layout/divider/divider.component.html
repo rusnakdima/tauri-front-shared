@@ -1,0 +1,17 @@
+<div
+  class="ui-divider"
+  [class.ui-divider-vertical]="direction === 'vertical'"
+  [style.margin]="
+    direction === 'horizontal' ? '0 ' + marginStyle : marginStyle + ' 0'
+  "
+  role="separator"
+>
+  <div
+    class="ui-divider-line"
+    [class.ui-divider-line-vertical]="direction === 'vertical'"
+    [class]="dividerClasses"
+    [style.background]="colorStyle"
+    [style.height]="direction === 'horizontal' ? thicknessStyle : ''"
+    [style.width]="direction === 'vertical' ? thicknessStyle : ''"
+  ></div>
+</div>

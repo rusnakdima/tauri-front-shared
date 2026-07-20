@@ -14,20 +14,13 @@ export class ColumnComponent {
   @Input() children: any[] = [];
   @Input() gap: number | undefined;
   @Input() align:
-    | "start"
-    | "center"
-    | "end"
-    | "stretch"
-    | "baseline"
-    | undefined;
+    "start" | "center" | "end" | "stretch" | "baseline" | undefined;
   @Input() justify:
-    | "start"
-    | "center"
-    | "end"
-    | "between"
-    | "around"
-    | "evenly"
-    | undefined;
+    "start" | "center" | "end" | "between" | "around" | "evenly" | undefined;
+  @Input() crossAxis:
+    "start" | "center" | "end" | "stretch" | "baseline" | undefined;
+  @Input() mainAxis:
+    "start" | "center" | "end" | "between" | "around" | "evenly" | undefined;
   @Input() width: "full" | "auto" | undefined;
   @Input() height: "full" | "auto" | undefined;
 
@@ -39,32 +32,34 @@ export class ColumnComponent {
       classes.push(`gap-${this.gap}`);
     }
 
-    // Alignment
-    if (this.align) {
-      const alignMap: Record<string, string> = {
+    // Cross-axis alignment (Flutter-style, with align as alias)
+    const crossAxisValue = this.crossAxis ?? this.align;
+    if (crossAxisValue) {
+      const crossAxisMap: Record<string, string> = {
         start: "items-start",
         center: "items-center",
         end: "items-end",
         stretch: "items-stretch",
         baseline: "items-baseline",
       };
-      if (alignMap[this.align]) {
-        classes.push(alignMap[this.align]);
+      if (crossAxisMap[crossAxisValue]) {
+        classes.push(crossAxisMap[crossAxisValue]);
       }
     }
 
-    // Justify
-    if (this.justify) {
-      const justifyMap: Record<string, string> = {
+    // Main-axis justification (Flutter-style, with justify as alias)
+    const mainAxisValue = this.mainAxis ?? this.justify;
+    if (mainAxisValue) {
+      const mainAxisMap: Record<string, string> = {
         start: "justify-start",
         center: "justify-center",
         end: "justify-end",
         between: "justify-between",
-        around: "justify-justify",
+        around: "justify-around",
         evenly: "justify-evenly",
       };
-      if (justifyMap[this.justify]) {
-        classes.push(justifyMap[this.justify]);
+      if (mainAxisMap[mainAxisValue]) {
+        classes.push(mainAxisMap[mainAxisValue]);
       }
     }
 

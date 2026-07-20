@@ -1,4 +1,4 @@
-<div class="ui-row">
+<div class="ui-row" [class]="layoutClasses + ' ' + mobileLayoutClasses">
   <ng-container *ngFor="let child of children">
     <app-schema-element
       [element]="child"

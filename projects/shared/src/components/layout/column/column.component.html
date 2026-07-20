@@ -1,4 +1,4 @@
-<div class="ui-column">
+<div class="ui-column" [class]="layoutClasses">
   <ng-container *ngFor="let child of children">
     <app-schema-element
       [element]="child"

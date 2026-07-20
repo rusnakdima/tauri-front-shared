@@ -9,13 +9,7 @@ import { registerSchemaComponent } from "../../core/lib/schema-component.registr
 import { IconComponent } from "../icons/icons.component";
 
 export type ButtonVariant =
-  | "primary"
-  | "danger"
-  | "warning"
-  | "success"
-  | "info"
-  | "tonal"
-  | "outlined";
+  "primary" | "danger" | "warning" | "success" | "info" | "tonal" | "outlined";
 
 @Component({
   selector: "app-button",

@@ -14,12 +14,7 @@ export class StackComponent {
   @Input() children: any[] = [];
   @Input() gap: number | undefined;
   @Input() align:
-    | "start"
-    | "center"
-    | "end"
-    | "stretch"
-    | "baseline"
-    | undefined;
+    "start" | "center" | "end" | "stretch" | "baseline" | undefined;
   @Input() width: "full" | "auto" | undefined;
   @Input() height: "full" | "auto" | undefined;
 

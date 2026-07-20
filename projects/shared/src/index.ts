@@ -64,7 +64,7 @@ export {
 } from "./core/lib/schema-component.registry";
 
 // Storage services
-export { StorageService } from "./storage/storage.service";
+export { StorageService } from "./core-storage/storage.service";
 export { LocalStorageService } from "./storage/local-storage.service";
 export type { StorageValidator } from "./storage/local-storage.service";
 export { IndexedDbService } from "./storage/indexed-db.service";
@@ -77,6 +77,8 @@ export {
   StorageQueryService,
   type QueryFilter,
 } from "./core-storage/storage-query.service";
+export { StorageMapService } from "./core-storage/storage-map.service";
+export { StorageEntityService } from "./core-storage/storage-entity.service";
 
 // Existing working services
 export { InvokeWrapperService } from "./core-api/invoke-wrapper.service";
@@ -153,6 +155,7 @@ export {
   findById,
   findByIdOrThrow,
   upsertEntity,
+  upsertEntityBulk,
   deduplicateById,
   groupByField,
 } from "./utils/array";

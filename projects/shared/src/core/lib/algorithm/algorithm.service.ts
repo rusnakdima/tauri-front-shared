@@ -164,8 +164,19 @@ export class AlgorithmService {
    * Returns all reachable nodes in breadth-first order.
    */
   async bfs(graph: Graph, source: string): Promise<string[]> {
-    // BFS is not in the Rust registry, use local implementation
-    return Promise.resolve(this.bfsLocal(graph, source));
+    const nodeIds = Object.keys(graph.nodes);
+    const edges: { from: string; to: string; weight: number }[] = [];
+    nodeIds.forEach(nodeId => {
+      const node = graph.nodes[nodeId];
+      (node.edges || []).forEach(edge => {
+        edges.push({ from: nodeId, to: edge.node, weight: edge.weight });
+      });
+    });
+    return this.execute<string[]>("graph.bfs", {
+      nodes: nodeIds.map(id => ({ id, data: graph.nodes[id] })),
+      edges,
+      start: source,
+    });
   }
 
   /**
@@ -173,16 +184,37 @@ export class AlgorithmService {
    * Returns all reachable nodes in depth-first order.
    */
   async dfs(graph: Graph, source: string): Promise<string[]> {
-    // DFS is not in the Rust registry, use local implementation
-    return Promise.resolve(this.dfsLocal(graph, source));
+    const nodeIds = Object.keys(graph.nodes);
+    const edges: { from: string; to: string; weight: number }[] = [];
+    nodeIds.forEach(nodeId => {
+      const node = graph.nodes[nodeId];
+      (node.edges || []).forEach(edge => {
+        edges.push({ from: nodeId, to: edge.node, weight: edge.weight });
+      });
+    });
+    return this.execute<string[]>("graph.dfs", {
+      nodes: nodeIds.map(id => ({ id, data: graph.nodes[id] })),
+      edges,
+      start: source,
+    });
   }
 
   /**
    * Topological sort for directed acyclic graphs.
    */
   async topologicalSort(graph: Graph): Promise<string[]> {
-    // Topological sort is not in the Rust registry, use local implementation
-    return Promise.resolve(this.topologicalSortLocal(graph));
+    const nodeIds = Object.keys(graph.nodes);
+    const edges: { from: string; to: string; weight: number }[] = [];
+    nodeIds.forEach(nodeId => {
+      const node = graph.nodes[nodeId];
+      (node.edges || []).forEach(edge => {
+        edges.push({ from: nodeId, to: edge.node, weight: edge.weight });
+      });
+    });
+    return this.execute<string[]>("graph.topological_sort", {
+      nodes: nodeIds.map(id => ({ id, data: graph.nodes[id] })),
+      edges,
+    });
   }
 
   // -------------------------------------------------------------------------
@@ -218,16 +250,14 @@ export class AlgorithmService {
    * Build a tree structure from a flat list with parent references.
    */
   async buildTree<T extends { id: string; parentId?: string }>(items: T[]): Promise<T[]> {
-    // Tree algorithms not in Rust registry, use local implementation
-    return Promise.resolve(this.buildTreeLocal(items));
+    return this.execute<T[]>("tree.build", items);
   }
 
   /**
    * Flatten a tree structure back into a list.
    */
   async flattenTree<T>(tree: T[]): Promise<T[]> {
-    // Tree algorithms not in Rust registry, use local implementation
-    return Promise.resolve(this.flattenTreeLocal(tree));
+    return this.execute<T[]>("tree.flatten", tree);
   }
 
   // -------------------------------------------------------------------------
@@ -362,52 +392,6 @@ export class AlgorithmService {
   }
 
   /**
-   * Local BFS implementation.
-   */
-  bfsLocal(graph: Graph, source: string): string[] {
-    const visited = new Set<string>();
-    const result: string[] = [];
-    const queue: string[] = [source];
-
-    while (queue.length > 0) {
-      const node = queue.shift()!;
-      if (visited.has(node)) continue;
-      visited.add(node);
-      result.push(node);
-
-      const edges = graph.nodes[node]?.edges || [];
-      for (const edge of edges) {
-        if (!visited.has(edge.node)) {
-          queue.push(edge.node);
-        }
-      }
-    }
-    return result;
-  }
-
-  /**
-   * Local DFS implementation.
-   */
-  dfsLocal(graph: Graph, source: string): string[] {
-    const visited = new Set<string>();
-    const result: string[] = [];
-
-    const dfs = (node: string) => {
-      visited.add(node);
-      result.push(node);
-      const edges = graph.nodes[node]?.edges || [];
-      for (const edge of edges) {
-        if (!visited.has(edge.node)) {
-          dfs(edge.node);
-        }
-      }
-    };
-
-    dfs(source);
-    return result;
-  }
-
-  /**
    * Local email validation.
    */
   validateEmailLocal(email: string): ValidationResult {
@@ -425,84 +409,5 @@ export class AlgorithmService {
       .replace(/&[^;]+;/g, " ")
       .trim()
       .replace(/\s+/g, " ");
-  }
-
-  /**
-   * Local tree build implementation.
-   */
-  private buildTreeLocal<T extends { id: string; parentId?: string }>(items: T[]): T[] {
-    const map = new Map<string, T & { children?: T[] }>();
-    const roots: (T & { children?: T[] })[] = [];
-
-    items.forEach(item => {
-      map.set(item.id, { ...item, children: [] });
-    });
-
-    items.forEach(item => {
-      const node = map.get(item.id)!;
-      if (item.parentId && map.has(item.parentId)) {
-        map.get(item.parentId)!.children!.push(node);
-      } else {
-        roots.push(node);
-      }
-    });
-
-    return roots as T[];
-  }
-
-  /**
-   * Local tree flatten implementation.
-   */
-  private flattenTreeLocal<T>(tree: T[]): T[] {
-    const result: T[] = [];
-    const flatten = (nodes: T[]) => {
-      nodes.forEach(node => {
-        result.push(node);
-        if ((node as unknown as { children?: T[] }).children) {
-          flatten((node as unknown as { children: T[] }).children);
-        }
-      });
-    };
-    flatten(tree);
-    return result;
-  }
-
-  /**
-   * Local topological sort implementation.
-   */
-  private topologicalSortLocal(graph: Graph): string[] {
-    const visited = new Set<string>();
-    const result: string[] = [];
-    const inDegree: Record<string, number> = {};
-
-    Object.keys(graph.nodes).forEach(nodeId => {
-      inDegree[nodeId] = 0;
-    });
-
-    Object.values(graph.nodes).forEach(node => {
-      (node.edges || []).forEach(edge => {
-        inDegree[edge.node] = (inDegree[edge.node] || 0) + 1;
-      });
-    });
-
-    const queue: string[] = [];
-    Object.keys(inDegree).forEach(nodeId => {
-      if (inDegree[nodeId] === 0) queue.push(nodeId);
-    });
-
-    while (queue.length > 0) {
-      const nodeId = queue.shift()!;
-      result.push(nodeId);
-      visited.add(nodeId);
-
-      (graph.nodes[nodeId]?.edges || []).forEach(edge => {
-        inDegree[edge.node]--;
-        if (inDegree[edge.node] === 0 && !visited.has(edge.node)) {
-          queue.push(edge.node);
-        }
-      });
-    }
-
-    return result;
   }
 }

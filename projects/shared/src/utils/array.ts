@@ -58,3 +58,18 @@ export function groupByField<T>(
     {} as Record<string, T[]>,
   );
 }
+
+export function upsertEntityBulk<T extends { id: string }>(
+  entities: T[],
+  newEntities: T[],
+  updateExisting = true,
+): T[] {
+  const entityMap = new Map(entities.map((e) => [e.id, e]));
+  for (const entity of newEntities) {
+    entityMap.set(
+      entity.id,
+      updateExisting ? { ...entityMap.get(entity.id), ...entity } : entity,
+    );
+  }
+  return Array.from(entityMap.values());
+}

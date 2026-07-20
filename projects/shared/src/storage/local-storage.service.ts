@@ -19,11 +19,11 @@ export class LocalStorageService implements StorageService {
     return `${this.prefix}${key}`;
   }
 
-  get<T>(
+  async get<T>(
     key: string,
     defaultValue?: T,
     validator?: StorageValidator<T>,
-  ): T | null {
+  ): Promise<T | null> {
     const item = localStorage.getItem(this.makeKey(key));
     if (!item) return defaultValue ?? null;
     try {
@@ -40,15 +40,15 @@ export class LocalStorageService implements StorageService {
     }
   }
 
-  set<T>(key: string, value: T): void {
+  async set<T>(key: string, value: T): Promise<void> {
     localStorage.setItem(this.makeKey(key), JSON.stringify(value));
   }
 
-  remove(key: string): void {
+  async remove(key: string): Promise<void> {
     localStorage.removeItem(this.makeKey(key));
   }
 
-  clear(): void {
+  async clear(): Promise<void> {
     if (!this.prefix) {
       localStorage.clear();
     } else {

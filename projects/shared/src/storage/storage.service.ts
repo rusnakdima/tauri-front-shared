@@ -1,8 +1,8 @@
 export abstract class StorageService {
-  abstract get<T>(key: string): T | null;
-  abstract set<T>(key: string, value: T): void;
-  abstract remove(key: string): void;
-  abstract clear(): void;
+  abstract get<T>(key: string): Promise<T | null>;
+  abstract set<T>(key: string, value: T): Promise<void>;
+  abstract remove(key: string): Promise<void>;
+  abstract clear(): Promise<void>;
   abstract keys(): string[];
   /**
    * Checks if a key exists in storage.

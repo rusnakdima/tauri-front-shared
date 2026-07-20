@@ -13,7 +13,7 @@ export interface GridTemplate {
 export class LayoutEngineService {
   private injector = inject(Injector);
 
-  resolveClass(layout: Layout): string {
+  resolveClass(layout: Layout, childProps?: Record<string, unknown>): string {
     if (layout.class) return layout.class;
 
     const classes: string[] = [];
@@ -42,6 +42,11 @@ export class LayoutEngineService {
           stretch: "justify-items-stretch",
         };
         if (map[layout.justifyItems]) classes.push(map[layout.justifyItems]);
+      }
+      // Grid child positioning from childProps
+      if (childProps) {
+        const gridChildClasses = this.resolveGridChildClasses(childProps);
+        if (gridChildClasses) classes.push(gridChildClasses);
       }
     } else if (layout.type === "flex") {
       classes.push("flex");
@@ -79,11 +84,21 @@ export class LayoutEngineService {
         };
         if (map[layout.alignContent]) classes.push(map[layout.alignContent]);
       }
+      // Flex child resolution from childProps
+      if (childProps) {
+        const flexChildClasses = this.resolveFlexChildClasses(childProps);
+        if (flexChildClasses) classes.push(flexChildClasses);
+      }
     } else if (layout.type === "stack") {
       classes.push("flex");
       classes.push("flex-col");
       if (layout.gap) classes.push(`gap-${layout.gap}`);
       if (layout.rowGap) classes.push(`gap-y-${layout.rowGap}`);
+      // Flex child resolution from childProps
+      if (childProps) {
+        const flexChildClasses = this.resolveFlexChildClasses(childProps);
+        if (flexChildClasses) classes.push(flexChildClasses);
+      }
     }
 
     // Common sizing
@@ -96,6 +111,71 @@ export class LayoutEngineService {
     if (layout.marginX === "auto") classes.push("mx-auto");
 
     return classes.join(" ");
+  }
+
+  /**
+   * Resolves flex child classes for expanded/flexible behavior
+   */
+  resolveFlexChildClasses(props: Record<string, unknown>): string {
+    const classes: string[] = [];
+
+    // expanded: true → flex-1
+    if (props['expanded'] === true) {
+      classes.push('flex-1');
+    }
+
+    // flex: number → flex-[n]
+    const flex = props['flex'];
+    if (typeof flex === 'number') {
+      classes.push(`flex-[${flex}]`);
+    }
+
+    // flexGrow: 0 | 1 → grow-0 | grow
+    const flexGrow = props['flexGrow'];
+    if (typeof flexGrow === 'number') {
+      if (flexGrow === 0) classes.push('grow-0');
+      else if (flexGrow === 1) classes.push('grow');
+      else classes.push(`grow-${flexGrow}`);
+    }
+
+    // flexShrink: 0 | 1 → shrink-0 | shrink
+    const flexShrink = props['flexShrink'];
+    if (typeof flexShrink === 'number') {
+      if (flexShrink === 0) classes.push('shrink-0');
+      else if (flexShrink === 1) classes.push('shrink');
+      else classes.push(`shrink-${flexShrink}`);
+    }
+
+    return classes.join(' ');
+  }
+
+  /**
+   * Resolves grid child positioning classes
+   */
+  resolveGridChildClasses(props: Record<string, unknown>): string {
+    const classes: string[] = [];
+
+    const col = props['col'];
+    if (typeof col === 'number') {
+      classes.push(`col-start-${col}`);
+    }
+
+    const row = props['row'];
+    if (typeof row === 'number') {
+      classes.push(`row-start-${row}`);
+    }
+
+    const colSpan = props['colSpan'];
+    if (typeof colSpan === 'number') {
+      classes.push(`col-span-${colSpan}`);
+    }
+
+    const rowSpan = props['rowSpan'];
+    if (typeof rowSpan === 'number') {
+      classes.push(`row-span-${rowSpan}`);
+    }
+
+    return classes.join(' ');
   }
 
   /**

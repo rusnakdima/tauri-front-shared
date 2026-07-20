@@ -145,23 +145,38 @@ export function mapPropsToClasses(
   else if (flexWrap === "nowrap") classes.push("ui-flex-nowrap");
   else if (flexWrap === "wrap-reverse") classes.push("ui-flex-wrap-reverse");
 
-  // 15. Flex grow
-  const flexGrow = props["flexGrow"] as boolean | undefined;
-  if (flexGrow === true) classes.push("ui-flex-grow");
-  else if (flexGrow === false) classes.push("ui-flex-grow-0");
+  // 14b. Expanded (Flutter-style convenience: expanded === flex: 1)
+  const expanded = props["expanded"];
+  if (expanded === true) classes.push("flex-1");
 
-  // 16. Flex shrink
-  const flexShrink = props["flexShrink"] as boolean | undefined;
-  if (flexShrink === true) classes.push("ui-flex-shrink");
-  else if (flexShrink === false) classes.push("ui-flex-shrink-0");
+  // 14c. Flex numeric factor (Flutter-style: flex={2} → flex-[2])
+  const flex = props["flex"];
+  if (typeof flex === "number") classes.push(`flex-[${flex}]`);
 
-  // 17. Flex basis
+  // 15. Flex grow (supports boolean and numeric: flexGrow={2} → grow-[2])
+  const flexGrow = props["flexGrow"] as boolean | number | undefined;
+  if (flexGrow === true) classes.push("grow");
+  else if (flexGrow === false) classes.push("grow-0");
+  else if (flexGrow === 0) classes.push("grow-0");
+  else if (flexGrow === 1) classes.push("grow");
+  else if (typeof flexGrow === "number") classes.push(`grow-[${flexGrow}]`);
+
+  // 16. Flex shrink (supports boolean and numeric: flexShrink={2} → shrink-[2])
+  const flexShrink = props["flexShrink"] as boolean | number | undefined;
+  if (flexShrink === true) classes.push("shrink");
+  else if (flexShrink === false) classes.push("shrink-0");
+  else if (flexShrink === 0) classes.push("shrink-0");
+  else if (flexShrink === 1) classes.push("shrink");
+  else if (typeof flexShrink === "number") classes.push(`shrink-[${flexShrink}]`);
+
+  // 17. Flex basis (supports string tokens and arbitrary values)
   const flexBasis = props["flexBasis"] as string | undefined;
-  if (flexBasis === "auto") classes.push("ui-basis-auto");
-  else if (flexBasis === "full") classes.push("ui-basis-full");
-  else if (flexBasis === "half") classes.push("ui-basis-1/2");
-  else if (flexBasis === "third") classes.push("ui-basis-1/3");
-  else if (flexBasis === "quarter") classes.push("ui-basis-1/4");
+  if (flexBasis === "auto") classes.push("basis-auto");
+  else if (flexBasis === "full") classes.push("basis-full");
+  else if (flexBasis === "half") classes.push("basis-1/2");
+  else if (flexBasis === "third") classes.push("basis-1/3");
+  else if (flexBasis === "quarter") classes.push("basis-1/4");
+  else if (flexBasis) classes.push(`basis-[${flexBasis}]`);
 
   // 18. Align items (container-level)
   const alignItems = props["alignItems"] as string | undefined;
@@ -296,6 +311,18 @@ export function mapPropsToClasses(
       if (sm["flexWrap"] === "wrap") classes.push("ui-sm-flex-wrap");
       if (sm["padding"] === "md") classes.push("ui-sm-p-4");
       if (sm["padding"] === "lg") classes.push("ui-sm-p-6");
+      // Flex child props
+      if (sm["expanded"] === true) classes.push("ui-sm-flex-1");
+      if (typeof sm["flex"] === "number") classes.push(`ui-sm-flex-[${sm["flex"]}]`);
+      // Grid child props
+      if (typeof sm["colSpan"] === "number") classes.push(`ui-sm-col-span-${sm["colSpan"]}`);
+      if (typeof sm["rowSpan"] === "number") classes.push(`ui-sm-row-span-${sm["rowSpan"]}`);
+      if (typeof sm["columns"] === "number") classes.push(`ui-sm-grid-cols-${sm["columns"]}`);
+      // mainAxis/crossAxis
+      if (sm["mainAxis"] === "center") classes.push("ui-sm-justify-center");
+      if (sm["mainAxis"] === "between") classes.push("ui-sm-justify-between");
+      if (sm["crossAxis"] === "center") classes.push("ui-sm-items-center");
+      if (sm["crossAxis"] === "stretch") classes.push("ui-sm-items-stretch");
     }
 
     // md: breakpoint (768px+)
@@ -317,6 +344,18 @@ export function mapPropsToClasses(
       if (md["flexWrap"] === "wrap") classes.push("ui-md-flex-wrap");
       if (md["padding"] === "md") classes.push("ui-md-p-4");
       if (md["padding"] === "lg") classes.push("ui-md-p-6");
+      // Flex child props
+      if (md["expanded"] === true) classes.push("ui-md-flex-1");
+      if (typeof md["flex"] === "number") classes.push(`ui-md-flex-[${md["flex"]}]`);
+      // Grid child props
+      if (typeof md["colSpan"] === "number") classes.push(`ui-md-col-span-${md["colSpan"]}`);
+      if (typeof md["rowSpan"] === "number") classes.push(`ui-md-row-span-${md["rowSpan"]}`);
+      if (typeof md["columns"] === "number") classes.push(`ui-md-grid-cols-${md["columns"]}`);
+      // mainAxis/crossAxis
+      if (md["mainAxis"] === "center") classes.push("ui-md-justify-center");
+      if (md["mainAxis"] === "between") classes.push("ui-md-justify-between");
+      if (md["crossAxis"] === "center") classes.push("ui-md-items-center");
+      if (md["crossAxis"] === "stretch") classes.push("ui-md-items-stretch");
     }
 
     // lg: breakpoint (1024px+)
@@ -329,10 +368,27 @@ export function mapPropsToClasses(
       if (lg["gap"] && gapMap[lg["gap"] as string])
         classes.push(`ui-lg-gap-${gapMap[lg["gap"] as string]}`);
       if (lg["align"] === "center") classes.push("ui-lg-items-center");
+      if (lg["align"] === "start") classes.push("ui-lg-items-start");
+      if (lg["align"] === "end") classes.push("ui-lg-items-end");
       if (lg["justify"] === "center") classes.push("ui-lg-justify-center");
+      if (lg["justify"] === "start") classes.push("ui-lg-justify-start");
+      if (lg["justify"] === "end") classes.push("ui-lg-justify-end");
       if (lg["justify"] === "between") classes.push("ui-lg-justify-between");
+      if (lg["flexWrap"] === "wrap") classes.push("ui-lg-flex-wrap");
       if (lg["padding"] === "md") classes.push("ui-lg-p-4");
       if (lg["padding"] === "lg") classes.push("ui-lg-p-6");
+      // Flex child props
+      if (lg["expanded"] === true) classes.push("ui-lg-flex-1");
+      if (typeof lg["flex"] === "number") classes.push(`ui-lg-flex-[${lg["flex"]}]`);
+      // Grid child props
+      if (typeof lg["colSpan"] === "number") classes.push(`ui-lg-col-span-${lg["colSpan"]}`);
+      if (typeof lg["rowSpan"] === "number") classes.push(`ui-lg-row-span-${lg["rowSpan"]}`);
+      if (typeof lg["columns"] === "number") classes.push(`ui-lg-grid-cols-${lg["columns"]}`);
+      // mainAxis/crossAxis
+      if (lg["mainAxis"] === "center") classes.push("ui-lg-justify-center");
+      if (lg["mainAxis"] === "between") classes.push("ui-lg-justify-between");
+      if (lg["crossAxis"] === "center") classes.push("ui-lg-items-center");
+      if (lg["crossAxis"] === "stretch") classes.push("ui-lg-items-stretch");
     }
   }
 
@@ -368,6 +424,30 @@ export function mapPropsToClasses(
   else if (zIndex === 30 || zIndex === "30") classes.push("ui-z-30");
   else if (zIndex === 40 || zIndex === "40") classes.push("ui-z-40");
   else if (zIndex === 50 || zIndex === "50") classes.push("ui-z-50");
+
+  // 36. Grid column position
+  const col = props["col"] as number | undefined;
+  if (typeof col === "number") {
+    classes.push(`col-start-${col}`);
+  }
+
+  // 37. Grid row position
+  const row = props["row"] as number | undefined;
+  if (typeof row === "number") {
+    classes.push(`row-start-${row}`);
+  }
+
+  // 38. Grid column span
+  const colSpan = props["colSpan"] as number | undefined;
+  if (typeof colSpan === "number") {
+    classes.push(`col-span-${colSpan}`);
+  }
+
+  // 39. Grid row span
+  const rowSpan = props["rowSpan"] as number | undefined;
+  if (typeof rowSpan === "number") {
+    classes.push(`row-span-${rowSpan}`);
+  }
 
   return classes;
 }

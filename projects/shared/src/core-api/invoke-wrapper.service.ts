@@ -36,21 +36,62 @@ export async function invokeWithRetry<T>(
   throw lastError!;
 }
 
+interface ResponseWrapper<T> {
+  status: string;
+  message: string;
+  data: T;
+}
+
+const SUCCESS_STATUSES = new Set(["success", "created", "updated", "deleted"]);
+const ERROR_STATUSES = new Set([
+  "error",
+  "notFound",
+  "validationError",
+  "unauthorized",
+  "forbidden",
+]);
+
 @Injectable({ providedIn: "root" })
 export class InvokeWrapperService {
+  /**
+   * Invoke a Tauri command and always unwrap the Response<T> wrapper.
+   * - If the response has a `status` field (Response wrapper), returns response.data on success
+   * - Throws an error with the message for error statuses
+   * - If no `status` field (raw T), returns the raw result
+   */
   async invoke<T>(
     cmd: string,
     args?: Record<string, unknown>,
     options?: InvokeOptions,
   ): Promise<T> {
     try {
-      return await invoke<T>(cmd, args);
+      const response = await invoke<ResponseWrapper<T>>(cmd, args);
+
+      if (response && typeof response === "object" && "status" in response) {
+        if (SUCCESS_STATUSES.has(response.status)) {
+          return response.data as T;
+        }
+        if (ERROR_STATUSES.has(response.status)) {
+          throw new Error(response.message || `Command ${cmd} failed`);
+        }
+      }
+
+      // No status field - raw T result
+      return response as T;
     } catch (err) {
       if (options?.suppressError) {
         return undefined as T;
       }
       throw err;
     }
+  }
+
+  /**
+   * Invoke without unwrapping - returns the raw Response<T> wrapper.
+   * Use this when you need to inspect the response status.
+   */
+  async invokeRaw<T>(cmd: string, args?: Record<string, unknown>): Promise<T> {
+    return invoke<T>(cmd, args);
   }
 
   async invokeWithRetry<T>(
@@ -91,9 +132,9 @@ export class InvokeWrapperService {
           once: true,
         });
       });
-      return Promise.race([invoke<T>(cmd, args), doTimeout, doAbort]);
+      return Promise.race([this.invokeRaw<T>(cmd, args), doTimeout, doAbort]);
     }
-    return Promise.race([invoke<T>(cmd, args), doTimeout]);
+    return Promise.race([this.invokeRaw<T>(cmd, args), doTimeout]);
   }
 
   private async invokeWithTimeout<T>(

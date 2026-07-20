@@ -32,7 +32,7 @@ export class ApiCrudService {
     id: string,
     options?: InvokeOptions,
   ): Promise<Response<T>> {
-    return this.invoke.invoke<Response<T>>(`${entity}_get`, { id }, options);
+    return this.invoke.invokeRaw<Response<T>>(`${entity}_get`, { id });
   }
 
   /** Get all entities with optional filtering/pagination — calls `{entity}_get_all` */
@@ -44,7 +44,7 @@ export class ApiCrudService {
     sortBy?: string,
     sortAsc?: boolean,
   ): Promise<Response<T[]>> {
-    return this.invoke.invoke<Response<T[]>>(`${entity}_get_all`, {
+    return this.invoke.invokeRaw<Response<T[]>>(`${entity}_get_all`, {
       filter,
       skip,
       limit,
@@ -55,7 +55,7 @@ export class ApiCrudService {
 
   /** Create a new entity — calls `{entity}_create` */
   async create<T>(entity: string, data: unknown): Promise<Response<T>> {
-    return this.invoke.invoke<Response<T>>(`${entity}_create`, { data });
+    return this.invoke.invokeRaw<Response<T>>(`${entity}_create`, { data });
   }
 
   /** Full update of an entity — calls `{entity}_update` */
@@ -64,7 +64,7 @@ export class ApiCrudService {
     id: string,
     data: unknown,
   ): Promise<Response<T>> {
-    return this.invoke.invoke<Response<T>>(`${entity}_update`, { id, data });
+    return this.invoke.invokeRaw<Response<T>>(`${entity}_update`, { id, data });
   }
 
   /** Partial update of an entity — calls `{entity}_patch` */
@@ -73,12 +73,12 @@ export class ApiCrudService {
     id: string,
     patch: unknown,
   ): Promise<Response<T>> {
-    return this.invoke.invoke<Response<T>>(`${entity}_patch`, { id, patch });
+    return this.invoke.invokeRaw<Response<T>>(`${entity}_patch`, { id, patch });
   }
 
   /** Delete an entity — calls `{entity}_delete` */
   async delete(entity: string, id: string): Promise<Response<null>> {
-    return this.invoke.invoke<Response<null>>(`${entity}_delete`, { id });
+    return this.invoke.invokeRaw<Response<null>>(`${entity}_delete`, { id });
   }
 
   /**
@@ -98,7 +98,7 @@ export class ApiCrudService {
     retryOptions?: RetryOptions,
   ): Promise<Response<T>> {
     return invokeWithRetry(
-      () => this.invoke.invoke<Response<T>>(`${entity}_get`, { id }),
+      () => this.invoke.invokeRaw<Response<T>>(`${entity}_get`, { id }),
       retryOptions ?? {
         maxAttempts: 3,
         initialDelayMs: 1000,

@@ -25,6 +25,8 @@ export class StyleThemeService {
 
   readonly theme = signal<StyleVariant>("material-design-v3");
 
+  private mediaQuery: MediaQueryList | null = null;
+
   constructor() {
     effect(() => {
       document.documentElement.setAttribute("data-theme", this.theme());
@@ -34,6 +36,31 @@ export class StyleThemeService {
 
   /** No-op for API compatibility; initialization runs in the constructor. */
   init(): void {}
+
+  /**
+   * Initialize system theme preference listener (formerly ThemeToggleService.init()).
+   * Sets dark mode based on system preference if user hasn't explicitly set it.
+   */
+  initSystemThemeListener(): void {
+    if (typeof window === "undefined") return;
+
+    this.mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    if (!this.isDarkMode()) {
+      const prefersDark = this.mediaQuery.matches;
+      if (prefersDark) {
+        this.setDarkMode(true);
+      }
+    }
+
+    this.mediaQuery.addEventListener("change", this._onSystemThemeChange);
+  }
+
+  private _onSystemThemeChange = (e: MediaQueryListEvent): void => {
+    if (!this.isDarkMode()) {
+      this.setDarkMode(e.matches);
+    }
+  };
 
   async loadTheme(variant: StyleVariant): Promise<void> {
     this.theme.set(variant);
@@ -78,6 +105,25 @@ export class StyleThemeService {
 
   toggleDarkMode(): void {
     this.setDarkMode(!this.isDarkMode());
+  }
+
+  /** Check if dark mode is active (formerly in ThemeToggleService). */
+  isDark(): boolean {
+    return this.isDarkMode();
+  }
+
+  /** Enable dark mode (formerly in ThemeToggleService). */
+  enable(): void {
+    this.setDarkMode(true);
+  }
+
+  /** Disable dark mode (formerly in ThemeToggleService). */
+  disable(): void {
+    this.setDarkMode(false);
+  }
+
+  toggleDarkModeBySystem(): void {
+    this.toggleDarkMode();
   }
 
   isDarkMode(): boolean {

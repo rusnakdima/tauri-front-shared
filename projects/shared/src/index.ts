@@ -49,6 +49,9 @@ export {
   CRUD_HANDLERS,
   ALGO_HANDLERS,
   UI_HANDLERS,
+  NAVIGATION_HANDLERS,
+  STORE_HANDLERS,
+  STORAGE_HANDLERS,
   ALL_HANDLERS,
 } from "./core/lib/algorithm/handler-templates";
 
@@ -68,7 +71,6 @@ export { StorageService } from "./core-storage/storage.service";
 export { LocalStorageService } from "./storage/local-storage.service";
 export type { StorageValidator } from "./storage/local-storage.service";
 export { IndexedDbService } from "./storage/indexed-db.service";
-export { UnifiedStorageService } from "./core-storage/unified-storage.service";
 export {
   StorageCacheService,
   type CacheEntry,
@@ -202,7 +204,6 @@ export {
   StyleThemeService,
   StyleThemeService as ThemeService,
 } from "./styles/theme.service";
-export { ThemeToggleService } from "./styles/theme-toggle.service";
 
 // RBAC / Permission Service
 export {
@@ -256,6 +257,9 @@ export { HeaderComponent } from "./components/header/header.component";
 export { SidebarComponent } from "./components/sidebar/sidebar.component";
 export { BottomPanelComponent } from "./components/bottom-panel/bottom-panel.component";
 export { ThemeToggleComponent } from "./components/theme-toggle/theme-toggle.component";
+
+// Base entity interfaces
+export * from "./models";
 
 // Update services
 export {

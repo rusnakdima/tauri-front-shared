@@ -1,0 +1,9 @@
+{
+  "exports": {
+    "./m3-tokens.css": "./m3-tokens.css",
+    "./tokens-base.css": "./tokens-base.css",
+    "./library-utilities.css": "./library-utilities.css",
+    "./ui-system.css": "./ui-system.css",
+    "./theme.css": "./theme.css"
+  }
+}

@@ -15,6 +15,18 @@
     "./styles/tokens-base.css": {
       "default": "./styles/tokens-base.css"
     },
+    "./styles/m3-tokens.css": {
+      "default": "./styles/m3-tokens.css"
+    },
+    "./styles/ui-system.css": {
+      "default": "./styles/ui-system.css"
+    },
+    "./styles/library-utilities.css": {
+      "default": "./styles/library-utilities.css"
+    },
+    "./styles/theme.css": {
+      "default": "./styles/theme.css"
+    },
     "./styles/themes/m3/tokens.css": {
       "default": "./styles/themes/m3/tokens.css"
     },
@@ -98,6 +110,9 @@
     },
     "./styles/themes/neo-brutalism/theme.css": {
       "default": "./styles/themes/neo-brutalism/theme.css"
+    },
+    "./styles/themes/index.css": {
+      "default": "./styles/themes/index.css"
     }
   },
   "scripts": {
@@ -106,13 +121,13 @@
     "test:watch": "vitest"
   },
   "peerDependencies": {
-    "@angular/common": ">=17.0.0",
-    "@angular/core": ">=17.0.0",
-    "@angular/platform-browser": ">=17.0.0",
+    "@angular/common": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/platform-browser": "^22.0.0",
     "@tauri-apps/api": ">=2.0.0",
     "rxjs": ">=7.0.0",
-    "@angular/animations": ">=17.0.0",
-    "@angular/material": ">=17.0.0"
+    "@angular/animations": "^22.0.0",
+    "@angular/material": "^22.0.0"
   },
   "devDependencies": {
     "@angular/cdk": "^22.0.0",

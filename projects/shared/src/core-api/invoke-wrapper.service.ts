@@ -54,6 +54,20 @@ const ERROR_STATUSES = new Set([
 @Injectable({ providedIn: "root" })
 export class InvokeWrapperService {
   /**
+   * Enable/disable action logging for debugging.
+   * Set to false in production to disable console noise.
+   */
+  private static actionLoggingEnabled = true;
+
+  static setLoggingEnabled(enabled: boolean): void {
+    InvokeWrapperService.actionLoggingEnabled = enabled;
+  }
+
+  static isLoggingEnabled(): boolean {
+    return InvokeWrapperService.actionLoggingEnabled;
+  }
+
+  /**
    * Invoke a Tauri command and always unwrap the Response<T> wrapper.
    * - If the response has a `status` field (Response wrapper), returns response.data on success
    * - Throws an error with the message for error statuses
@@ -64,21 +78,39 @@ export class InvokeWrapperService {
     args?: Record<string, unknown>,
     options?: InvokeOptions,
   ): Promise<T> {
+    if (InvokeWrapperService.actionLoggingEnabled) {
+      console.log(`[FRONTEND] → CMD:${cmd} ARGS:${JSON.stringify(args ?? {})}`);
+    }
+
     try {
       const response = await invoke<ResponseWrapper<T>>(cmd, args);
 
       if (response && typeof response === "object" && "status" in response) {
         if (SUCCESS_STATUSES.has(response.status)) {
+          if (InvokeWrapperService.actionLoggingEnabled) {
+            console.log(`[FRONTEND] ← CMD:${cmd} OK`);
+          }
           return response.data as T;
         }
         if (ERROR_STATUSES.has(response.status)) {
+          if (InvokeWrapperService.actionLoggingEnabled) {
+            console.log(
+              `[FRONTEND] ← CMD:${cmd} ERROR:${response.message || "command failed"}`,
+            );
+          }
           throw new Error(response.message || `Command ${cmd} failed`);
         }
       }
 
       // No status field - raw T result
+      if (InvokeWrapperService.actionLoggingEnabled) {
+        console.log(`[FRONTEND] ← CMD:${cmd} OK`);
+      }
       return response as T;
     } catch (err) {
+      if (InvokeWrapperService.actionLoggingEnabled) {
+        console.log(`[FRONTEND] ← CMD:${cmd} ERROR:${err}`);
+      }
       if (options?.suppressError) {
         return undefined as T;
       }

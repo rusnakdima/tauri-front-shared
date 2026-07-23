@@ -3,6 +3,16 @@ import { Response, ResponseStatus } from "./response";
 import { AppError, ErrorType } from "./error";
 import { invokeWithRetry } from "../invoke-wrapper.service";
 
+let actionLoggingEnabled = true;
+
+export function setActionLoggingEnabled(enabled: boolean): void {
+  actionLoggingEnabled = enabled;
+}
+
+export function isActionLoggingEnabled(): boolean {
+  return actionLoggingEnabled;
+}
+
 export interface InvokeOptionsWithRetry {
   timeout?: number;
   retryCount?: number;
@@ -47,15 +57,28 @@ export async function invokeCommand<T>(
 ): Promise<CommandResult<T>> {
   const { retryCount = 0, retryDelay = 1000 } = options || {};
 
+  if (actionLoggingEnabled) {
+    console.log(
+      `[FRONTEND] → CMD:${command} ARGS:${JSON.stringify(args ?? {})}`,
+    );
+  }
   if (retryCount === 0) {
     try {
       const result = await invoke<T>(command, args);
+      if (actionLoggingEnabled) {
+        console.log(`[FRONTEND] ← CMD:${command} OK`);
+      }
       return {
         success: true,
         data: result,
         error: null,
       };
     } catch (error) {
+      if (actionLoggingEnabled) {
+        console.log(
+          `[FRONTEND] ← CMD:${command} ERROR:${parseErrorFromInvoke(error).message}`,
+        );
+      }
       return {
         success: false,
         data: null,
@@ -70,12 +93,20 @@ export async function invokeCommand<T>(
       initialDelayMs: retryDelay,
       maxDelayMs: 60000,
     });
+    if (actionLoggingEnabled) {
+      console.log(`[FRONTEND] ← CMD:${command} OK`);
+    }
     return {
       success: true,
       data: result,
       error: null,
     };
   } catch (error) {
+    if (actionLoggingEnabled) {
+      console.log(
+        `[FRONTEND] ← CMD:${command} ERROR:${parseErrorFromInvoke(error).message}`,
+      );
+    }
     return {
       success: false,
       data: null,
@@ -89,6 +120,11 @@ export async function invokeCommandWithResponse<T>(
   args?: Record<string, unknown>,
   options?: InvokeOptionsWithRetry,
 ): Promise<Response<T>> {
+  if (actionLoggingEnabled) {
+    console.log(
+      `[FRONTEND] → CMD:${command} ARGS:${JSON.stringify(args ?? {})}`,
+    );
+  }
   const { retryCount = 0, retryDelay = 1000 } = options || {};
 
   let lastResponse: Response<T> = {
@@ -106,6 +142,9 @@ export async function invokeCommandWithResponse<T>(
         result.status !== ResponseStatus.Error &&
         result.status !== ResponseStatus.ValidationError
       ) {
+        if (actionLoggingEnabled) {
+          console.log(`[FRONTEND] ← CMD:${command} OK`);
+        }
         return result;
       }
 
@@ -129,6 +168,9 @@ export async function invokeCommandWithResponse<T>(
     }
   }
 
+  if (actionLoggingEnabled) {
+    console.log(`[FRONTEND] ← CMD:${command} ERROR:${lastResponse.message}`);
+  }
   return lastResponse;
 }
 

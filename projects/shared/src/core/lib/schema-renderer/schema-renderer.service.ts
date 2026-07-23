@@ -22,6 +22,7 @@ import {
   GlobalStyleContext,
 } from "../../../styles/style-registry";
 import { mapPropsToClasses } from "./prop-mapper";
+import { getNestedValue } from "../../../utils/object";
 
 export interface PageSchema {
   id: string;
@@ -743,7 +744,7 @@ export class SchemaRendererService {
 
       if (arrayMatch) {
         const [, arrayKey, indexStr] = arrayMatch;
-        const arr = this.getNestedValue(current, arrayKey);
+        const arr = getNestedValue(current, arrayKey);
         if (Array.isArray(arr)) {
           const index = parseInt(indexStr, 10);
           current = arr[index];
@@ -751,7 +752,7 @@ export class SchemaRendererService {
           current = undefined;
         }
       } else {
-        current = this.getNestedValue(current, part);
+        current = getNestedValue(current, part);
       }
     }
 
@@ -772,11 +773,5 @@ export class SchemaRendererService {
     }
 
     return result;
-  }
-
-  private getNestedValue(obj: unknown, key: string): unknown {
-    if (obj === null || obj === undefined) return undefined;
-    if (typeof obj !== "object") return undefined;
-    return (obj as Record<string, unknown>)[key];
   }
 }

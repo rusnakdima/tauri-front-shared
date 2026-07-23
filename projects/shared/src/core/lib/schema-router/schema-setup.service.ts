@@ -1,9 +1,8 @@
 import { Injectable, inject, signal } from "@angular/core";
-import { Router, type Routes, type Route } from "@angular/router";
+import { Router, type Routes } from "@angular/router";
 import { InvokeWrapperService } from "../../../core-api/invoke-wrapper.service";
 import { SchemaRouterService } from "./schema-router.service";
 import { SchemaRendererService } from "../schema-renderer/schema-renderer.service";
-import { SchemaRouteViewerComponent } from "./schema-route-viewer.component";
 import { StyleThemeService } from "../../../styles/theme.service";
 import {
   loadStyleVariant,
@@ -14,16 +13,12 @@ import {
   HandlerExecutorService,
   type HandlerDefinition,
 } from "../handler-executor/handler-executor.service";
-import type { UiSchema, Page } from "../types";
+import type { UiSchema } from "../types";
 import { logger } from "../../../utils/legacy/logger";
 
 export interface SchemaSetupOptions {
   /** Initial route to navigate to after schema loads */
   initialRoute?: string;
-  /** Tauri command name to load schema (default: 'get_ui_schema') */
-  commandName?: string;
-  /** Fallback command if primary fails */
-  errorFallbackCommandName?: string;
   /** Theme variant to apply (default: 'material-design-v3') */
   themeVariant?: StyleVariant;
   /** Schema handler definitions */
@@ -62,13 +57,12 @@ export class SchemaSetupService {
     this.setupError.set(null);
     this.handlerExecutor.setRouter(this.schemaRouter);
 
-    const commandName = options?.commandName ?? "get_ui_schema";
     const themeVariant = options?.themeVariant ?? "material-design-v3";
 
     try {
       this.themeService.loadTheme(themeVariant);
 
-      const schema = await this.loadSchema(appId, commandName, options);
+      const schema = await this.loadSchema(appId);
 
       if (!schema) return null;
 
@@ -93,11 +87,6 @@ export class SchemaSetupService {
       const message = err instanceof Error ? err.message : String(err);
       this.setupError.set(message);
       options?.onError?.(err instanceof Error ? err : new Error(message));
-
-      if (options?.errorFallbackCommandName) {
-        return this.tryFallback(appId, options);
-      }
-
       return null;
     }
   }
@@ -132,44 +121,18 @@ export class SchemaSetupService {
 
   /**
    * Convert all schema pages to Angular Routes.
-   * Each route points to SchemaRouteViewerComponent with page data in route data.
+   * Delegates to SchemaRouterService.toAngularRoutes().
    */
   toAngularRoutes(): Routes {
-    const pages = this.schemaRouter.getAllPages();
-    if (pages.length === 0) return [];
-
-    const routes: Routes = pages.map((page: Page) => {
-      const path = page.route?.replace(/^\//, "") || page.id;
-      const paramPath = path.replace(
-        /:(\w+)/g,
-        (_: string, param: string) => `:${param}`,
-      );
-      return {
-        path: paramPath,
-        component: SchemaRouteViewerComponent,
-        data: { pageId: page.id, page },
-      } satisfies Route;
-    });
-
-    const firstPage = pages[0];
-    const firstPath =
-      firstPage?.route?.replace(/^\//, "") || firstPage?.id || "";
-    routes.push({ path: "", redirectTo: firstPath, pathMatch: "full" });
-    routes.push({ path: "**", redirectTo: firstPath });
-
-    return routes;
+    return this.schemaRouter.toAngularRoutes();
   }
 
-  private async loadSchema(
-    appId: string,
-    commandName: string,
-    _options?: SchemaSetupOptions,
-  ): Promise<UiSchema | null> {
-    const response = await this.invokeWrapper.invoke<any>(commandName, {
+  private async loadSchema(appId: string): Promise<UiSchema | null> {
+    const response = await this.invokeWrapper.invoke<any>("get_schema", {
       id: appId,
     });
     logger.log(
-      `[SchemaSetup] invoke("${commandName}") response:`,
+      `[SchemaSetup] invoke("get_schema") response:`,
       response ? `pages=${response?.data?.pages?.length}` : "null",
     );
 
@@ -189,44 +152,6 @@ export class SchemaSetupService {
     }
 
     return schema;
-  }
-
-  private async tryFallback(
-    appId: string,
-    options: SchemaSetupOptions,
-  ): Promise<UiSchema | null> {
-    try {
-      const fallbackResponse = await this.invokeWrapper.invoke<any>(
-        options.errorFallbackCommandName!,
-        { id: appId },
-      );
-      const fallbackSchema: UiSchema =
-        fallbackResponse?.data ?? fallbackResponse;
-      if (fallbackSchema?.pages?.length) {
-        logger.warn(
-          "[SchemaSetup] Primary schema failed, using fallback schema",
-        );
-        this.schemaRouter.setSchema(fallbackSchema);
-        this.renderer.loadSchema(fallbackSchema);
-        await this.schemaRouter.navigate("/schema-error");
-        this.schemaLoaded.set(true);
-        return fallbackSchema;
-      }
-    } catch (fallbackErr) {
-      logger.error("[SchemaSetup] Fallback schema also failed:", fallbackErr);
-    }
-
-    logger.warn(
-      "[SchemaSetup] All schema loading failed, using fallback error schema",
-    );
-    const fallbackSchema = this.fallbackService.getFallbackSchema(
-      this.setupError() ?? "Unknown error",
-    ) as UiSchema;
-    this.schemaRouter.setSchema(fallbackSchema);
-    this.renderer.loadSchema(fallbackSchema);
-    await this.schemaRouter.navigate("/schema-error");
-    this.schemaLoaded.set(true);
-    return fallbackSchema;
   }
 
   private registerFunctions(options?: SchemaSetupOptions): void {

@@ -9,11 +9,13 @@ import {
   computed,
   effect,
   CUSTOM_ELEMENTS_SCHEMA,
+  inject,
 } from "@angular/core";
 import { SchemaRouterService } from "./schema-router.service";
 import { SchemaRendererService } from "../schema-renderer/schema-renderer.service";
 import { SchemaElementComponent } from "./schema-element.component";
-import type { Layout, LayoutElement, RegionType } from "../types";
+import { LayoutRegionService } from "../layout-region.service";
+import type { Layout, LayoutElement } from "../types";
 
 @Component({
   selector: "lib-schema-route-viewer",
@@ -117,48 +119,41 @@ export class SchemaRouteViewerComponent implements OnInit, OnChanges {
     return this.renderer.getLayoutRegions();
   });
 
-  private getRegionType(region: LayoutElement): RegionType {
-    if (region.region) return region.region;
-    const id = region.id.toLowerCase();
-    if (id.includes("header")) return "header";
-    if (id.includes("sidebar-right")) return "sidebar-right";
-    if (id.includes("sidebar")) return "sidebar";
-    if (id.includes("footer")) return "footer";
-    if (
-      id.includes("bottom-nav") ||
-      (id.includes("bottom") && !id.includes("nav"))
-    )
-      return "bottom-nav";
-    if (id.includes("nav")) return "nav";
-    if (id.includes("overlay")) return "overlay";
-    return "other";
-  }
-
-  private isRegionVisible(region: LayoutElement): boolean {
-    return this.renderer.isElementVisible(region);
-  }
-
-  private regionByType(type: RegionType): LayoutElement | null {
-    return (
-      this.rawRegions().find(
-        (r) => this.isRegionVisible(r) && this.getRegionType(r) === type,
-      ) ?? null
-    );
-  }
+  private readonly layoutRegions = inject(LayoutRegionService);
 
   readonly headerRegion = computed(() =>
-    this.showLayoutRegions ? this.regionByType("header") : null,
+    this.showLayoutRegions
+      ? this.layoutRegions.regionByType(
+          this.rawRegions(),
+          (r) => this.renderer.isElementVisible(r),
+          "header",
+        )
+      : null,
   );
   readonly footerRegion = computed(() =>
-    this.showLayoutRegions ? this.regionByType("footer") : null,
+    this.showLayoutRegions
+      ? this.layoutRegions.regionByType(
+          this.rawRegions(),
+          (r) => this.renderer.isElementVisible(r),
+          "footer",
+        )
+      : null,
   );
   readonly bottomNavRegion = computed(() =>
-    this.showLayoutRegions ? this.regionByType("bottom-nav") : null,
+    this.showLayoutRegions
+      ? this.layoutRegions.regionByType(
+          this.rawRegions(),
+          (r) => this.renderer.isElementVisible(r),
+          "bottom-nav",
+        )
+      : null,
   );
   readonly overlayRegions = computed(() =>
     this.showLayoutRegions
-      ? this.rawRegions().filter(
-          (r) => this.isRegionVisible(r) && this.getRegionType(r) === "overlay",
+      ? this.layoutRegions.regionsByType(
+          this.rawRegions(),
+          (r) => this.renderer.isElementVisible(r),
+          "overlay",
         )
       : [],
   );

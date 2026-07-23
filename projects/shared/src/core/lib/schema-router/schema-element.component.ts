@@ -20,6 +20,7 @@ import type { CanvasElement } from "../types";
 import { SchemaRendererService } from "../schema-renderer/schema-renderer.service";
 import { getCurrentStyle } from "../../../styles/style-registry";
 import { StyleThemeService } from "../../../styles/theme.service";
+import { HandlerExecutorService } from "../handler-executor/handler-executor.service";
 
 @Component({
   selector: "app-schema-element",
@@ -35,6 +36,7 @@ export class SchemaElementComponent
   private appRef = inject(ApplicationRef);
   private injector = inject(Injector);
   private styleThemeService = inject(StyleThemeService);
+  private handlerExecutor = inject(HandlerExecutorService);
 
   @Input({ required: true }) element!: CanvasElement;
   @Input() elements: CanvasElement[] = [];
@@ -156,6 +158,7 @@ export class SchemaElementComponent
     // before ngOnInit sets isDark, rendering an empty container.
     Promise.resolve().then(() => {
       this.componentRef?.changeDetectorRef.detectChanges();
+      this.subscribeToComponentEvents();
     });
   }
 
@@ -169,6 +172,21 @@ export class SchemaElementComponent
 
   get elementStyles(): Record<string, string> {
     return {};
+  }
+
+  private subscribeToComponentEvents(): void {
+    if (!this.componentRef || !this.element.events) return;
+    const instance = this.componentRef.instance as any;
+    if (!instance) return;
+
+    for (const [outputName, handlerName] of Object.entries(this.element.events)) {
+      const output = instance[outputName];
+      if (output && typeof output.subscribe === "function") {
+        output.subscribe((event: unknown) => {
+          this.handlerExecutor.execute(handlerName as string, event);
+        });
+      }
+    }
   }
 
   get isNativeHtml(): boolean {

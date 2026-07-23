@@ -16,7 +16,7 @@ import { InvokeWrapperService } from "../../../core-api/invoke-wrapper.service";
 import { SchemaRouterService } from "./schema-router.service";
 import { SchemaRendererService } from "../schema-renderer/schema-renderer.service";
 import { StyleThemeService } from "../../../styles/theme.service";
-import { ThemeToggleService } from "../../../styles/theme-toggle.service";
+import { LayoutRegionService } from "../layout-region.service";
 import { FallbackService } from "../fallback/fallback.service";
 import { HandlerExecutorService } from "../handler-executor/handler-executor.service";
 import { SignalStoreService } from "../signal-store/signal-store.service";
@@ -28,7 +28,7 @@ import {
 } from "../../../styles/style-registry";
 import { SchemaRouteViewerComponent } from "./schema-route-viewer.component";
 import { SchemaElementComponent } from "./schema-element.component";
-import type { LayoutElement, RegionType, UiSchema } from "../types";
+import type { LayoutElement, UiSchema } from "../types";
 import { logger } from "../../../utils/legacy/logger";
 
 @Component({
@@ -46,10 +46,8 @@ import { logger } from "../../../utils/legacy/logger";
 })
 export class SchemaShellComponent implements OnInit, OnDestroy {
   @Input() appId = "";
-  @Input() commandName = "get_ui_schema";
   @Input() defaultTheme: StyleVariant = "material-design-v3";
   @Input() initialRoute = "";
-  @Input() errorFallbackCommandName = "";
   /** When true, auto-renders app-toast-container and a full-screen loading overlay */
   @Input() includeOverlays = true;
 
@@ -64,57 +62,61 @@ export class SchemaShellComponent implements OnInit, OnDestroy {
     return this.renderer.getLayoutRegions();
   });
 
-  /** Infer region type from explicit `region` property or fall back to ID pattern matching */
-  private getRegionType(region: LayoutElement): RegionType {
-    if (region.region) return region.region;
-    const id = region.id.toLowerCase();
-    if (id.includes("header")) return "header";
-    if (id.includes("sidebar-right")) return "sidebar-right";
-    if (id.includes("sidebar")) return "sidebar";
-    if (id.includes("footer")) return "footer";
-    if (
-      id.includes("bottom-nav") ||
-      (id.includes("bottom") && !id.includes("nav"))
-    )
-      return "bottom-nav";
-    if (id.includes("nav")) return "nav";
-    if (id.includes("overlay")) return "overlay";
-    return "other";
-  }
-
-  private isRegionVisible(region: LayoutElement): boolean {
-    return this.renderer.isElementVisible(region);
-  }
-
-  private regionByType(type: RegionType): LayoutElement | null {
-    return (
-      this.rawRegions().find(
-        (r) => this.isRegionVisible(r) && this.getRegionType(r) === type,
-      ) ?? null
-    );
-  }
-
-  private regionsByType(type: RegionType): LayoutElement[] {
-    return this.rawRegions().filter(
-      (r) => this.isRegionVisible(r) && this.getRegionType(r) === type,
-    );
-  }
-
-  readonly headerRegion = computed(() => this.regionByType("header"));
+  readonly headerRegion = computed(() =>
+    this.layoutRegions.regionByType(
+      this.rawRegions(),
+      (r) => this.renderer.isElementVisible(r),
+      "header",
+    ),
+  );
   readonly sidebarLeftRegion = computed(
-    () => this.regionByType("sidebar") ?? this.regionByType("sidebar-left"),
+    () =>
+      this.layoutRegions.regionByType(
+        this.rawRegions(),
+        (r) => this.renderer.isElementVisible(r),
+        "sidebar",
+      ) ??
+      this.layoutRegions.regionByType(
+        this.rawRegions(),
+        (r) => this.renderer.isElementVisible(r),
+        "sidebar-left",
+      ),
   );
   readonly sidebarRightRegion = computed(() =>
-    this.regionByType("sidebar-right"),
+    this.layoutRegions.regionByType(
+      this.rawRegions(),
+      (r) => this.renderer.isElementVisible(r),
+      "sidebar-right",
+    ),
   );
-  readonly footerRegion = computed(() => this.regionByType("footer"));
-  readonly bottomNavRegion = computed(() => this.regionByType("bottom-nav"));
-  readonly overlayRegions = computed(() => this.regionsByType("overlay"));
+  readonly footerRegion = computed(() =>
+    this.layoutRegions.regionByType(
+      this.rawRegions(),
+      (r) => this.renderer.isElementVisible(r),
+      "footer",
+    ),
+  );
+  readonly bottomNavRegion = computed(() =>
+    this.layoutRegions.regionByType(
+      this.rawRegions(),
+      (r) => this.renderer.isElementVisible(r),
+      "bottom-nav",
+    ),
+  );
+  readonly overlayRegions = computed(() =>
+    this.layoutRegions.regionsByType(
+      this.rawRegions(),
+      (r) => this.renderer.isElementVisible(r),
+      "overlay",
+    ),
+  );
 
   /** Unrecognized regions rendered in an extra row below the main layout */
   readonly otherRegions = computed<LayoutElement[]>(() => {
-    return this.rawRegions().filter(
-      (r) => this.isRegionVisible(r) && this.getRegionType(r) === "other",
+    return this.layoutRegions.regionsByType(
+      this.rawRegions(),
+      (r) => this.renderer.isElementVisible(r),
+      "other",
     );
   });
 
@@ -123,7 +125,7 @@ export class SchemaShellComponent implements OnInit, OnDestroy {
     private schemaRouter: SchemaRouterService,
     private renderer: SchemaRendererService,
     private themeService: StyleThemeService,
-    private themeToggle: ThemeToggleService,
+    private layoutRegions: LayoutRegionService,
     private fallbackService: FallbackService,
     private handlerExecutor: HandlerExecutorService,
     private signalStore: SignalStoreService,
@@ -139,7 +141,7 @@ export class SchemaShellComponent implements OnInit, OnDestroy {
     if (!this.appId) return;
     this.setupThemeStoreSync();
     this.themeService.loadTheme(this.defaultTheme);
-    this.themeToggle.init();
+    this.themeService.initSystemThemeListener();
     await this.loadSchema();
   }
 
@@ -170,18 +172,26 @@ export class SchemaShellComponent implements OnInit, OnDestroy {
     }
   }
 
+  @HostListener("window:keydown", ["$event"])
+  onKeyDown(event: KeyboardEvent): void {
+    if ((event.ctrlKey || event.metaKey) && event.key === ",") {
+      event.preventDefault();
+      this.schemaRouter.navigate("/settings");
+    }
+  }
+
   private async loadSchema() {
     logger.log(
-      `[SchemaShell] loadSchema() starting, appId="${this.appId}", command="${this.commandName}"`,
+      `[SchemaShell] loadSchema() starting, appId="${this.appId}"`,
     );
     this.loading.set(true);
     this.error.set(null);
     try {
-      const response = await this.invokeWrapper.invoke<any>(this.commandName, {
+      const response = await this.invokeWrapper.invoke<any>("get_schema", {
         id: this.appId,
       });
       logger.log(
-        `[SchemaShell] invoke("${this.commandName}") response:`,
+        `[SchemaShell] invoke("get_schema") response:`,
         response ? `data.pages=${response?.data?.pages?.length}` : "null",
       );
 
@@ -205,6 +215,9 @@ export class SchemaShellComponent implements OnInit, OnDestroy {
       );
       this.schemaRouter.setSchema(schema);
       this.renderer.loadSchema(schema);
+      if ((schema as any).stores) {
+        this.signalStore.patch((schema as any).stores as Record<string, unknown>);
+      }
       this.renderer.registerFunction("toggleThemeDark", () => {
         this.themeService.toggleDarkMode();
       });
@@ -239,33 +252,8 @@ export class SchemaShellComponent implements OnInit, OnDestroy {
               )
             : String(err);
 
-      if (this.errorFallbackCommandName) {
-        try {
-          const fallbackResponse = await this.invokeWrapper.invoke<any>(
-            this.errorFallbackCommandName,
-            { id: this.appId },
-          );
-          const fallbackSchema = fallbackResponse?.data;
-          if (fallbackSchema?.pages?.length) {
-            logger.warn(
-              "[SchemaShell] Primary schema failed, using fallback schema",
-            );
-            this.schemaRouter.setSchema(fallbackSchema);
-            this.renderer.loadSchema(fallbackSchema);
-            await this.schemaRouter.navigate("/schema-error");
-            this.loading.set(false);
-            return;
-          }
-        } catch (fallbackErr) {
-          logger.error(
-            "[SchemaShell] Fallback schema also failed:",
-            fallbackErr,
-          );
-        }
-      }
-
       logger.warn(
-        `[SchemaShell] All schema loading failed, using fallback error schema. Original error: ${originalMessage}`,
+        `[SchemaShell] Schema loading failed, using fallback error schema. Error: ${originalMessage}`,
       );
       const fallbackSchema = this.fallbackService.getFallbackSchema(
         originalMessage,

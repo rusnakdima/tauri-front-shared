@@ -13,7 +13,7 @@ import { registerSchemaComponent } from "../../../core/lib/schema-component.regi
 })
 export class LayoutWrapComponent {
   @Input() classes = "";
-  @Input() children: any[] = [];
+  @Input() children: unknown[] = [];
   @Input() gap: number = 16;
   @Input() runGap: number | undefined;
   @Input() alignItems:

@@ -6,6 +6,7 @@
     >
   }
   <textarea
+    #textareaEl
     class="block w-full p-3 text-sm rounded-2xl border resize-none bg-surface-container-low text-on-surface border-outline focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
     [class]="classes"
     [class.border-error]="!!error"
@@ -14,10 +15,27 @@
     [placeholder]="placeholder"
     [value]="value"
     [disabled]="disabled"
+    [readonly]="readonly"
     (input)="handleInput($event)"
     (focus)="focused.set(true)"
     (blur)="focused.set(false)"
   ></textarea>
+  <div class="mt-1 flex items-center justify-between">
+    @if (showCharCount) {
+      <span class="text-xs text-on-surface-variant"
+        >{{ value.length }}/{{ maxLength }}</span
+      >
+    }
+    @if (showClear && value) {
+      <button
+        type="button"
+        (click)="handleClear()"
+        class="flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs transition-colors bg-surface-container-low text-on-surface border-outline hover:bg-surface-container"
+      >
+        Clear
+      </button>
+    }
+  </div>
   @if (error) {
     <span class="text-sm text-error mt-1">{{ error }}</span>
   }

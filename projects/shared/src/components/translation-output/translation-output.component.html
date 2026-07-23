@@ -4,6 +4,7 @@
   }
   <div
     class="w-full p-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 rounded-2xl border border-neutral-300 dark:border-neutral-700 min-h-[120px]"
+    [class]="classes"
   >
     @if (loading) {
       <div class="flex items-center gap-2 text-neutral-400">
@@ -16,12 +17,24 @@
       <p class="text-neutral-400">{{ placeholder }}</p>
     }
   </div>
-  @if (showConfidence && confidence !== null) {
-    <div class="flex items-center gap-1">
-      <app-icon icon="star" [size]="12" />
-      <span class="text-xs text-neutral-500"
-        >Confidence: {{ confidence }}%</span
+  <div class="flex items-center justify-between">
+    @if (showConfidence && confidence !== null) {
+      <div class="flex items-center gap-1">
+        <app-icon icon="star" [size]="12" />
+        <span class="text-xs text-neutral-500"
+          >Confidence: {{ confidence }}%</span
+        >
+      </div>
+    }
+    @if (showCopy && value) {
+      <button
+        type="button"
+        (click)="handleCopy()"
+        class="flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs transition-colors bg-surface-container-low text-on-surface border-outline hover:bg-surface-container"
       >
-    </div>
-  }
+        <app-icon icon="content-copy" [size]="14" />
+        Copy
+      </button>
+    }
+  </div>
 </div>

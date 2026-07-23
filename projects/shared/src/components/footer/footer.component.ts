@@ -14,7 +14,10 @@ export interface FooterLink {
   imports: [],
   template: `
     <footer
-      class="mt-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-5 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 text-xs text-neutral-500 transition-colors"
+      [class]="
+        'mt-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-5 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 text-xs text-neutral-500 transition-colors' +
+        (classes ? ' ' + classes : '')
+      "
     >
       <p>{{ text }}</p>
       <div class="flex gap-4">
@@ -28,6 +31,7 @@ export interface FooterLink {
 export class FooterComponent {
   @Input() text = "";
   @Input() links: string | FooterLink[] = "[]";
+  @Input() classes = "";
 
   get parsedLinks(): FooterLink[] {
     return parseJsonOrDefault<FooterLink>(this.links);

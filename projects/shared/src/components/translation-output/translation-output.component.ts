@@ -1,4 +1,10 @@
-import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { registerSchemaComponent } from "../../core/lib/schema-component.registry";
 import { IconComponent } from "../icons/icons.component";
 
@@ -17,6 +23,13 @@ export class TranslationOutputComponent {
   @Input() confidence: number | null = null;
   @Input() showConfidence = false;
   @Input() classes = "";
+  @Input() showCopy = false;
+  @Input() readonly = true;
+  @Output() copied = new EventEmitter<string>();
+
+  handleCopy() {
+    this.copied.emit(this.value);
+  }
 }
 
 registerSchemaComponent("app-translation-output", TranslationOutputComponent);

@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, Input } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { SchemaElementComponent } from "../../../core/lib/schema-router/schema-element.component";
 import { registerSchemaComponent } from "../../../core/lib/schema-component.registry";
+import type { CanvasElement } from "../../../core/lib/types";
 
 @Component({
   selector: "app-row",
@@ -12,7 +13,7 @@ import { registerSchemaComponent } from "../../../core/lib/schema-component.regi
 })
 export class RowComponent {
   @Input() classes = "";
-  @Input() children: any[] = [];
+  @Input() children: CanvasElement[] = [];
   @Input() gap: number | undefined;
   @Input() align:
     "start" | "center" | "end" | "stretch" | "baseline" | undefined;

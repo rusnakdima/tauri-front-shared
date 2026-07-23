@@ -384,6 +384,51 @@ export const STORE_HANDLERS: Record<string, HandlerDefinition> = {
 } as const;
 
 /**
+ * Storage operation handlers
+ * Pre-built handlers for dynamic storage CRUD via execute_crud
+ */
+export const STORAGE_HANDLERS: Record<string, HandlerDefinition> = {
+  'storage.get': {
+    invoke: 'execute_crud',
+    args: [{ operation: 'get', entity: '$event.detail.entity', id: '$event.detail.id' }],
+    resultTo: '$store.entity.current'
+  },
+
+  'storage.getAll': {
+    invoke: 'execute_crud',
+    args: [{ operation: 'get_all', entity: '$event.detail.entity' }],
+    resultTo: '$store.entity.list'
+  },
+
+  'storage.create': {
+    invoke: 'execute_crud',
+    args: [{ operation: 'create', entity: '$event.detail.entity', data: '$event.detail.data' }],
+    resultTo: '$store.entity.current',
+    then: 'toast.success.create'
+  },
+
+  'storage.update': {
+    invoke: 'execute_crud',
+    args: [{ operation: 'update', entity: '$event.detail.entity', id: '$event.detail.id', data: '$event.detail.data' }],
+    resultTo: '$store.entity.current',
+    then: 'toast.success.update'
+  },
+
+  'storage.delete': {
+    invoke: 'execute_crud',
+    args: [{ operation: 'delete', entity: '$event.detail.entity', id: '$event.detail.id' }],
+    sequence: ['storage.getAll', 'toast.success.delete']
+  },
+
+  'storage.patch': {
+    invoke: 'execute_crud',
+    args: [{ operation: 'patch', entity: '$event.detail.entity', id: '$event.detail.id', data: '$event.detail.data' }],
+    resultTo: '$store.entity.current',
+    then: 'toast.success.update'
+  }
+} as const;
+
+/**
  * Combined all handlers for easy import
  */
 export const ALL_HANDLERS = {
@@ -391,5 +436,6 @@ export const ALL_HANDLERS = {
   ...ALGO_HANDLERS,
   ...UI_HANDLERS,
   ...NAVIGATION_HANDLERS,
-  ...STORE_HANDLERS
+  ...STORE_HANDLERS,
+  ...STORAGE_HANDLERS
 } as const;

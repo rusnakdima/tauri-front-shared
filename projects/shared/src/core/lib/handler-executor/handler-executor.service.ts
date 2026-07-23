@@ -6,6 +6,7 @@ import { SchemaRouterService } from "../schema-router/schema-router.service";
 import { DataBindingResolverService } from "../schema-renderer/data-binding-resolver";
 import { ToastService } from "../toast/toast.service";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
+import { getNestedValue } from "../../../utils/object";
 
 /**
  * Minimal AlgorithmService interface for handler execution.
@@ -75,6 +76,9 @@ export interface HandlerDefinition {
   // --- Function Calls ---
   call?: string;
   openOverlay?: string;
+
+  // --- Clipboard ---
+  copyToClipboard?: string;
 }
 
 @Injectable({ providedIn: "root" })
@@ -153,6 +157,8 @@ export class HandlerExecutorService {
       await this.handleGuard(def, eventData);
     } else if (def.openOverlay) {
       this.handleOpenOverlay(def.openOverlay);
+    } else if (def.copyToClipboard !== undefined) {
+      this.handleCopyToClipboard(def.copyToClipboard, eventData);
     } else {
       console.warn("[HandlerExecutor] Unknown handler type", def);
     }
@@ -166,11 +172,14 @@ export class HandlerExecutorService {
       }
       if (value.startsWith("$event.detail.")) {
         const path = value.slice(14);
-        return this.getNestedValue(eventData, path);
+        return getNestedValue(eventData, path);
       }
       if (value.startsWith("$event.")) {
         const path = value.slice(7);
-        return this.getNestedValue(eventData, path);
+        return getNestedValue(eventData, path);
+      }
+      if (value === "$event") {
+        return eventData;
       }
       const resolved = this.dataBindingResolver.resolveDataBinding(value);
       return resolved !== value ? resolved : value;
@@ -183,7 +192,7 @@ export class HandlerExecutorService {
     let current: unknown = this.signalStore.get(parts[0]);
     for (let i = 1; i < parts.length; i++) {
       if (current === null || current === undefined) return undefined;
-      current = this.getNestedValue(current, parts[i]);
+      current = getNestedValue(current, parts[i]);
     }
     return current;
   }
@@ -201,16 +210,6 @@ export class HandlerExecutorService {
       (current as Record<string, unknown>)[field] = value;
       this.signalStore.set(storeName, current);
     }
-  }
-
-  private getNestedValue(obj: unknown, path: string): unknown {
-    const parts = path.split(".");
-    let current = obj;
-    for (const part of parts) {
-      if (current === null || current === undefined) return undefined;
-      current = (current as Record<string, unknown>)[part];
-    }
-    return current;
   }
 
   private async handleInvoke(def: HandlerDefinition, eventData?: unknown) {
@@ -371,6 +370,17 @@ export class HandlerExecutorService {
 
   private handleOpenOverlay(regionId: string) {
     this.eventBus.emit("open-overlay", { regionId });
+  }
+
+  private async handleCopyToClipboard(valueExpr: string, eventData?: unknown): Promise<void> {
+    const text = this.resolveValue(valueExpr, eventData) as string;
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      this.toastService.show({ message: "Copied to clipboard", type: "success", duration: 2000 });
+    } catch (err) {
+      console.error("[HandlerExecutor] Clipboard write failed:", err);
+    }
   }
 
   private handleRedirect(url: string): void {

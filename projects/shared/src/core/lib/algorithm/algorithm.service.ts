@@ -65,6 +65,27 @@ export class AlgorithmService {
     return this.invoke.invoke<string[]>("list_algorithms");
   }
 
+  /**
+   * Get all algorithms available for a specific domain.
+   */
+  async listByDomain(domain: string): Promise<string[]> {
+    const all = await this.list();
+    return all.filter(name => name.startsWith(domain + '.'));
+  }
+
+  /**
+   * Get algorithm metadata (input/output schema hints).
+   */
+  async getAlgorithmMeta(name: string): Promise<{ name: string; domain: string } | null> {
+    const all = await this.list();
+    if (!all.includes(name)) {
+      return null;
+    }
+    const dotIndex = name.indexOf('.');
+    const domain = dotIndex > 0 ? name.substring(0, dotIndex) : 'core';
+    return { name, domain };
+  }
+
   // -------------------------------------------------------------------------
   // Sorting algorithms
   // -------------------------------------------------------------------------
@@ -260,154 +281,4 @@ export class AlgorithmService {
     return this.execute<T[]>("tree.flatten", tree);
   }
 
-  // -------------------------------------------------------------------------
-  // Local (TypeScript-only) algorithm helpers
-  // -------------------------------------------------------------------------
-
-  private compareFieldValues(a: unknown, b: unknown): number {
-    if (typeof a === "number" && typeof b === "number") return a - b;
-    if (typeof a === "string" && typeof b === "string") return a.localeCompare(b);
-    return 0;
-  }
-
-  /**
-   * Local bubble sort implementation for small datasets.
-   */
-  sortBubbleLocal<T>(items: T[], getField: (item: T) => unknown): T[] {
-    const arr = [...items];
-    const n = arr.length;
-    for (let i = 0; i < n - 1; i++) {
-      for (let j = 0; j < n - i - 1; j++) {
-        if (this.compareFieldValues(getField(arr[j]), getField(arr[j + 1])) > 0) {
-          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-        }
-      }
-    }
-    return arr;
-  }
-
-  /**
-   * Local insertion sort implementation.
-   */
-  sortInsertionLocal<T>(items: T[], getField: (item: T) => unknown): T[] {
-    const arr = [...items];
-    for (let i = 1; i < arr.length; i++) {
-      const current = arr[i];
-      let j = i - 1;
-      while (j >= 0 && this.compareFieldValues(getField(arr[j]), getField(current)) > 0) {
-        arr[j + 1] = arr[j];
-        j--;
-      }
-      arr[j + 1] = current;
-    }
-    return arr;
-  }
-
-  /**
-   * Local merge sort implementation.
-   */
-  sortMergeLocal<T>(items: T[], getField: (item: T) => unknown): T[] {
-    if (items.length <= 1) return items;
-    const mid = Math.floor(items.length / 2);
-    const left = this.sortMergeLocal(items.slice(0, mid), getField);
-    const right = this.sortMergeLocal(items.slice(mid), getField);
-    return this.mergeLocal(left, right, getField);
-  }
-
-  private mergeLocal<T>(left: T[], right: T[], getField: (item: T) => unknown): T[] {
-    const result: T[] = [];
-    let i = 0, j = 0;
-    while (i < left.length && j < right.length) {
-      if (this.compareFieldValues(getField(left[i]), getField(right[j])) <= 0) {
-        result.push(left[i++]);
-      } else {
-        result.push(right[j++]);
-      }
-    }
-    return [...result, ...left.slice(i), ...right.slice(j)];
-  }
-
-  /**
-   * Local quick sort implementation.
-   */
-  sortQuickLocal<T>(items: T[], getField: (item: T) => unknown): T[] {
-    if (items.length <= 1) return items;
-    const pivot = items[Math.floor(items.length / 2)];
-    const pivotVal = getField(pivot);
-    const left = items.filter((item) => this.compareFieldValues(getField(item), pivotVal) < 0);
-    const middle = items.filter((item) => this.compareFieldValues(getField(item), pivotVal) === 0);
-    const right = items.filter((item) => this.compareFieldValues(getField(item), pivotVal) > 0);
-    return [...this.sortQuickLocal(left, getField), ...middle, ...this.sortQuickLocal(right, getField)];
-  }
-
-  /**
-   * Local Dijkstra implementation for simple graphs.
-   */
-  dijkstraLocal(graph: Graph, source: string, target: string): DijkstraResult {
-    const distances: Record<string, number> = {};
-    const previous: Record<string, string | null> = {};
-    const visited = new Set<string>();
-    const queue: Array<{ node: string; distance: number }> = [];
-
-    for (const nodeId of Object.keys(graph.nodes)) {
-      distances[nodeId] = nodeId === source ? 0 : Infinity;
-      previous[nodeId] = null;
-      queue.push({ node: nodeId, distance: distances[nodeId] });
-    }
-
-    while (queue.length > 0) {
-      queue.sort((a, b) => a.distance - b.distance);
-      const { node: current } = queue.shift()!;
-
-      if (visited.has(current)) continue;
-      visited.add(current);
-
-      if (current === target) break;
-
-      const edges = graph.nodes[current]?.edges || [];
-      for (const edge of edges) {
-        const alt = distances[current] + edge.weight;
-        if (alt < distances[edge.node]) {
-          distances[edge.node] = alt;
-          previous[edge.node] = current;
-          const idx = queue.findIndex((q) => q.node === edge.node);
-          if (idx >= 0) queue[idx].distance = alt;
-          else queue.push({ node: edge.node, distance: alt });
-        }
-      }
-    }
-
-    const path: string[] = [];
-    let current: string | null = target;
-    while (current) {
-      path.unshift(current);
-      current = previous[current];
-    }
-
-    return {
-      path: previous[target] !== null ? path : [],
-      distance: distances[target] ?? Infinity,
-      visited: Array.from(visited),
-    };
-  }
-
-  /**
-   * Local email validation.
-   */
-  validateEmailLocal(email: string): ValidationResult {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const valid = emailRegex.test(email);
-    return { valid, errors: valid ? undefined : ["Invalid email format"] };
-  }
-
-  /**
-   * Local input sanitization - strips HTML tags and trim whitespace.
-   */
-  sanitizeLocal(input: string): string {
-    return input
-      .replace(/<[^>]*>/g, "")
-      .replace(/&[^;]+;/g, " ")
-      .trim()
-      .replace(/\s+/g, " ");
-  }
 }

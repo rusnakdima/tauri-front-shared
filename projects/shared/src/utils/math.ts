@@ -96,3 +96,8 @@ export function lerpAngle(a: number, b: number, t: number): number {
   while (diff < -Math.PI) diff += 2 * Math.PI;
   return a + diff * t;
 }
+
+export function calculatePercentage(completed: number, total: number): number {
+  if (total === 0) return 0;
+  return Math.round((completed / total) * 100);
+}
